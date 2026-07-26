@@ -45,7 +45,7 @@ CE_DATA_DIR=/var/data/censored-expressions
 PUBLIC_SITE_URL=https://censoredexpressionsmedia.com
 CE_WEB_SYNC_URL=https://censoredexpressionsmedia.com
 CE_WORKER_SYNC_ENABLED=true
-CE_RENDER_EMBEDDED_WORKER_FALLBACK=true
+CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
 NEWSLETTER_WEBHOOK_URL=https://your-cloudflare-newsletter-worker.workers.dev
@@ -130,7 +130,7 @@ Set these on the Background Worker:
 ```text
 CE_WEB_SYNC_URL=https://censoredexpressionsmedia.com
 CE_WORKER_SYNC_ENABLED=true
-CE_RENDER_EMBEDDED_WORKER_FALLBACK=true
+CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
 ```
@@ -147,7 +147,7 @@ To disable that fallback after the separate Background Worker is confirmed healt
 CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 ```
 
-Leave it enabled while troubleshooting missing updates or missing images.
+Use `CE_RENDER_EMBEDDED_WORKER_FALLBACK=false` when the separate Background Worker is active. Enable it only as a temporary emergency fallback if the worker service is unavailable.
 
 ## Critical GitHub upload checklist
 
@@ -199,8 +199,13 @@ Recommended worker environment values:
 ```text
 CE_WORKER_CPU_GUARD=true
 CE_WORKER_MAX_COLLECTORS=4
+CE_WORKER_MIN_COLLECTORS=1
 CE_WORKER_ROLE_STARTUP_STAGGER_MS=4500
 CE_WORKER_MAX_ONESHOT_CONCURRENCY=1
+CE_WORKER_PRESSURE_FAILURE_THRESHOLD=2
+CE_WORKER_PRESSURE_RECOVERY_THRESHOLD=3
+CE_WORKER_PRESSURE_DEFER_MS=900000
+CE_WORKER_PRESSURE_HARD_DEFER_MS=1800000
 CE_KNOWLEDGE_DISTILLATION_STARTUP_DELAY_MS=1800000
 CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS=21600000
 CE_EVOLUTION_ENGINE_STARTUP_DELAY_MS=2700000
@@ -211,8 +216,12 @@ CE_IMAGE_WORKER_INTERVAL_MS=3600000
 
 If CPU remains high, lower `CE_WORKER_MAX_COLLECTORS` to `2`. If CPU is stable and article coverage needs more throughput, raise it gradually to `6` or `8`.
 
+The worker also reacts to repeated sync pressure automatically. After repeated `http-502`, `http-503`, `http-504`, `http-429`, or sync errors, it lowers active collector workers, defers heavy one-shot jobs, and then restores collectors after stable syncs. This is the Framework control loop for protecting public API responsiveness while preserving article production.
+
 Expected worker log after deploy:
 
 ```text
 [worker] cpu guard enabled=true maxCollectors=4 startupStaggerMs=4500 maxOneShots=1
 ```
+
+

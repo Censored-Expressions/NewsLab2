@@ -14,7 +14,7 @@
       - key: CE_DATA_DIR
         value: /var/data/censored-expressions
       - key: CE_RENDER_EMBEDDED_WORKER_FALLBACK
-        value: "true"
+        value: "false"
       - key: CE_WORKER_SYNC_BODY_LIMIT_BYTES
         value: "16777216"
       - key: CE_WORKER_SYNC_MAX_FILE_BYTES
@@ -52,10 +52,20 @@
         value: "true"
       - key: CE_WORKER_MAX_COLLECTORS
         value: "4"
+      - key: CE_WORKER_MIN_COLLECTORS
+        value: "1"
       - key: CE_WORKER_ROLE_STARTUP_STAGGER_MS
         value: "4500"
       - key: CE_WORKER_MAX_ONESHOT_CONCURRENCY
         value: "1"
+      - key: CE_WORKER_PRESSURE_FAILURE_THRESHOLD
+        value: "2"
+      - key: CE_WORKER_PRESSURE_RECOVERY_THRESHOLD
+        value: "3"
+      - key: CE_WORKER_PRESSURE_DEFER_MS
+        value: "900000"
+      - key: CE_WORKER_PRESSURE_HARD_DEFER_MS
+        value: "1800000"
       - key: CE_KNOWLEDGE_DISTILLATION_STARTUP_DELAY_MS
         value: "1800000"
       - key: CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS
@@ -76,3 +86,6 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
+
+

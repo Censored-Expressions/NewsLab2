@@ -14,9 +14,24 @@ const workerSyncEnabled = process.env.CE_WORKER_SYNC_ENABLED !== "false" && Bool
 const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_INTERVAL_MS || 60000));
 const workerCpuGuardEnabled = process.env.CE_WORKER_CPU_GUARD !== "false";
 const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECTORS || (workerCpuGuardEnabled ? 4 : 99)));
+const minCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MIN_COLLECTORS || 1));
 const roleStartupStaggerMs = Math.max(0, Number(process.env.CE_WORKER_ROLE_STARTUP_STAGGER_MS || (workerCpuGuardEnabled ? 4500 : 0)));
 const maxOneShotConcurrency = Math.max(1, Number(process.env.CE_WORKER_MAX_ONESHOT_CONCURRENCY || 1));
+const pressureFailureThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_FAILURE_THRESHOLD || 2));
+const pressureRecoveryThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_RECOVERY_THRESHOLD || 3));
+const pressureDeferMs = Math.max(5 * 60 * 1000, Number(process.env.CE_WORKER_PRESSURE_DEFER_MS || 15 * 60 * 1000));
+const pressureHardDeferMs = Math.max(10 * 60 * 1000, Number(process.env.CE_WORKER_PRESSURE_HARD_DEFER_MS || 30 * 60 * 1000));
 const oneShotChildren = new Map();
+const parkedRoles = new Set();
+let adaptiveCollectorLimit = maxCollectorWorkers;
+const runtimePressureState = {
+  consecutiveSyncFailures: 0,
+  consecutiveSyncOk: 0,
+  adaptiveCollectorLimit,
+  deferOneShotsUntil: 0,
+  lastAction: "startup",
+  lastActionAt: ""
+};
 const ownerAdminToken = process.env.OWNER_ADMIN_TOKEN || process.env.NEWSLETTER_ADMIN_TOKEN || "";
 const syncFileSpecs = [
   { key: "news-lab-published-payload", file: path.join(dataDir, "news-lab-published-payload.json") },
@@ -38,6 +53,9 @@ const categories = String(process.env.CE_NEWS_LAB_WORKER_CATEGORIES || "top,worl
   .split(",")
   .map(value => value.trim().toLowerCase())
   .filter(Boolean);
+
+adaptiveCollectorLimit = Math.min(maxCollectorWorkers, categories.length || maxCollectorWorkers);
+runtimePressureState.adaptiveCollectorLimit = adaptiveCollectorLimit;
 
 
 function readJson(filePath, fallback) {
@@ -89,6 +107,15 @@ function writeWorkerObservability(reason = "heartbeat") {
       roles
     },
     sync: workerSyncStateSummary(),
+    adaptiveRuntime: {
+      cpuGuardEnabled: workerCpuGuardEnabled,
+      maxCollectorWorkers,
+      minCollectorWorkers,
+      activeCollectors: activeCollectorNames(),
+      parkedRoles: [...parkedRoles],
+      ...runtimePressureState,
+      deferOneShotsUntilIso: runtimePressureState.deferOneShotsUntil ? new Date(runtimePressureState.deferOneShotsUntil).toISOString() : ""
+    },
     workerEvents: [...(existing.workerEvents || []), ...workerEvents].slice(-80),
     rule: "The web service reads this heartbeat to know whether background article production, collectors, rescue, learning, and image workers are alive."
   });
@@ -126,6 +153,95 @@ function workerSyncStateSummary() {
     acceptedKeys: ledger.acceptedKeys || [],
     rejectedKeys: ledger.rejectedKeys || []
   };
+}
+function collectorRoleName(category) {
+  return `collector-${category}`;
+}
+
+function activeCollectorNames() {
+  return categories
+    .map(category => collectorRoleName(category))
+    .filter(name => children.has(name));
+}
+
+function stopRole(name, reason = "runtime-pressure") {
+  const child = children.get(name);
+  parkedRoles.add(name);
+  recordWorkerEvent({ type: "role-parked", name, reason });
+  if (!child) return false;
+  try {
+    console.log(`[worker] parking ${name}: ${reason}`);
+    child.kill("SIGTERM");
+    return true;
+  } catch (error) {
+    console.log(`[worker] failed to park ${name}: ${error.message || error}`);
+    return false;
+  }
+}
+
+function rebalanceCollectorWorkers(reason = "adaptive-runtime-optimization") {
+  if (!workerCpuGuardEnabled) return;
+  const wanted = new Set(categories.slice(0, adaptiveCollectorLimit).map(collectorRoleName));
+  for (const category of categories) {
+    const roleName = collectorRoleName(category);
+    if (!wanted.has(roleName)) {
+      stopRole(roleName, reason);
+      continue;
+    }
+    parkedRoles.delete(roleName);
+    if (!children.has(roleName) && !shuttingDown) {
+      spawnRole(roleName, { CE_NEWS_LAB_COLLECTOR_WORKER: category }, { restartDelayMs: 30000 });
+    }
+  }
+  runtimePressureState.adaptiveCollectorLimit = adaptiveCollectorLimit;
+  runtimePressureState.lastActionAt = new Date().toISOString();
+}
+
+function tuneRuntimeFromSync(event = {}) {
+  if (!workerCpuGuardEnabled) return;
+  const status = String(event.status || "");
+  const isOk = status === "ok";
+  const isPressure = status === "error" || /^http-(429|500|502|503|504)$/.test(status);
+  if (isOk) {
+    runtimePressureState.consecutiveSyncFailures = 0;
+    runtimePressureState.consecutiveSyncOk += 1;
+    if (runtimePressureState.consecutiveSyncOk >= pressureRecoveryThreshold && adaptiveCollectorLimit < Math.min(maxCollectorWorkers, categories.length)) {
+      adaptiveCollectorLimit += 1;
+      runtimePressureState.consecutiveSyncOk = 0;
+      runtimePressureState.lastAction = "increase-collector-limit-after-stable-sync";
+      recordWorkerEvent({ type: "adaptive-runtime-optimization", action: runtimePressureState.lastAction, adaptiveCollectorLimit, status });
+      console.log(`[worker] adaptive runtime: sync stable, raising collector limit to ${adaptiveCollectorLimit}`);
+      rebalanceCollectorWorkers(runtimePressureState.lastAction);
+    }
+    return;
+  }
+  if (!isPressure) return;
+  runtimePressureState.consecutiveSyncFailures += 1;
+  runtimePressureState.consecutiveSyncOk = 0;
+  const hardPressure = runtimePressureState.consecutiveSyncFailures >= pressureFailureThreshold * 2;
+  runtimePressureState.deferOneShotsUntil = Date.now() + (hardPressure ? pressureHardDeferMs : pressureDeferMs);
+  if (runtimePressureState.consecutiveSyncFailures >= pressureFailureThreshold && adaptiveCollectorLimit > minCollectorWorkers) {
+    adaptiveCollectorLimit = Math.max(minCollectorWorkers, adaptiveCollectorLimit - (hardPressure ? 2 : 1));
+    runtimePressureState.lastAction = hardPressure ? "hard-reduce-collector-limit-after-sync-pressure" : "reduce-collector-limit-after-sync-pressure";
+    recordWorkerEvent({ type: "adaptive-runtime-optimization", action: runtimePressureState.lastAction, adaptiveCollectorLimit, status, consecutiveSyncFailures: runtimePressureState.consecutiveSyncFailures });
+    console.log(`[worker] adaptive runtime: ${status} pressure, lowering collector limit to ${adaptiveCollectorLimit} and deferring one-shots`);
+    rebalanceCollectorWorkers(runtimePressureState.lastAction);
+  } else {
+    runtimePressureState.lastAction = "defer-one-shots-after-sync-pressure";
+    runtimePressureState.lastActionAt = new Date().toISOString();
+    recordWorkerEvent({ type: "adaptive-runtime-optimization", action: runtimePressureState.lastAction, adaptiveCollectorLimit, status, consecutiveSyncFailures: runtimePressureState.consecutiveSyncFailures });
+    console.log(`[worker] adaptive runtime: ${status} pressure, deferring one-shots until ${new Date(runtimePressureState.deferOneShotsUntil).toISOString()}`);
+  }
+}
+
+function oneShotsDeferred(name = "one-shot") {
+  if (!workerCpuGuardEnabled) return false;
+  if (Date.now() < runtimePressureState.deferOneShotsUntil) {
+    console.log(`[worker] skipped one-shot ${name}: deferred by adaptive runtime pressure until ${new Date(runtimePressureState.deferOneShotsUntil).toISOString()}`);
+    recordWorkerEvent({ type: "one-shot-skipped", name, reason: "adaptive-runtime-pressure", deferUntil: new Date(runtimePressureState.deferOneShotsUntil).toISOString() });
+    return true;
+  }
+  return false;
 }
 function collectSyncFiles() {
   const maxBytes = Math.max(1024 * 1024, Number(process.env.CE_WORKER_SYNC_MAX_FILE_BYTES || 8 * 1024 * 1024));
@@ -204,18 +320,21 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     };
     recordWorkerEvent(event);
     writeWorkerSyncLedger(event);
+    tuneRuntimeFromSync(event);
     writeWorkerObservability("worker-sync-complete");
     console.log(`[worker] sync ${event.status}: accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"}`);
   } catch (error) {
     const event = { type: "worker-sync-error", reason, status: "error", error: error.message || String(error), at: new Date().toISOString(), skipped };
     recordWorkerEvent(event);
     writeWorkerSyncLedger(event);
+    tuneRuntimeFromSync(event);
     writeWorkerObservability("worker-sync-error");
     console.log(`[worker] sync error: ${event.error}`);
   }
 }
 function spawnRole(name, env = {}, options = {}) {
   if (children.has(name)) return children.get(name);
+  parkedRoles.delete(name);
   const child = childProcess.spawn(nodePath, [serverPath], {
     cwd: __dirname,
     env: {
@@ -232,7 +351,7 @@ function spawnRole(name, env = {}, options = {}) {
   child.on("exit", (code, signal) => {
     children.delete(name);
     console.log(`[worker] ${name} exited code=${code} signal=${signal || ""}`);
-    if (!options.once && !shuttingDown) {
+    if (!options.once && !shuttingDown && !parkedRoles.has(name)) {
       const delayMs = Math.max(5000, Number(options.restartDelayMs || 15000));
       setTimeout(() => spawnRole(name, env, options), delayMs);
     }
@@ -246,6 +365,7 @@ function spawnRole(name, env = {}, options = {}) {
 }
 
 function spawnOneShot(name, env = {}) {
+  if (oneShotsDeferred(name)) return null;
   const activeOneShots = [...oneShotChildren.values()].filter(child => child.exitCode === null && !child.killed).length;
   if (oneShotChildren.has(name)) {
     console.log(`[worker] skipped one-shot ${name}: already running`);
@@ -308,8 +428,8 @@ writeWorkerObservability("orchestrator-started");
 console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
 console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency}`);
 
-const enabledCollectorCategories = categories.slice(0, maxCollectorWorkers);
-const parkedCollectorCategories = categories.slice(maxCollectorWorkers);
+const enabledCollectorCategories = categories.slice(0, adaptiveCollectorLimit);
+const parkedCollectorCategories = categories.slice(adaptiveCollectorLimit);
 if (parkedCollectorCategories.length) {
   recordWorkerEvent({ type: "collector-workers-parked", categories: parkedCollectorCategories, maxCollectorWorkers });
   console.log(`[worker] parked collectors for CPU guard: ${parkedCollectorCategories.join(",")}`);
@@ -389,6 +509,11 @@ setInterval(() => {
   const syncState = workerSyncStateSummary();
   console.log(`[worker] heartbeat activeRoles=${children.size} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"}`);
 }, 60 * 1000);
+
+
+
+
+
 
 
 
