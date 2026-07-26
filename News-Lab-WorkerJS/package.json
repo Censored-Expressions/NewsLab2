@@ -1,0 +1,28 @@
+﻿{
+  "name": "censored-expressions-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Censored Expressions website with server-side RSS feed collection.",
+  "scripts": {
+    "start": "node server.js",
+    "start:web": "node server.js",
+    "worker": "node worker.js",
+    "start:combined": "CE_SERVER_START_WORKERS=true node server.js",
+    "check": "node --check server.js && node --check worker.js && node --check news-lab.js && node --check news-lab-story.js && node --check news-analyzer.js && node --check app.js && node --check creator-desk.js && node --check newsletter.js && node --check owner-desk.js",
+    "pexels:download": "node download-pexels-assets.js",
+    "mobile:sync": "npx cap sync",
+    "mobile:add:android": "npx cap add android",
+    "mobile:add:ios": "npx cap add ios",
+    "mobile:open:android": "npx cap open android",
+    "mobile:open:ios": "npx cap open ios"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@capacitor/android": "latest",
+    "@capacitor/cli": "latest",
+    "@capacitor/core": "latest",
+    "@capacitor/ios": "latest"
+  }
+}
