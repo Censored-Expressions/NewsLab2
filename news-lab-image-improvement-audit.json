@@ -1,0 +1,155 @@
+{
+  "version": "20260722-news-lab-image-intelligence-v1",
+  "reason": "refresh-generated-image-briefs-dangling-fragment-fix",
+  "startedAt": "2026-07-23T03:07:05.407Z",
+  "finishedAt": "2026-07-23T03:07:25.569Z",
+  "policy": {
+    "copyright": "Pexels and Pixabay are preferred. NewsData/source images remain disabled unless CE_NEWS_LAB_ALLOW_SOURCE_IMAGES=true confirms separate rights review.",
+    "generatedImages": "CE-generated image briefs may be queued from article descriptions, but generated assets are not public until reviewed and stored with provenance.",
+    "articleSafety": "Articles remain published during image review; image improvements are field-only updates."
+  },
+  "summary": {
+    "totalStories": 65,
+    "reviewed": 12,
+    "upgraded": 0,
+    "held": 0,
+    "unchanged": 12,
+    "generatedImageBriefsQueued": 12,
+    "generatedImageBriefsAdded": 12,
+    "cacheRebuilt": true
+  },
+  "items": [
+    {
+      "storyId": "news_lab_worker_slice_world_0_entertainment-update-centers-on-trump-election-docum",
+      "title": "Trump Documents Election Sharpens Technology Triggers Emergency Response White House Released Four Batches",
+      "status": "unchanged",
+      "beforeScore": 37,
+      "candidateScore": 37,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "Middle East diplomacy",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_politics:event:trump-president-trump-bipartisan-housing-bill-without-congress_0__candidate_4",
+      "title": "Trump Economic Plan Advances Senate Primary Shift",
+      "status": "unchanged",
+      "beforeScore": 59,
+      "candidateScore": 59,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "us capitol building",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "status": "unchanged",
+      "beforeScore": 49,
+      "candidateScore": 49,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "us capitol building",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_technology:walkthrough_20260717_u-s-ai-competition-concerns-grow-after-chinese-model-breakout_extra",
+      "title": "U.S. AI Competition Concerns Grow After Chinese Model Breakout",
+      "status": "unchanged",
+      "beforeScore": 48,
+      "candidateScore": 48,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "Iran diplomacy meeting",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_world:walkthrough_20260717_burnham-transition-puts-britain-s-foreign-role-under-review_0",
+      "title": "Burnham Transition Puts Britain's Foreign Role Under Review",
+      "status": "unchanged",
+      "beforeScore": 24,
+      "candidateScore": 24,
+      "selectedSource": "Pexels local asset",
+      "selectedLicense": "Pexels",
+      "query": "world news diplomacy",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_technology:walkthrough_20260717_ai-race-and-cybersecurity-stocks-drive-tech-market-focus_3",
+      "title": "AI Race and Cybersecurity Stocks Drive Tech Market Focus",
+      "status": "unchanged",
+      "beforeScore": 47,
+      "candidateScore": 47,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "Middle East diplomacy",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_politics:walkthrough_20260717_pentagon-press-escort-rule-returns-during-access-fight_1",
+      "title": "Pentagon Press Escort Rule Returns During Access Fight",
+      "status": "unchanged",
+      "beforeScore": 42,
+      "candidateScore": 42,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "shopping mall storefront",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_sports:walkthrough_20260717_open-championship-round-brings-record-scores-at-royal-birkdale_4",
+      "title": "Open Championship Round Brings Record Scores at Royal Birkdale",
+      "status": "unchanged",
+      "beforeScore": 50,
+      "candidateScore": 50,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "golf course tournament",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_entertainment:walkthrough_20260717_iko-uwais-crime-series-moves-forward-at-alcon-entertainment_5",
+      "title": "Iko Uwais Crime Series Moves Forward at Alcon Entertainment",
+      "status": "unchanged",
+      "beforeScore": 43,
+      "candidateScore": 43,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "Middle East diplomacy",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_local:walkthrough_20260717_san-francisco-bay-boat-disaster-leaves-families-waiting-for-answers_6",
+      "title": "San Francisco Bay Boat Disaster Leaves Families Waiting for Answers",
+      "status": "unchanged",
+      "beforeScore": 61,
+      "candidateScore": 61,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "San Francisco Bay Boat Disaster Leaves Families",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_business:walkthrough_20260717_truist-leans-on-digital-banking-to-deepen-customer-ties_2",
+      "title": "Truist Leans on Digital Banking to Deepen Customer Ties",
+      "status": "unchanged",
+      "beforeScore": 55,
+      "candidateScore": 55,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "Truist Leans Digital Banking Deepen Customer Ties",
+      "findings": []
+    },
+    {
+      "storyId": "news_lab_worker_slice_local_1_ukraine-strike-reports-put-russian-military-targets-",
+      "title": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+      "status": "unchanged",
+      "beforeScore": 47,
+      "candidateScore": 47,
+      "selectedSource": "Pexels",
+      "selectedLicense": "Pexels",
+      "query": "Middle East diplomacy",
+      "findings": []
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "version": "20260716-breaking-brief-followups-v1",
+  "updatedAt": "2026-07-23T17:24:47.779Z",
+  "purpose": "Track verified breaking/developing briefs until a fuller CE Media article replaces the early version.",
+  "totals": {
+    "active": 1,
+    "created": 1,
+    "upgraded": 0,
+    "expired": 0
+  },
+  "active": [
+    {
+      "eventKey": "event:google-eu-android-antitrust-fine",
+      "storyId": "news_lab_technology:news-lab-worker-slice-technology-7-google-loses-final-appeal-over-eu-android-fine",
+      "title": "Google Loses Final Appeal Over Eu Android Fine",
+      "category": "technology",
+      "status": "needs-full-article",
+      "targetTier": 1,
+      "currentTier": 2,
+      "firstTrackedAt": "2026-07-23T15:47:24.081Z",
+      "lastSeenAt": "2026-07-23T17:19:31.618Z",
+      "nextCheckAfter": "2026-07-23T17:29:31.627Z",
+      "currentBodyLength": 745,
+      "verifiedFactCount": 2,
+      "sourceCount": 1,
+      "rule": "Keep gathering evidence and regenerate a full article for this event; do not let the early brief become the final story."
+    }
+  ],
+  "archived": [],
+  "rule": "Partial early articles are allowed only as verified breaking briefs. They must stay in the follow-up queue until replaced by a full article or intentionally expired.",
+  "lastReason": "startup-api-response-cache"
+}

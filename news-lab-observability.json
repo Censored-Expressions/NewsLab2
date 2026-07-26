@@ -1,0 +1,30 @@
+﻿{
+    "version":  "20260724-news-lab-observability-v1",
+    "generatedAt":  "2026-07-24T05:03:10.9119285Z",
+    "source":  "deploy-seed",
+    "queues":  {
+
+               },
+    "workers":  {
+
+                },
+    "collectors":  {
+
+                   },
+    "throughput":  {
+
+                   },
+    "editorial":  {
+
+                  },
+    "publishing":  {
+
+                   },
+    "health":  {
+                   "status":  "warming",
+                   "findings":  [
+                                    "worker heartbeat starts after Render background worker runs"
+                                ]
+               },
+    "rule":  "Owner-facing observability seed. Runtime web/API and worker heartbeat update this file."
+}

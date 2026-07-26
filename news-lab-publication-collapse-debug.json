@@ -1,0 +1,408 @@
+{
+  "generatedAt": "2026-07-23T19:10:08.743Z",
+  "stage": "worker-finish-after-merge",
+  "workerPublishableCount": 0,
+  "previousPublishedCount": 3,
+  "finalWorkerStoryCount": 3,
+  "workerPublishable": [],
+  "workerRejected": [
+    {
+      "id": "news_lab_worker_slice_politics_11_politics-update-centers-on-amish-district-house-shah",
+      "title": "Amish Shah Wins Arizona Democratic House Primary",
+      "category": "politics",
+      "complete": false,
+      "bodyLength": 394,
+      "paragraphCount": 3,
+      "score": 58,
+      "qualityGateIssues": [
+        "publisher-headline-too-close"
+      ],
+      "publicIssues": [
+        "publisher-headline-too-close"
+      ],
+      "blockingFinalIssues": [
+        "publisher-headline-too-close"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-23T19:10:04.688Z",
+        "beforeIssues": [
+          "draft-too-thin-before-editor"
+        ],
+        "afterIssues": [
+          "draft-too-thin-before-editor"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "expanded-thin-draft-with-clean-dossier-facts-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "publisher-headline-too-close"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "publisher-headline-too-close"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-source-no-overlap",
+          "headline-lead-topic-mismatch"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-source-no-overlap",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 3
+          }
+        ],
+        "correctedIssues": [
+          "publisher-headline-too-close"
+        ],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_politics_12_politics-update-centers-on-nuclear-2017-arabia-bankr",
+      "title": "Westinghouse Gains Ground In Nuclear Energy Revival",
+      "category": "politics",
+      "complete": false,
+      "bodyLength": 235,
+      "paragraphCount": 2,
+      "score": 82,
+      "qualityGateIssues": [
+        "headline-lead-topic-mismatch",
+        "needs-dossier-evidence"
+      ],
+      "publicIssues": [
+        "headline-lead-topic-mismatch"
+      ],
+      "blockingFinalIssues": [
+        "headline-lead-topic-mismatch",
+        "needs-dossier-evidence"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-23T19:10:04.696Z",
+        "beforeIssues": [
+          "draft-too-thin-before-editor"
+        ],
+        "afterIssues": [
+          "draft-too-thin-before-editor"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "expanded-thin-draft-with-clean-dossier-facts-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "headline-lead-topic-mismatch",
+          "paragraph-topic-contamination"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 1
+          },
+          {
+            "classId": "story-identity-integrity",
+            "label": "Story identity failure",
+            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
+            "repairOwner": "Story Dossier Builder",
+            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
+            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
+            "issueCodes": [
+              "paragraph-topic-contamination"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-source-no-overlap"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-source-no-overlap"
+            ],
+            "count": 2
+          }
+        ],
+        "correctedIssues": [
+          "headline-lead-topic-mismatch",
+          "paragraph-topic-contamination"
+        ],
+        "correctedFailureClasses": [
+          {
+            "classId": "story-identity-integrity",
+            "label": "Story identity failure",
+            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
+            "repairOwner": "Story Dossier Builder",
+            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
+            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
+            "issueCodes": [
+              "paragraph-topic-contamination"
+            ],
+            "count": 1
+          }
+        ],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_business_9_business-update-centers-on-market-bubble-conclude-da",
+      "title": "Bubble Market Conclude Adds Economic Pressure",
+      "category": "business",
+      "complete": false,
+      "bodyLength": 654,
+      "paragraphCount": 5,
+      "score": 41,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "publicIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-23T19:10:04.790Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "lead-topic-mismatch",
+          "headline-lead-topic-mismatch"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad",
+              "lead-topic-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 4
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "lead-topic-mismatch",
+          "headline-lead-topic-mismatch"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad",
+              "lead-topic-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 4
+          }
+        ],
+        "correctedIssues": [],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_local_7_local-update-centers-on-afternoon-less-lots-weather-",
+      "title": "New York (wabc) -- a Super Stretch of Weather",
+      "category": "local",
+      "complete": false,
+      "bodyLength": 780,
+      "paragraphCount": 4,
+      "score": 54,
+      "qualityGateIssues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "publicIssues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "blockingFinalIssues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-23T19:10:04.910Z",
+        "beforeIssues": [
+          "headline-editor-needs-rewrite"
+        ],
+        "afterIssues": [
+          "headline-editor-needs-rewrite"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "headline-editor-needs-rewrite"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "headline-editor-needs-rewrite"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "headline-editor-needs-rewrite"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "headline-editor-needs-rewrite"
+            ],
+            "count": 1
+          }
+        ],
+        "correctedIssues": [],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    }
+  ],
+  "finalWorkerStories": [
+    {
+      "id": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Graham Died of a “brief and Sudden” Illness on Saturday Evening, His Office Said",
+      "category": "business",
+      "mergeKey": "event:lindsey-graham-death-transition",
+      "meaningfulEventKey": "politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south"
+    },
+    {
+      "id": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "title": "Ukraine Gains U.S. Support for Patriot Missile Production",
+      "category": "technology",
+      "mergeKey": "event:ukraine-russia-war-military-developments",
+      "meaningfulEventKey": "world:event:trump-patriot-ukraine-signals-support-production-president"
+    },
+    {
+      "id": "news_lab_world:news-lab-world-event-iran-iranian-blasts-attacks-sixth-mounts-reported-0__candidate_2",
+      "title": "U.S.-iran Tensions Rise After New Strike Reports Near Hormuz",
+      "category": "business",
+      "mergeKey": "event:us-iran-hormuz-strikes",
+      "meaningfulEventKey": "world:event:iran-iranian-blasts-attacks-sixth-mounts-reported"
+    }
+  ],
+  "rule": "If approved articles do not reach the public shelf, compare workerPublishable to finalWorkerStories and teach the Publisher which merge/filter removed them."
+}

@@ -1,0 +1,1566 @@
+{
+  "version": "20260717-news-coverage-comparison-v1",
+  "generatedAt": "2026-07-18T05:43:54.773Z",
+  "reason": "api-request",
+  "purpose": "Rate and compare CE Media News Lab coverage against the outside source trail already absorbed for each story.",
+  "scoringModel": {
+    "ceScore": "depth 25%, source diversity 22%, originality 20%, confidence 18%, image provenance 8%, source reliability context 7%",
+    "outsideBenchmark": "source reliability 55%, original reporting 25%, source-count reach 20%",
+    "note": "This compares CE article execution against available source context. It does not declare any outside outlet universally better or worse."
+  },
+  "summary": {
+    "visibleStories": 5,
+    "comparedStories": 5,
+    "averageCeScore": 70,
+    "averageOutsideBenchmark": 77,
+    "averageGap": -7,
+    "strongerThanBenchmark": 0,
+    "competitiveWithBenchmark": 2,
+    "needsImprovement": 3
+  },
+  "topCeStrengths": [
+    {
+      "storyId": "news_lab_world:news-lab-world-event-iran-iranian-blasts-attacks-sixth-mounts-reported-0__candidate_2",
+      "title": "U.S.-iran Tensions Rise After New Strike Reports Near Hormuz",
+      "category": "world",
+      "publishedAt": "2026-07-16T22:20:27.952Z",
+      "updatedAt": "",
+      "ceScore": 77,
+      "outsideBenchmark": 78,
+      "comparisonGap": -1,
+      "verdict": "CE coverage competitive with source benchmark",
+      "metrics": {
+        "depthScore": 49,
+        "sourceDiversityScore": 93,
+        "originalityScore": 88,
+        "confidenceScore": 73,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 83,
+        "sourceCount": 12,
+        "independentSourceCount": 7,
+        "officialSourceCount": 0,
+        "wordCount": 161,
+        "paragraphCount": 5,
+        "maxHeadlineSimilarityToSource": 0.17
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "Al Jazeera World",
+          "domain": "aljazeera.com",
+          "reliability": 83,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "TechCrunch",
+          "domain": "techcrunch.com",
+          "reliability": 86,
+          "originalReportingPercent": 3,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Al Jazeera World",
+          "domain": "aljazeera.com",
+          "reliability": 83,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "CNBC",
+          "domain": "cnbc.com",
+          "reliability": 82,
+          "originalReportingPercent": 7,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:event:trump-president-trump-bipartisan-housing-bill-without-congress_0__candidate_4",
+      "title": "Trump Economic Plan Advances Senate Primary Shift",
+      "category": "politics",
+      "publishedAt": "2026-07-12T01:21:34.824Z",
+      "updatedAt": "",
+      "ceScore": 74,
+      "outsideBenchmark": 77,
+      "comparisonGap": -3,
+      "verdict": "CE coverage competitive with source benchmark",
+      "metrics": {
+        "depthScore": 33,
+        "sourceDiversityScore": 100,
+        "originalityScore": 86,
+        "confidenceScore": 70,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 12,
+        "independentSourceCount": 10,
+        "officialSourceCount": 0,
+        "wordCount": 95,
+        "paragraphCount": 4,
+        "maxHeadlineSimilarityToSource": 0.14
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.14
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Davis Vanguard",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "KGW",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "The Arizona Republic",
+          "domain": "azcentral.com",
+          "reliability": 0,
+          "originalReportingPercent": 0,
+          "availability": 0,
+          "sourceFamily": "source",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:news-lab-politics-event-anthony-zurcher-from-trump-lindsey-graham-critic-ally-political-5",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "publishedAt": "2026-07-13T09:54:02.234Z",
+      "updatedAt": "",
+      "ceScore": 68,
+      "outsideBenchmark": 76,
+      "comparisonGap": -8,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 31,
+        "sourceDiversityScore": 100,
+        "originalityScore": 59,
+        "confidenceScore": 69,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 81,
+        "sourceCount": 20,
+        "independentSourceCount": 17,
+        "officialSourceCount": 1,
+        "wordCount": 86,
+        "paragraphCount": 4,
+        "maxHeadlineSimilarityToSource": 0.56
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.2
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.56
+        },
+        {
+          "provider": "The Guardian",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.18
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.2
+        },
+        {
+          "provider": "Hollywood Reporter",
+          "domain": "hollywoodreporter.com",
+          "reliability": 82,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Billboard",
+          "domain": "billboard.com",
+          "reliability": 82,
+          "originalReportingPercent": 3,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "title": "Ukraine Gains U.S. Support for Patriot Missile Production",
+      "category": "entertainment",
+      "publishedAt": "2026-07-11T19:37:59.013Z",
+      "updatedAt": "",
+      "ceScore": 67,
+      "outsideBenchmark": 77,
+      "comparisonGap": -10,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 35,
+        "sourceDiversityScore": 100,
+        "originalityScore": 51,
+        "confidenceScore": 71,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 12,
+        "independentSourceCount": 10,
+        "officialSourceCount": 0,
+        "wordCount": 82,
+        "paragraphCount": 5,
+        "maxHeadlineSimilarityToSource": 0.67
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.67
+        },
+        {
+          "provider": "NYT Politics",
+          "domain": "nytimes.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Hollywood Reporter",
+          "domain": "hollywoodreporter.com",
+          "reliability": 82,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "CBS Sports",
+          "domain": "cbssports.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "ABC",
+          "domain": "abcnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Sky Sports",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "publishedAt": "2026-07-12T10:51:23.689Z",
+      "updatedAt": "",
+      "ceScore": 66,
+      "outsideBenchmark": 77,
+      "comparisonGap": -11,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 40,
+        "sourceDiversityScore": 100,
+        "originalityScore": 38,
+        "confidenceScore": 73,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 13,
+        "independentSourceCount": 12,
+        "officialSourceCount": 1,
+        "wordCount": 92,
+        "paragraphCount": 6,
+        "maxHeadlineSimilarityToSource": 0.83
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.44
+        },
+        {
+          "provider": "NYT Politics",
+          "domain": "nytimes.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.43
+        },
+        {
+          "provider": "CNBC",
+          "domain": "cnbc.com",
+          "reliability": 82,
+          "originalReportingPercent": 7,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.5
+        },
+        {
+          "provider": "NBC",
+          "domain": "nbcnews.com",
+          "reliability": 83,
+          "originalReportingPercent": 12,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.6
+        },
+        {
+          "provider": "France 24",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.4
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.83
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    }
+  ],
+  "biggestImprovementTargets": [
+    {
+      "storyId": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "publishedAt": "2026-07-12T10:51:23.689Z",
+      "updatedAt": "",
+      "ceScore": 66,
+      "outsideBenchmark": 77,
+      "comparisonGap": -11,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 40,
+        "sourceDiversityScore": 100,
+        "originalityScore": 38,
+        "confidenceScore": 73,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 13,
+        "independentSourceCount": 12,
+        "officialSourceCount": 1,
+        "wordCount": 92,
+        "paragraphCount": 6,
+        "maxHeadlineSimilarityToSource": 0.83
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.44
+        },
+        {
+          "provider": "NYT Politics",
+          "domain": "nytimes.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.43
+        },
+        {
+          "provider": "CNBC",
+          "domain": "cnbc.com",
+          "reliability": 82,
+          "originalReportingPercent": 7,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.5
+        },
+        {
+          "provider": "NBC",
+          "domain": "nbcnews.com",
+          "reliability": 83,
+          "originalReportingPercent": 12,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.6
+        },
+        {
+          "provider": "France 24",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.4
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.83
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "title": "Ukraine Gains U.S. Support for Patriot Missile Production",
+      "category": "entertainment",
+      "publishedAt": "2026-07-11T19:37:59.013Z",
+      "updatedAt": "",
+      "ceScore": 67,
+      "outsideBenchmark": 77,
+      "comparisonGap": -10,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 35,
+        "sourceDiversityScore": 100,
+        "originalityScore": 51,
+        "confidenceScore": 71,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 12,
+        "independentSourceCount": 10,
+        "officialSourceCount": 0,
+        "wordCount": 82,
+        "paragraphCount": 5,
+        "maxHeadlineSimilarityToSource": 0.67
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.67
+        },
+        {
+          "provider": "NYT Politics",
+          "domain": "nytimes.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Hollywood Reporter",
+          "domain": "hollywoodreporter.com",
+          "reliability": 82,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "CBS Sports",
+          "domain": "cbssports.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "ABC",
+          "domain": "abcnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Sky Sports",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:news-lab-politics-event-anthony-zurcher-from-trump-lindsey-graham-critic-ally-political-5",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "publishedAt": "2026-07-13T09:54:02.234Z",
+      "updatedAt": "",
+      "ceScore": 68,
+      "outsideBenchmark": 76,
+      "comparisonGap": -8,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 31,
+        "sourceDiversityScore": 100,
+        "originalityScore": 59,
+        "confidenceScore": 69,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 81,
+        "sourceCount": 20,
+        "independentSourceCount": 17,
+        "officialSourceCount": 1,
+        "wordCount": 86,
+        "paragraphCount": 4,
+        "maxHeadlineSimilarityToSource": 0.56
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.2
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.56
+        },
+        {
+          "provider": "The Guardian",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.18
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.2
+        },
+        {
+          "provider": "Hollywood Reporter",
+          "domain": "hollywoodreporter.com",
+          "reliability": 82,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Billboard",
+          "domain": "billboard.com",
+          "reliability": 82,
+          "originalReportingPercent": 3,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:event:trump-president-trump-bipartisan-housing-bill-without-congress_0__candidate_4",
+      "title": "Trump Economic Plan Advances Senate Primary Shift",
+      "category": "politics",
+      "publishedAt": "2026-07-12T01:21:34.824Z",
+      "updatedAt": "",
+      "ceScore": 74,
+      "outsideBenchmark": 77,
+      "comparisonGap": -3,
+      "verdict": "CE coverage competitive with source benchmark",
+      "metrics": {
+        "depthScore": 33,
+        "sourceDiversityScore": 100,
+        "originalityScore": 86,
+        "confidenceScore": 70,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 12,
+        "independentSourceCount": 10,
+        "officialSourceCount": 0,
+        "wordCount": 95,
+        "paragraphCount": 4,
+        "maxHeadlineSimilarityToSource": 0.14
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.14
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Davis Vanguard",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "KGW",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "The Arizona Republic",
+          "domain": "azcentral.com",
+          "reliability": 0,
+          "originalReportingPercent": 0,
+          "availability": 0,
+          "sourceFamily": "source",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body."
+      ]
+    },
+    {
+      "storyId": "news_lab_world:news-lab-world-event-iran-iranian-blasts-attacks-sixth-mounts-reported-0__candidate_2",
+      "title": "U.S.-iran Tensions Rise After New Strike Reports Near Hormuz",
+      "category": "world",
+      "publishedAt": "2026-07-16T22:20:27.952Z",
+      "updatedAt": "",
+      "ceScore": 77,
+      "outsideBenchmark": 78,
+      "comparisonGap": -1,
+      "verdict": "CE coverage competitive with source benchmark",
+      "metrics": {
+        "depthScore": 49,
+        "sourceDiversityScore": 93,
+        "originalityScore": 88,
+        "confidenceScore": 73,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 83,
+        "sourceCount": 12,
+        "independentSourceCount": 7,
+        "officialSourceCount": 0,
+        "wordCount": 161,
+        "paragraphCount": 5,
+        "maxHeadlineSimilarityToSource": 0.17
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "Al Jazeera World",
+          "domain": "aljazeera.com",
+          "reliability": 83,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "TechCrunch",
+          "domain": "techcrunch.com",
+          "reliability": 86,
+          "originalReportingPercent": 3,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Al Jazeera World",
+          "domain": "aljazeera.com",
+          "reliability": 83,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "CNBC",
+          "domain": "cnbc.com",
+          "reliability": 82,
+          "originalReportingPercent": 7,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body."
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "storyId": "news_lab_world:news-lab-world-event-iran-iranian-blasts-attacks-sixth-mounts-reported-0__candidate_2",
+      "title": "U.S.-iran Tensions Rise After New Strike Reports Near Hormuz",
+      "category": "world",
+      "publishedAt": "2026-07-16T22:20:27.952Z",
+      "updatedAt": "",
+      "ceScore": 77,
+      "outsideBenchmark": 78,
+      "comparisonGap": -1,
+      "verdict": "CE coverage competitive with source benchmark",
+      "metrics": {
+        "depthScore": 49,
+        "sourceDiversityScore": 93,
+        "originalityScore": 88,
+        "confidenceScore": 73,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 83,
+        "sourceCount": 12,
+        "independentSourceCount": 7,
+        "officialSourceCount": 0,
+        "wordCount": 161,
+        "paragraphCount": 5,
+        "maxHeadlineSimilarityToSource": 0.17
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "Al Jazeera World",
+          "domain": "aljazeera.com",
+          "reliability": 83,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "TechCrunch",
+          "domain": "techcrunch.com",
+          "reliability": 86,
+          "originalReportingPercent": 3,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Al Jazeera World",
+          "domain": "aljazeera.com",
+          "reliability": 83,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.17
+        },
+        {
+          "provider": "CNBC",
+          "domain": "cnbc.com",
+          "reliability": 82,
+          "originalReportingPercent": 7,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:event:trump-president-trump-bipartisan-housing-bill-without-congress_0__candidate_4",
+      "title": "Trump Economic Plan Advances Senate Primary Shift",
+      "category": "politics",
+      "publishedAt": "2026-07-12T01:21:34.824Z",
+      "updatedAt": "",
+      "ceScore": 74,
+      "outsideBenchmark": 77,
+      "comparisonGap": -3,
+      "verdict": "CE coverage competitive with source benchmark",
+      "metrics": {
+        "depthScore": 33,
+        "sourceDiversityScore": 100,
+        "originalityScore": 86,
+        "confidenceScore": 70,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 12,
+        "independentSourceCount": 10,
+        "officialSourceCount": 0,
+        "wordCount": 95,
+        "paragraphCount": 4,
+        "maxHeadlineSimilarityToSource": 0.14
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.14
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Davis Vanguard",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "KGW",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "The Arizona Republic",
+          "domain": "azcentral.com",
+          "reliability": 0,
+          "originalReportingPercent": 0,
+          "availability": 0,
+          "sourceFamily": "source",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:news-lab-politics-event-anthony-zurcher-from-trump-lindsey-graham-critic-ally-political-5",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "publishedAt": "2026-07-13T09:54:02.234Z",
+      "updatedAt": "",
+      "ceScore": 68,
+      "outsideBenchmark": 76,
+      "comparisonGap": -8,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 31,
+        "sourceDiversityScore": 100,
+        "originalityScore": 59,
+        "confidenceScore": 69,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 81,
+        "sourceCount": 20,
+        "independentSourceCount": 17,
+        "officialSourceCount": 1,
+        "wordCount": 86,
+        "paragraphCount": 4,
+        "maxHeadlineSimilarityToSource": 0.56
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.2
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.56
+        },
+        {
+          "provider": "The Guardian",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.18
+        },
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.2
+        },
+        {
+          "provider": "Hollywood Reporter",
+          "domain": "hollywoodreporter.com",
+          "reliability": 82,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Billboard",
+          "domain": "billboard.com",
+          "reliability": 82,
+          "originalReportingPercent": 3,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.13
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "title": "Ukraine Gains U.S. Support for Patriot Missile Production",
+      "category": "entertainment",
+      "publishedAt": "2026-07-11T19:37:59.013Z",
+      "updatedAt": "",
+      "ceScore": 67,
+      "outsideBenchmark": 77,
+      "comparisonGap": -10,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 35,
+        "sourceDiversityScore": 100,
+        "originalityScore": 51,
+        "confidenceScore": 71,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 12,
+        "independentSourceCount": 10,
+        "officialSourceCount": 0,
+        "wordCount": 82,
+        "paragraphCount": 5,
+        "maxHeadlineSimilarityToSource": 0.67
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.67
+        },
+        {
+          "provider": "NYT Politics",
+          "domain": "nytimes.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Hollywood Reporter",
+          "domain": "hollywoodreporter.com",
+          "reliability": 82,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "CBS Sports",
+          "domain": "cbssports.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "BBC World",
+          "domain": "bbc.co.uk",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "ABC",
+          "domain": "abcnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "Sky Sports",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    },
+    {
+      "storyId": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "publishedAt": "2026-07-12T10:51:23.689Z",
+      "updatedAt": "",
+      "ceScore": 66,
+      "outsideBenchmark": 77,
+      "comparisonGap": -11,
+      "verdict": "CE coverage needs improvement against source benchmark",
+      "metrics": {
+        "depthScore": 40,
+        "sourceDiversityScore": 100,
+        "originalityScore": 38,
+        "confidenceScore": 73,
+        "imageScore": 100,
+        "sourceReliabilityBenchmark": 82,
+        "sourceCount": 13,
+        "independentSourceCount": 12,
+        "officialSourceCount": 1,
+        "wordCount": 92,
+        "paragraphCount": 6,
+        "maxHeadlineSimilarityToSource": 0.83
+      },
+      "sourceBenchmark": [
+        {
+          "provider": "Guardian US",
+          "domain": "theguardian.com",
+          "reliability": 82,
+          "originalReportingPercent": 8,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.44
+        },
+        {
+          "provider": "NYT Politics",
+          "domain": "nytimes.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.43
+        },
+        {
+          "provider": "CNBC",
+          "domain": "cnbc.com",
+          "reliability": 82,
+          "originalReportingPercent": 7,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.5
+        },
+        {
+          "provider": "NBC",
+          "domain": "nbcnews.com",
+          "reliability": 83,
+          "originalReportingPercent": 12,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.6
+        },
+        {
+          "provider": "France 24",
+          "domain": "news.google.com",
+          "reliability": 80,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.4
+        },
+        {
+          "provider": "CBS",
+          "domain": "cbsnews.com",
+          "reliability": 82,
+          "originalReportingPercent": 6,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0.83
+        },
+        {
+          "provider": "DW World",
+          "domain": "dw.com",
+          "reliability": 83,
+          "originalReportingPercent": 5,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        },
+        {
+          "provider": "NPR World",
+          "domain": "npr.org",
+          "reliability": 82,
+          "originalReportingPercent": 0,
+          "availability": 1,
+          "sourceFamily": "journalism",
+          "headlineSimilarity": 0
+        }
+      ],
+      "recommendations": [
+        "Add more dossier facts before publishing or update this story with a fuller body.",
+        "Rewrite headline/body phrasing farther away from source headline structure."
+      ]
+    }
+  ]
+}

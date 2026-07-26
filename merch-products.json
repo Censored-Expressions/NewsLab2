@@ -1,0 +1,125 @@
+[
+ {
+ "id": "ce-t101-outlaw-vneck",
+ "sku": "CE-T101",
+ "title": "CE-T101 Outlaw V-Neck Tee",
+ "category": "Premium tee",
+ "price": "$34.99 - $44.99",
+ "image": "./assets/shop-ce-t101-vneck.png",
+ "description": "100% combed ring-spun cotton, 220 GSM, garment dyed, pre-shrunk, enzyme washed.",
+ "colors": [
+ "Vintage Tobacco",
+ "Faded Charcoal",
+ "Dusty Cream"
+ ],
+ "sizes": [
+ "S",
+ "M",
+ "L",
+ "XL",
+ "2XL",
+ "3XL",
+ "4XL",
+ "5XL"
+ ],
+ "featured": true,
+ "status": "active",
+ "sortOrder": 10
+ },
+ {
+ "id": "ce-h101-hoodie",
+ "sku": "CE-H101",
+ "title": "CE-H101 Brown Leather Patch Hoodie",
+ "category": "Matching item",
+ "price": "Request quote",
+ "image": "./assets/shop-ce-h101-hoodie.png",
+ "description": "Heavyweight Outlaw hoodie concept with warm brown tones and heritage patch branding.",
+ "colors": [
+ "Vintage Tobacco",
+ "Faded Charcoal",
+ "Black"
+ ],
+ "sizes": [
+ "S",
+ "M",
+ "L",
+ "XL",
+ "2XL",
+ "3XL",
+ "4XL",
+ "5XL"
+ ],
+ "featured": false,
+ "status": "active",
+ "sortOrder": 20,
+ "createdAt": "2026-06-15T03:16:53.164Z",
+ "updatedAt": "2026-06-15T03:16:53.164Z"
+ },
+ {
+ "id": "ce-a003-trucker-hat",
+ "sku": "CE-A003",
+ "title": "CE-A003 Vintage Trucker Hat",
+ "category": "Accessory",
+ "price": "Request quote",
+ "image": "./assets/shop-ce-a003-trucker-hat.png",
+ "description": "Structured trucker hat with vintage brand patch and road-worn Outlaw character.",
+ "colors": [
+ "Vintage Tobacco",
+ "Black",
+ "Charcoal"
+ ],
+ "sizes": [
+ "Adjustable"
+ ],
+ "featured": false,
+ "status": "active",
+ "sortOrder": 30,
+ "createdAt": "2026-06-15T03:16:53.164Z",
+ "updatedAt": "2026-06-15T03:16:53.164Z"
+ },
+ {
+ "id": "logo-towel",
+ "sku": "CE-A101",
+ "title": "Logo Towel",
+ "category": "Accessories",
+ "price": "Request quote",
+ "image": "./assets/shop-logo-towel.png",
+ "description": "Black and red towel options with large CE and Censored Expressions graphics.",
+ "colors": [
+ "Black",
+ "Weathered Red"
+ ],
+ "sizes": [
+ "Standard",
+ "Oversized"
+ ],
+ "featured": false,
+ "status": "active",
+ "sortOrder": 40,
+ "createdAt": "2026-06-15T03:16:53.164Z",
+ "updatedAt": "2026-06-15T03:16:53.164Z"
+ },
+ {
+ "id": "insulated-drinkware",
+ "sku": "CE-D101",
+ "title": "Insulated Drinkware",
+ "category": "Drinkware",
+ "price": "Request quote",
+ "image": "./assets/shop-insulated-drinkware.png",
+ "description": "Black, silver, and red drinkware with motto, logo, and stamp treatments.",
+ "colors": [
+ "Black",
+ "Steel",
+ "Weathered Red"
+ ],
+ "sizes": [
+ "20 oz",
+ "30 oz"
+ ],
+ "featured": false,
+ "status": "active",
+ "sortOrder": 50,
+ "createdAt": "2026-06-15T03:16:53.164Z",
+ "updatedAt": "2026-06-15T03:16:53.164Z"
+ }
+]

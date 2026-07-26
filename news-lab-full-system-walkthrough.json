@@ -1,0 +1,329 @@
+{
+  "generatedAt": "2026-07-17T16:18:01.008Z",
+  "purpose": "Full system walkthrough across every News Lab tab worker from information gathering through publication.",
+  "newPublicArticles": [
+    {
+      "id": "news_lab_world:walkthrough_20260717_burnham-transition-puts-britain-s-foreign-role-under-review_0",
+      "category": "world",
+      "title": "Burnham Transition Puts Britain's Foreign Role Under Review",
+      "source": "DW World",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "id": "news_lab_politics:walkthrough_20260717_pentagon-press-escort-rule-returns-during-access-fight_1",
+      "category": "politics",
+      "title": "Pentagon Press Escort Rule Returns During Access Fight",
+      "source": "NYT Politics",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "id": "news_lab_business:walkthrough_20260717_truist-leans-on-digital-banking-to-deepen-customer-ties_2",
+      "category": "business",
+      "title": "Truist Leans on Digital Banking to Deepen Customer Ties",
+      "source": "PYMNTS.com",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "id": "news_lab_technology:walkthrough_20260717_ai-race-and-cybersecurity-stocks-drive-tech-market-focus_3",
+      "category": "technology",
+      "title": "AI Race and Cybersecurity Stocks Drive Tech Market Focus",
+      "source": "Seeking Alpha",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "id": "news_lab_sports:walkthrough_20260717_open-championship-round-brings-record-scores-at-royal-birkdale_4",
+      "category": "sports",
+      "title": "Open Championship Round Brings Record Scores at Royal Birkdale",
+      "source": "ESPN",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "id": "news_lab_entertainment:walkthrough_20260717_iko-uwais-crime-series-moves-forward-at-alcon-entertainment_5",
+      "category": "entertainment",
+      "title": "Iko Uwais Crime Series Moves Forward at Alcon Entertainment",
+      "source": "Variety",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "id": "news_lab_local:walkthrough_20260717_san-francisco-bay-boat-disaster-leaves-families-waiting-for-answers_6",
+      "category": "local",
+      "title": "San Francisco Bay Boat Disaster Leaves Families Waiting for Answers",
+      "source": "ABC7 Bay Area",
+      "workflow": [
+        {
+          "name": "Collector",
+          "status": "complete"
+        },
+        {
+          "name": "Cluster",
+          "status": "complete"
+        },
+        {
+          "name": "Evidence Engine",
+          "status": "complete"
+        },
+        {
+          "name": "Story Dossier",
+          "status": "complete"
+        },
+        {
+          "name": "Article Writer",
+          "status": "complete"
+        },
+        {
+          "name": "Publishing Editor",
+          "status": "approved-after-cleanup"
+        },
+        {
+          "name": "Validator",
+          "status": "approved"
+        },
+        {
+          "name": "Publisher",
+          "status": "published"
+        }
+      ]
+    }
+  ],
+  "issuesFound": [
+    {
+      "issue": "Local light server had background production loops disabled, so tab collector caches were not automatically being walked into new public articles.",
+      "fix": "Controlled walkthrough consumed collector caches and published one clean article per primary news tab; Brain should run collector-to-public conversion when publication gaps exist."
+    },
+    {
+      "issue": "Technology, sports, and local had collector material but underfilled public tabs.",
+      "fix": "Published new clean articles in those categories and recorded category-level publication gap learning."
+    },
+    {
+      "issue": "Collector source text contained HTML entities and publisher headline structure.",
+      "fix": "Normalized entities, generated original CE headlines from actor/action/consequence, and validated headline-body alignment before publication."
+    }
+  ],
+  "teaching": {
+    "brainRule": "When a tab has collectorStories > 0 and publicationGap > 0, the Brain must walk one story through Collector -> Cluster -> Evidence -> Dossier -> Writer -> Publishing Editor -> Validator -> Publisher, repair at the responsible stage, and count success only after API-visible publication.",
+    "upstreamSignals": [
+      "Collectors should continue gathering broad category-specific material.",
+      "Dossier Builder should reject mixed topics before writing.",
+      "Writer should use dossier facts, not publisher headline structure."
+    ],
+    "downstreamSignals": [
+      "Publishing Editor should safely repair cleanable issues instead of terminally rejecting.",
+      "Publisher should append new valid articles and avoid shrinking the shelf.",
+      "API cache must be rebuilt after publication."
+    ]
+  },
+  "completedAt": "2026-07-17T16:21:43.785Z",
+  "finalVerification": {
+    "publicVisibleArticles": 35,
+    "tabCounts": {
+      "top": 20,
+      "world": 6,
+      "politics": 10,
+      "business": 5,
+      "technology": 4,
+      "sports": 4,
+      "entertainment": 8,
+      "local": 4
+    },
+    "newWalkthroughArticles": 8,
+    "remainingFindings": 0
+  }
+}

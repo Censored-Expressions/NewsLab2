@@ -1,0 +1,78 @@
+{
+  "version": "20260718-end-to-end-lifecycle-monitor-v1",
+  "generatedAt": "2026-07-18T13:37:58.182Z",
+  "noDirectPublication": true,
+  "purpose": "Monitor News Lab from collection through publication without manually publishing articles; route blockers to the responsible Framework subsystem.",
+  "lifecycleFindings": [
+    {
+      "stage": "Worker Scheduler",
+      "status": "attention",
+      "evidence": "Current local server reports CE_NEWS_LAB_PRODUCTION_LOOP=false, so no autonomous production cycle is running in this monitoring session.",
+      "brainFix": "Production worker must run as a separate process or scheduled job when deployment should generate articles. Public API should remain cache-serving only."
+    },
+    {
+      "stage": "Story Objects",
+      "status": "healthy-with-backlog",
+      "evidence": "258 story objects stored; 250 executable; 35 visible public stories.",
+      "brainFix": "Candidate expansion/publisher should continue promoting approved executable objects through normal gates instead of silently preserving old shelf."
+    },
+    {
+      "stage": "Approval Recovery Queue",
+      "status": "attention",
+      "evidence": "396 active records; routed 396; marked 247 duplicate candidates.",
+      "brainFix": "Every active rejection now receives a responsible subsystem and nextAction before another repair attempt."
+    },
+    {
+      "stage": "Headline Repair Queue",
+      "status": "attention",
+      "evidence": "492 active records; routed 492; marked 360 duplicate candidates.",
+      "brainFix": "Headline repairs should be headline-only unless dossier/body mismatch is present."
+    },
+    {
+      "stage": "Dossier Intelligence",
+      "status": "needs-backfill-for-old-objects",
+      "evidence": "250 executable older story objects lack Historical Context Engine metadata.",
+      "brainFix": "New builds receive HCE automatically; older stuck objects should be backfilled by repair worker before resubmission if context is needed."
+    }
+  ],
+  "subsystemRoutes": {
+    "headline-word-salad/headline-editor-needs-rewrite": "Headline Dossier Builder + Headline Repair Worker",
+    "mixed-source-topic/paragraph-topic-contamination": "Story Curator + Story Dossier Builder",
+    "body-too-short/missing-reporting-context": "Evidence Engine + Historical Context Engine",
+    "incomplete-sentence/repetition": "Publishing Editor",
+    "image-topic-mismatch": "Visual Intelligence",
+    "approved-but-not-visible": "Publisher Merge/Dedupe Auditor"
+  },
+  "currentCounts": {
+    "visibleStories": 35,
+    "storyObjects": 258,
+    "executableStoryObjects": 250,
+    "approvalActive": 396,
+    "headlineActive": 492
+  },
+  "statusCounts": {
+    "draft-written": 67,
+    "approved-before-publisher": 5,
+    "editor-reviewed-candidate": 133,
+    "visible-on-site": 4,
+    "rejected-after-repair": 3,
+    "approved-visible-shelf-candidate": 4,
+    "reviewed": 26,
+    "rejected-needs-repair": 8,
+    "published": 8
+  },
+  "stageCounts": {
+    "draft-written-before-editor": 67,
+    "prepublish-quality-gate": 13,
+    "editor-reviewed-candidates": 133,
+    "approved-articles-accumulated": 1,
+    "approval-repair-second-pass": 3,
+    "worker-finish-publication": 4,
+    "final-publisher-gate": 26,
+    "approved-article-shelf-preserved": 3,
+    "controlled-tab-worker-walkthrough": 7,
+    "controlled-tab-worker-gap-fill": 1
+  },
+  "brainInstruction": "The Brain should not store a rejected article as dead weight. It should attach a full issue list, route to the responsible subsystem, repair all known issues in one pass, resubmit through validator/publisher, and only archive duplicates that add no learning value.",
+  "nextNonPublishingAction": "Run subsystem repair workers against routed records. Publishing remains controlled by normal approval; this monitoring pass did not publish articles."
+}

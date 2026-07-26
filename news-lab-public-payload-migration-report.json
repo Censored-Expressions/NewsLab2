@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-07-22T17:17:34.924Z",
+  "payload": {
+    "at": "2026-07-22T17:17:34.728Z",
+    "reason": "hard-duplicate-category-migration",
+    "before": 49,
+    "after": 32,
+    "input": 49,
+    "output": 32,
+    "duplicates": 17,
+    "categoryFixes": 17
+  },
+  "cache": [
+    {
+      "name": "all",
+      "input": 7,
+      "output": 7,
+      "duplicates": 0,
+      "categoryFixes": 6
+    },
+    {
+      "name": "top",
+      "input": 7,
+      "output": 7,
+      "duplicates": 0,
+      "categoryFixes": 6
+    },
+    {
+      "name": "world",
+      "input": 1,
+      "output": 1,
+      "duplicates": 0,
+      "categoryFixes": 0
+    },
+    {
+      "name": "politics",
+      "input": 0,
+      "output": 0,
+      "duplicates": 0,
+      "categoryFixes": 0
+    },
+    {
+      "name": "business",
+      "input": 0,
+      "output": 0,
+      "duplicates": 0,
+      "categoryFixes": 0
+    },
+    {
+      "name": "technology",
+      "input": 0,
+      "output": 0,
+      "duplicates": 0,
+      "categoryFixes": 0
+    },
+    {
+      "name": "sports",
+      "input": 0,
+      "output": 0,
+      "duplicates": 0,
+      "categoryFixes": 0
+    },
+    {
+      "name": "entertainment",
+      "input": 1,
+      "output": 1,
+      "duplicates": 0,
+      "categoryFixes": 1
+    },
+    {
+      "name": "local",
+      "input": 5,
+      "output": 5,
+      "duplicates": 0,
+      "categoryFixes": 5
+    }
+  ]
+}

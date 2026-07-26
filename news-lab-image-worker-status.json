@@ -1,0 +1,16 @@
+{
+  "active": false,
+  "lastStatus": "completed",
+  "lastReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+  "finishedAt": "2026-07-23T03:07:25.569Z",
+  "summary": {
+    "totalStories": 65,
+    "reviewed": 12,
+    "upgraded": 0,
+    "held": 0,
+    "unchanged": 12,
+    "generatedImageBriefsQueued": 12,
+    "generatedImageBriefsAdded": 12,
+    "cacheRebuilt": true
+  }
+}

@@ -1,0 +1,300 @@
+{
+  "version": "20260722-generated-image-queue-v1",
+  "updatedAt": "2026-07-23T15:48:20.685Z",
+  "reason": "clean-generated-image-queue-remove-process-language-and-word-salad",
+  "summary": {
+    "queuedItems": 10,
+    "addedThisPass": 12,
+    "pendingGeneration": 10,
+    "readyForReview": 0,
+    "approvedForPublication": 0,
+    "removedBadBriefs": 2
+  },
+  "policy": {
+    "publicUse": "Generated images remain behind the scenes until an actual file exists, provenance is attached, and the image editor approves it.",
+    "copyright": "Prompts must be based on CE article descriptions and Story Dossier facts, never on copying publisher images or protected layouts.",
+    "labeling": "When published, generated images should identify CE Media / AI-assisted visual workflow in provenance."
+  },
+  "items": [
+    {
+      "storyId": "news_lab_politics:event:trump-president-trump-bipartisan-housing-bill-without-congress_0__candidate_4",
+      "title": "Trump Economic Plan Advances Senate Primary Shift",
+      "category": "politics",
+      "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Trump Economic Plan Advances Senate Primary Shift. Use these verified story details as visual guidance: Washington - A landmark housing bill automatically became law at 12 a.m. on Saturday after President Trump declined to sign it in protest of the Senate's inaction on an elections bill known as the SAVE America Act. Bipartisan housing bill becomes law after Trump refuses to sign it. The largest housing bill in years is now law without President Trump's signature. Ali Bauman reports on what the new housing law will do. Congress passes housing bill without Trump's signature. Relevant entities or places for abstract context only, without exact likenesses or logos: Trump, President Trump, Washington, Senate, SAVE America Act. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.051Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.051Z",
+        "originalQuery": "Trump Economic Plan Advances Senate Primary Shift",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.051Z"
+    },
+    {
+      "storyId": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Sen. Lindsey Graham Dies at 71 After Sudden Illness. Use these verified story details as visual guidance: Republican senator served in Senate since 2003 and was sharp Trump critic before becoming one of his most loyal backers Lindsey Graham, a longtime US senator and key ally. Lindsey Graham, key ally of Donald Trump, has died after sudden illness, his office says. Senator Lindsey Graham, Republican of South Carolina, Dies at 71. Senator Lindsey Graham has died at 71 after a brief illness. Relevant entities or places for abstract context only, without exact likenesses or logos: Senate. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.051Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.051Z",
+        "originalQuery": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.051Z"
+    },
+    {
+      "storyId": "news_lab_technology:walkthrough_20260717_u-s-ai-competition-concerns-grow-after-chinese-model-breakout_extra",
+      "title": "U.S. AI Competition Concerns Grow After Chinese Model Breakout",
+      "category": "world",
+      "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: U.S. AI Competition Concerns Grow After Chinese Model Breakout. Use these verified story details as visual guidance: U.S. technology policy is facing renewed pressure as artificial intelligence competition with China becomes a larger part of the national economic and security debate. Reports reviewed by CE Media describe warnings that the United States could lose ground if Chinese AI models continue to advance while American companies and regulators move more slowly. The story matters for businesses because AI development now affects software spending, cybersecurity planning, education tools, productivity systems, and the way companies decide where to invest. Warnings about Chinese AI advances are putting renewed attention on U.S. technology policy, investment speed, and national competitiveness. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.055Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.055Z",
+        "originalQuery": "U.S. AI Competition Concerns Grow After Chinese Model Breakout",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.055Z"
+    },
+    {
+      "storyId": "news_lab_world:walkthrough_20260717_burnham-transition-puts-britain-s-foreign-role-under-review_0",
+      "title": "Burnham Transition Puts Britain's Foreign Role Under Review",
+      "category": "sports",
+      "prompt": "original sports news illustration with field, scoreboard, athletes in generic uniforms, and competition energy Story focus: Burnham Transition Puts Britain's Foreign Role Under Review. Use these verified story details as visual guidance: Britain is preparing for a leadership transition that is drawing international attention because the next prime minister will inherit questions about trade, defense, migration, energy, and the country?s relationship Reports reviewed by CE Media describe Andy Burnham moving from a major regional political role into national leadership. The first signs to watch are cabinet appointments, early diplomatic calls, statements on Ukraine and NATO, and any shift in tone toward the European Union. Britain's reported leadership change has put attention on how the next government will approach diplomacy, trade, security, and its relationship with Europe. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.056Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.056Z",
+        "originalQuery": "Burnham Transition Puts Britain's Foreign Role Under Review",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.056Z"
+    },
+    {
+      "storyId": "news_lab_technology:walkthrough_20260717_ai-race-and-cybersecurity-stocks-drive-tech-market-focus_3",
+      "title": "AI Race and Cybersecurity Stocks Drive Tech Market Focus",
+      "category": "world",
+      "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: AI Race and Cybersecurity Stocks Drive Tech Market Focus. Use these verified story details as visual guidance: Artificial intelligence competition and cybersecurity performance are shaping today?s technology coverage as investors and policymakers watch how U.S. companies respond to pressure from overseas competitors. Reports reviewed by CE Media point to two connected themes: concern that China could gain ground in artificial intelligence, and renewed market attention on companies tied to security software and enterprise systems. The technology story matters because AI development is no longer only a product race. It now affects national competitiveness, business investment, education tools, workplace software, and cybersecurity planning. Technology coverage is focusing on artificial intelligence competition, enterprise software pressure, and investor interest in cybersecurity companies. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.056Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.056Z",
+        "originalQuery": "AI Race and Cybersecurity Stocks Drive Tech Market Focus",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.056Z"
+    },
+    {
+      "storyId": "news_lab_politics:walkthrough_20260717_pentagon-press-escort-rule-returns-during-access-fight_1",
+      "title": "Pentagon Press Escort Rule Returns During Access Fight",
+      "category": "politics",
+      "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Pentagon Press Escort Rule Returns During Access Fight. Use these verified story details as visual guidance: A dispute over press access at the Pentagon is moving through court while the Defense Department?s escort requirement for reporters is temporarily back in place. The case centers on whether journalists visiting the Pentagon can be required to travel with escorts while reporting from the building. The legal fight is important because it sits at the intersection of security rules, government transparency, and the practical ability of reporters to do their work. A court ruling temporarily restored the Defense Department?s escort requirement for reporters visiting the Pentagon while a legal challenge continues. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.057Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.057Z",
+        "originalQuery": "Pentagon Press Escort Rule Returns During Access Fight",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.057Z"
+    },
+    {
+      "storyId": "news_lab_sports:walkthrough_20260717_open-championship-round-brings-record-scores-at-royal-birkdale_4",
+      "title": "Open Championship Round Brings Record Scores at Royal Birkdale",
+      "category": "local",
+      "prompt": "original local news illustration with streets, city services, public safety, weather, or community setting Story focus: Open Championship Round Brings Record Scores at Royal Birkdale. Use these verified story details as visual guidance: The Open Championship moved deeper into its second round at Royal Birkdale with scoring performances that immediately changed the shape of the leaderboard. Reports from the tournament focused on Lucas Herbert and Sam Burns matching the major championship scoring record with rounds of 62. In a major championship, one low round can change both the standings and the strategy for everyone still chasing. The Open Championship produced major scoring headlines as players moved through the second round at Royal Birkdale. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.057Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.057Z",
+        "originalQuery": "Open Championship Round Brings Record Scores at Royal Birkdale",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.057Z"
+    },
+    {
+      "storyId": "news_lab_entertainment:walkthrough_20260717_iko-uwais-crime-series-moves-forward-at-alcon-entertainment_5",
+      "title": "Iko Uwais Crime Series Moves Forward at Alcon Entertainment",
+      "category": "entertainment",
+      "prompt": "original culture news illustration with stage lighting, media production, audience, and entertainment context Story focus: Iko Uwais Crime Series Moves Forward at Alcon Entertainment. Use these verified story details as visual guidance: A new crime series built around Iko Uwais is moving forward in development, adding another project to the growing market for international action-driven television. The project, titled Jakarta, is described in entertainment coverage as a multi-generational family crime story in development at Alcon Entertainment. The series is notable because Uwais brings a global action audience from martial arts and crime films, while streaming and television buyers continue to look for stories that can travel across markets. A new multi-generational crime series titled Jakarta is in development with Iko Uwais attached to star and Albert Hughes involved creatively. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.057Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.057Z",
+        "originalQuery": "Iko Uwais Crime Series Moves Forward at Alcon Entertainment",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.057Z"
+    },
+    {
+      "storyId": "news_lab_local:walkthrough_20260717_san-francisco-bay-boat-disaster-leaves-families-waiting-for-answers_6",
+      "title": "San Francisco Bay Boat Disaster Leaves Families Waiting for Answers",
+      "category": "local",
+      "prompt": "original local news illustration with streets, city services, public safety, weather, or community setting Story focus: San Francisco Bay Boat Disaster Leaves Families Waiting for Answers. Use these verified story details as visual guidance: Families in the Bay Area are waiting for answers after a boating disaster near Alcatraz left confirmed deaths and others missing following a capsizing on San Francisco Bay. Local reporting identified victims and described relatives searching for information after the outing turned tragic. For residents, the most important facts are the number of people involved, when the boat capsized, how the search unfolded, and what officials say about remaining recovery or investigation work. Authorities and families are still dealing with the aftermath of a deadly San Francisco Bay boating disaster near Alcatraz. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.058Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.058Z",
+        "originalQuery": "San Francisco Bay Boat Disaster Leaves Families Waiting for Answers",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.058Z"
+    },
+    {
+      "storyId": "news_lab_business:walkthrough_20260717_truist-leans-on-digital-banking-to-deepen-customer-ties_2",
+      "title": "Truist Leans on Digital Banking to Deepen Customer Ties",
+      "category": "local",
+      "prompt": "original local news illustration with streets, city services, public safety, weather, or community setting Story focus: Truist Leans on Digital Banking to Deepen Customer Ties. Use these verified story details as visual guidance: Truist is putting more attention on digital banking as financial institutions compete to keep customers engaged across mobile apps, online tools, and traditional branch relationships. The strategy reflects a broader shift in banking. Customers increasingly expect faster account access, clearer financial tools, and fewer barriers between everyday transactions and longer-term planning. For banks, digital engagement is not just a convenience feature. It can influence deposits, lending relationships, customer retention, and the ability to offer services before customers leave for a competitor. Truist is emphasizing digital engagement as banks compete to keep customers connected across mobile, online, and branch services. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "pending-generation",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-07-23T03:07:06.058Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "retrievedAt": "2026-07-23T03:07:06.058Z",
+        "originalQuery": "Truist Leans on Digital Banking to Deepen Customer Ties",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
+      "refreshedAt": "2026-07-23T03:07:06.058Z"
+    }
+  ]
+}

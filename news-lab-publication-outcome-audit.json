@@ -1,0 +1,81 @@
+{
+ "generatedAt": "2026-07-13T21:10:14.494Z",
+ "counters": {
+ "editorApproved": 5,
+ "publisherReceived": 5,
+ "newStoriesAdded": 4,
+ "existingStoriesUpdated": 0,
+ "duplicatesDiscarded": 0,
+ "replacedExisting": 0,
+ "persistenceFailed": 1,
+ "confirmedVisible": 4
+ },
+ "outcomes": [
+ {
+ "storyId": "news_lab_politics:news-lab-politics-event-lindsey-graham-south-carolina-gov-henry-mcmaster-trump-sister-senate-recommends-4",
+ "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+ "category": "politics",
+ "approved": true,
+ "complete": true,
+ "mergeKey": "politics:event:lindsey-graham-south-carolina-gov-henry-mcmaster-trump-sister-senate-recommends",
+ "dedupeKey": "politics:event:lindsey-graham-south-carolina-gov-henry-mcmaster-trump-sister-senate-recommends",
+ "outcome": "new",
+ "matchedExistingStoryId": "",
+ "matchedFinalStoryId": "news_lab_politics:news-lab-politics-event-lindsey-graham-south-carolina-gov-henry-mcmaster-trump-sister-senate-recommends-4",
+ "visibleAfterMerge": true
+ },
+ {
+ "storyId": "news_lab_entertainment:news-lab-entertainment-event-block-paramount-sued-states-bros-merger-suing-warner-3",
+ "title": "Paramount Sued Loses Final Appeal Over Eu Android Fine",
+ "category": "sports",
+ "approved": true,
+ "complete": true,
+ "mergeKey": "entertainment:event:block-paramount-sued-states-bros-merger-suing-warner",
+ "dedupeKey": "entertainment:event:block-paramount-sued-states-bros-merger-suing-warner",
+ "outcome": "new",
+ "matchedExistingStoryId": "",
+ "matchedFinalStoryId": "news_lab_entertainment:news-lab-entertainment-event-block-paramount-sued-states-bros-merger-suing-warner-3",
+ "visibleAfterMerge": true
+ },
+ {
+ "storyId": "news_lab_local:news-lab-local-event-california-trump-lindsey-graham-nurse-fire-death-post-10",
+ "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+ "category": "world",
+ "approved": true,
+ "complete": true,
+ "mergeKey": "local:event:california-trump-lindsey-graham-nurse-fire-death-post",
+ "dedupeKey": "local:event:california-trump-lindsey-graham-nurse-fire-death-post",
+ "outcome": "failed",
+ "matchedExistingStoryId": "",
+ "matchedFinalStoryId": "",
+ "visibleAfterMerge": false
+ },
+ {
+ "storyId": "news_lab_entertainment:news-lab-local-event-paramount-california-warner-bros-discovery-states-including-lawsuit-block-25",
+ "title": "A Group of States, Including California, Filed Moves Through Court",
+ "category": "technology",
+ "approved": true,
+ "complete": true,
+ "mergeKey": "local:event:paramount-california-warner-bros-discovery-states-including-lawsuit-block",
+ "dedupeKey": "local:event:paramount-california-warner-bros-discovery-states-including-lawsuit-block",
+ "outcome": "new",
+ "matchedExistingStoryId": "",
+ "matchedFinalStoryId": "news_lab_entertainment:news-lab-local-event-paramount-california-warner-bros-discovery-states-including-lawsuit-block-25",
+ "visibleAfterMerge": true
+ },
+ {
+ "storyId": "news_lab_entertainment:news-lab-entertainment-event-paramount-s-warner-bros-hollywood-states-challenge-merger-takeover-13",
+ "title": "12 States Challenge Paramount's Takeover of Warner Moves Through Court",
+ "category": "technology",
+ "approved": true,
+ "complete": true,
+ "mergeKey": "entertainment:event:paramount-s-warner-bros-hollywood-states-challenge-merger-takeover",
+ "dedupeKey": "entertainment:event:paramount-s-warner-bros-hollywood-states-challenge-merger-takeover",
+ "outcome": "new",
+ "matchedExistingStoryId": "",
+ "matchedFinalStoryId": "news_lab_entertainment:news-lab-entertainment-event-paramount-s-warner-bros-hollywood-states-challenge-merger-takeover-13",
+ "visibleAfterMerge": true
+ }
+ ],
+ "rule": "Approved is not the same as published. A story counts as newly published only when it survives merge/dedupe and appears in the final public shelf."
+}

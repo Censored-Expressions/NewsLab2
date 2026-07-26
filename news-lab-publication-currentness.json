@@ -1,0 +1,15 @@
+{
+  "version": "20260717-currentness-v1",
+  "updatedAt": "2026-07-17T15:52:26.059Z",
+  "sameDayVisibleArticles": 11,
+  "olderVisibleArticles": 13,
+  "totalVisibleArticles": 24,
+  "goal": "Increase same-day CE articles while keeping older articles searchable and category-visible.",
+  "topNewsPolicy": {
+    "updatedAt": "2026-07-17T15:52:26.059Z",
+    "cap": 20,
+    "ranking": "popularity plus original recency; repair updatedAt does not make an old story top news unless there is a significant factual update",
+    "categoryTabs": "unlimited; all matching articles remain visible by category and searchable",
+    "sameDayPublicationPressure": true
+  }
+}
