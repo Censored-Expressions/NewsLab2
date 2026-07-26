@@ -1,0 +1,4638 @@
+{
+ "generatedAt": "2026-07-01T03:12:09.000Z",
+ "status": "approved-articles-accumulated",
+ "purpose": "Test original Censored Expressions news tiles created from clustered RSS reporting and controlled/Pexels image slots.",
+ "policy": {
+ "sourceUse": "Use RSS items as reporting inputs and link sources for attribution.",
+ "copyright": "Do not copy publisher article text or publisher images into the tile body.",
+ "images": "Use local Pexels-licensed images saved in assets/pexels/ for publishing; fall back to existing controlled test art only in the lab.",
+ "duplicatePrevention": "Several outlet reports become one original Censored Expressions story instead of several duplicate tiles."
+ },
+ "articleReadIntelligence": {
+ "uniquePublisherReads": 70,
+ "absorbedArticles": 114,
+ "readyClusters": 5,
+ "generatedFromFullReads": 2,
+ "prepublishQualityGate": {
+ "reviewedAt": "2026-07-01T03:11:05.757Z",
+ "reviewedCount": 39,
+ "passedCount": 19,
+ "repairedCount": 39,
+ "flaggedCount": 20,
+ "minimumRules": [
+ "title must not look truncated",
+ "body must include intro, body, and ending",
+ "body should be at least five paragraphs or 900 characters",
+ "article must include enough full-read or extracted factual material",
+ "public article cannot contain internal instructions, copied noise, or editorial-language drift",
+ "article must carry reporting/source context",
+ "Editorial Coach must approve repeated phrasing, copied wording, evidence support, transitions, and template-language checks"
+ ],
+ "flaggedStories": [
+ {
+ "id": "news_lab_sports:event:france-world-cup-mbapp-kylian-mbappe-lead-goals_5",
+ "title": "U.s.-iran Tensions Put Diplomacy and Security Back in Focus",
+ "issues": [
+ "semantic-title-source-mismatch"
+ ],
+ "score": 91
+ },
+ {
+ "id": "news_lab_local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider_0",
+ "title": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 100
+ },
+ {
+ "id": "news_lab_politics:event:trump-republican-dallas-announces-convention-midterm-president_7",
+ "title": "Supreme Court Trump Power Ruling Draws New Fight",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 91
+ },
+ {
+ "id": "news_lab_sports:event:world-cup-bosnia-iran-national-america-home-heads_1",
+ "title": "Travelers Championship Playoff Heads to a Monday Finish",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 91
+ },
+ {
+ "id": "news_lab_politics:event:kornacki-cam-watch-steve-colorado-analyze-primary-election-results_47",
+ "title": "Colorado Primary Kornacki Steve Democratic Moves Into Government Fight",
+ "issues": [
+ "generic-template-language"
+ ],
+ "score": 49
+ },
+ {
+ "id": "news_lab_sports:event:weston-mckennie-usmnt-fifa-world-cup-mckennie-meets-moment-come-2026_33",
+ "title": "FIFA World Cup Weston Mckennie Shifts the Result",
+ "issues": [
+ "body-needs-intro-body-ending",
+ "body-too-short"
+ ],
+ "score": 54
+ },
+ {
+ "id": "news_lab_entertainment:event:mexico-ecuador-world-cup-livestream-knockout-round-soccer-match-online_37",
+ "title": "Knockout Round Soccer Match Online Shifts the Result",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 91
+ },
+ {
+ "id": "news_lab_sports:event:monterrey-mexico-mexican-even-turns-green-without_35",
+ "title": "Johannesburg Security Tightens Around Anti-migrant Demonstrations",
+ "issues": [
+ "headline-source-no-overlap",
+ "missing-reporting-context"
+ ],
+ "score": 72
+ },
+ {
+ "id": "news_lab_local:event:federal-trafficking-drug-migrants-indicted_43",
+ "title": "Deportation Flight Complaint Puts Ghana Under Legal Pressure",
+ "issues": [
+ "headline-source-no-overlap",
+ "lead-topic-mismatch"
+ ],
+ "score": 44
+ },
+ {
+ "id": "news_lab_politics:event:jury-says-chris-brown-owes-housekeeper-million-disfigurement-mauling_59",
+ "title": "Brown Chris Million Housekeeper Jury Changes Culture Conversation",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 91
+ },
+ {
+ "id": "news_lab_entertainment:event:chris-brown-must-pay-housekeeper-million-over-dog-mauling-attack-the-los-angeles-woman_38",
+ "title": "Brown Avila Chris Housekeeper Attack Changes Culture Conversation",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 90
+ },
+ {
+ "id": "news_lab_entertainment:event:young-washington-review-george-washington-goes-angel-studios-film_55",
+ "title": "George Washington Goes Changes the Culture Conversation",
+ "issues": [
+ "missing-reporting-context"
+ ],
+ "score": 90
+ }
+ ]
+ },
+ "pipelineWorkers": {
+ "feeds": 468,
+ "collectors": 50,
+ "clusteringWorkers": 30,
+ "writingWorkers": 20,
+ "editorWorkers": 10,
+ "publishing": "single ordered publish after editor approval",
+ "rule": "Collect broadly, cluster by event, draft in parallel, edit in parallel, then publish only approved CE Media stories."
+ },
+ "writingWorkflow": {
+ "order": [
+ "Collector",
+ "Cluster",
+ "Evidence Engine",
+ "Context Engine",
+ "Story Dossier",
+ "Headline Generator",
+ "Article Writer",
+ "Editorial Coach",
+ "Publisher"
+ ],
+ "stageStats": {
+ "Collector": {
+ "complete": 37,
+ "needsWork": 0,
+ "pending": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Cluster": {
+ "complete": 37,
+ "needsWork": 0,
+ "pending": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Evidence Engine": {
+ "complete": 35,
+ "needsWork": 2,
+ "pending": 0,
+ "statuses": {
+ "complete": 35,
+ "needs-more-facts": 2
+ }
+ },
+ "Context Engine": {
+ "complete": 0,
+ "needsWork": 37,
+ "pending": 0,
+ "statuses": {
+ "limited-context": 37
+ }
+ },
+ "Story Dossier": {
+ "complete": 37,
+ "needsWork": 0,
+ "pending": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Headline Generator": {
+ "complete": 37,
+ "needsWork": 0,
+ "pending": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Article Writer": {
+ "complete": 37,
+ "needsWork": 0,
+ "pending": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Editorial Coach": {
+ "complete": 28,
+ "needsWork": 9,
+ "pending": 0,
+ "statuses": {
+ "rewrite-needed": 9,
+ "approved": 28
+ }
+ },
+ "Publisher": {
+ "complete": 24,
+ "needsWork": 13,
+ "pending": 0,
+ "statuses": {
+ "hold-for-repair": 13,
+ "ready": 24
+ }
+ }
+ },
+ "weakestStage": "Context Engine",
+ "rule": "The Brain should repair the earliest weak stage first because later writing quality depends on earlier evidence, context, and dossier quality."
+ },
+ "dossierBuilder": {
+ "subsystem": "Story Dossier Builder",
+ "order": [
+ "Collect",
+ "Verify",
+ "Classify",
+ "Timeline",
+ "Context",
+ "Contradictions",
+ "Known Facts",
+ "Unknown Facts",
+ "Deliver Dossier To Writer"
+ ],
+ "readyForWriter": 37,
+ "reviewedStories": 37,
+ "sourcePool": {
+ "total": 50,
+ "averagePerStory": 1.35,
+ "verificationContextSources": 0,
+ "backgroundContextSources": 45
+ },
+ "stageStats": {
+ "Collect": {
+ "complete": 20,
+ "needsWork": 17,
+ "statuses": {
+ "limited": 17,
+ "complete": 20
+ }
+ },
+ "Verify": {
+ "complete": 33,
+ "needsWork": 4,
+ "statuses": {
+ "complete": 33,
+ "needs-more-confirmation": 4
+ }
+ },
+ "Classify": {
+ "complete": 37,
+ "needsWork": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Timeline": {
+ "complete": 37,
+ "needsWork": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Context": {
+ "complete": 37,
+ "needsWork": 0,
+ "statuses": {
+ "complete": 37
+ }
+ },
+ "Contradictions": {
+ "complete": 37,
+ "needsWork": 0,
+ "statuses": {
+ "reviewed-no-major-contradictions": 37
+ }
+ },
+ "Known Facts": {
+ "complete": 35,
+ "needsWork": 2,
+ "statuses": {
+ "complete": 35,
+ "thin": 2
+ }
+ },
+ "Unknown Facts": {
+ "complete": 37,
+ "needsWork": 0,
+ "statuses": {
+ "complete": 32,
+ "none-detected": 5
+ }
+ },
+ "Deliver Dossier To Writer": {
+ "complete": 37,
+ "needsWork": 0,
+ "statuses": {
+ "ready": 37
+ }
+ }
+ },
+ "weakestStage": "Collect",
+ "rule": "The Writer should not invent missing material. If the dossier is weak, the Builder must collect, verify, classify, add timeline/context, identify contradictions, and separate known from unknown facts before drafting."
+ },
+ "finalPublishDiagnostics": {
+ "finalReviewedCount": 37,
+ "finalCompleteCount": 4,
+ "finalBlockedCount": 33,
+ "issueCounts": {
+ "repetitive-sentence-leak": 9,
+ "coach-repeated-phrases": 9,
+ "news-lab-process-language": 32,
+ "semantic-title-source-mismatch": 1,
+ "image-missing-credit": 4,
+ "article-body-topic-drift": 1,
+ "generic-template-language": 2,
+ "image-topic-mismatch": 18,
+ "headline-source-no-overlap": 4,
+ "copied-or-noisy-source-fragment": 1,
+ "body-needs-intro-body-ending": 1,
+ "missing-reporting-context": 3,
+ "lead-topic-mismatch": 1
+ },
+ "blockedStories": [
+ {
+ "id": "news_lab_sports:event:france-world-cup-mbapp-kylian-mbappe-lead-goals_5",
+ "title": "Germany World Cup Defeat Raises Tournament Questions",
+ "issues": [
+ "repetitive-sentence-leak",
+ "coach-repeated-phrases",
+ "news-lab-process-language",
+ "semantic-title-source-mismatch"
+ ],
+ "complete": false,
+ "score": 73,
+ "bodyLength": 2024,
+ "paragraphs": 8
+ },
+ {
+ "id": "news_lab_sports:event:lakers-james-lebron-play-elsewhere-tells-thanks_2",
+ "title": "James Lakers Lebron Told Play Shifts Competitive Stakes",
+ "issues": [
+ "news-lab-process-language",
+ "image-missing-credit"
+ ],
+ "complete": false,
+ "score": 91,
+ "bodyLength": 2362,
+ "paragraphs": 8
+ },
+ {
+ "id": "news_lab_technology:event:bernie-sanders-saw-this-coming-american-big-tech-decades-senator-argued-concentrated_22",
+ "title": "Bernie Sanders Saw This Draws New Government Scrutiny",
+ "issues": [
+ "article-body-topic-drift",
+ "generic-template-language",
+ "image-missing-credit",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 49,
+ "bodyLength": 1207,
+ "paragraphs": 5
+ },
+ {
+ "id": "news_lab_world:event:indian-india-passport-prove-apos-controversy_12",
+ "title": "Citizenship India Passport Indian Document Changes Culture Conversation",
+ "issues": [
+ "repetitive-sentence-leak",
+ "coach-repeated-phrases",
+ "news-lab-process-language",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 73,
+ "bodyLength": 2071,
+ "paragraphs": 8
+ },
+ {
+ "id": "news_lab_entertainment:event:sara-bareilles-the-rolling-stone-interview-ahead-album-seven_41",
+ "title": "Bareilles Album First Grief Interview Changes Culture Conversation",
+ "issues": [
+ "news-lab-process-language"
+ ],
+ "complete": false,
+ "score": 91,
+ "bodyLength": 1699,
+ "paragraphs": 8
+ },
+ {
+ "id": "news_lab_local:event:bulldog-breakdown-fresno-state-pac--pac-12-begins-months-anticipation_44",
+ "title": "State Fresno Pac-12 Klassy Also Changes Culture Conversation",
+ "issues": [
+ "news-lab-process-language",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 91,
+ "bodyLength": 1372,
+ "paragraphs": 7
+ },
+ {
+ "id": "news_lab_world:event:roof-pakistan-kahna-collapse-kills-children-tuition_10",
+ "title": "Trump-epstein Accuser Case Raises New Safety Concerns",
+ "issues": [
+ "headline-source-no-overlap",
+ "repetitive-sentence-leak",
+ "coach-repeated-phrases",
+ "news-lab-process-language",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 73,
+ "bodyLength": 1676,
+ "paragraphs": 7
+ },
+ {
+ "id": "news_lab_world:event:under-uganda-amnesty-apos-army-siege-chief_8",
+ "title": "Kainerugaba Uganda Media Press Chief Becomes International Flashpoint",
+ "issues": [
+ "repetitive-sentence-leak",
+ "coach-repeated-phrases",
+ "news-lab-process-language",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 73,
+ "bodyLength": 1546,
+ "paragraphs": 7
+ },
+ {
+ "id": "news_lab_world:event:can-thailand-cambodia-gulf-reserves-unlock-massive-estimated_11",
+ "title": "Thailand Cambodia Gulf Reserves Claims Becomes International Flashpoint",
+ "issues": [
+ "news-lab-process-language"
+ ],
+ "complete": false,
+ "score": 91,
+ "bodyLength": 2234,
+ "paragraphs": 8
+ },
+ {
+ "id": "news_lab_world:event:pope-catholics-pope-leo-xiv-pleads-breakaway-possible-schism_13",
+ "title": "Bishops Catholic Church Pope Schism Becomes International Flashpoint",
+ "issues": [
+ "news-lab-process-language",
+ "image-missing-credit",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 91,
+ "bodyLength": 1701,
+ "paragraphs": 7
+ },
+ {
+ "id": "news_lab_local:event:chicago-extreme-heat-warning-the-national-weather-service-entire-area-effect_53",
+ "title": "Chicago Heat Area Extreme Entire Prompts Local Response",
+ "issues": [
+ "news-lab-process-language",
+ "image-topic-mismatch"
+ ],
+ "complete": false,
+ "score": 91,
+ "bodyLength": 1304,
+ "paragraphs": 6
+ },
+ {
+ "id": "news_lab_local:event:kings-county-lisa-rogers-dr-lisa-rogers-behavioral-health-director-names_23",
+ "title": "They Rogers Behavioral County Health Prompts Local Response",
+ "issues": [
+ "repetitive-sentence-leak",
+ "coach-repeated-phrases",
+ "news-lab-process-language"
+ ],
+ "complete": false,
+ "score": 73,
+ "bodyLength": 1377,
+ "paragraphs": 6
+ }
+ ]
+ },
+ "buildConcurrency": 20,
+ "editorWorkers": 10,
+ "clusteringWorkers": 30,
+ "collectorWorkers": 50,
+ "backgroundWriter": {
+ "enabled": true,
+ "active": true,
+ "cycleMs": 300000,
+ "catchupDelayMs": 60000,
+ "catchupCount": 1,
+ "catchupQueued": false,
+ "cycleCount": 2,
+ "lastStartedAt": "2026-07-01T03:10:20.873Z",
+ "lastFinishedAt": "2026-07-01T03:09:21.005Z",
+ "lastStatus": "completed-with-approved-articles",
+ "lastReason": "catchup-approved-3-below-target-10",
+ "nextRunAt": "2026-07-01T03:14:21.005Z",
+ "lastMetrics": {
+ "sourceStoryCount": 98,
+ "attemptedCount": 61,
+ "reviewedCount": 61,
+ "approvedCount": 3,
+ "rejectedCount": 58,
+ "previousPublishedCount": 3,
+ "publicStoryCount": 3,
+ "preservedPreviousSnapshot": false,
+ "buildMs": 82513,
+ "catchupScheduled": true,
+ "catchupCount": 1
+ },
+ "rule": "The Brain continuously works on full CE Media articles in the background, preserves the last approved set, and publishes only Editor-approved replacements."
+ },
+ "clusterLimit": 80,
+ "sourcePoolTarget": 400,
+ "sourcePoolSize": 468,
+ "globalSourceReservoirSize": 98,
+ "activeRefreshSourceLimit": 400,
+ "generatedDiscoverySourceCount": 360,
+ "ownedStoryLimit": 80,
+ "fullReadLimit": 80,
+ "readsPerCluster": 5,
+ "rawArticleClusterCount": 78,
+ "eventClusterCount": 78,
+ "eventMergeReduction": 0,
+ "sourceToEventReduction": 20,
+ "eventDossierRule": "CNN/AP/Reuters/BBC/Fox/ABC/NBC/local/government/police inputs are treated as evidence for an event dossier. The Brain publishes one CE Media story per event, not one article per source.",
+ "writingClusterCount": 60,
+ "absorption": {
+ "absorbedCandidateCount": 33,
+ "acceptedAbsorbedCount": 10,
+ "rejectedAbsorbedCount": 23,
+ "rule": "Subsystems absorb broad source material first; the Brain drafts only from topic-isolated, relevant material that survives the Editor."
+ },
+ "articleReadAttempts": 124,
+ "articleReadSuccesses": 97,
+ "articleReadFailures": 10,
+ "buildErrorCount": 0,
+ "recentBuildErrors": [],
+ "specializedSubsystems": {
+ "sourceIntelligence": {
+ "providerScores": [
+ {
+ "provider": "ABC",
+ "storyUses": 1,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "ESPN",
+ "storyUses": 1,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "NBC",
+ "storyUses": 2,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "CBS",
+ "storyUses": 1,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "Wired",
+ "storyUses": 2,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "DW World",
+ "storyUses": 4,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "Rolling Stone",
+ "storyUses": 4,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ },
+ {
+ "provider": "ABC30 Fresno",
+ "storyUses": 3,
+ "avgReliability": 95,
+ "avgFailureRate": 0,
+ "avgLatencyMs": 0
+ }
+ ],
+ "rule": "Provider weighting uses reliability, failure rate, update signals, originality signals, and latency observed inside this system."
+ },
+ "contextEngine": {
+ "contextsBuilt": 37,
+ "commonTopics": [
+ "mbapp",
+ "scores",
+ "twice",
+ "messi",
+ "world",
+ "lead",
+ "goals",
+ "kylian",
+ "eacute",
+ "france",
+ "ahead",
+ "brilliant",
+ "lebron",
+ "tells",
+ "lakers",
+ "plans",
+ "play",
+ "elsewhere",
+ "james",
+ "informed"
+ ],
+ "rule": "Recurring topics keep background context so new articles do not start from zero."
+ },
+ "entityMemory": {
+ "trackedEntityCount": 222,
+ "recurringEntities": [
+ {
+ "entity": "LeBron",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "LeBron appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Lakers",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Lakers appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "James",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "James appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Supreme Court",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Supreme Court appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Connecticut",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Connecticut appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Illinois",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Illinois appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "AR-",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "AR- appears repeatedly in this story cluster and should be treated as a recurring subject."
+ }
+ ],
+ "rule": "People, companies, places, legislation, and events become reusable memory profiles across story cycles."
+ },
+ "evidenceEngine": {
+ "classifiedFactCount": 206,
+ "evidenceTypes": {
+ "single-source claim": 158,
+ "multiple independent reports": 11,
+ "official statement": 16,
+ "court filing/legal record": 11,
+ "eyewitness/local account": 10
+ },
+ "rule": "Facts are classified before writing so official statements, legal records, multi-source claims, and single-source claims are handled differently."
+ },
+ "editorialCoach": {
+ "reviewedCount": 37,
+ "passedCount": 28,
+ "findingCounts": {
+ "coach-repeated-phrases": 9,
+ "coach-abrupt-transition": 36,
+ "coach-passive-voice-heavy": 1
+ },
+ "gateFlaggedCount": 20,
+ "rule": "The coach critiques technical writing quality and forces rewrite when high-severity problems remain."
+ }
+ },
+ "knowledgeGraph": {
+ "updatedAt": "2026-07-01T03:12:08.932Z",
+ "nodeCount": 3902,
+ "edgeCount": 5488,
+ "recentEventCount": 500,
+ "recurringEntities": [
+ {
+ "label": "Trump",
+ "type": "organization",
+ "mentionCount": 339
+ },
+ {
+ "label": "Image",
+ "type": "person-or-subject",
+ "mentionCount": 244
+ },
+ {
+ "label": "Now",
+ "type": "person-or-subject",
+ "mentionCount": 229
+ },
+ {
+ "label": "Supreme Court",
+ "type": "organization",
+ "mentionCount": 218
+ },
+ {
+ "label": "Analysts",
+ "type": "person-or-subject",
+ "mentionCount": 169
+ },
+ {
+ "label": "Washington",
+ "type": "organization",
+ "mentionCount": 167
+ },
+ {
+ "label": "Under",
+ "type": "person-or-subject",
+ "mentionCount": 167
+ },
+ {
+ "label": "American",
+ "type": "person-or-subject",
+ "mentionCount": 166
+ },
+ {
+ "label": "Bernie Sanders Saw This",
+ "type": "person-or-subject",
+ "mentionCount": 165
+ },
+ {
+ "label": "Coming For",
+ "type": "person-or-subject",
+ "mentionCount": 165
+ },
+ {
+ "label": "Big Tech",
+ "type": "person-or-subject",
+ "mentionCount": 165
+ },
+ {
+ "label": "A. Photo-Illustration",
+ "type": "person-or-subject",
+ "mentionCount": 165
+ }
+ ]
+ },
+ "builtInMs": 80433
+ },
+ "tabSubsystems": {
+ "top": {
+ "category": "top",
+ "storyCount": 2,
+ "coverageFloor": 10,
+ "coverageGap": 8,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 86.5,
+ "avgParagraphs": 5,
+ "strongestUniqueSources": 2,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "world": {
+ "category": "world",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "politics": {
+ "category": "politics",
+ "storyCount": 1,
+ "coverageFloor": 4,
+ "coverageGap": 3,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 82,
+ "avgParagraphs": 6,
+ "strongestUniqueSources": 2,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "business": {
+ "category": "business",
+ "storyCount": 1,
+ "coverageFloor": 4,
+ "coverageGap": 3,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 91,
+ "avgParagraphs": 4,
+ "strongestUniqueSources": 1,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "technology": {
+ "category": "technology",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "sports": {
+ "category": "sports",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "entertainment": {
+ "category": "entertainment",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "local": {
+ "category": "local",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ }
+ },
+ "brainInfrastructure": {
+ "generatedAt": "2026-07-01T03:12:08.775Z",
+ "activeSubsystems": [
+ {
+ "key": "news-tab-top",
+ "category": "top",
+ "name": "News Tab: Top Headlines",
+ "status": "adjusted-and-deployed",
+ "priority": 61,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "top",
+ "storyCount": 2,
+ "coverageFloor": 10,
+ "coverageGap": 8,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 86.5,
+ "avgParagraphs": 5,
+ "strongestUniqueSources": 2,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [
+ "news_lab_local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider_0",
+ "news_lab_local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo_30"
+ ],
+ "assignedStoryTitles": [
+ "Birthright Citizenship Fight Returns to the Supreme Court",
+ "Housing Bill Raises Questions About Wall Street Home Buying"
+ ],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:12:08.775Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-world",
+ "category": "world",
+ "name": "News Tab: World",
+ "status": "coverage-recovery-deployed",
+ "priority": 19,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "world",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [],
+ "assignedStoryTitles": [],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:07:39.461Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-politics",
+ "category": "politics",
+ "name": "News Tab: Politics",
+ "status": "adjusted-and-deployed",
+ "priority": 57,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "politics",
+ "storyCount": 1,
+ "coverageFloor": 4,
+ "coverageGap": 3,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 82,
+ "avgParagraphs": 6,
+ "strongestUniqueSources": 2,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [
+ "news_lab_local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider_0"
+ ],
+ "assignedStoryTitles": [
+ "Birthright Citizenship Fight Returns to the Supreme Court"
+ ],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:12:08.775Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-business",
+ "category": "business",
+ "name": "News Tab: Business",
+ "status": "adjusted-and-deployed",
+ "priority": 49,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "business",
+ "storyCount": 1,
+ "coverageFloor": 4,
+ "coverageGap": 3,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 91,
+ "avgParagraphs": 4,
+ "strongestUniqueSources": 1,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [
+ "news_lab_local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo_30"
+ ],
+ "assignedStoryTitles": [
+ "Housing Bill Raises Questions About Wall Street Home Buying"
+ ],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:12:08.775Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-technology",
+ "category": "technology",
+ "name": "News Tab: Technology",
+ "status": "coverage-recovery-deployed",
+ "priority": 19,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "technology",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [],
+ "assignedStoryTitles": [],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:07:39.461Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-sports",
+ "category": "sports",
+ "name": "News Tab: Sports",
+ "status": "coverage-recovery-deployed",
+ "priority": 19,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "sports",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [],
+ "assignedStoryTitles": [],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:07:39.461Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-entertainment",
+ "category": "entertainment",
+ "name": "News Tab: Entertainment",
+ "status": "coverage-recovery-deployed",
+ "priority": 19,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "entertainment",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [],
+ "assignedStoryTitles": [],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:07:39.461Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ },
+ {
+ "key": "news-tab-local",
+ "category": "local",
+ "name": "News Tab: Local",
+ "status": "coverage-recovery-deployed",
+ "priority": 19,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "metrics": {
+ "category": "local",
+ "storyCount": 0,
+ "coverageFloor": 10,
+ "coverageGap": 10,
+ "emptyBodyCount": 0,
+ "qualityFlagCount": 0,
+ "avgQualityScore": 0,
+ "avgParagraphs": 0,
+ "strongestUniqueSources": 0,
+ "builtInMs": 80207,
+ "recommendedAction": "increase-source-coverage-for-tab"
+ },
+ "assignedStoryIds": [],
+ "assignedStoryTitles": [],
+ "createdAt": "2026-07-01T03:07:39.461Z",
+ "updatedAt": "2026-07-01T03:12:08.775Z",
+ "deployedAt": "2026-07-01T03:07:39.461Z",
+ "retiredAt": "",
+ "brainAuthority": "Brain manages News Lab tab subsystems with bounded runtime tasking; code changes still route through owner-approved Patch Requests."
+ }
+ ],
+ "retiredSubsystems": [],
+ "actions": [
+ {
+ "at": "2026-07-01T03:12:08.775Z",
+ "action": "adjust-and-redeploy-subsystem",
+ "subsystemKey": "news-tab-top",
+ "subsystemName": "News Tab: Top Headlines",
+ "category": "top",
+ "priorStatus": "adjusted-and-deployed",
+ "newStatus": "adjusted-and-deployed",
+ "priority": 61,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "evidence": [
+ "storyCount=2",
+ "coverageFloor=10",
+ "coverageGap=8",
+ "emptyBodies=0",
+ "qualityFlags=0",
+ "avgQualityScore=86.5",
+ "avgParagraphs=5.0",
+ "strongestUniqueSources=2",
+ "builtInMs=80207"
+ ]
+ },
+ {
+ "at": "2026-07-01T03:12:08.775Z",
+ "action": "adjust-and-redeploy-subsystem",
+ "subsystemKey": "news-tab-business",
+ "subsystemName": "News Tab: Business",
+ "category": "business",
+ "priorStatus": "adjusted-and-deployed",
+ "newStatus": "adjusted-and-deployed",
+ "priority": 49,
+ "task": "Find more reliable source coverage, use ranked cached stories when needed, and keep the tab populated before public display.",
+ "evidence": [
+ "storyCount=1",
+ "coverageFloor=4",
+ "coverageGap=3",
+ "emptyBodies=0",
+ "qualityFlags=0",
+ "avgQualityScore=91.0",
+ "avgParagraphs=4.0",
+ "strongestUniqueSources=1",
+ "builtInMs=80207"
+ ]
+ }
+ ],
+ "rule": "The Brain can create, adjust, retire, and redeploy News Lab tab subsystems as runtime tasking. File/code changes still require approved structured patch flow."
+ },
+ "sourceStoryCount": 98,
+ "clusteredStoryCount": 78,
+ "writingClusterCount": 60,
+ "ownedStories": [
+ {
+ "id": "news_lab_local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider_0",
+ "eventId": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "eventSignature": {
+ "category": "local",
+ "eventId": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "entities": [
+ "justices",
+ "supreme court",
+ "connecticut",
+ "cook county",
+ "illinois"
+ ],
+ "terms": [
+ "court",
+ "supreme",
+ "agrees",
+ "bans",
+ "hear",
+ "consider",
+ "assault",
+ "challenge"
+ ],
+ "sourceArticleCount": 2
+ },
+ "topicKey": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "title": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "originalHeadline": "Supreme Court agrees to hear challenge to assault weapon bans",
+ "headlineAudit": {
+ "sourceHeadline": "Supreme Court agrees to hear challenge to assault weapon bans",
+ "candidateHeadline": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "preEditorHeadline": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "finalHeadline": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "copiedVerbatim": false,
+ "similarity": 0.33,
+ "action": "prepublish-title-reviewed",
+ "rule": "Before editor review, every News Lab headline must be rewritten into original CE Media wording, avoid copied phrase order, and avoid truncation."
+ },
+ "category": "politics",
+ "categoryLabel": "Politics",
+ "matter": "",
+ "summary": "An AR-15 on a countertop at a gun store in Austin, Texas. Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to.",
+ "body": [
+ "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles. The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "The two combined cases will be argued and decided in the court’s next term, which starts in October. The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles.",
+ "AR-15-style weapons have been used in multiple high-profile mass shootings, including the 2012 Sandy Hook Elementary School shooting in Newtown, Connecticut, in which 20 children and six adults were killed, as well as the 2022 shooting at an elementary school in Uvalde, Texas, in which 19 children and two teachers. The Connecticut law was revised as a direct result of the Sandy Hook shooting.",
+ "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms. The justices said on Tuesday they will hear appeals challenging bans in Connecticut and the Chicago area in the next term.",
+ "The court will consider laws in Connecticut and Cook County, Illinois, that ban AR-15s and other assault weapons used in mass shootings, including at Sandy Hook Elementar.",
+ "The unresolved part of the story is the practical effect on nearby residents, roads, schools, businesses, or public safety. Later updates are expected to clarify the confirmed timeline, official response, and direct consequences."
+ ],
+ "hasArticleDepth": true,
+ "popularity": {
+ "uniqueSourceCount": 2,
+ "relatedArticleCount": 2,
+ "reportingScore": 2250,
+ "eventSourceArticleCount": 2,
+ "eventRule": "Multiple source articles about the same event become one CE Media story."
+ },
+ "storyEvolution": {
+ "timeline": [
+ {
+ "at": "2026-06-30T16:22:42.000Z",
+ "source": "NBC",
+ "title": "Supreme Court agrees to hear challenge to assault weapon bans",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300",
+ "summary": "An AR-15 on a countertop at a gun store in Austin, Texas. Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautom"
+ },
+ {
+ "at": "2026-07-01T03:11:02.368Z",
+ "source": "Guardian US",
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans",
+ "summary": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles. Photograph: Armando L Sanchez/Chicago Tribune via Getty Images Guns and lies US gun control US supreme court agrees to hear challenges to assault-weapons bans Justices to consid"
+ }
+ ],
+ "updateRule": "When a new article arrives, regroup the event, remeasure shared claims, recheck contradictions, append timeline evidence, and recalculate confidence before the Brain writes or updates coverage.",
+ "latestUpdateAt": "2026-07-01T03:11:02.368Z",
+ "status": "early-fragment"
+ },
+ "sourceAgreement": {
+ "agreement": 26,
+ "disagreement": 100,
+ "sharedClaims": [],
+ "sourceSpecificClaims": [
+ {
+ "claim": "The Connecticut law was passed after a mass shooter used an AR-15 to kill 26 children and educators at Sandy Hook elementary in 2012.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ],
+ "numbers": [
+ "15",
+ "26",
+ "2012"
+ ],
+ "firstSeenAt": "",
+ "sourceCount": 1
+ },
+ {
+ "claim": "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "sources": [
+ "NBC"
+ ],
+ "urls": [
+ "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ ],
+ "numbers": [
+ "6",
+ "3"
+ ],
+ "firstSeenAt": "2026-06-30T16:22:42.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "One of them, Justice Brett Kavanaugh, wrote separately to say that “in my view, this court should and presumably will address the AR-15 issue soon.” The court in a 2022 ruling expanded on the right to bear arms, ruling for the first time that the Second Amendment applies outside the home.",
+ "sources": [
+ "NBC"
+ ],
+ "urls": [
+ "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ ],
+ "numbers": [
+ "15",
+ "2022"
+ ],
+ "firstSeenAt": "2026-06-30T16:22:42.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ],
+ "numbers": [
+ "2023",
+ "15"
+ ],
+ "firstSeenAt": "",
+ "sourceCount": 1
+ },
+ {
+ "claim": "In 1994, the federal government enacted a national ban but the US Congress allowed it to expire in 2004.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ],
+ "numbers": [
+ "1994",
+ "2004"
+ ],
+ "firstSeenAt": "",
+ "sourceCount": 1
+ },
+ {
+ "claim": "An AR-15 on a countertop at a gun store in Austin, Texas.",
+ "sources": [
+ "NBC"
+ ],
+ "urls": [
+ "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ ],
+ "numbers": [
+ "15"
+ ],
+ "firstSeenAt": "2026-06-30T16:22:42.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms.",
+ "sources": [
+ "NBC"
+ ],
+ "urls": [
+ "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ ],
+ "numbers": [
+ "15"
+ ],
+ "firstSeenAt": "2026-06-30T16:22:42.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "On 18 July the court sided with a Texas man and prospective gun owner who argued that policies that bar marijuana users from ownership violate the second amendment.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ],
+ "numbers": [
+ "18"
+ ],
+ "firstSeenAt": "",
+ "sourceCount": 1
+ }
+ ]
+ },
+ "brainConfidence": {
+ "score": 36,
+ "label": "low",
+ "reason": "2 independent sources, 2 full-read sources, 0 shared claims."
+ },
+ "contradictionDetection": {
+ "count": 6,
+ "possibleContradictions": [
+ {
+ "issue": "backs challenges connecticut conservative court",
+ "firstClaim": "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "firstSources": [
+ "NBC"
+ ],
+ "secondClaim": "One of them, Justice Brett Kavanaugh, wrote separately to say that “in my view, this court should and presumably will address the AR-15 issue soon.” The court in a 2022 ruling expanded on the right to bear arms, ruling for the first time that the Second Amendment applies outside the home.",
+ "secondSources": [
+ "NBC"
+ ],
+ "reason": "same issue with different numbers/details"
+ },
+ {
+ "issue": "backs challenges connecticut conservative court",
+ "firstClaim": "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "firstSources": [
+ "NBC"
+ ],
+ "secondClaim": "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms.",
+ "secondSources": [
+ "NBC"
+ ],
+ "reason": "same issue with different numbers/details"
+ },
+ {
+ "issue": "brett court justice kavanaugh presumably",
+ "firstClaim": "One of them, Justice Brett Kavanaugh, wrote separately to say that “in my view, this court should and presumably will address the AR-15 issue soon.” The court in a 2022 ruling expanded on the right to bear arms, ruling for the first time that the Second Amendment applies outside the home.",
+ "firstSources": [
+ "NBC"
+ ],
+ "secondClaim": "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms.",
+ "secondSources": [
+ "NBC"
+ ],
+ "reason": "same issue with different numbers/details"
+ },
+ {
+ "issue": "brett court justice kavanaugh presumably",
+ "firstClaim": "One of them, Justice Brett Kavanaugh, wrote separately to say that “in my view, this court should and presumably will address the AR-15 issue soon.” The court in a 2022 ruling expanded on the right to bear arms, ruling for the first time that the Second Amendment applies outside the home.",
+ "firstSources": [
+ "NBC"
+ ],
+ "secondClaim": "On 18 July the court sided with a Texas man and prospective gun owner who argued that policies that bar marijuana users from ownership violate the second amendment.",
+ "secondSources": [
+ "Guardian US"
+ ],
+ "reason": "same issue with different numbers/details"
+ },
+ {
+ "issue": "brett court justice kavanaugh presumably",
+ "firstClaim": "One of them, Justice Brett Kavanaugh, wrote separately to say that “in my view, this court should and presumably will address the AR-15 issue soon.” The court in a 2022 ruling expanded on the right to bear arms, ruling for the first time that the Second Amendment applies outside the home.",
+ "firstSources": [
+ "NBC"
+ ],
+ "secondClaim": "Justices to consider whether bans on AR-15s and similar semi-automatic firearms violate second amendment The US supreme court will consider whether bans on AR-15 rifles a.",
+ "secondSources": [
+ "Guardian US"
+ ],
+ "reason": "same issue with different numbers/details"
+ },
+ {
+ "issue": "believed conservative court declined indicated",
+ "firstClaim": "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms.",
+ "firstSources": [
+ "NBC"
+ ],
+ "secondClaim": "On 18 July the court sided with a Texas man and prospective gun owner who argued that policies that bar marijuana users from ownership violate the second amendment.",
+ "secondSources": [
+ "Guardian US"
+ ],
+ "reason": "same issue with different numbers/details"
+ }
+ ],
+ "nextAction": "Assign Article Intelligence to verify contradictions before publication or editorial use."
+ },
+ "storyDossier": {
+ "storyId": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "eventId": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "eventSignature": {
+ "category": "local",
+ "eventId": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "entities": [
+ "justices",
+ "supreme court",
+ "connecticut",
+ "cook county",
+ "illinois"
+ ],
+ "terms": [
+ "court",
+ "supreme",
+ "agrees",
+ "bans",
+ "hear",
+ "consider",
+ "assault",
+ "challenge"
+ ],
+ "sourceArticleCount": 2
+ },
+ "eventSourceArticleCount": 2,
+ "sourcePool": [
+ {
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "source": "Guardian US",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans",
+ "role": "strict-writing-source",
+ "admissionReason": "strict same-event match",
+ "relevance": {
+ "sameEvent": true,
+ "sameCategory": true,
+ "titleOverlap": 4,
+ "termOverlap": 15,
+ "entityOverlap": 2,
+ "identityTermOverlap": 13,
+ "relevantFactCount": 6,
+ "sourceMaterialScore": 7
+ }
+ },
+ {
+ "title": "Chicago weather: Extreme Heat Warning in effect for entire area",
+ "source": "ABC7 Chicago",
+ "url": "https://abc7chicago.com/post/chicago-weather-forecast-nws-extreme-heat-warning-effect-entire-area/19419716/",
+ "role": "background-context-source",
+ "admissionReason": "same category and entity/term bridge for background only",
+ "relevance": {
+ "sameEvent": false,
+ "sameCategory": true,
+ "titleOverlap": 0,
+ "termOverlap": 0,
+ "entityOverlap": 1,
+ "identityTermOverlap": 0,
+ "relevantFactCount": 3,
+ "sourceMaterialScore": 1
+ }
+ },
+ {
+ "title": "'El Mexicano' by Marquez Brothers International Dairy Plant expected to come to Tulare",
+ "source": "ABC30 Fresno",
+ "url": "https://abc30.com/post/el-mexicano-marquez-brothers-international-dairy-plant-expected-come-tulare/19424220/",
+ "role": "background-context-source",
+ "admissionReason": "same category and entity/term bridge for background only",
+ "relevance": {
+ "sameEvent": false,
+ "sameCategory": true,
+ "titleOverlap": 0,
+ "termOverlap": 0,
+ "entityOverlap": 1,
+ "identityTermOverlap": 2,
+ "relevantFactCount": 3,
+ "sourceMaterialScore": 1
+ }
+ },
+ {
+ "title": "Worker dead, person hurt after car crashed into Nothing Bundt Cakes store in Atascocita: Deputies",
+ "source": "ABC13 Houston",
+ "url": "https://abc13.com/post/multiple-people-injured-vehicle-crashes-building-west-lake-houston-parkway-atascocita-fire-officials-say/19423369/",
+ "role": "background-context-source",
+ "admissionReason": "same category and entity/term bridge for background only",
+ "relevance": {
+ "sameEvent": false,
+ "sameCategory": true,
+ "titleOverlap": 0,
+ "termOverlap": 1,
+ "entityOverlap": 1,
+ "identityTermOverlap": 4,
+ "relevantFactCount": 3,
+ "sourceMaterialScore": 1
+ }
+ },
+ {
+ "title": "NJ Transit delays frustrate riders amid sweltering conditions as fare hike looms",
+ "source": "ABC7 NY",
+ "url": "https://abc7ny.com/post/several-nj-transit-lines-experiencing-90-minute-delays-due-signal-issue/19424675/",
+ "role": "background-context-source",
+ "admissionReason": "same category and entity/term bridge for background only",
+ "relevance": {
+ "sameEvent": false,
+ "sameCategory": true,
+ "titleOverlap": 0,
+ "termOverlap": 0,
+ "entityOverlap": 1,
+ "identityTermOverlap": 2,
+ "relevantFactCount": 3,
+ "sourceMaterialScore": 1
+ }
+ }
+ ],
+ "createdAt": "2026-07-01T03:11:02.377Z",
+ "method": "structured-event-dossier-before-writing",
+ "eventRule": "Treat outlet articles, official releases, local reports, and police/government statements as evidence for one event dossier before writing one CE Media story.",
+ "people": [
+ "Connecticut",
+ "Illinois",
+ "AR-",
+ "Sandy Hook Elementar. An"
+ ],
+ "organizations": [
+ "Supreme Court",
+ "Connecticut",
+ "Cook County",
+ "Illinois",
+ "AR-",
+ "Sandy Hook Elementar. An"
+ ],
+ "locations": [
+ "Supreme Court",
+ "Connecticut",
+ "Cook County",
+ "Illinois",
+ "Sandy Hook Elementar. An"
+ ],
+ "timeline": [
+ {
+ "id": "timeline-1",
+ "at": "2026-06-30T16:22:42.000Z",
+ "source": "NBC",
+ "title": "",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ },
+ {
+ "id": "timeline-2",
+ "at": "2026-07-01T03:11:02.368Z",
+ "source": "Guardian US",
+ "title": "",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ }
+ ],
+ "officialSources": [
+ {
+ "id": "source-1",
+ "source": "NBC",
+ "title": "Supreme Court agrees to hear challenge to assault weapon bans",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300",
+ "category": "local",
+ "publishedAt": "Tue, 30 Jun 2026 16:22:42 GMT",
+ "readStatus": "full-article-read",
+ "summaryLength": 2304,
+ "isOfficial": true
+ },
+ {
+ "id": "source-2",
+ "source": "Guardian US",
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans",
+ "category": "local",
+ "publishedAt": "",
+ "readStatus": "full-article-read",
+ "summaryLength": 3161,
+ "isOfficial": true
+ }
+ ],
+ "independentSources": [
+ {
+ "id": "source-3",
+ "source": "ABC7 Chicago",
+ "title": "Chicago weather: Extreme Heat Warning in effect for entire area",
+ "url": "https://abc7chicago.com/post/chicago-weather-forecast-nws-extreme-heat-warning-effect-entire-area/19419716/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 03:02:50 +0000",
+ "readStatus": "",
+ "summaryLength": 134,
+ "isOfficial": false
+ },
+ {
+ "id": "source-4",
+ "source": "ABC30 Fresno",
+ "title": "'El Mexicano' by Marquez Brothers International Dairy Plant expected to come to Tulare",
+ "url": "https://abc30.com/post/el-mexicano-marquez-brothers-international-dairy-plant-expected-come-tulare/19424220/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 01:39:31 +0000",
+ "readStatus": "",
+ "summaryLength": 171,
+ "isOfficial": false
+ },
+ {
+ "id": "source-5",
+ "source": "ABC13 Houston",
+ "title": "Worker dead, person hurt after car crashed into Nothing Bundt Cakes store in Atascocita: Deputies",
+ "url": "https://abc13.com/post/multiple-people-injured-vehicle-crashes-building-west-lake-houston-parkway-atascocita-fire-officials-say/19423369/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 01:25:35 +0000",
+ "readStatus": "",
+ "summaryLength": 168,
+ "isOfficial": false
+ },
+ {
+ "id": "source-6",
+ "source": "ABC7 NY",
+ "title": "NJ Transit delays frustrate riders amid sweltering conditions as fare hike looms",
+ "url": "https://abc7ny.com/post/several-nj-transit-lines-experiencing-90-minute-delays-due-signal-issue/19424675/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 02:33:47 +0000",
+ "readStatus": "",
+ "summaryLength": 156,
+ "isOfficial": false
+ }
+ ],
+ "photos": [],
+ "videos": [],
+ "documents": [
+ {
+ "id": "document-1",
+ "source": "NBC",
+ "title": "Supreme Court agrees to hear challenge to assault weapon bans",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300",
+ "type": "legal record"
+ }
+ ],
+ "historicalContext": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "relatedStories": [
+ {
+ "at": "2026-06-30T16:22:42.000Z",
+ "source": "NBC",
+ "title": "",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ },
+ {
+ "at": "2026-07-01T03:11:02.368Z",
+ "source": "Guardian US",
+ "title": "",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ }
+ ],
+ "contradictions": [],
+ "unknowns": [
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "knownFacts": [
+ "Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like the AR-15, which are.",
+ "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "The two combined cases will be argued and decided in the court’s next term, which starts in October.",
+ "The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles.",
+ "AR-15-style weapons have been used in multiple high-profile mass shootings, including the 2012 Sandy Hook Elementary School shooting in Newtown, Connecticut, in which 20 children and six adults were killed, as well as the 2022 shooting at an elementary school.",
+ "The Connecticut law was revised as a direct result of the Sandy Hook shooting.",
+ "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms.",
+ "The court will consider laws in Connecticut and Cook County, Illinois, that ban AR-15s and other assault weapons used in mass shootings, including at Sandy Hook Elementar."
+ ],
+ "unknownFacts": [
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "dossierBuilder": {
+ "subsystem": "Story Dossier Builder",
+ "version": "20260701-dossier-builder-subsystem",
+ "job": "Collect, verify, classify, timeline, context, contradictions, known facts, unknown facts, then deliver a structured dossier to the Writer.",
+ "stages": [
+ {
+ "name": "Collect",
+ "status": "complete",
+ "evidence": "6 source articles collected for the event.",
+ "metrics": {
+ "sourceArticles": 6,
+ "strictWritingSources": 3,
+ "dossierSourcePool": 5,
+ "verificationContextSources": 0,
+ "backgroundContextSources": 4,
+ "sourceRecords": 6
+ }
+ },
+ {
+ "name": "Verify",
+ "status": "complete",
+ "evidence": "2 official statements, 0 shared claims, 8 extracted facts.",
+ "metrics": {
+ "officialStatements": 2,
+ "sharedClaims": 0,
+ "extractedFacts": 8,
+ "sourcePoolFacts": 6
+ }
+ },
+ {
+ "name": "Classify",
+ "status": "complete",
+ "evidence": "4 people, 6 organizations, 5 locations, 1 documents classified.",
+ "metrics": {
+ "people": 4,
+ "organizations": 6,
+ "locations": 5
+ }
+ },
+ {
+ "name": "Timeline",
+ "status": "complete",
+ "evidence": "2 timeline items available.",
+ "metrics": {
+ "timelineItems": 2,
+ "firstSeenAt": "2026-06-30T16:22:42.000Z"
+ }
+ },
+ {
+ "name": "Context",
+ "status": "complete",
+ "evidence": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "relatedStories": 2
+ }
+ },
+ {
+ "name": "Contradictions",
+ "status": "reviewed-no-major-contradictions",
+ "evidence": "No major source contradiction was detected from the available source set.",
+ "metrics": {
+ "contradictionCount": 0,
+ "sourceSpecificClaimCount": 5
+ }
+ },
+ {
+ "name": "Known Facts",
+ "status": "complete",
+ "evidence": "8 known facts prepared for the Writer.",
+ "metrics": {
+ "knownFactCount": 8
+ }
+ },
+ {
+ "name": "Unknown Facts",
+ "status": "complete",
+ "evidence": "the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "unknownFactCount": 1
+ }
+ },
+ {
+ "name": "Deliver Dossier To Writer",
+ "status": "ready",
+ "evidence": "Writer should draft only from known facts, source-specific claims, timeline, context, contradictions, and unknowns in this dossier.",
+ "metrics": {
+ "ready": true,
+ "confidenceScore": 36
+ }
+ }
+ ],
+ "readyForWriter": true,
+ "weakestStage": "",
+ "outputContract": {
+ "knownFacts": "Facts the Writer may state directly.",
+ "unknownFacts": "Missing or unresolved facts the Writer must not invent.",
+ "sourceSpecificClaims": "Claims that should be attributed or qualified unless later confirmed by other sources.",
+ "contradictions": "Conflicting claims that should be explained, not hidden.",
+ "timeline": "Sequence of known developments used to keep the story coherent."
+ }
+ },
+ "confidence": {
+ "score": 36,
+ "label": "low",
+ "reason": "2 source signals, 2 full-read signals, 8 shared or extracted claims.",
+ "sourceCount": 2,
+ "fullReadCount": 2,
+ "sharedClaimCount": 8,
+ "contradictionCount": 0
+ },
+ "whatHappened": "Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like the AR-15, which are popular among gun enthusiasts but have also been used in.",
+ "when": {
+ "firstSeenAt": "2026-06-30T16:22:42.000Z",
+ "latestSeenAt": "2026-07-01T03:02:50.000Z"
+ },
+ "whoIsInvolved": [
+ "Supreme Court",
+ "Connecticut",
+ "Cook County",
+ "Illinois",
+ "AR-",
+ "Sandy Hook Elementar. An"
+ ],
+ "localContext": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "agreement": {
+ "score": 26,
+ "sharedClaims": [
+ "Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like the AR-15, which are popular among gun enthusiasts but have also been used in.",
+ "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "The two combined cases will be argued and decided in the court’s next term, which starts in October.",
+ "The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles."
+ ]
+ },
+ "disagreement": {
+ "score": 100,
+ "contradictions": [],
+ "sourceSpecificClaims": [
+ {
+ "claim": "The Connecticut law was passed after a mass shooter used an AR-15 to kill 26 children and educators at Sandy Hook elementary in 2012.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ]
+ },
+ {
+ "claim": "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "sources": [
+ "NBC"
+ ],
+ "urls": [
+ "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ ]
+ },
+ {
+ "claim": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ]
+ },
+ {
+ "claim": "In 1994, the federal government enacted a national ban but the US Congress allowed it to expire in 2004.",
+ "sources": [
+ "Guardian US"
+ ],
+ "urls": [
+ "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ ]
+ },
+ {
+ "claim": "An AR-15 on a countertop at a gun store in Austin, Texas.",
+ "sources": [
+ "NBC"
+ ],
+ "urls": [
+ "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ ]
+ }
+ ]
+ },
+ "officialStatements": [
+ {
+ "source": "NBC",
+ "statement": "An AR-15 on a countertop at a gun store in Austin, Texas. Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local.",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300"
+ },
+ {
+ "source": "Guardian US",
+ "statement": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles.",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ }
+ ],
+ "previousEventsRelated": [],
+ "stillUnknown": [
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "evidence": {
+ "sourceCount": 2,
+ "sourcesReviewed": [
+ "NBC",
+ "Guardian US",
+ "ABC7 Chicago",
+ "ABC30 Fresno",
+ "ABC13 Houston",
+ "ABC7 NY"
+ ],
+ "fullReadCount": 2,
+ "factCount": 8,
+ "confidenceScore": 36,
+ "confidenceLabel": "low",
+ "angleTags": [
+ "official-response",
+ "political-reaction",
+ "family-and-community-impact",
+ "legal-accountability",
+ "security-and-foreign-policy"
+ ]
+ },
+ "writingRule": "Write from the dossier: use shared claims as the core account, cite or qualify source-specific claims, explain unknowns plainly, and reject paragraphs that drift into another topic."
+ },
+ "sourceIntelligence": {
+ "providers": [
+ {
+ "provider": "NBC",
+ "domains": [
+ "nbcnews.com"
+ ],
+ "articleCount": 1,
+ "averageLatencyMs": 0,
+ "failureRate": 0,
+ "updateFrequency": 1,
+ "originality": 1,
+ "historicalReliability": 95,
+ "weight": 0.95
+ },
+ {
+ "provider": "Guardian US",
+ "domains": [
+ "theguardian.com"
+ ],
+ "articleCount": 2,
+ "averageLatencyMs": 0,
+ "failureRate": 0,
+ "updateFrequency": 0,
+ "originality": 1,
+ "historicalReliability": 88,
+ "weight": 0.88
+ }
+ ],
+ "recommendedUse": "Weight NBC highest for this story unless later telemetry shows failures or contradictions."
+ },
+ "contextEngine": {
+ "category": "local",
+ "topicTerms": [
+ "supreme",
+ "court",
+ "agrees",
+ "hear",
+ "challenge",
+ "assault",
+ "weapon",
+ "bans",
+ "consider",
+ "laws",
+ "connecticut",
+ "cook"
+ ],
+ "keyPeopleOrGroups": [
+ "Supreme Court",
+ "Connecticut",
+ "Cook County",
+ "Illinois",
+ "AR-",
+ "Sandy Hook Elementar. An"
+ ],
+ "backgroundKnowledge": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "currentDevelopments": [
+ "Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like.",
+ "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "The two combined cases will be argued and decided in the court’s next term, which starts in October.",
+ "The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles.",
+ "AR-15-style weapons have been used in multiple high-profile mass shootings, including the 2012 Sandy Hook Elementary School shooting in Newtown, Connecticut, in which 20 children and six adults were killed, as well as the 2022 shooting at."
+ ],
+ "previousArticleSignals": [
+ {
+ "source": "Guardian US",
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ },
+ {
+ "source": "Guardian US",
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans"
+ }
+ ],
+ "rule": "Use this context to prevent each article from treating recurring topics as brand-new events."
+ },
+ "entityMemory": {
+ "profiles": [
+ {
+ "entity": "Supreme Court",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Supreme Court appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Connecticut",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Connecticut appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Cook County",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Cook County is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "Illinois",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "Illinois appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "AR-",
+ "type": "legal/policy",
+ "mentionCount": 3,
+ "memoryNote": "AR- appears repeatedly in this story cluster and should be treated as a recurring subject."
+ },
+ {
+ "entity": "Sandy Hook Elementar. An",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Sandy Hook Elementar. An is present in this story and should be tracked for future related developments."
+ }
+ ],
+ "recurringEntityCount": 4,
+ "rule": "When an entity recurs across clusters or days, future stories should mention the prior development instead of resetting context."
+ },
+ "evidenceEngine": {
+ "classifiedFacts": [
+ {
+ "fact": "Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like the AR-15, which are popular among gun.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "The two combined cases will be argued and decided in the court’s next term, which starts in October.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles.",
+ "classification": "multiple independent reports",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 72
+ },
+ {
+ "fact": "AR-15-style weapons have been used in multiple high-profile mass shootings, including the 2012 Sandy Hook Elementary School shooting in Newtown, Connecticut, in which 20 children and six adults were killed, as well as the 2022 shooting at an elementary school in Uvalde, Texas.",
+ "classification": "multiple independent reports",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 72
+ },
+ {
+ "fact": "The Connecticut law was revised as a direct result of the Sandy Hook shooting.",
+ "classification": "multiple independent reports",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 72
+ },
+ {
+ "fact": "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "The court will consider laws in Connecticut and Cook County, Illinois, that ban AR-15s and other assault weapons used in mass shootings, including at Sandy Hook Elementar.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "Photograph: Armando L Sanchez/Chicago Tribune via Getty Images Guns and lies US gun control US supreme court agrees to hear challenges to assault-weapons bans Justices to consider whether bans on AR-15s and similar semi-automatic firearms violate second amendment About this.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "The justices said on Tuesday they will hear appeals challenging bans in Connecticut and the Chicago area in the next term.",
+ "classification": "multiple independent reports",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 72
+ },
+ {
+ "fact": "On 18 July the court sided with a Texas man and prospective gun owner who argued that policies that bar marijuana users from ownership violate the second amendment.",
+ "classification": "court filing/legal record",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 90
+ },
+ {
+ "fact": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles.",
+ "classification": "multiple independent reports",
+ "sources": [
+ "NBC",
+ "Guardian US"
+ ],
+ "confidence": 72
+ }
+ ],
+ "counts": {
+ "court filing/legal record": 7,
+ "multiple independent reports": 5
+ },
+ "rule": "The Brain should write hard facts from official, legal, or multi-source evidence, and qualify single-source claims."
+ },
+ "articleReadDepth": {
+ "fullReadCount": 3,
+ "factCount": 11,
+ "paragraphCount": 8,
+ "bodyLength": 2345,
+ "draftEligibility": {
+ "eligible": true,
+ "score": 21,
+ "fullReadCount": 3,
+ "usableSummaryCount": 3,
+ "basicSummaryCount": 3
+ },
+ "absorbedCandidateCount": 2,
+ "acceptedAbsorbedCount": 2,
+ "rejectedAbsorbedCount": 0,
+ "dossierSourcePoolCount": 5,
+ "verificationContextSourceCount": 0,
+ "backgroundContextSourceCount": 4
+ },
+ "topicIntegrity": {
+ "score": 100,
+ "checkedSourceCount": 2,
+ "sameTopicCount": 2,
+ "offTopicCount": 0,
+ "offTopicSources": [],
+ "checkedSources": [
+ {
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "source": "Guardian US",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans",
+ "sameEvent": true,
+ "titleOverlap": 4,
+ "termOverlap": 15,
+ "identityTermOverlap": 13,
+ "entityOverlap": 2
+ },
+ {
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "source": "Guardian US",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans",
+ "sameEvent": true,
+ "titleOverlap": 4,
+ "termOverlap": 15,
+ "identityTermOverlap": 13,
+ "entityOverlap": 2
+ }
+ ],
+ "passed": true
+ },
+ "writingWorkflow": {
+ "version": "20260701-explicit-newsroom-workflow",
+ "stages": [
+ {
+ "name": "Collector",
+ "status": "complete",
+ "evidence": "2 source signals selected for this event.",
+ "metrics": {
+ "sourceSignals": 2,
+ "fullReadCount": 2
+ }
+ },
+ {
+ "name": "Cluster",
+ "status": "complete",
+ "evidence": "Clustered as local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider.",
+ "metrics": {
+ "reportCount": 2
+ }
+ },
+ {
+ "name": "Evidence Engine",
+ "status": "complete",
+ "evidence": "12 classified facts available.",
+ "metrics": {
+ "classifiedFacts": 12,
+ "sourceCount": 2
+ }
+ },
+ {
+ "name": "Context Engine",
+ "status": "limited-context",
+ "evidence": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "relatedContextItems": 0
+ }
+ },
+ {
+ "name": "Story Dossier",
+ "status": "complete",
+ "evidence": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "metrics": {
+ "people": 4,
+ "organizations": 6,
+ "locations": 5,
+ "contradictions": 0,
+ "confidence": 36,
+ "knownFacts": 8,
+ "unknownFacts": 1,
+ "readyForWriter": true
+ }
+ },
+ {
+ "name": "Headline Generator",
+ "status": "complete",
+ "evidence": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "metrics": {
+ "titleLength": 57
+ }
+ },
+ {
+ "name": "Article Writer",
+ "status": "complete",
+ "evidence": "6 paragraphs, 1683 characters.",
+ "metrics": {
+ "paragraphs": 6,
+ "bodyLength": 1683
+ }
+ },
+ {
+ "name": "Editorial Coach",
+ "status": "approved",
+ "evidence": "82 coach score.",
+ "metrics": {
+ "score": 82,
+ "findingCount": 2
+ }
+ },
+ {
+ "name": "Publisher",
+ "status": "ready",
+ "evidence": "82 quality score.",
+ "metrics": {
+ "score": 82,
+ "issueCount": 0
+ }
+ }
+ ],
+ "rule": "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Headline Generator -> Article Writer -> Editorial Coach -> Publisher."
+ },
+ "topicIsolation": {
+ "absorbedCandidateCount": 2,
+ "acceptedSourceCount": 2,
+ "rejectedSourceCount": 0,
+ "rejectedSources": [],
+ "eventId": "local:event:justices-supreme-court-connecticut-agrees-bans-hear-consider",
+ "rule": "Supporting stories must share the same event dossier, event-level entities, title terms, or strong term overlap before the Brain may use them in a CE Media article draft."
+ },
+ "image": {
+ "primary": "https://images.pexels.com/photos/10464448/pexels-photo-10464448.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+ "fallback": "./assets/creator-bg-no-filter.png",
+ "alt": "Police officer standing at a residential street crime scene with caution tape.",
+ "credit": "Photo by cottonbro studio via Pexels",
+ "query": "police investigation street",
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "provenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:02.363Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "creditUrl": "https://www.pexels.com/@cottonbro",
+ "retrievedAt": "2026-07-01T03:11:02.363Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "relevance": {
+ "query": "police investigation street",
+ "score": 5,
+ "matchedTerms": [],
+ "reason": "Selected from story-specific Pexels search terms and de-duplicated against this page."
+ }
+ },
+ "imageProvenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:02.363Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "sources": [
+ {
+ "title": "Supreme Court agrees to hear challenge to assault weapon bans",
+ "source": "NBC",
+ "url": "https://www.nbcnews.com/politics/supreme-court/supreme-court-agrees-hear-gun-rights-challenge-assault-weapons-bans-rcna249300",
+ "summary": "The court will consider laws in Connecticut and Cook County, Illinois, that ban AR-15s and other assault weapons used in mass shootings, including at Sandy Hook Elementar.",
+ "articleSummary": "An AR-15 on a countertop at a gun store in Austin, Texas. Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like the AR-15, which are popular among gun enthusiasts but have also been used in high-profile mass shootings. Get exclusive reporting, live Q&As and ad-free reading. The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area. The two combined cases will be argued and decided in the court’s next term, which starts in October. The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles. AR-15-style weapons have been used in multiple high-profile mass shootings, including the 2012 Sandy Hook Elementary School shooting in Newtown, Connecticut, in which 20 children and six adults were killed, as well as the 2022 shooting at an elementary school in Uvalde, Texas, in which 19 children and two teachers were killed. The Connecticut law was revised as a direct result of the Sandy Hook shooting. When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms. One of them, Justice Brett Kavanaugh, wrote separately to say that “in my view, this court should and presumably will address the AR-15 issue soon.” The court in a 2022 ruling expanded on the right to bear arms, ruling for the first time that the Second Amendment applies outside the home. The Chicago-area law was challenged by Cutberto Viramontes and Christopher Khaya, who live in Cook County and would like to own semiautomatic rifles. They are joined by two gun rights groups, the Firearms Policy Coalition and the Second Amendment Foundation. The Second Amendment Foundation and the Connecticut Citizens Defense League both challenged the Connecticut measure, along with three individuals. Lawrence Hurley Lawrence Hurley is a senior Supreme Court reporter for NBC News.",
+ "category": "local",
+ "articleReadStatus": "full-article-read",
+ "articleTextLength": 2304
+ },
+ {
+ "title": "US supreme court agrees to hear challenges to assault-weapons bans",
+ "source": "Guardian US",
+ "url": "https://www.theguardian.com/us-news/2026/jun/30/us-supreme-court-assault-weapons-bans",
+ "summary": "Justices to consider whether bans on AR-15s and similar semi-automatic firearms violate second amendment The US supreme court will consider whether bans on AR-15 rifles a.",
+ "articleSummary": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles. Photograph: Armando L Sanchez/Chicago Tribune via Getty Images Guns and lies US gun control US supreme court agrees to hear challenges to assault-weapons bans Justices to consider whether bans on AR-15s and similar semi-automatic firearms violate second amendment About this content Abené Clayton Tue 30 Jun 2026 20.40 EDT First published on Tue 30 Jun 2026 13.53 EDT Share Prefer the Guardian on Google The US supreme court will consider whether bans on AR-15 rifles and similar semiautomatic firearms are constitutional. The justices said on Tuesday they will hear appeals challenging bans in Connecticut and the Chicago area in the next term. The high court’s announcement comes on the heels of two recent victories for second amendment attorneys and advocates. On 18 July the court sided with a Texas man and prospective gun owner who argued that policies that bar marijuana users from ownership violate the second amendment. The following week, the court’s conservative majority struck down a Hawaii law that prohibits people from bringing a gun on to private property without the consent of the property’s owner. The upcoming cases are the court’s latest steps toward clarifying the doctrine set in place by the 2022 Bruen decision, which requires gun laws to pass a “history and tradition test”, said Hayley Lawrence, the executive director of the Center for Firearms Law at Duke Law School. “Bruen was this enormous sea change in constitutional interpretation. It bakes in judicial discretion, and supreme court justices don’t like how lower courts are applying the test they created,” she said. “[These cases] are an opportunity to further clarify the methodology and application of the history and tradition test.” In many states, AR-15s are classified as assault weapons, a legal term used to describe guns that lawmakers determine are meant to be used offensively rather than defensively, based on characteristics such as magazine capacity and the size of the weapon. States including California, New York and Delaware, all have bans on these types of firearms. In 1994, the federal government enacted a national ban but the US Congress allowed it to expire in 2004. Democrats have supported renewing it in response to a series of mass shootings. Those efforts have yet to materialize into a new national ban, and states have continued to pass their own laws, including recent measures in Virginia and Rhode Island. The Connecticut law was passed after a mass shooter used an AR-15 to kill 26 children and educators at Sandy Hook elementary in 2012. The state says the guns are a preferred weapon of mass shooters, and they can be banned because they are similar to military-grade weapons. “These laws are critical public safety measures, and they are consistent with the second amendment,” said Janet Carter, managing director of second amendment litigation at the gun-control group Everytown Law. Gun rights groups, on the other hand, argue it is unconstitutional to ban semi-automatic rifles, which are legally owned by millions of Americans.",
+ "category": "local",
+ "articleReadStatus": "full-article-read",
+ "articleTextLength": 3161
+ }
+ ],
+ "sourceSpecifics": [
+ "Different coverage frames to compare: official explanation versus political/public challenge; institutional framing versus household/community impact.",
+ "NBC emphasized official-response, political-reaction, family-and-community-impact, legal-accountability.",
+ "Guardian US emphasized official-response, political-reaction, family-and-community-impact, legal-accountability, security-and-foreign-policy."
+ ],
+ "sourcePolicy": "RSS feeds guide facts and source links; the public tile uses original Censored Expressions wording and a locally controlled Pexels image slot.",
+ "generatedAt": "2026-07-01T01:51:15.657Z",
+ "paragraphTopicRepair": {
+ "checked": true,
+ "removedCount": 0,
+ "removedParagraphs": [],
+ "action": "paragraph-topic-clean"
+ },
+ "qualityGate": {
+ "passed": true,
+ "score": 100,
+ "issues": [],
+ "correctedIssues": [
+ "missing-reporting-context"
+ ],
+ "remainingIssues": [],
+ "action": "final-approval-repaired"
+ },
+ "editorialCoach": {
+ "score": 82,
+ "passed": true,
+ "findings": [
+ {
+ "code": "coach-passive-voice-heavy",
+ "severity": "medium",
+ "note": "Passive voice is high enough to weaken direct reporting."
+ },
+ {
+ "code": "coach-abrupt-transition",
+ "severity": "medium",
+ "note": "Adjacent paragraphs may not transition naturally."
+ }
+ ],
+ "rule": "The Editorial Coach checks repetition, passive voice, copied wording, unsupported conclusions, missing context, abrupt transitions, and contradictions before publication."
+ },
+ "aliveStory": {
+ "status": "new-live-event",
+ "previousUpdatedAt": "",
+ "updateCount": 0,
+ "latestUpdateAt": "2026-07-01T03:11:02.406Z",
+ "changedClaims": [
+ "Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to decide whether states and local governments can ban semiautomatic rifles like the AR-15, which are popular among gun enthusiasts but have also been used in.",
+ "The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "The two combined cases will be argued and decided in the court’s next term, which starts in October.",
+ "The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles."
+ ],
+ "keepAliveRule": "Keep the original story alive and append/update when new evidence changes the dossier; create a new story only when the event identity changes."
+ },
+ "editorialSubsystems": {
+ "collector": {
+ "status": "complete",
+ "evidence": "2 source links, 2 absorbed candidates"
+ },
+ "verifier": {
+ "status": "needs-more-evidence",
+ "evidence": "4 shared claims, 6 possible contradictions"
+ },
+ "researcher": {
+ "status": "complete",
+ "evidence": "2 full-read sources, 2 source signals"
+ },
+ "writer": {
+ "status": "complete",
+ "evidence": "5 paragraphs"
+ },
+ "editor": {
+ "status": "approved",
+ "evidence": "100 coach score"
+ },
+ "factChecker": {
+ "status": "complete",
+ "evidence": "12 classified facts"
+ },
+ "legalReview": {
+ "status": "cleared",
+ "evidence": "No obvious copied-source or unconfirmed-claim risk detected."
+ },
+ "publisher": {
+ "status": "hold-for-repair",
+ "evidence": "quality=100, coach=100, legalRisks=0"
+ }
+ },
+ "contentLaneQuality": {
+ "lane": "news-lab",
+ "checkedAt": "2026-07-01T03:11:44.034Z",
+ "passed": true,
+ "issues": [],
+ "laneIssues": [],
+ "technicalEditor": {
+ "passed": true,
+ "issues": [],
+ "findings": [],
+ "summary": "Copy editor reviewed News Lab article for spelling, sentence structure, punctuation, encoding artifacts, repetition, public-facing clarity, and lane-specific tone before save.",
+ "role": "newspaper-style technical editor"
+ },
+ "rulesApplied": [
+ "remove mojibake, clipped sentences, ellipses, script fragments, and copied source noise",
+ "preserve source links and story context while using original Censored Expressions wording",
+ "dedupe repeated story/title references before public save",
+ "run copy-editor review for spelling, sentence structure, punctuation, repetition, and public-facing polish",
+ "News Lab is fact-based reporting: remove Creator Desk opinion language and keep the article neutral",
+ "cluster multiple outlets into one CE Media story when they cover the same topic",
+ "cite a specific outlet only for unique or differing details, not for broadly accepted facts"
+ ]
+ },
+ "editorRepairReason": [
+ "missing-reporting-context"
+ ],
+ "editorEnforcement": {
+ "lane": "news-lab",
+ "checkedAt": "2026-07-01T03:11:44.034Z",
+ "action": "accepted-first-draft",
+ "attempts": 1,
+ "initialIssues": [],
+ "finalIssues": []
+ },
+ "editorCategoryAudit": {
+ "checkedAt": "2026-07-01T03:11:25.032Z",
+ "assignedCategory": "local",
+ "inferredCategory": "technology",
+ "finalCategory": "technology",
+ "corrected": true,
+ "action": "editor-corrected-category-before-publication"
+ },
+ "finalSemanticAudit": {
+ "checkedAt": "2026-07-01T03:12:09.066Z",
+ "previousCategory": "politics",
+ "finalCategory": "politics",
+ "previousTitle": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "finalTitle": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "action": "semantic-editor-confirmed"
+ },
+ "finalApprovalRepair": {
+ "applied": true,
+ "triggerIssues": [
+ "missing-reporting-context"
+ ],
+ "action": "rebuilt-body-from-topic-safe-facts-before-publish-filter"
+ },
+ "originalArticle": {
+ "title": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "summary": "An AR-15 on a countertop at a gun store in Austin, Texas. Brandon Bell / Getty Images file Share Add NBC News to Google June 30, 2026, 12:22 PM EDT By Lawrence Hurley WASHINGTON — The Supreme Court on Tuesday agreed to.",
+ "body": [
+ "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles. The court, which has a 6-3 conservative majority that generally backs gun rights, will hear challenges to laws in Connecticut and Cook County, Illinois, which covers the Chicago area.",
+ "The two combined cases will be argued and decided in the court’s next term, which starts in October. The measures in question ban what are described by gun violence protection advocates as “assault weapons,” which include AR-15s and other semiautomatic rifles.",
+ "AR-15-style weapons have been used in multiple high-profile mass shootings, including the 2012 Sandy Hook Elementary School shooting in Newtown, Connecticut, in which 20 children and six adults were killed, as well as the 2022 shooting at an elementary school in Uvalde, Texas, in which 19 children and two teachers. The Connecticut law was revised as a direct result of the Sandy Hook shooting.",
+ "When the court declined to hear a similar case last year, four conservative justices indicated they believed AR-15 bans are unlawful under the Constitution’s Second Amendment, which protects the right to bear arms. The justices said on Tuesday they will hear appeals challenging bans in Connecticut and the Chicago area in the next term.",
+ "The court will consider laws in Connecticut and Cook County, Illinois, that ban AR-15s and other assault weapons used in mass shootings, including at Sandy Hook Elementar.",
+ "The unresolved part of the story is the practical effect on nearby residents, roads, schools, businesses, or public safety. Later updates are expected to clarify the confirmed timeline, official response, and direct consequences."
+ ],
+ "generatedAt": "2026-07-01T01:51:15.657Z",
+ "category": "politics",
+ "image": {
+ "primary": "https://images.pexels.com/photos/10464448/pexels-photo-10464448.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+ "fallback": "./assets/creator-bg-no-filter.png",
+ "alt": "Police officer standing at a residential street crime scene with caution tape.",
+ "credit": "Photo by cottonbro studio via Pexels",
+ "query": "police investigation street",
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "provenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:02.363Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "creditUrl": "https://www.pexels.com/@cottonbro",
+ "retrievedAt": "2026-07-01T03:11:02.363Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "relevance": {
+ "query": "police investigation street",
+ "score": 5,
+ "matchedTerms": [],
+ "reason": "Selected from story-specific Pexels search terms and de-duplicated against this page."
+ }
+ },
+ "imageProvenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:02.363Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ }
+ },
+ "storyUpdates": [
+ {
+ "updatedAt": "2026-07-01T01:52:54.128Z",
+ "title": "Birthright Citizenship Fight Returns to the Supreme Court",
+ "summary": "A gun store in Carpentersville, Illinois, in January 2023, before the state banned AR-15-style rifles. Photograph: Armando L Sanchez/Chicago Tribune via Getty Images Guns and lies US gun control US supreme court agrees to hear challenges to assault-weapons bans Justices to consid",
+ "confidence": 36,
+ "sourceCount": 2,
+ "latestUpdateAt": "2026-07-01T01:52:43.649Z"
+ }
+ ],
+ "lastUpdatedAt": "2026-07-01T01:52:54.128Z",
+ "updateMode": "original-with-updates"
+ },
+ {
+ "id": "news_lab_local:event:waukegan-north-chicago-facing-hate-crime-charge_22",
+ "eventId": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "eventSignature": {
+ "category": "local",
+ "eventId": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "entities": [
+ "waukegan",
+ "north chicago"
+ ],
+ "terms": [
+ "facing",
+ "hate",
+ "crime",
+ "charge",
+ "signs",
+ "threatening",
+ "immigrants",
+ "waukegan"
+ ],
+ "sourceArticleCount": 1
+ },
+ "topicKey": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "title": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "originalHeadline": "Man facing hate crime charge for signs threatening immigrants in Waukegan, North Chicago: pros.",
+ "headlineAudit": {
+ "sourceHeadline": "Man facing hate crime charge for signs threatening immigrants in Waukegan, North Chicago: pros.",
+ "candidateHeadline": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "preEditorHeadline": "Man Puts Legal Fight in Motion Over Signs Waukegan",
+ "finalHeadline": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "copiedVerbatim": false,
+ "similarity": 0.63,
+ "action": "prepublish-title-reviewed",
+ "rule": "Before editor review, every News Lab headline must be rewritten into original CE Media wording, avoid copied phrase order, and avoid truncation."
+ },
+ "category": "local",
+ "categoryLabel": "Local",
+ "matter": "",
+ "summary": "The story centers on the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety.",
+ "body": [
+ "A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago. On one sign, there was an image of a shark with the word \"ICE\" drawn on top of it.",
+ "Records, official statements, or confirmed reporting should clarify the next concrete development.",
+ "The unresolved part of the story is whether officials have released a complete public statement and the exact timing of the next confirmed step. Later updates are expected to clarify the confirmed timeline, official response, and direct consequences.",
+ "Source records from ABC7 Chicago identify the same central development, while later updates should add official documents, names, timing, locations, or direct consequences."
+ ],
+ "hasArticleDepth": false,
+ "popularity": {
+ "uniqueSourceCount": 1,
+ "relatedArticleCount": 1,
+ "reportingScore": 138,
+ "eventSourceArticleCount": 1,
+ "eventRule": "Multiple source articles about the same event become one CE Media story."
+ },
+ "storyEvolution": {
+ "timeline": [
+ {
+ "at": "2026-07-01T02:00:56.000Z",
+ "source": "ABC7 Chicago",
+ "title": "Man facing hate crime charge for signs threatening immigrants in Waukegan, North Chicago: pros.",
+ "url": "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/",
+ "summary": "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago. Derek Webb was in court on Tuesday and is due back in court on Wednesday. The Lake County State's Attorney's Office says Webb posted signs that made threats against"
+ }
+ ],
+ "updateRule": "When a new article arrives, regroup the event, remeasure shared claims, recheck contradictions, append timeline evidence, and recalculate confidence before the Brain writes or updates coverage.",
+ "latestUpdateAt": "2026-07-01T02:00:56.000Z",
+ "status": "early-fragment"
+ },
+ "sourceAgreement": {
+ "agreement": 13,
+ "disagreement": 24,
+ "sharedClaims": [],
+ "sourceSpecificClaims": [
+ {
+ "claim": "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "Derek Webb was in court on Tuesday and is due back in court on Wednesday.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "The Lake County State's Attorney's Office says Webb posted signs that made threats against Latino and immigrant communities.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "On one sign, there was an image of a shark with the word \"ICE\" drawn on top of it.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "Another showed what appeared to be an alien crudely drawn on top of images used for target practice with the word \"MAGA\" below it.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "Even as residents took some down, others popped back up, the community told ABC7.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "The arrest comes after residents gathered in Waukegan last month to speak out against the signs.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "The video in the player above is from a previous report.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "sourceCount": 1
+ }
+ ]
+ },
+ "brainConfidence": {
+ "score": 45,
+ "label": "developing",
+ "reason": "1 independent source, 1 full-read source, 0 shared claims."
+ },
+ "contradictionDetection": {
+ "count": 0,
+ "possibleContradictions": [],
+ "nextAction": "Keep absorbing sources before treating this as a settled story."
+ },
+ "storyDossier": {
+ "storyId": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "eventId": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "eventSignature": {
+ "category": "local",
+ "eventId": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "entities": [
+ "waukegan",
+ "north chicago"
+ ],
+ "terms": [
+ "facing",
+ "hate",
+ "crime",
+ "charge",
+ "signs",
+ "threatening",
+ "immigrants",
+ "waukegan"
+ ],
+ "sourceArticleCount": 1
+ },
+ "eventSourceArticleCount": 1,
+ "sourcePool": [
+ {
+ "title": "NJ Transit delays frustrate riders amid sweltering conditions as fare hike looms",
+ "source": "ABC7 NY",
+ "url": "https://abc7ny.com/post/several-nj-transit-lines-experiencing-90-minute-delays-due-signal-issue/19424675/",
+ "role": "background-context-source",
+ "admissionReason": "same category and entity/term bridge for background only",
+ "relevance": {
+ "sameEvent": false,
+ "sameCategory": true,
+ "titleOverlap": 0,
+ "termOverlap": 0,
+ "entityOverlap": 1,
+ "identityTermOverlap": 2,
+ "relevantFactCount": 3,
+ "sourceMaterialScore": 1
+ }
+ }
+ ],
+ "createdAt": "2026-07-01T03:07:11.464Z",
+ "method": "structured-event-dossier-before-writing",
+ "eventRule": "Treat outlet articles, official releases, local reports, and police/government statements as evidence for one event dossier before writing one CE Media story.",
+ "people": [
+ "Man",
+ "Waukegan",
+ "North Chicago",
+ "WLS",
+ "North Chicago. Derek Webb"
+ ],
+ "organizations": [
+ "Man",
+ "Waukegan",
+ "North Chicago",
+ "WLS",
+ "North Chicago. Derek Webb",
+ "Wednesday. The Lake County"
+ ],
+ "locations": [
+ "Man",
+ "Waukegan",
+ "North Chicago",
+ "North Chicago. Derek Webb",
+ "Wednesday. The Lake County"
+ ],
+ "timeline": [
+ {
+ "id": "timeline-1",
+ "at": "2026-07-01T02:00:56.000Z",
+ "source": "ABC7 Chicago",
+ "title": "",
+ "url": "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ }
+ ],
+ "officialSources": [],
+ "independentSources": [
+ {
+ "id": "source-1",
+ "source": "ABC7 Chicago",
+ "title": "Man facing hate crime charge for signs threatening immigrants in Waukegan, North Chicago: pros.",
+ "url": "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 02:00:56 +0000",
+ "readStatus": "full-article-read",
+ "summaryLength": 764,
+ "isOfficial": false
+ },
+ {
+ "id": "source-2",
+ "source": "ABC7 NY",
+ "title": "NJ Transit delays frustrate riders amid sweltering conditions as fare hike looms",
+ "url": "https://abc7ny.com/post/several-nj-transit-lines-experiencing-90-minute-delays-due-signal-issue/19424675/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 02:33:47 +0000",
+ "readStatus": "",
+ "summaryLength": 156,
+ "isOfficial": false
+ }
+ ],
+ "photos": [],
+ "videos": [],
+ "documents": [
+ {
+ "id": "document-1",
+ "source": "ABC7 Chicago",
+ "title": "Man facing hate crime charge for signs threatening immigrants in Waukegan, North Chicago: pros.",
+ "url": "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/",
+ "type": "legal record"
+ }
+ ],
+ "historicalContext": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "relatedStories": [
+ {
+ "at": "2026-07-01T02:00:56.000Z",
+ "source": "ABC7 Chicago",
+ "title": "",
+ "url": "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ }
+ ],
+ "contradictions": [],
+ "unknowns": [
+ "whether officials have released a complete public statement",
+ "the exact timing of the next confirmed step",
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "knownFacts": [
+ "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago."
+ ],
+ "unknownFacts": [
+ "whether officials have released a complete public statement",
+ "the exact timing of the next confirmed step",
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "dossierBuilder": {
+ "subsystem": "Story Dossier Builder",
+ "version": "20260701-dossier-builder-subsystem",
+ "job": "Collect, verify, classify, timeline, context, contradictions, known facts, unknown facts, then deliver a structured dossier to the Writer.",
+ "stages": [
+ {
+ "name": "Collect",
+ "status": "complete",
+ "evidence": "2 source articles collected for the event.",
+ "metrics": {
+ "sourceArticles": 2,
+ "strictWritingSources": 1,
+ "dossierSourcePool": 1,
+ "verificationContextSources": 0,
+ "backgroundContextSources": 1,
+ "sourceRecords": 2
+ }
+ },
+ {
+ "name": "Verify",
+ "status": "needs-more-confirmation",
+ "evidence": "0 official statements, 0 shared claims, 1 extracted fact.",
+ "metrics": {
+ "officialStatements": 0,
+ "sharedClaims": 0,
+ "extractedFacts": 1,
+ "sourcePoolFacts": 0
+ }
+ },
+ {
+ "name": "Classify",
+ "status": "complete",
+ "evidence": "5 people, 6 organizations, 5 locations, 1 documents classified.",
+ "metrics": {
+ "people": 5,
+ "organizations": 6,
+ "locations": 5
+ }
+ },
+ {
+ "name": "Timeline",
+ "status": "complete",
+ "evidence": "1 timeline item available.",
+ "metrics": {
+ "timelineItems": 1,
+ "firstSeenAt": "2026-07-01T02:00:56.000Z"
+ }
+ },
+ {
+ "name": "Context",
+ "status": "complete",
+ "evidence": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "relatedStories": 1
+ }
+ },
+ {
+ "name": "Contradictions",
+ "status": "reviewed-no-major-contradictions",
+ "evidence": "No major source contradiction was detected from the available source set.",
+ "metrics": {
+ "contradictionCount": 0,
+ "sourceSpecificClaimCount": 5
+ }
+ },
+ {
+ "name": "Known Facts",
+ "status": "thin",
+ "evidence": "1 known fact prepared for the Writer.",
+ "metrics": {
+ "knownFactCount": 1
+ }
+ },
+ {
+ "name": "Unknown Facts",
+ "status": "complete",
+ "evidence": "whether officials have released a complete public statement; the exact timing of the next confirmed step; the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "unknownFactCount": 3
+ }
+ },
+ {
+ "name": "Deliver Dossier To Writer",
+ "status": "ready",
+ "evidence": "Writer should draft only from known facts, source-specific claims, timeline, context, contradictions, and unknowns in this dossier.",
+ "metrics": {
+ "ready": true,
+ "confidenceScore": 45
+ }
+ }
+ ],
+ "readyForWriter": true,
+ "weakestStage": "Verify",
+ "outputContract": {
+ "knownFacts": "Facts the Writer may state directly.",
+ "unknownFacts": "Missing or unresolved facts the Writer must not invent.",
+ "sourceSpecificClaims": "Claims that should be attributed or qualified unless later confirmed by other sources.",
+ "contradictions": "Conflicting claims that should be explained, not hidden.",
+ "timeline": "Sequence of known developments used to keep the story coherent."
+ }
+ },
+ "confidence": {
+ "score": 45,
+ "label": "developing",
+ "reason": "1 source signals, 1 full-read signals, 1 shared or extracted claims.",
+ "sourceCount": 1,
+ "fullReadCount": 1,
+ "sharedClaimCount": 1,
+ "contradictionCount": 0
+ },
+ "whatHappened": "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago.",
+ "when": {
+ "firstSeenAt": "2026-07-01T02:00:56.000Z",
+ "latestSeenAt": "2026-07-01T02:33:47.000Z"
+ },
+ "whoIsInvolved": [
+ "Man",
+ "Waukegan",
+ "North Chicago",
+ "WLS",
+ "North Chicago. Derek Webb",
+ "Wednesday. The Lake County"
+ ],
+ "localContext": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "agreement": {
+ "score": 13,
+ "sharedClaims": [
+ "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago."
+ ]
+ },
+ "disagreement": {
+ "score": 24,
+ "contradictions": [],
+ "sourceSpecificClaims": [
+ {
+ "claim": "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ]
+ },
+ {
+ "claim": "Derek Webb was in court on Tuesday and is due back in court on Wednesday.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ]
+ },
+ {
+ "claim": "On one sign, there was an image of a shark with the word \"ICE\" drawn on top of it.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ]
+ },
+ {
+ "claim": "Another showed what appeared to be an alien crudely drawn on top of images used for target practice with the word \"MAGA\" below it.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ]
+ },
+ {
+ "claim": "The video in the player above is from a previous report.",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "urls": [
+ "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/"
+ ]
+ }
+ ]
+ },
+ "officialStatements": [],
+ "previousEventsRelated": [],
+ "stillUnknown": [
+ "whether officials have released a complete public statement",
+ "the exact timing of the next confirmed step",
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "evidence": {
+ "sourceCount": 1,
+ "sourcesReviewed": [
+ "ABC7 Chicago",
+ "ABC7 NY"
+ ],
+ "fullReadCount": 1,
+ "factCount": 1,
+ "confidenceScore": 45,
+ "confidenceLabel": "developing",
+ "angleTags": [
+ "official-response",
+ "family-and-community-impact",
+ "legal-accountability"
+ ]
+ },
+ "writingRule": "Write from the dossier: use shared claims as the core account, cite or qualify source-specific claims, explain unknowns plainly, and reject paragraphs that drift into another topic."
+ },
+ "sourceIntelligence": {
+ "providers": [
+ {
+ "provider": "ABC7 Chicago",
+ "domains": [
+ "abc7chicago.com"
+ ],
+ "articleCount": 1,
+ "averageLatencyMs": 0,
+ "failureRate": 0,
+ "updateFrequency": 1,
+ "originality": 1,
+ "historicalReliability": 95,
+ "weight": 0.95
+ }
+ ],
+ "recommendedUse": "Weight ABC7 Chicago highest for this story unless later telemetry shows failures or contradictions."
+ },
+ "contextEngine": {
+ "category": "local",
+ "topicTerms": [
+ "facing",
+ "hate",
+ "crime",
+ "charge",
+ "signs",
+ "threatening",
+ "immigrants",
+ "waukegan",
+ "north",
+ "chicago",
+ "pros",
+ "allegedly"
+ ],
+ "keyPeopleOrGroups": [
+ "Man",
+ "Waukegan",
+ "North Chicago",
+ "WLS",
+ "North Chicago. Derek Webb",
+ "Wednesday. The Lake County"
+ ],
+ "backgroundKnowledge": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "currentDevelopments": [
+ "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago."
+ ],
+ "previousArticleSignals": [],
+ "rule": "Use this context to prevent each article from treating recurring topics as brand-new events."
+ },
+ "entityMemory": {
+ "profiles": [
+ {
+ "entity": "Man",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Man is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "Waukegan",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Waukegan is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "North Chicago",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "North Chicago is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "WLS",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "WLS is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "North Chicago. Derek Webb",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "North Chicago. Derek Webb is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "Wednesday. The Lake County",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Wednesday. The Lake County is present in this story and should be tracked for future related developments."
+ }
+ ],
+ "recurringEntityCount": 0,
+ "rule": "When an entity recurs across clusters or days, future stories should mention the prior development instead of resetting context."
+ },
+ "evidenceEngine": {
+ "classifiedFacts": [
+ {
+ "fact": "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago.",
+ "classification": "single-source claim",
+ "sources": [
+ "ABC7 Chicago"
+ ],
+ "confidence": 54
+ }
+ ],
+ "counts": {
+ "single-source claim": 1
+ },
+ "rule": "The Brain should write hard facts from official, legal, or multi-source evidence, and qualify single-source claims."
+ },
+ "articleReadDepth": {
+ "fullReadCount": 1,
+ "factCount": 1,
+ "paragraphCount": 5,
+ "bodyLength": 646,
+ "draftEligibility": {
+ "eligible": true,
+ "score": 7,
+ "fullReadCount": 1,
+ "usableSummaryCount": 1,
+ "basicSummaryCount": 1
+ },
+ "absorbedCandidateCount": 0,
+ "acceptedAbsorbedCount": 0,
+ "rejectedAbsorbedCount": 0,
+ "dossierSourcePoolCount": 1,
+ "verificationContextSourceCount": 0,
+ "backgroundContextSourceCount": 1
+ },
+ "topicIntegrity": {
+ "score": 100,
+ "checkedSourceCount": 0,
+ "sameTopicCount": 0,
+ "offTopicCount": 0,
+ "offTopicSources": [],
+ "checkedSources": [],
+ "passed": true
+ },
+ "writingWorkflow": {
+ "version": "20260701-explicit-newsroom-workflow",
+ "stages": [
+ {
+ "name": "Collector",
+ "status": "complete",
+ "evidence": "1 source signal selected for this event.",
+ "metrics": {
+ "sourceSignals": 1,
+ "fullReadCount": 1
+ }
+ },
+ {
+ "name": "Cluster",
+ "status": "complete",
+ "evidence": "Clustered as local:event:waukegan-north-chicago-facing-hate-crime-charge.",
+ "metrics": {
+ "reportCount": 1
+ }
+ },
+ {
+ "name": "Evidence Engine",
+ "status": "needs-more-facts",
+ "evidence": "1 classified fact available.",
+ "metrics": {
+ "classifiedFacts": 1,
+ "sourceCount": 1
+ }
+ },
+ {
+ "name": "Context Engine",
+ "status": "limited-context",
+ "evidence": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "relatedContextItems": 0
+ }
+ },
+ {
+ "name": "Story Dossier",
+ "status": "complete",
+ "evidence": "Dossier Builder needs work at Verify.",
+ "metrics": {
+ "people": 5,
+ "organizations": 6,
+ "locations": 5,
+ "contradictions": 0,
+ "confidence": 45,
+ "knownFacts": 1,
+ "unknownFacts": 3,
+ "readyForWriter": true
+ }
+ },
+ {
+ "name": "Headline Generator",
+ "status": "complete",
+ "evidence": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "metrics": {
+ "titleLength": 58
+ }
+ },
+ {
+ "name": "Article Writer",
+ "status": "complete",
+ "evidence": "4 paragraphs, 712 characters.",
+ "metrics": {
+ "paragraphs": 4,
+ "bodyLength": 712
+ }
+ },
+ {
+ "name": "Editorial Coach",
+ "status": "approved",
+ "evidence": "91 coach score.",
+ "metrics": {
+ "score": 91,
+ "findingCount": 1
+ }
+ },
+ {
+ "name": "Publisher",
+ "status": "ready",
+ "evidence": "91 quality score.",
+ "metrics": {
+ "score": 91,
+ "issueCount": 0
+ }
+ }
+ ],
+ "rule": "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Headline Generator -> Article Writer -> Editorial Coach -> Publisher."
+ },
+ "topicIsolation": {
+ "absorbedCandidateCount": 0,
+ "acceptedSourceCount": 0,
+ "rejectedSourceCount": 0,
+ "rejectedSources": [],
+ "eventId": "local:event:waukegan-north-chicago-facing-hate-crime-charge",
+ "rule": "Supporting stories must share the same event dossier, event-level entities, title terms, or strong term overlap before the Brain may use them in a CE Media article draft."
+ },
+ "image": {
+ "primary": "https://images.pexels.com/photos/10464448/pexels-photo-10464448.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+ "fallback": "./assets/newsroom-hero.png",
+ "alt": "Police officer standing at a residential street crime scene with caution tape.",
+ "credit": "Photo by cottonbro studio via Pexels",
+ "query": "police investigation street",
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "provenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:07:11.461Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "creditUrl": "https://www.pexels.com/@cottonbro",
+ "retrievedAt": "2026-07-01T03:07:11.461Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "relevance": {
+ "query": "police investigation street",
+ "score": 7,
+ "matchedTerms": [
+ "crime"
+ ],
+ "reason": "Selected from story-specific Pexels search terms and de-duplicated against this page."
+ }
+ },
+ "imageProvenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:07:11.461Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "sources": [
+ {
+ "title": "Man facing hate crime charge for signs threatening immigrants in Waukegan, North Chicago: pros.",
+ "source": "ABC7 Chicago",
+ "url": "https://abc7chicago.com/post/derek-webb-charged-hate-crime-maga-ice-signs-appearing-target-immigrants-pop-north-chicago-waukegan-il/19425153/",
+ "summary": "A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago.",
+ "articleSummary": "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago. Derek Webb was in court on Tuesday and is due back in court on Wednesday. The Lake County State's Attorney's Office says Webb posted signs that made threats against Latino and immigrant communities. On one sign, there was an image of a shark with the word \"ICE\" drawn on top of it. Another showed what appeared to be an alien crudely drawn on top of images used for target practice with the word \"MAGA\" below it. Even as residents took some down, others popped back up, the community told ABC7. The arrest comes after residents gathered in Waukegan last month to speak out against the signs. The video in the player above is from a previous report.",
+ "category": "local",
+ "articleReadStatus": "full-article-read",
+ "articleTextLength": 764
+ }
+ ],
+ "sourceSpecifics": [
+ "Different coverage frames to compare: institutional framing versus household/community impact.",
+ "ABC7 Chicago emphasized official-response, family-and-community-impact, legal-accountability."
+ ],
+ "sourcePolicy": "RSS feeds guide facts and source links; the public tile uses original Censored Expressions wording and a locally controlled Pexels image slot.",
+ "generatedAt": "2026-07-01T02:29:56.967Z",
+ "paragraphTopicRepair": {
+ "checked": true,
+ "removedCount": 0,
+ "removedParagraphs": [],
+ "action": "paragraph-topic-clean"
+ },
+ "qualityGate": {
+ "passed": true,
+ "score": 100,
+ "issues": [],
+ "correctedIssues": [
+ "paragraph-topic-contamination",
+ "summary-repeats-body"
+ ],
+ "remainingIssues": [],
+ "action": "final-approval-repaired"
+ },
+ "editorialCoach": {
+ "score": 91,
+ "passed": true,
+ "findings": [
+ {
+ "code": "coach-abrupt-transition",
+ "severity": "medium",
+ "note": "Adjacent paragraphs may not transition naturally."
+ }
+ ],
+ "rule": "The Editorial Coach checks repetition, passive voice, copied wording, unsupported conclusions, missing context, abrupt transitions, and contradictions before publication."
+ },
+ "aliveStory": {
+ "status": "new-live-event",
+ "previousUpdatedAt": "",
+ "updateCount": 0,
+ "latestUpdateAt": "2026-07-01T03:07:11.468Z",
+ "changedClaims": [
+ "(WLS) -- A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago."
+ ],
+ "keepAliveRule": "Keep the original story alive and append/update when new evidence changes the dossier; create a new story only when the event identity changes."
+ },
+ "editorialSubsystems": {
+ "collector": {
+ "status": "complete",
+ "evidence": "1 source links, 0 absorbed candidates"
+ },
+ "verifier": {
+ "status": "needs-more-evidence",
+ "evidence": "1 shared claims, 0 possible contradictions"
+ },
+ "researcher": {
+ "status": "complete",
+ "evidence": "1 full-read sources, 1 source signals"
+ },
+ "writer": {
+ "status": "complete",
+ "evidence": "4 paragraphs"
+ },
+ "editor": {
+ "status": "approved",
+ "evidence": "91 coach score"
+ },
+ "factChecker": {
+ "status": "needs-classified-facts",
+ "evidence": "1 classified facts"
+ },
+ "legalReview": {
+ "status": "needs-review",
+ "evidence": "unconfirmed-language"
+ },
+ "publisher": {
+ "status": "hold-for-repair",
+ "evidence": "quality=91, coach=91, legalRisks=1"
+ }
+ },
+ "contentLaneQuality": {
+ "lane": "news-lab",
+ "checkedAt": "2026-07-01T03:07:32.112Z",
+ "passed": true,
+ "issues": [],
+ "laneIssues": [],
+ "technicalEditor": {
+ "passed": true,
+ "issues": [],
+ "findings": [],
+ "summary": "Copy editor reviewed News Lab article for spelling, sentence structure, punctuation, encoding artifacts, repetition, public-facing clarity, and lane-specific tone before save.",
+ "role": "newspaper-style technical editor"
+ },
+ "rulesApplied": [
+ "remove mojibake, clipped sentences, ellipses, script fragments, and copied source noise",
+ "preserve source links and story context while using original Censored Expressions wording",
+ "dedupe repeated story/title references before public save",
+ "run copy-editor review for spelling, sentence structure, punctuation, repetition, and public-facing polish",
+ "News Lab is fact-based reporting: remove Creator Desk opinion language and keep the article neutral",
+ "cluster multiple outlets into one CE Media story when they cover the same topic",
+ "cite a specific outlet only for unique or differing details, not for broadly accepted facts"
+ ]
+ },
+ "editorEnforcement": {
+ "lane": "news-lab",
+ "checkedAt": "2026-07-01T03:07:32.112Z",
+ "action": "accepted-first-draft",
+ "attempts": 1,
+ "initialIssues": [],
+ "finalIssues": []
+ },
+ "editorCategoryAudit": {
+ "checkedAt": "2026-07-01T03:07:21.795Z",
+ "assignedCategory": "local",
+ "inferredCategory": "local",
+ "finalCategory": "local",
+ "corrected": false,
+ "action": "editor-confirmed-category"
+ },
+ "finalSemanticAudit": {
+ "checkedAt": "2026-07-01T03:10:51.815Z",
+ "previousCategory": "local",
+ "finalCategory": "local",
+ "previousTitle": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "finalTitle": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "action": "semantic-editor-confirmed"
+ },
+ "originalArticle": {
+ "title": "Signs Waukegan Charge Chicago Crime Prompts Local Response",
+ "summary": "The story centers on the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety.",
+ "body": [
+ "A man is facing a hate crime charge for allegedly posting threatening signs in Waukegan and North Chicago. On one sign, there was an image of a shark with the word \"ICE\" drawn on top of it.",
+ "Records, official statements, or confirmed reporting should clarify the next concrete development.",
+ "The unresolved part of the story is whether officials have released a complete public statement and the exact timing of the next confirmed step. Later updates are expected to clarify the confirmed timeline, official response, and direct consequences.",
+ "Source records from ABC7 Chicago identify the same central development, while later updates should add official documents, names, timing, locations, or direct consequences."
+ ],
+ "generatedAt": "2026-07-01T02:29:56.967Z",
+ "category": "local",
+ "image": {
+ "primary": "https://images.pexels.com/photos/10464448/pexels-photo-10464448.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+ "fallback": "./assets/newsroom-hero.png",
+ "alt": "Police officer standing at a residential street crime scene with caution tape.",
+ "credit": "Photo by cottonbro studio via Pexels",
+ "query": "police investigation street",
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "provenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:07:11.461Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "creditUrl": "https://www.pexels.com/@cottonbro",
+ "retrievedAt": "2026-07-01T03:07:11.461Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "relevance": {
+ "query": "police investigation street",
+ "score": 7,
+ "matchedTerms": [
+ "crime"
+ ],
+ "reason": "Selected from story-specific Pexels search terms and de-duplicated against this page."
+ }
+ },
+ "imageProvenance": {
+ "source": "Pexels",
+ "photographer": "cottonbro studio",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:07:11.461Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-police-officer-standing-inside-the-crime-scene-10464448/",
+ "photoId": "10464448",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ }
+ },
+ "storyUpdates": [],
+ "lastUpdatedAt": "",
+ "updateMode": "original-story"
+ },
+ {
+ "id": "news_lab_local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo_30",
+ "eventId": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "eventSignature": {
+ "category": "local",
+ "eventId": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "entities": [
+ "adolf hitler",
+ "paramus",
+ "new jersey east brook middle",
+ "school"
+ ],
+ "terms": [
+ "adolf",
+ "hitler",
+ "baby",
+ "photo",
+ "paramus",
+ "jersey",
+ "east",
+ "brook"
+ ],
+ "sourceArticleCount": 1
+ },
+ "topicKey": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "title": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "originalHeadline": "Adolf Hitler baby photo in Paramus, New Jersey East Brook Middle School yearbook sparks investigation",
+ "headlineAudit": {
+ "sourceHeadline": "Adolf Hitler baby photo in Paramus, New Jersey East Brook Middle School yearbook sparks investigation",
+ "candidateHeadline": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "preEditorHeadline": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "finalHeadline": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "copiedVerbatim": false,
+ "similarity": 0,
+ "action": "prepublish-title-reviewed",
+ "rule": "Before editor review, every News Lab headline must be rewritten into original CE Media wording, avoid copied phrase order, and avoid truncation."
+ },
+ "category": "business",
+ "categoryLabel": "Business",
+ "matter": "",
+ "summary": "The story centers on the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety.",
+ "body": [
+ "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said. Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation.",
+ "Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office.",
+ "Records, official statements, or confirmed reporting should clarify the next concrete development.",
+ "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books. The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School."
+ ],
+ "hasArticleDepth": true,
+ "popularity": {
+ "uniqueSourceCount": 1,
+ "relatedArticleCount": 1,
+ "reportingScore": 788,
+ "eventSourceArticleCount": 1,
+ "eventRule": "Multiple source articles about the same event become one CE Media story."
+ },
+ "storyEvolution": {
+ "timeline": [
+ {
+ "at": "2026-07-01T01:28:55.000Z",
+ "source": "ABC7 LA",
+ "title": "Adolf Hitler baby photo in Paramus, New Jersey East Brook Middle School yearbook sparks investigation",
+ "url": "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/",
+ "summary": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books. The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School. Now, parents want to know how th"
+ }
+ ],
+ "updateRule": "When a new article arrives, regroup the event, remeasure shared claims, recheck contradictions, append timeline evidence, and recalculate confidence before the Brain writes or updates coverage.",
+ "latestUpdateAt": "2026-07-01T01:28:55.000Z",
+ "status": "early-fragment"
+ },
+ "sourceAgreement": {
+ "agreement": 13,
+ "disagreement": 24,
+ "sharedClaims": [],
+ "sourceSpecificClaims": [
+ {
+ "claim": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "Now, parents want to know how the Hitler picture got there, and why no one noticed until after the yearbooks were printed.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "After collecting the books, administrators sent a letter to parents condemning the act.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "SEE ALSO: Ye, formerly Kanye West, buys page in The Wall Street Journal to apologize to 'Those I've Hurt' \"An image of him has no place in a yearbook created for our students.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ },
+ {
+ "claim": "Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ],
+ "numbers": [],
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "sourceCount": 1
+ }
+ ]
+ },
+ "brainConfidence": {
+ "score": 45,
+ "label": "developing",
+ "reason": "1 independent source, 1 full-read source, 0 shared claims."
+ },
+ "contradictionDetection": {
+ "count": 0,
+ "possibleContradictions": [],
+ "nextAction": "Keep absorbing sources before treating this as a settled story."
+ },
+ "storyDossier": {
+ "storyId": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "eventId": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "eventSignature": {
+ "category": "local",
+ "eventId": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "entities": [
+ "adolf hitler",
+ "paramus",
+ "new jersey east brook middle",
+ "school"
+ ],
+ "terms": [
+ "adolf",
+ "hitler",
+ "baby",
+ "photo",
+ "paramus",
+ "jersey",
+ "east",
+ "brook"
+ ],
+ "sourceArticleCount": 1
+ },
+ "eventSourceArticleCount": 1,
+ "sourcePool": [],
+ "createdAt": "2026-07-01T03:11:04.029Z",
+ "method": "structured-event-dossier-before-writing",
+ "eventRule": "Treat outlet articles, official releases, local reports, and police/government statements as evidence for one event dossier before writing one CE Media story.",
+ "people": [
+ "Adolf Hitler",
+ "Paramus",
+ "New Jersey East Brook",
+ "Middle School",
+ "An Adolf Hitler",
+ "New Jersey"
+ ],
+ "organizations": [
+ "Adolf Hitler",
+ "Paramus",
+ "New Jersey East Brook",
+ "Middle School",
+ "An Adolf Hitler",
+ "New Jersey"
+ ],
+ "locations": [
+ "Adolf Hitler",
+ "Paramus",
+ "New Jersey East Brook",
+ "Middle School",
+ "An Adolf Hitler",
+ "New Jersey"
+ ],
+ "timeline": [
+ {
+ "id": "timeline-1",
+ "at": "2026-07-01T01:28:55.000Z",
+ "source": "ABC7 LA",
+ "title": "",
+ "url": "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ }
+ ],
+ "officialSources": [],
+ "independentSources": [
+ {
+ "id": "source-1",
+ "source": "ABC7 LA",
+ "title": "Adolf Hitler baby photo in Paramus, New Jersey East Brook Middle School yearbook sparks investigation",
+ "url": "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/",
+ "category": "local",
+ "publishedAt": "Wed, 01 Jul 2026 01:28:55 +0000",
+ "readStatus": "full-article-read",
+ "summaryLength": 1068,
+ "isOfficial": false
+ }
+ ],
+ "photos": [],
+ "videos": [],
+ "documents": [
+ {
+ "id": "document-1",
+ "source": "ABC7 LA",
+ "title": "Adolf Hitler baby photo in Paramus, New Jersey East Brook Middle School yearbook sparks investigation",
+ "url": "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/",
+ "type": "legislation"
+ }
+ ],
+ "historicalContext": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "relatedStories": [
+ {
+ "at": "2026-07-01T01:28:55.000Z",
+ "source": "ABC7 LA",
+ "title": "",
+ "url": "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ }
+ ],
+ "contradictions": [],
+ "unknowns": [
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "knownFacts": [
+ "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation.",
+ "Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office."
+ ],
+ "unknownFacts": [
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "dossierBuilder": {
+ "subsystem": "Story Dossier Builder",
+ "version": "20260701-dossier-builder-subsystem",
+ "job": "Collect, verify, classify, timeline, context, contradictions, known facts, unknown facts, then deliver a structured dossier to the Writer.",
+ "stages": [
+ {
+ "name": "Collect",
+ "status": "limited",
+ "evidence": "1 source article collected for the event.",
+ "metrics": {
+ "sourceArticles": 1,
+ "strictWritingSources": 1,
+ "dossierSourcePool": 0,
+ "verificationContextSources": 0,
+ "backgroundContextSources": 0,
+ "sourceRecords": 1
+ }
+ },
+ {
+ "name": "Verify",
+ "status": "complete",
+ "evidence": "0 official statements, 0 shared claims, 5 extracted facts.",
+ "metrics": {
+ "officialStatements": 0,
+ "sharedClaims": 0,
+ "extractedFacts": 5,
+ "sourcePoolFacts": 0
+ }
+ },
+ {
+ "name": "Classify",
+ "status": "complete",
+ "evidence": "6 people, 6 organizations, 6 locations, 1 documents classified.",
+ "metrics": {
+ "people": 6,
+ "organizations": 6,
+ "locations": 6
+ }
+ },
+ {
+ "name": "Timeline",
+ "status": "complete",
+ "evidence": "1 timeline item available.",
+ "metrics": {
+ "timelineItems": 1,
+ "firstSeenAt": "2026-07-01T01:28:55.000Z"
+ }
+ },
+ {
+ "name": "Context",
+ "status": "complete",
+ "evidence": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "relatedStories": 1
+ }
+ },
+ {
+ "name": "Contradictions",
+ "status": "reviewed-no-major-contradictions",
+ "evidence": "No major source contradiction was detected from the available source set.",
+ "metrics": {
+ "contradictionCount": 0,
+ "sourceSpecificClaimCount": 5
+ }
+ },
+ {
+ "name": "Known Facts",
+ "status": "complete",
+ "evidence": "5 known facts prepared for the Writer.",
+ "metrics": {
+ "knownFactCount": 5
+ }
+ },
+ {
+ "name": "Unknown Facts",
+ "status": "complete",
+ "evidence": "the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "unknownFactCount": 1
+ }
+ },
+ {
+ "name": "Deliver Dossier To Writer",
+ "status": "ready",
+ "evidence": "Writer should draft only from known facts, source-specific claims, timeline, context, contradictions, and unknowns in this dossier.",
+ "metrics": {
+ "ready": true,
+ "confidenceScore": 45
+ }
+ }
+ ],
+ "readyForWriter": true,
+ "weakestStage": "Collect",
+ "outputContract": {
+ "knownFacts": "Facts the Writer may state directly.",
+ "unknownFacts": "Missing or unresolved facts the Writer must not invent.",
+ "sourceSpecificClaims": "Claims that should be attributed or qualified unless later confirmed by other sources.",
+ "contradictions": "Conflicting claims that should be explained, not hidden.",
+ "timeline": "Sequence of known developments used to keep the story coherent."
+ }
+ },
+ "confidence": {
+ "score": 45,
+ "label": "developing",
+ "reason": "1 source signals, 1 full-read signals, 5 shared or extracted claims.",
+ "sourceCount": 1,
+ "fullReadCount": 1,
+ "sharedClaimCount": 5,
+ "contradictionCount": 0
+ },
+ "whatHappened": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "when": {
+ "firstSeenAt": "2026-07-01T01:28:55.000Z",
+ "latestSeenAt": "2026-07-01T01:28:55.000Z"
+ },
+ "whoIsInvolved": [
+ "Adolf Hitler",
+ "Paramus",
+ "New Jersey East Brook",
+ "Middle School",
+ "An Adolf Hitler",
+ "New Jersey"
+ ],
+ "localContext": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "agreement": {
+ "score": 13,
+ "sharedClaims": [
+ "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation."
+ ]
+ },
+ "disagreement": {
+ "score": 24,
+ "contradictions": [],
+ "sourceSpecificClaims": [
+ {
+ "claim": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ]
+ },
+ {
+ "claim": "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ]
+ },
+ {
+ "claim": "Now, parents want to know how the Hitler picture got there, and why no one noticed until after the yearbooks were printed.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ]
+ },
+ {
+ "claim": "After collecting the books, administrators sent a letter to parents condemning the act.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ]
+ },
+ {
+ "claim": "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "urls": [
+ "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/"
+ ]
+ }
+ ]
+ },
+ "officialStatements": [],
+ "previousEventsRelated": [],
+ "stillUnknown": [
+ "the practical effect on nearby residents, roads, schools, businesses, or public safety"
+ ],
+ "evidence": {
+ "sourceCount": 1,
+ "sourcesReviewed": [
+ "ABC7 LA"
+ ],
+ "fullReadCount": 1,
+ "factCount": 5,
+ "confidenceScore": 45,
+ "confidenceLabel": "developing",
+ "angleTags": [
+ "official-response",
+ "political-reaction",
+ "family-and-community-impact"
+ ]
+ },
+ "writingRule": "Write from the dossier: use shared claims as the core account, cite or qualify source-specific claims, explain unknowns plainly, and reject paragraphs that drift into another topic."
+ },
+ "sourceIntelligence": {
+ "providers": [
+ {
+ "provider": "ABC7 LA",
+ "domains": [
+ "abc7.com"
+ ],
+ "articleCount": 1,
+ "averageLatencyMs": 0,
+ "failureRate": 0,
+ "updateFrequency": 1,
+ "originality": 1,
+ "historicalReliability": 95,
+ "weight": 0.95
+ }
+ ],
+ "recommendedUse": "Weight ABC7 LA highest for this story unless later telemetry shows failures or contradictions."
+ },
+ "contextEngine": {
+ "category": "local",
+ "topicTerms": [
+ "adolf",
+ "hitler",
+ "baby",
+ "photo",
+ "paramus",
+ "jersey",
+ "east",
+ "brook",
+ "middle",
+ "school",
+ "yearbook",
+ "sparks"
+ ],
+ "keyPeopleOrGroups": [
+ "Adolf Hitler",
+ "Paramus",
+ "New Jersey East Brook",
+ "Middle School",
+ "An Adolf Hitler",
+ "New Jersey"
+ ],
+ "backgroundKnowledge": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "currentDevelopments": [
+ "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation.",
+ "Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office."
+ ],
+ "previousArticleSignals": [],
+ "rule": "Use this context to prevent each article from treating recurring topics as brand-new events."
+ },
+ "entityMemory": {
+ "profiles": [
+ {
+ "entity": "Adolf Hitler",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Adolf Hitler is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "Paramus",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Paramus is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "New Jersey East Brook",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "New Jersey East Brook is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "Middle School",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "Middle School is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "An Adolf Hitler",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "An Adolf Hitler is present in this story and should be tracked for future related developments."
+ },
+ {
+ "entity": "New Jersey",
+ "type": "legal/policy",
+ "mentionCount": 1,
+ "memoryNote": "New Jersey is present in this story and should be tracked for future related developments."
+ }
+ ],
+ "recurringEntityCount": 0,
+ "rule": "When an entity recurs across clusters or days, future stories should mention the prior development instead of resetting context."
+ },
+ "evidenceEngine": {
+ "classifiedFacts": [
+ {
+ "fact": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "classification": "single-source claim",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "confidence": 54
+ },
+ {
+ "fact": "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "classification": "single-source claim",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "confidence": 54
+ },
+ {
+ "fact": "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "classification": "single-source claim",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "confidence": 54
+ },
+ {
+ "fact": "Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation.",
+ "classification": "single-source claim",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "confidence": 54
+ },
+ {
+ "fact": "Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office.",
+ "classification": "official statement",
+ "sources": [
+ "ABC7 LA"
+ ],
+ "confidence": 72
+ }
+ ],
+ "counts": {
+ "single-source claim": 4,
+ "official statement": 1
+ },
+ "rule": "The Brain should write hard facts from official, legal, or multi-source evidence, and qualify single-source claims."
+ },
+ "articleReadDepth": {
+ "fullReadCount": 1,
+ "factCount": 5,
+ "paragraphCount": 5,
+ "bodyLength": 1088,
+ "draftEligibility": {
+ "eligible": true,
+ "score": 7,
+ "fullReadCount": 1,
+ "usableSummaryCount": 1,
+ "basicSummaryCount": 1
+ },
+ "absorbedCandidateCount": 0,
+ "acceptedAbsorbedCount": 0,
+ "rejectedAbsorbedCount": 0,
+ "dossierSourcePoolCount": 0,
+ "verificationContextSourceCount": 0,
+ "backgroundContextSourceCount": 0
+ },
+ "topicIntegrity": {
+ "score": 100,
+ "checkedSourceCount": 0,
+ "sameTopicCount": 0,
+ "offTopicCount": 0,
+ "offTopicSources": [],
+ "checkedSources": [],
+ "passed": true
+ },
+ "writingWorkflow": {
+ "version": "20260701-explicit-newsroom-workflow",
+ "stages": [
+ {
+ "name": "Collector",
+ "status": "complete",
+ "evidence": "1 source signal selected for this event.",
+ "metrics": {
+ "sourceSignals": 1,
+ "fullReadCount": 1
+ }
+ },
+ {
+ "name": "Cluster",
+ "status": "complete",
+ "evidence": "Clustered as local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo.",
+ "metrics": {
+ "reportCount": 1
+ }
+ },
+ {
+ "name": "Evidence Engine",
+ "status": "complete",
+ "evidence": "5 classified facts available.",
+ "metrics": {
+ "classifiedFacts": 5,
+ "sourceCount": 1
+ }
+ },
+ {
+ "name": "Context Engine",
+ "status": "limited-context",
+ "evidence": "the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety",
+ "metrics": {
+ "relatedContextItems": 0
+ }
+ },
+ {
+ "name": "Story Dossier",
+ "status": "complete",
+ "evidence": "Dossier Builder needs work at Collect.",
+ "metrics": {
+ "people": 6,
+ "organizations": 6,
+ "locations": 6,
+ "contradictions": 0,
+ "confidence": 45,
+ "knownFacts": 5,
+ "unknownFacts": 1,
+ "readyForWriter": true
+ }
+ },
+ {
+ "name": "Headline Generator",
+ "status": "complete",
+ "evidence": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "metrics": {
+ "titleLength": 59
+ }
+ },
+ {
+ "name": "Article Writer",
+ "status": "complete",
+ "evidence": "4 paragraphs, 780 characters.",
+ "metrics": {
+ "paragraphs": 4,
+ "bodyLength": 780
+ }
+ },
+ {
+ "name": "Editorial Coach",
+ "status": "approved",
+ "evidence": "91 coach score.",
+ "metrics": {
+ "score": 91,
+ "findingCount": 1
+ }
+ },
+ {
+ "name": "Publisher",
+ "status": "ready",
+ "evidence": "91 quality score.",
+ "metrics": {
+ "score": 91,
+ "issueCount": 0
+ }
+ }
+ ],
+ "rule": "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Headline Generator -> Article Writer -> Editorial Coach -> Publisher."
+ },
+ "topicIsolation": {
+ "absorbedCandidateCount": 0,
+ "acceptedSourceCount": 0,
+ "rejectedSourceCount": 0,
+ "rejectedSources": [],
+ "eventId": "local:event:adolf-hitler-paramus-new-jersey-east-brook-middle-baby-photo",
+ "rule": "Supporting stories must share the same event dossier, event-level entities, title terms, or strong term overlap before the Brain may use them in a CE Media article draft."
+ },
+ "image": {
+ "primary": "https://images.pexels.com/photos/11960139/pexels-photo-11960139.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+ "fallback": "./assets/creator-bg-speak-free.png",
+ "alt": "Police officers investigate and secure a crime scene in an urban street with caution tape.",
+ "credit": "Photo by Ricardo Martínez González via Pexels",
+ "query": "police investigation street",
+ "source": "Pexels",
+ "photographer": "Ricardo Martínez González",
+ "license": "Pexels",
+ "provenance": {
+ "source": "Pexels",
+ "photographer": "Ricardo Martínez González",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:04.026Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-man-in-black-police-uniform-11960139/",
+ "photoId": "11960139",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "creditUrl": "https://www.pexels.com/@ricardo-martinez-gonzalez-214380188",
+ "retrievedAt": "2026-07-01T03:11:04.026Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-man-in-black-police-uniform-11960139/",
+ "photoId": "11960139",
+ "relevance": {
+ "query": "police investigation street",
+ "score": 5,
+ "matchedTerms": [],
+ "reason": "Selected from story-specific Pexels search terms and de-duplicated against this page."
+ }
+ },
+ "imageProvenance": {
+ "source": "Pexels",
+ "photographer": "Ricardo Martínez González",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:04.026Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-man-in-black-police-uniform-11960139/",
+ "photoId": "11960139",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "sources": [
+ {
+ "title": "Adolf Hitler baby photo in Paramus, New Jersey East Brook Middle School yearbook sparks investigation",
+ "source": "ABC7 LA",
+ "url": "https://abc7.com/story/adolf-hitler-baby-photo-paramus-new-jersey-east-brook-middle-school-yearbook-sparks-investigation/19422058/",
+ "summary": "An Adolf Hitler baby photo in a Paramus, New Jersey East Brook Middle School yearbook sparked an investigation.",
+ "articleSummary": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books. The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School. Now, parents want to know how the Hitler picture got there, and why no one noticed until after the yearbooks were printed. After collecting the books, administrators sent a letter to parents condemning the act. SEE ALSO: Ye, formerly Kanye West, buys page in The Wall Street Journal to apologize to 'Those I've Hurt' \"An image of him has no place in a yearbook created for our students. It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said. Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation. Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office.",
+ "category": "local",
+ "articleReadStatus": "full-article-read",
+ "articleTextLength": 1068
+ }
+ ],
+ "sourceSpecifics": [
+ "Different coverage frames to compare: official explanation versus political/public challenge; institutional framing versus household/community impact.",
+ "ABC7 LA emphasized official-response, political-reaction, family-and-community-impact."
+ ],
+ "sourcePolicy": "RSS feeds guide facts and source links; the public tile uses original Censored Expressions wording and a locally controlled Pexels image slot.",
+ "generatedAt": "2026-07-01T01:29:23.641Z",
+ "paragraphTopicRepair": {
+ "checked": true,
+ "removedCount": 0,
+ "removedParagraphs": [],
+ "action": "paragraph-topic-clean"
+ },
+ "qualityGate": {
+ "passed": true,
+ "score": 100,
+ "issues": [],
+ "correctedIssues": [
+ "summary-repeats-body"
+ ],
+ "remainingIssues": [],
+ "action": "final-approval-repaired"
+ },
+ "editorialCoach": {
+ "score": 91,
+ "passed": true,
+ "findings": [
+ {
+ "code": "coach-abrupt-transition",
+ "severity": "medium",
+ "note": "Adjacent paragraphs may not transition naturally."
+ }
+ ],
+ "rule": "The Editorial Coach checks repetition, passive voice, copied wording, unsupported conclusions, missing context, abrupt transitions, and contradictions before publication."
+ },
+ "aliveStory": {
+ "status": "new-live-event",
+ "previousUpdatedAt": "",
+ "updateCount": 0,
+ "latestUpdateAt": "2026-07-01T03:11:04.037Z",
+ "changedClaims": [
+ "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books.",
+ "The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School.",
+ "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said.",
+ "Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation."
+ ],
+ "keepAliveRule": "Keep the original story alive and append/update when new evidence changes the dossier; create a new story only when the event identity changes."
+ },
+ "editorialSubsystems": {
+ "collector": {
+ "status": "complete",
+ "evidence": "1 source links, 0 absorbed candidates"
+ },
+ "verifier": {
+ "status": "needs-more-evidence",
+ "evidence": "4 shared claims, 0 possible contradictions"
+ },
+ "researcher": {
+ "status": "complete",
+ "evidence": "1 full-read sources, 1 source signals"
+ },
+ "writer": {
+ "status": "complete",
+ "evidence": "4 paragraphs"
+ },
+ "editor": {
+ "status": "approved",
+ "evidence": "91 coach score"
+ },
+ "factChecker": {
+ "status": "complete",
+ "evidence": "5 classified facts"
+ },
+ "legalReview": {
+ "status": "cleared",
+ "evidence": "No obvious copied-source or unconfirmed-claim risk detected."
+ },
+ "publisher": {
+ "status": "ready",
+ "evidence": "quality=91, coach=91, legalRisks=0"
+ }
+ },
+ "contentLaneQuality": {
+ "lane": "news-lab",
+ "checkedAt": "2026-07-01T03:11:52.251Z",
+ "passed": true,
+ "issues": [],
+ "laneIssues": [],
+ "technicalEditor": {
+ "passed": true,
+ "issues": [],
+ "findings": [],
+ "summary": "Copy editor reviewed News Lab article for spelling, sentence structure, punctuation, encoding artifacts, repetition, public-facing clarity, and lane-specific tone before save.",
+ "role": "newspaper-style technical editor"
+ },
+ "rulesApplied": [
+ "remove mojibake, clipped sentences, ellipses, script fragments, and copied source noise",
+ "preserve source links and story context while using original Censored Expressions wording",
+ "dedupe repeated story/title references before public save",
+ "run copy-editor review for spelling, sentence structure, punctuation, repetition, and public-facing polish",
+ "News Lab is fact-based reporting: remove Creator Desk opinion language and keep the article neutral",
+ "cluster multiple outlets into one CE Media story when they cover the same topic",
+ "cite a specific outlet only for unique or differing details, not for broadly accepted facts"
+ ]
+ },
+ "editorEnforcement": {
+ "lane": "news-lab",
+ "checkedAt": "2026-07-01T03:11:52.251Z",
+ "action": "accepted-first-draft",
+ "attempts": 1,
+ "initialIssues": [],
+ "finalIssues": []
+ },
+ "editorCategoryAudit": {
+ "checkedAt": "2026-07-01T03:11:25.033Z",
+ "assignedCategory": "local",
+ "inferredCategory": "local",
+ "finalCategory": "local",
+ "corrected": false,
+ "action": "editor-confirmed-category"
+ },
+ "finalSemanticAudit": {
+ "checkedAt": "2026-07-01T03:12:09.073Z",
+ "previousCategory": "business",
+ "finalCategory": "business",
+ "previousTitle": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "finalTitle": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "action": "semantic-editor-confirmed"
+ },
+ "originalArticle": {
+ "title": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "summary": "The story centers on the local event, the official response, and the practical effect on nearby residents, roads, schools, businesses, or public safety.",
+ "body": [
+ "It does not reflect who we are or what East Brook stands for, and we condemn its inclusion without reservation,\" the principal said. Paramus, New Jersey Mayor Chris di Piazza said the incident \"doesn't represent Paramus.One bad action doesn't represent the town.\" How the picture was included is under investigation.",
+ "Paramus police were notified, and the information was shared with the Bergen County, New Jersey Prosecutor's Office.",
+ "Records, official statements, or confirmed reporting should clarify the next concrete development.",
+ "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books. The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School."
+ ],
+ "generatedAt": "2026-07-01T01:29:23.641Z",
+ "category": "business",
+ "image": {
+ "primary": "https://images.pexels.com/photos/11960139/pexels-photo-11960139.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+ "fallback": "./assets/creator-bg-speak-free.png",
+ "alt": "Police officers investigate and secure a crime scene in an urban street with caution tape.",
+ "credit": "Photo by Ricardo Martínez González via Pexels",
+ "query": "police investigation street",
+ "source": "Pexels",
+ "photographer": "Ricardo Martínez González",
+ "license": "Pexels",
+ "provenance": {
+ "source": "Pexels",
+ "photographer": "Ricardo Martínez González",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:04.026Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-man-in-black-police-uniform-11960139/",
+ "photoId": "11960139",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ },
+ "creditUrl": "https://www.pexels.com/@ricardo-martinez-gonzalez-214380188",
+ "retrievedAt": "2026-07-01T03:11:04.026Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-man-in-black-police-uniform-11960139/",
+ "photoId": "11960139",
+ "relevance": {
+ "query": "police investigation street",
+ "score": 5,
+ "matchedTerms": [],
+ "reason": "Selected from story-specific Pexels search terms and de-duplicated against this page."
+ }
+ },
+ "imageProvenance": {
+ "source": "Pexels",
+ "photographer": "Ricardo Martínez González",
+ "license": "Pexels",
+ "retrievedAt": "2026-07-01T03:11:04.026Z",
+ "originalQuery": "police investigation street",
+ "sourceUrl": "https://www.pexels.com/photo/a-man-in-black-police-uniform-11960139/",
+ "photoId": "11960139",
+ "auditNote": "Selected by News Lab image subsystem from Pexels API using story-specific query terms."
+ }
+ },
+ "storyUpdates": [
+ {
+ "updatedAt": "2026-07-01T01:31:02.810Z",
+ "title": "Housing Bill Raises Questions About Wall Street Home Buying",
+ "summary": "-- A photo of Adolf Hitler as a baby ended up in a New Jersey middle school's yearbook, prompting school administrators to quickly recall the books. The pages were meant to be baby pictures of kids who just graduated from East Brook Middle School. Now, parents want to know how th",
+ "confidence": 45,
+ "sourceCount": 1,
+ "latestUpdateAt": "2026-07-01T01:28:55.000Z"
+ }
+ ],
+ "lastUpdatedAt": "2026-07-01T01:31:02.810Z",
+ "updateMode": "original-with-updates"
+ }
+ ],
+ "savedAt": "2026-07-01T03:12:09.141Z"
+}
