@@ -23688,10 +23688,7 @@ function newsLabApplyCurrentBoardPolicy(payload = {}) {
       };
     });
   const visibleStories = newsLabSortByCoveragePopularity(stories
-    .filter(story => story.boardVisibility?.visible)
-    .filter(story => !newsLabWeakGenericHeadline(story.title || ""))
-    .filter(story => !newsLabScrambledHeadline(story.title || "", story))
-    .filter(story => !newsLabHeadlineTruncated(story.title || "")))
+    .filter(story => story.boardVisibility?.visible))
     .slice(0, newsLabOwnedStoryLimit);
   const expiredStories = stories.filter(story => !story.boardVisibility?.visible);
   return {
@@ -24741,9 +24738,10 @@ function newsLabPreserveLockedPublicPayload(nextPayload = {}, reason = "public-p
 }
 function newsLabDurablyPersistPublicPayload(payload = {}, context = {}) {
   const reviewedStories = (payload.ownedStories || []).map(newsLabPrepareDurableShelfStory);
-  const visibleStories = reviewedStories.filter(newsLabCompleteArticleStory);
+  const batchVisibleStories = reviewedStories.filter(newsLabCompleteArticleStory);
   const existingLockedPayload = readJsonFile(newsLabPublishedPayloadFile, null);
   const existingLockedStories = Array.isArray(existingLockedPayload?.ownedStories) ? existingLockedPayload.ownedStories : [];
+  const visibleStories = mergeNewsLabApprovedStories(batchVisibleStories, existingLockedPayload);
   const tabFillLockExpiresAt = existingLockedPayload?.tabFillLock?.expiresAt ? new Date(existingLockedPayload.tabFillLock.expiresAt).getTime() : 0;
   const tabFillLockActive = existingLockedPayload?.tabFillLock?.active === true && tabFillLockExpiresAt > Date.now();
   if (tabFillLockActive && existingLockedStories.length && visibleStories.length < existingLockedStories.length) {
@@ -24773,7 +24771,7 @@ function newsLabDurablyPersistPublicPayload(payload = {}, context = {}) {
       visibleStoryCount: visibleStories.length,
       completeVisibleStoryCount: visibleStories.length,
       reviewedStoryCount: reviewedStories.length,
-      rejectedStoriesHidden: Math.max(0, reviewedStories.length - visibleStories.length),
+      rejectedStoriesHidden: Math.max(0, reviewedStories.length - batchVisibleStories.length),
       hiddenIssueCounts: newsLabApprovalRepairIssueCounts(reviewedStories
         .filter(story => !newsLabCompleteArticleStory(story))
         .map(story => ({ reasons: newsLabBlockingFinalIssues(story) }))),
@@ -24781,10 +24779,11 @@ function newsLabDurablyPersistPublicPayload(payload = {}, context = {}) {
     },
     savedAt: new Date().toISOString()
   };
-  writeJsonFile(newsLabPublishedPayloadFile, newsLabPreserveLockedPublicPayload(persistedPayload, context.stage || "durable-publication"));
-  runtimeState.newsLabSearchPayload = persistedPayload;
-  runtimeState.newsLabSearchPayloadAt = persistedPayload.savedAt;
-  return persistedPayload;
+  const boardReadyPayload = newsLabApplyCurrentBoardPolicy(persistedPayload);
+  writeJsonFile(newsLabPublishedPayloadFile, newsLabPreserveLockedPublicPayload(boardReadyPayload, context.stage || "durable-publication"));
+  runtimeState.newsLabSearchPayload = boardReadyPayload;
+  runtimeState.newsLabSearchPayloadAt = boardReadyPayload.savedAt;
+  return boardReadyPayload;
 }
 
 function rememberNewsLabSearchPayload(payload = null) {
