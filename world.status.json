@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-07-23T19:14:04.107Z",
+  "mode": "category-collector-worker",
+  "category": "world",
+  "pid": 29420,
+  "cycleMs": 30000,
+  "sourceLimit": 80,
+  "storyLimit": 180,
+  "lastStatus": "started",
+  "lastReason": "scheduled-category-collection"
+}

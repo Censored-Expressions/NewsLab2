@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-07-23T19:13:45.154Z",
+  "mode": "category-collector-worker",
+  "category": "technology",
+  "pid": 12688,
+  "cycleMs": 30000,
+  "sourceLimit": 80,
+  "storyLimit": 180,
+  "lastStatus": "cache-refreshed",
+  "lastReason": "scheduled-category-collection",
+  "lastFinishedAt": "2026-07-23T19:13:45.154Z",
+  "lastMetrics": {
+    "sourceCount": 42,
+    "activeSourceLimit": 42,
+    "activeStoryLimit": 220,
+    "storyCount": 220,
+    "backfillStoryCount": 0,
+    "carriedForward": false,
+    "subDossierAcceptedStories": 113,
+    "subDossierContextStories": 42,
+    "subDossierKnownFacts": 40,
+    "buildMs": 847,
+    "editorLearningDirectives": [
+      {
+        "subsystem": "Collector",
+        "issue": "generic-weak-headline",
+        "category": "sports",
+        "priority": 85,
+        "nextAction": "rewrite-impact-headline-from-dossier",
+        "preventionRule": "Use the strongest actor, action, result, location, or measurable decision from the dossier as the headline subject.",
+        "lastSeenAt": "2026-07-23T16:19:41.787Z",
+        "learnedFromDecision": "rejected-for-subsystem-repair",
+        "occurrenceWeight": 3
+      },
+      {
+        "subsystem": "Collector",
+        "issue": "story-identity-mismatch",
+        "category": "sports",
+        "priority": 85,
+        "nextAction": "route-to-earliest-failing-subsystem",
+        "preventionRule": "Record the failed rule, compare against approved story patterns, and rerun the earliest affected subsystem before publishing.",
+        "lastSeenAt": "2026-07-23T16:19:41.787Z",
+        "learnedFromDecision": "rejected-for-subsystem-repair",
+        "occurrenceWeight": 3
+      },
+      {
+        "subsystem": "Collector",
+        "issue": "generic-weak-headline",
+        "category": "technology",
+        "priority": 85,
+        "nextAction": "rewrite-impact-headline-from-dossier",
+        "preventionRule": "Use the strongest actor, action, result, location, or measurable decision from the dossier as the headline subject.",
+        "lastSeenAt": "2026-07-23T16:19:41.787Z",
+        "learnedFromDecision": "rejected-for-subsystem-repair",
+        "occurrenceWeight": 3
+      }
+    ]
+  }
+}
