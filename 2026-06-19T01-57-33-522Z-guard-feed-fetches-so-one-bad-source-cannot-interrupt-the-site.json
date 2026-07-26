@@ -1,0 +1,40 @@
+{
+  "decision": "approved",
+  "decidedAt": "2026-06-19T01:57:33.522Z",
+  "proposalId": "patch_proposal_1781724316066_8nvm06",
+  "status": "applied-manually-after-owner-approval",
+  "title": "Guard feed fetches so one bad source cannot interrupt the site",
+  "laymanDescription": "",
+  "rootCause": "Feed refresh work can be degraded by slow or failing external RSS sources. The root cause is unisolated source failure risk: each source needs its own timeout, catch path, and diagnostic record so one bad feed cannot interrupt the overall news payload.",
+  "proposedFix": "Wrap every feed fetch in a bounded timeout and try/catch, return an empty story list for the failed source, record source-level telemetry, and keep the rest of the feeds/cache path running.",
+  "affectedFiles": [
+    "server.js"
+  ],
+  "riskLevel": "medium",
+  "ownerNote": "Owner approved correcting Framework-identified issue; reconciled after feed guard implementation was confirmed in server.js.",
+  "verificationPlan": [
+    "Run node --check server.js.",
+    "Start local server with CE_FEED_FETCH_TIMEOUT_MS=25.",
+    "Call /api/feed-status and confirm JSON response includes source errors instead of endpoint failure.",
+    "Run /api/health?refresh=1 and confirm public health responds.",
+    "Confirm framework proof log records proposal and verification."
+  ],
+  "rollbackPlan": "Revert only the feed fetch guard changes in server.js if feed loading or diagnostics regress.",
+  "nextStep": "Completed. Feed fetch timeout, source error telemetry, and feed-status diagnostics are present. Run node --check server.js and /api/feed-status during deployment verification.",
+  "applyMode": "owner-approved-completed-existing-code",
+  "applyResult": {
+    "ok": true,
+    "manual": true,
+    "changedFiles": [
+      "server.js"
+    ],
+    "verificationPlan": [
+      "Run node --check server.js.",
+      "Start local server with CE_FEED_FETCH_TIMEOUT_MS=25.",
+      "Call /api/feed-status and confirm JSON response includes source errors instead of endpoint failure.",
+      "Run /api/health?refresh=1 and confirm public health responds.",
+      "Confirm framework proof log records proposal and verification."
+    ],
+    "alreadyPresent": true
+  }
+}

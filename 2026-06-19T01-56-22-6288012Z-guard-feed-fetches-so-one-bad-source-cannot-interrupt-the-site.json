@@ -1,0 +1,25 @@
+﻿{
+    "decision":  "approved",
+    "decidedAt":  "2026-06-19T01:56:22.6288012Z",
+    "proposalId":  "patch_proposal_1781724316066_8nvm06",
+    "status":  "applied-manually-after-owner-approval",
+    "title":  "Guard feed fetches so one bad source cannot interrupt the site",
+    "laymanDescription":  null,
+    "rootCause":  "Feed refresh work can be degraded by slow or failing external RSS sources. The root cause is unisolated source failure risk: each source needs its own timeout, catch path, and diagnostic record so one bad feed cannot interrupt the overall news payload.",
+    "proposedFix":  "Wrap every feed fetch in a bounded timeout and try/catch, return an empty story list for the failed source, record source-level telemetry, and keep the rest of the feeds/cache path running.",
+    "affectedFiles":  [
+                          "server.js"
+                      ],
+    "riskLevel":  "medium",
+    "ownerNote":  null,
+    "verificationPlan":  [
+                             "Run node --check server.js.",
+                             "Start local server with CE_FEED_FETCH_TIMEOUT_MS=25.",
+                             "Call /api/feed-status and confirm JSON response includes source errors instead of endpoint failure.",
+                             "Run /api/health?refresh=1 and confirm public health responds.",
+                             "Confirm framework proof log records proposal and verification."
+                         ],
+    "rollbackPlan":  "Revert only the feed fetch guard changes in server.js if feed loading or diagnostics regress.",
+    "nextStep":  null,
+    "applyMode":  "owner-approved-completed-existing-code"
+}
