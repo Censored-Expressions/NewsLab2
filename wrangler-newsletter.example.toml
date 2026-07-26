@@ -1,0 +1,22 @@
+name = "censored-expressions-newsletter"
+main = "cloudflare-newsletter-worker.js"
+compatibility_date = "2026-06-14"
+
+[vars]
+NEWSLETTER_FROM = "Censored Expressions <info@censoredexpressionsmedia.com>"
+NEWSLETTER_REPLY_TO = "info@censoredexpressionsmedia.com"
+
+# Set this with:
+# wrangler secret put NEWSLETTER_WEBHOOK_SECRET
+
+# Configure this binding in Cloudflare for the domain/mailbox that is allowed
+# to send Censored Expressions newsletter email.
+#
+# Cloudflare Email Sending / send_email binding examples may vary by account
+# beta access. In the dashboard or wrangler config, create a binding named:
+# NEWSLETTER_EMAIL
+#
+# Example binding shape used by Cloudflare Workers Email Routing docs:
+# send_email = [
+#   { name = "NEWSLETTER_EMAIL" }
+# ]

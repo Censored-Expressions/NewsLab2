@@ -1,0 +1,20 @@
+{
+  "appName": "Censored Expressions",
+  "bundleId": "com.censoredexpressions.app",
+  "category": "News",
+  "productionUrl": "https://censoredexpressions.com",
+  "privacyPolicyUrl": "https://censoredexpressions.com/legal-documents.html",
+  "supportUrl": "https://censoredexpressions.com",
+  "shortDescription": "Independent news, culture, commentary, newsletters, and editorials.",
+  "fullDescription": "Censored Expressions delivers independent news, culture coverage, daily editorials, weekly newsletters, public discussion, and media links in one branded mobile experience.",
+  "reviewNotes": "The app loads the public Censored Expressions news site. Owner-only tools are protected and are not intended for public reviewer use unless credentials are specifically requested.",
+  "requiredChecks": [
+    "Home page loads from production HTTPS domain.",
+    "Creator Desk loads editorials and public comments.",
+    "Newsletter page loads current newsletter content.",
+    "Legal documents and privacy policy are accessible.",
+    "Share button works on mobile.",
+    "No public navigation exposes private Owner Desk controls.",
+    "Images, icons, and backgrounds load correctly from production."
+  ]
+}

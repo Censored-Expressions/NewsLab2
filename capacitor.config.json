@@ -1,0 +1,17 @@
+{
+  "appId": "com.censoredexpressions.app",
+  "appName": "Censored Expressions",
+  "webDir": ".",
+  "server": {
+    "url": "https://censoredexpressions.com",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "scrollEnabled": true
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true
+  }
+}

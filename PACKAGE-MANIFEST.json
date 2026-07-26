@@ -1,0 +1,17 @@
+﻿{
+    "package":  "News-Lab-Full",
+    "generatedAt":  "2026-07-23T19:21:41.5271503Z",
+    "source":  "D:\\CensoredExpressions\\News-Lab",
+    "purpose":  "Complete deployable News Lab package with web server, worker orchestrator, frontend, assets, and compact runtime data seeds.",
+    "excludes":  [
+                     "runtime .tmp files",
+                     "local .log files",
+                     "node_modules",
+                     "mobile native build folders",
+                     "runtime data files over 25MB replaced with compact seeds"
+                 ],
+    "commands":  {
+                     "web":  "yarn start",
+                     "worker":  "yarn worker"
+                 }
+}

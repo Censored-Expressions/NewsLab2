@@ -1,0 +1,40 @@
+{
+  "version": "20260702-news-lab-deployment-readiness",
+  "requiredLiveChecks": [
+    "/",
+    "/news-lab.html",
+    "/news-lab-story.html",
+    "/news-analyzer.html",
+    "/styles.css",
+    "/news-lab.js",
+    "/news-lab-story.js",
+    "/api/health",
+    "/api/news-lab?category=all",
+    "/newsroom-hero.png",
+    "/creator-bg-unmuted.png",
+    "/creator-bg-speak-free.png",
+    "/creator-bg-truth-out-loud.png",
+    "/assets/newsroom-hero.png",
+    "/assets/creator-bg-unmuted.png",
+    "/assets/creator-bg-speak-free.png",
+    "/assets/creator-bg-truth-out-loud.png",
+    "/assets/pexels/newsroom-general.jpg",
+    "/assets/pexels/business-economy.jpg",
+    "/assets/pexels/credits.json",
+    "/ads.txt"
+  ],
+  "adsense": {
+    "publisherId": "ca-pub-6622622638145937",
+    "scriptExpectedOn": [
+      "/",
+      "/news-lab.html",
+      "/news-lab-story.html",
+      "/creator-desk.html",
+      "/newsletter.html",
+      "/merch.html",
+      "/legal.html",
+      "/legal-documents.html"
+    ],
+    "note": "The code can be present while Google still returns a blank ad until the domain, ad unit, and visitor request are eligible for fill."
+  }
+}

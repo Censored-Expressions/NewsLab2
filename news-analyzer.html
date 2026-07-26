@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Censored Expressions News Analyzer</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#b40000" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./styles.css?v=20260629-news-analyzer" />
+  </head>
+  <body class="home-page news-lab-page news-analyzer-page">
+    <div class="site-logo-backdrop" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="Censored Expressions home">
+        <span class="brand-copy">
+          <strong class="brand-wordmark">
+            <span>Censored</span>
+            <em>Expressions</em>
+          </strong>
+          <small>We Say What You Can't</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="./news-lab.html">News Lab</a>
+        <a href="./creator-desk.html">Creator Desk</a>
+        <a href="./newsletter.html">Newsletter</a>
+      </nav>
+      <a class="ghost-button" href="./index.html#media">Watch & Listen</a>
+    </header>
+
+    <main class="news-analyzer-shell">
+      <section class="news-analyzer-hero" aria-labelledby="analyzer-title">
+        <p class="eyebrow">Hidden intelligence workspace</p>
+        <h1 id="analyzer-title">News Analyzer</h1>
+        <p>
+          A private testing page for source intelligence, contradiction review, story evolution, reliability context,
+          Brain explanations, investigation modes, visual provenance, forecasts, and community intelligence.
+        </p>
+        <div class="news-analyzer-actions">
+          <button class="primary-link" type="button" data-refresh-analyzer>Refresh analysis</button>
+          <a class="secondary-link" href="./news-lab.html">Back to News Lab</a>
+        </div>
+      </section>
+
+      <p class="news-lab-status" data-analyzer-status>Loading News Analyzer intelligence...</p>
+
+      <section class="analyzer-dashboard" aria-label="Brain status">
+        <article>
+          <span>Watching</span>
+          <strong data-brain-watching>0</strong>
+          <p>stories across active News Lab tabs</p>
+        </article>
+        <article>
+          <span>Learning</span>
+          <strong data-brain-learning>0</strong>
+          <p>source relationships and source patterns</p>
+        </article>
+        <article>
+          <span>Verifying</span>
+          <strong data-brain-verifying>0</strong>
+          <p>stories with contradiction or confidence review</p>
+        </article>
+        <article>
+          <span>Confidence</span>
+          <strong data-brain-confidence>0%</strong>
+          <p>average story confidence from reviewed items</p>
+        </article>
+        <article>
+          <span>Corrections Today</span>
+          <strong data-brain-corrections>0</strong>
+          <p>tracked correction or retraction signals</p>
+        </article>
+        <article>
+          <span>Sources Processed</span>
+          <strong data-brain-sources>0</strong>
+          <p>source records used for analysis</p>
+        </article>
+        <article>
+          <span>Subsystems Active</span>
+          <strong data-brain-subsystems>0</strong>
+          <p>News Lab intelligence roles detected</p>
+        </article>
+      </section>
+
+      <section class="analyzer-grid">
+        <article class="analyzer-panel analyzer-panel-wide">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Source Intelligence</p>
+              <h2>Why the Brain trusts a story</h2>
+            </div>
+          </div>
+          <div class="analyzer-metric-grid" data-source-intelligence></div>
+        </article>
+
+        <article class="analyzer-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Contradiction Engine</p>
+              <h2>Agreement and disagreement</h2>
+            </div>
+          </div>
+          <div data-contradiction-engine></div>
+        </article>
+
+        <article class="analyzer-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Story Evolution</p>
+              <h2>How stories changed</h2>
+            </div>
+          </div>
+          <div data-story-evolution></div>
+        </article>
+
+        <article class="analyzer-panel analyzer-panel-wide">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Source Reliability</p>
+              <h2>Outlet context dashboard</h2>
+            </div>
+          </div>
+          <div class="source-score-table" data-source-reliability></div>
+        </article>
+
+        <article class="analyzer-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Brain Explanation</p>
+              <h2>Why this was written</h2>
+            </div>
+          </div>
+          <div data-brain-explanation></div>
+        </article>
+
+        <article class="analyzer-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Interactive Investigation</p>
+              <h2>Change the lens</h2>
+            </div>
+          </div>
+          <div class="investigation-controls" data-investigation-controls>
+            <button type="button" data-investigation-mode="facts">Only facts</button>
+            <button type="button" data-investigation-mode="opposing">Opposing viewpoints</button>
+            <button type="button" data-investigation-mode="official">Official sources</button>
+            <button type="button" data-investigation-mode="local">Local coverage</button>
+            <button type="button" data-investigation-mode="simple">Explain like I'm 15</button>
+            <button type="button" data-investigation-mode="economic">Economic impact</button>
+            <button type="button" data-investigation-mode="history">Historical comparison</button>
+          </div>
+          <div class="investigation-output" data-investigation-output></div>
+        </article>
+
+        <article class="analyzer-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Visual Intelligence</p>
+              <h2>Copyright-safe visuals</h2>
+            </div>
+          </div>
+          <div data-visual-intelligence></div>
+        </article>
+
+        <article class="analyzer-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Predictive Intelligence</p>
+              <h2>Likely next developments</h2>
+            </div>
+          </div>
+          <div data-predictive-intelligence></div>
+        </article>
+
+        <article class="analyzer-panel analyzer-panel-wide">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Community Intelligence</p>
+              <h2>Structured public signal</h2>
+            </div>
+          </div>
+          <div data-community-intelligence></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="./news-analyzer.js?v=20260717-coverage-comparison"></script>
+  </body>
+</html>

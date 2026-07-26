@@ -1,0 +1,20 @@
+﻿{
+    "createdAt":  "2026-06-19T08:26:37.2923640-04:00",
+    "package":  "censored-expressions-clean-deploy-with-patch-structuring-20260619-082637.zip",
+    "source":  "C:\\Users\\ellis\\Documents\\Codex\\2026-06-10\\https-chatgpt-com-share-6a2960e1-e674\\publish-ready-20260610",
+    "version":  "patch-structuring-subsystem-v1",
+    "includes":  [
+                     "Patch Structuring subsystem",
+                     "Automatic filePatches generation from exact/plain instructions",
+                     "Already-satisfied duplicate prevention",
+                     "Teaching-needed flag for unstructured diagnoses",
+                     "Owner Desk Run Patch Structuring button"
+                 ],
+    "excludes":  [
+                     "node_modules",
+                     ".git",
+                     ".tmp-*",
+                     "*.log",
+                     "*.zip"
+                 ]
+}

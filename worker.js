@@ -1,0 +1,365 @@
+﻿const childProcess = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const serverPath = path.join(__dirname, "server.js");
+const nodePath = process.execPath;
+const children = new Map();
+const dataDir = process.env.CE_DATA_DIR ? path.resolve(process.env.CE_DATA_DIR) : path.join(__dirname, "data");
+const observabilityFile = path.join(dataDir, "news-lab-observability.json");
+const syncLedgerFile = path.join(dataDir, "news-lab-worker-sync-ledger.json");
+const workerEvents = [];
+const webSyncBaseUrl = String(process.env.CE_WEB_SYNC_URL || process.env.CE_PUBLIC_SITE_URL || process.env.PUBLIC_SITE_URL || "").replace(/\/+$/, "");
+const workerSyncEnabled = process.env.CE_WORKER_SYNC_ENABLED !== "false" && Boolean(webSyncBaseUrl);
+const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_INTERVAL_MS || 60000));
+const ownerAdminToken = process.env.OWNER_ADMIN_TOKEN || process.env.NEWSLETTER_ADMIN_TOKEN || "";
+const syncFileSpecs = [
+  { key: "news-lab-published-payload", file: path.join(dataDir, "news-lab-published-payload.json") },
+  { key: "news-lab-api-response-cache", file: path.join(dataDir, "news-lab-api-response-cache.json") },
+  { key: "news-lab-worker-status", file: path.join(dataDir, "news-lab-worker-status.json") },
+  { key: "news-lab-api-worker-status", file: path.join(dataDir, "news-lab-api-worker-status.json") },
+  { key: "news-lab-observability", file: observabilityFile },
+  { key: "news-lab-productivity", file: path.join(dataDir, "news-lab-productivity.json") },
+  { key: "news-lab-throughput-diagnostics", file: path.join(dataDir, "news-lab-throughput-diagnostics.json") },
+  { key: "article-approval-intelligence", file: path.join(dataDir, "article-approval-intelligence.json") },
+  { key: "news-lab-image-worker-status", file: path.join(dataDir, "news-lab-image-worker-status.json") },
+  { key: "news-lab-stuck-rescue-worker-status", file: path.join(dataDir, "news-lab-stuck-rescue-worker-status.json") },
+  { key: "creator-posts", file: path.join(dataDir, "creator-posts.json") },
+  { key: "newsletters", file: path.join(dataDir, "newsletters.json") },
+  { key: "scheduled-content-worker-status", file: path.join(dataDir, "scheduled-content-worker-status.json") }
+];
+
+const categories = String(process.env.CE_NEWS_LAB_WORKER_CATEGORIES || "top,world,politics,business,technology,sports,entertainment,local")
+  .split(",")
+  .map(value => value.trim().toLowerCase())
+  .filter(Boolean);
+
+
+function readJson(filePath, fallback) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJson(filePath, value) {
+  try {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+    fs.writeFileSync(tempPath, `${JSON.stringify(value, null, 2)}\n`);
+    fs.renameSync(tempPath, filePath);
+  } catch (error) {
+    console.error(`[worker] observability write failed: ${error.message || error}`);
+  }
+}
+
+function recordWorkerEvent(event = {}) {
+  workerEvents.push({ ...event, at: new Date().toISOString() });
+  while (workerEvents.length > 80) workerEvents.shift();
+}
+
+function writeWorkerObservability(reason = "heartbeat") {
+  const existing = readJson(observabilityFile, {});
+  const roles = [...children.entries()].map(([name, child]) => ({
+    name,
+    pid: child.pid,
+    active: child.exitCode === null && !child.killed,
+    exitCode: child.exitCode,
+    killed: Boolean(child.killed)
+  }));
+  writeJson(observabilityFile, {
+    ...existing,
+    version: existing.version || "20260724-news-lab-observability-v1",
+    generatedAt: new Date().toISOString(),
+    source: "worker-orchestrator",
+    orchestrator: {
+      active: true,
+      pid: process.pid,
+      heartbeatAt: new Date().toISOString(),
+      reason,
+      uptimeSeconds: Math.round(process.uptime()),
+      activeRoles: roles.filter(role => role.active).length,
+      configuredCategories: categories,
+      roles
+    },
+    sync: workerSyncStateSummary(),
+    workerEvents: [...(existing.workerEvents || []), ...workerEvents].slice(-80),
+    rule: "The web service reads this heartbeat to know whether background article production, collectors, rescue, learning, and image workers are alive."
+  });
+}
+
+function writeWorkerSyncLedger(event = {}) {
+  const existing = readJson(syncLedgerFile, {});
+  writeJson(syncLedgerFile, {
+    ...existing,
+    version: "20260724-news-lab-worker-sync-v1",
+    updatedAt: new Date().toISOString(),
+    lastSyncAt: event.at || new Date().toISOString(),
+    lastReason: event.reason || "worker-sync",
+    lastStatus: event.status || "unknown",
+    acceptedCount: Number(event.acceptedCount || 0),
+    rejectedCount: Number(event.rejectedCount || 0),
+    acceptedKeys: event.acceptedKeys || [],
+    rejectedKeys: event.rejectedKeys || [],
+    events: [...(existing.events || []), event].slice(-80),
+    rule: "Worker output must be synced to the web service because Render services do not share a local data folder."
+  });
+}
+
+
+function workerSyncStateSummary() {
+  const ledger = readJson(syncLedgerFile, {});
+  return {
+    enabled: workerSyncEnabled,
+    hasUrl: Boolean(webSyncBaseUrl),
+    hasToken: Boolean(ownerAdminToken),
+    intervalMs: workerSyncIntervalMs,
+    lastStatus: ledger.lastStatus || "never",
+    lastReason: ledger.lastReason || "never",
+    lastSyncAt: ledger.lastSyncAt || "",
+    acceptedKeys: ledger.acceptedKeys || [],
+    rejectedKeys: ledger.rejectedKeys || []
+  };
+}
+function collectSyncFiles() {
+  const maxBytes = Math.max(1024 * 1024, Number(process.env.CE_WORKER_SYNC_MAX_FILE_BYTES || 8 * 1024 * 1024));
+  const files = [];
+  const skipped = [];
+  for (const spec of syncFileSpecs) {
+    try {
+      if (!fs.existsSync(spec.file)) {
+        skipped.push({ key: spec.key, reason: "missing" });
+        continue;
+      }
+      const stat = fs.statSync(spec.file);
+      if (stat.size > maxBytes) {
+        skipped.push({ key: spec.key, reason: "too-large", bytes: stat.size });
+        continue;
+      }
+      const payload = readJson(spec.file, null);
+      if (!payload || typeof payload !== "object") {
+        skipped.push({ key: spec.key, reason: "not-json-object" });
+        continue;
+      }
+      files.push({ key: spec.key, updatedAt: stat.mtime.toISOString(), payload });
+    } catch (error) {
+      skipped.push({ key: spec.key, reason: error.message || String(error) });
+    }
+  }
+  return { files, skipped };
+}
+
+async function syncWorkerOutputs(reason = "scheduled-sync") {
+  if (!workerSyncEnabled) {
+    console.log("[worker] sync disabled: set CE_WEB_SYNC_URL and CE_WORKER_SYNC_ENABLED=true to push generated payloads to the web service");
+    return;
+  }
+  if (!ownerAdminToken) {
+    const event = { type: "worker-sync-skipped", reason: "missing-owner-token", at: new Date().toISOString(), status: "skipped" };
+    recordWorkerEvent(event);
+    writeWorkerSyncLedger(event);
+    console.log("[worker] sync skipped: missing OWNER_ADMIN_TOKEN/NEWSLETTER_ADMIN_TOKEN");
+    return;
+  }
+  const { files, skipped } = collectSyncFiles();
+  if (!files.length) {
+    const event = { type: "worker-sync-skipped", reason: "no-files", skipped, at: new Date().toISOString(), status: "skipped" };
+    recordWorkerEvent(event);
+    writeWorkerSyncLedger(event);
+    console.log(`[worker] sync skipped: no eligible files; skipped=${skipped.map(item => item.key + ":" + item.reason).join(",")}`);
+    return;
+  }
+  const endpoint = `${webSyncBaseUrl}/api/news-lab/worker-sync`;
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-owner-admin-token": ownerAdminToken
+      },
+      body: JSON.stringify({
+        reason,
+        source: "background-worker-orchestrator",
+        generatedAt: new Date().toISOString(),
+        files
+      })
+    });
+    const result = await response.json().catch(() => ({}));
+    const event = {
+      type: response.ok ? "worker-sync-complete" : "worker-sync-failed",
+      reason,
+      status: response.ok ? "ok" : `http-${response.status}`,
+      at: new Date().toISOString(),
+      acceptedCount: Number(result.acceptedCount || 0),
+      rejectedCount: Number(result.rejectedCount || 0),
+      acceptedKeys: (result.accepted || []).map(item => item.key).filter(Boolean),
+      rejectedKeys: (result.rejected || []).map(item => item.key).filter(Boolean),
+      skipped
+    };
+    recordWorkerEvent(event);
+    writeWorkerSyncLedger(event);
+    writeWorkerObservability("worker-sync-complete");
+    console.log(`[worker] sync ${event.status}: accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"}`);
+  } catch (error) {
+    const event = { type: "worker-sync-error", reason, status: "error", error: error.message || String(error), at: new Date().toISOString(), skipped };
+    recordWorkerEvent(event);
+    writeWorkerSyncLedger(event);
+    writeWorkerObservability("worker-sync-error");
+    console.log(`[worker] sync error: ${event.error}`);
+  }
+}
+function spawnRole(name, env = {}, options = {}) {
+  if (children.has(name)) return children.get(name);
+  const child = childProcess.spawn(nodePath, [serverPath], {
+    cwd: __dirname,
+    env: {
+      ...process.env,
+      CE_BACKGROUND_LOOPS: process.env.CE_BACKGROUND_LOOPS || "true",
+      CE_SERVER_START_WORKERS: "false",
+      ...env
+    },
+    stdio: ["ignore", "inherit", "inherit"]
+  });
+  children.set(name, child);
+  recordWorkerEvent({ type: "role-started", name, pid: child.pid });
+  writeWorkerObservability(`started-${name}`);
+  child.on("exit", (code, signal) => {
+    children.delete(name);
+    console.log(`[worker] ${name} exited code=${code} signal=${signal || ""}`);
+    if (!options.once && !shuttingDown) {
+      const delayMs = Math.max(5000, Number(options.restartDelayMs || 15000));
+      setTimeout(() => spawnRole(name, env, options), delayMs);
+    }
+  });
+  child.on("error", error => {
+    children.delete(name);
+    console.error(`[worker] ${name} failed to start: ${error.message || error}`);
+  });
+  console.log(`[worker] started ${name} pid=${child.pid}`);
+  return child;
+}
+
+function spawnOneShot(name, env = {}) {
+  const child = childProcess.spawn(nodePath, [serverPath], {
+    cwd: __dirname,
+    env: {
+      ...process.env,
+      CE_BACKGROUND_LOOPS: "false",
+      CE_SERVER_START_WORKERS: "false",
+      ...env
+    },
+    stdio: ["ignore", "inherit", "inherit"]
+  });
+  child.on("exit", (code, signal) => {
+    recordWorkerEvent({ type: "one-shot-exited", name, code, signal: signal || "" });
+    writeWorkerObservability(`one-shot-exited-${name}`);
+    syncWorkerOutputs(`after-one-shot-${name}`).catch(() => {});
+    console.log(`[worker] one-shot ${name} exited code=${code} signal=${signal || ""}`);
+  });
+  child.on("error", error => {
+    recordWorkerEvent({ type: "one-shot-error", name, error: error.message || String(error) });
+    writeWorkerObservability(`one-shot-error-${name}`);
+    console.error(`[worker] one-shot ${name} failed: ${error.message || error}`);
+  });
+  console.log(`[worker] started one-shot ${name} pid=${child.pid}`);
+  return child;
+}
+
+let shuttingDown = false;
+function shutdown() {
+  shuttingDown = true;
+  for (const [name, child] of children.entries()) {
+    try {
+      console.log(`[worker] stopping ${name} pid=${child.pid}`);
+      child.kill("SIGTERM");
+    } catch {
+      // Child may already be gone.
+    }
+  }
+  setTimeout(() => process.exit(0), 3000).unref();
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
+console.log("Censored Expressions background worker orchestrator starting");
+recordWorkerEvent({ type: "orchestrator-started", pid: process.pid });
+writeWorkerObservability("orchestrator-started");
+console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
+
+spawnRole("scheduled-site-content", {
+  CE_SITE_SCHEDULED_CONTENT_WORKER: "1",
+  CE_NEWS_LAB_PRODUCTION_LOOP: "false",
+  CE_NEWS_LAB_WORKER_PROCESS: "false",
+  CE_NEWS_LAB_API_WORKER_PROCESS: "false",
+  CE_NEWS_LAB_COLLECTOR_WORKER_PROCESS: "false",
+  CE_NEWS_LAB_STUCK_RESCUE_WORKER_PROCESS: "false",
+  CE_RENDER_EMBEDDED_WORKER_FALLBACK: "false"
+}, { restartDelayMs: 15000 });
+spawnRole("news-lab-production", {
+  CE_NEWS_LAB_WORKER: "1",
+  CE_NEWS_LAB_WORKER_REASON: "worker-orchestrator-production"
+}, { restartDelayMs: 10000 });
+
+spawnRole("news-lab-api-response", {
+  CE_NEWS_LAB_API_WORKER: "1"
+}, { restartDelayMs: 10000 });
+
+spawnRole("news-lab-stuck-rescue", {
+  CE_NEWS_LAB_STUCK_RESCUE_WORKER: "1",
+  CE_NEWS_LAB_STUCK_RESCUE_WORKER_PROCESS: "true"
+}, { restartDelayMs: 15000 });
+
+for (const category of categories) {
+  spawnRole(`collector-${category}`, {
+    CE_NEWS_LAB_COLLECTOR_WORKER: category
+  }, { restartDelayMs: 15000 });
+}
+
+function runDistillation(reason = "worker-orchestrator-scheduled-distillation") {
+  spawnOneShot("knowledge-distillation", {
+    CE_KNOWLEDGE_DISTILLATION_WORKER: "1",
+    CE_KNOWLEDGE_DISTILLATION_REASON: reason
+  });
+}
+
+function runEvolution(reason = "worker-orchestrator-scheduled-evolution") {
+  spawnOneShot("evolution-engine", {
+    CE_EVOLUTION_ENGINE_WORKER: "1",
+    CE_EVOLUTION_ENGINE_REASON: reason
+  });
+}
+
+function runImagePass(reason = "worker-orchestrator-scheduled-image-pass") {
+  spawnOneShot("image-improvement", {
+    CE_NEWS_LAB_IMAGE_WORKER: "1",
+    CE_NEWS_LAB_IMAGE_WORKER_REASON: reason
+  });
+}
+
+setTimeout(() => runDistillation("worker-orchestrator-startup-distillation"), 30000);
+setInterval(runDistillation, Math.max(5 * 60 * 1000, Number(process.env.CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS || 15 * 60 * 1000)));
+
+setTimeout(() => runEvolution("worker-orchestrator-startup-evolution"), 45000);
+setInterval(runEvolution, Math.max(10 * 60 * 1000, Number(process.env.CE_EVOLUTION_ENGINE_INTERVAL_MS || 60 * 60 * 1000)));
+
+setTimeout(() => runImagePass("worker-orchestrator-startup-image-pass"), 60000);
+setInterval(runImagePass, Math.max(10 * 60 * 1000, Number(process.env.CE_IMAGE_WORKER_INTERVAL_MS || 30 * 60 * 1000)));
+
+setTimeout(() => syncWorkerOutputs("startup-sync"), 15000);
+setInterval(() => syncWorkerOutputs("scheduled-sync"), workerSyncIntervalMs);
+
+setInterval(() => {
+  writeWorkerObservability("scheduled-heartbeat");
+  const syncState = workerSyncStateSummary();
+  console.log(`[worker] heartbeat activeRoles=${children.size} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"}`);
+}, 60 * 1000);
+
+
+
+
+
+
+
+

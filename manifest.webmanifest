@@ -1,0 +1,26 @@
+{
+  "name": "Censored Expressions",
+  "short_name": "CE News",
+  "description": "Urban Conservative news, live headlines, media, weather, and market updates.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#b40000",
+  "categories": ["news", "sports", "entertainment"],
+  "icons": [
+    {
+      "src": "./assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

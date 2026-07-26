@@ -1,0 +1,58 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>News Lab Observability</title>
+  <link rel="stylesheet" href="./styles.css?v=20260724-observability" />
+  <style>
+    body.observability-page { background: #050505; color: #f5f5f5; }
+    .observability-shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 48px; }
+    .observability-top { display: flex; align-items: end; justify-content: space-between; gap: 16px; border-bottom: 1px solid rgba(255,255,255,.14); padding-bottom: 18px; margin-bottom: 18px; }
+    .observability-top h1 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.6rem); }
+    .observability-top p { margin: 6px 0 0; color: #b8b8b8; }
+    .observability-token { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .observability-token input { min-width: min(360px, 70vw); border: 1px solid rgba(255,255,255,.18); border-radius: 8px; background: rgba(255,255,255,.06); color: white; padding: 10px 12px; }
+    .observability-token button, .observability-refresh { border: 1px solid rgba(215,25,32,.55); border-radius: 8px; background: rgba(215,25,32,.22); color: white; padding: 10px 12px; font-weight: 800; cursor: pointer; }
+    .observability-status { margin: 14px 0; color: #b8b8b8; }
+    .observability-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+    .obs-card { grid-column: span 4; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; background: rgba(255,255,255,.045); padding: 14px; min-width: 0; }
+    .obs-card.wide { grid-column: span 8; }
+    .obs-card.full { grid-column: 1 / -1; }
+    .obs-card h2 { margin: 0 0 10px; font-size: 1rem; }
+    .obs-number { font-size: 2rem; font-weight: 900; color: #f2f2f2; }
+    .obs-muted { color: #aaa; font-size: .9rem; }
+    .obs-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .obs-row { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 8px; color: #ddd; }
+    .obs-row strong { color: white; }
+    .obs-pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 8px; font-size: .78rem; font-weight: 800; background: rgba(255,255,255,.09); }
+    .obs-pill.ok { color: #54d184; }
+    .obs-pill.warn { color: #ffca5f; }
+    .obs-pill.bad { color: #ff7676; }
+    .collector-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .collector-table th, .collector-table td { border-top: 1px solid rgba(255,255,255,.08); padding: 8px; text-align: left; vertical-align: top; }
+    .collector-table th { color: #aaa; font-size: .76rem; text-transform: uppercase; }
+    @media (max-width: 900px) { .obs-card, .obs-card.wide { grid-column: 1 / -1; } .observability-top { align-items: stretch; flex-direction: column; } }
+  </style>
+</head>
+<body class="observability-page">
+  <main class="observability-shell">
+    <header class="observability-top">
+      <div>
+        <p class="eyebrow">Owner Desk</p>
+        <h1>News Lab Observability</h1>
+        <p>Live queue depth, worker health, collector coverage, editorial outcomes, and publication flow.</p>
+      </div>
+      <form class="observability-token" data-token-form>
+        <label class="sr-only" for="owner-token">Owner token</label>
+        <input id="owner-token" type="password" placeholder="Owner admin token" autocomplete="current-password" />
+        <button type="submit">Connect</button>
+        <button class="observability-refresh" data-refresh type="button">Refresh</button>
+      </form>
+    </header>
+    <p class="observability-status" data-status>Waiting for owner token or local owner access...</p>
+    <section class="observability-grid" data-dashboard></section>
+  </main>
+  <script src="./news-lab-observability.js?v=20260724-observability"></script>
+</body>
+</html>

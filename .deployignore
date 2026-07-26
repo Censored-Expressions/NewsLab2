@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+*.ps1
+*.bat
+data/subscribers.json
+data/newsletters.json
+data/creator-posts.json
+data/creator-comments.json
+data/creator-desk-pending.json
+data/creator-desk.log
+data/daily-article-memory.json
+data/daily-article-memory.full-backup-*.json
+memory-backups/

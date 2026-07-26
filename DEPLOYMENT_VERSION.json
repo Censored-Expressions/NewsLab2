@@ -1,0 +1,16 @@
+{
+  "name": "censored-expressions-news-lab-ready",
+  "version": "20260702-news-lab-deployment-readiness",
+  "notes": [
+    "News Lab public page and story page are deployment-ready and no longer marked noindex.",
+    "Service worker cache includes News Lab shell, story page, analyzer page, and local licensed image fallbacks.",
+    "Deployment check manifest includes News Lab public routes, API health, API News Lab payload, and Pexels fallback assets.",
+    ".env.example is preserved while real .env files remain ignored.",
+    "Package check script validates server and browser JavaScript syntax.",
+    "Main page, newsletter, and Creator Desk page art enabled.",
+    "AdSense publisher script present on public pages.",
+    "Manual blank ad slot removed until an AdSense ad unit slot ID exists.",
+    "Service worker cache bumped to ce-mobile-shell-v17.",
+    "Deployment check endpoints included for Render verification."
+  ]
+}

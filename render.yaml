@@ -1,0 +1,61 @@
+﻿services:
+  - type: web
+    name: censored-expressions-web
+    runtime: node
+    buildCommand: yarn
+    startCommand: yarn start
+    envVars:
+      - key: OWNER_ADMIN_TOKEN
+        sync: false
+      - key: NEWSLETTER_ADMIN_TOKEN
+        sync: false
+      - key: PUBLIC_SITE_URL
+        value: https://censoredexpressionsmedia.com
+      - key: CE_DATA_DIR
+        value: /var/data/censored-expressions
+      - key: CE_RENDER_EMBEDDED_WORKER_FALLBACK
+        value: "true"
+      - key: CE_WORKER_SYNC_BODY_LIMIT_BYTES
+        value: "16777216"
+      - key: CE_WORKER_SYNC_MAX_FILE_BYTES
+        value: "16777216"
+      - key: CE_NEWS_LAB_LIVE_IMAGES
+        value: "true"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+      - key: PIXABAY_API_KEY
+        sync: false
+      - key: NEWSDATA_API_KEY
+        sync: false
+
+  - type: worker
+    name: censored-expressions-news-lab-worker
+    runtime: node
+    buildCommand: yarn
+    startCommand: yarn worker
+    envVars:
+      - key: OWNER_ADMIN_TOKEN
+        sync: false
+      - key: NEWSLETTER_ADMIN_TOKEN
+        sync: false
+      - key: PUBLIC_SITE_URL
+        value: https://censoredexpressionsmedia.com
+      - key: CE_WEB_SYNC_URL
+        value: https://censoredexpressionsmedia.com
+      - key: CE_WORKER_SYNC_ENABLED
+        value: "true"
+      - key: CE_NEWS_LAB_LIVE_IMAGES
+        value: "true"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+      - key: PIXABAY_API_KEY
+        sync: false
+      - key: NEWSDATA_API_KEY
+        sync: false
+
+
+
