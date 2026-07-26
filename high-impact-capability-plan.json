@@ -1,0 +1,129 @@
+{
+ "generatedAt": "2026-07-06T05:03:12.706Z",
+ "version": "20260706-high-impact-capability-plan-v1",
+ "purpose": "Improve how the five highest-impact Brain capabilities operate, reason, produce, correct, and execute.",
+ "overall": 42,
+ "topPriority": {
+ "key": "headline-intelligence",
+ "label": "Headline Intelligence",
+ "score": 1,
+ "impact": 98,
+ "evidence": [
+ "headlineSuccess=0.7",
+ "headlineFailures=766"
+ ],
+ "operatingRule": "Generate headlines only after the CE article and Story Dossier are complete.",
+ "reasoningRule": "Use main actor + specific action + consequence from the dossier; reject word salad, copied structure, truncation, and source mismatch.",
+ "correctionRule": "If a headline fails, rerun Headline Dossier Builder with required actor/action/consequence fields before the Editor sees it again.",
+ "executionRule": "Produce at least five candidate headlines, score each against evidence overlap and natural grammar, then publish the first passing candidate.",
+ "verificationMetric": "headline pattern success rate and headline-source-overlap must improve on the next writing cycle.",
+ "nextAction": "Make headline repair the first writer repair pass, not a final polish pass.",
+ "priority": 98.6,
+ "status": "critical"
+ },
+ "lanes": [
+ {
+ "key": "headline-intelligence",
+ "label": "Headline Intelligence",
+ "score": 1,
+ "impact": 98,
+ "evidence": [
+ "headlineSuccess=0.7",
+ "headlineFailures=766"
+ ],
+ "operatingRule": "Generate headlines only after the CE article and Story Dossier are complete.",
+ "reasoningRule": "Use main actor + specific action + consequence from the dossier; reject word salad, copied structure, truncation, and source mismatch.",
+ "correctionRule": "If a headline fails, rerun Headline Dossier Builder with required actor/action/consequence fields before the Editor sees it again.",
+ "executionRule": "Produce at least five candidate headlines, score each against evidence overlap and natural grammar, then publish the first passing candidate.",
+ "verificationMetric": "headline pattern success rate and headline-source-overlap must improve on the next writing cycle.",
+ "nextAction": "Make headline repair the first writer repair pass, not a final polish pass.",
+ "priority": 98.6,
+ "status": "critical"
+ },
+ {
+ "key": "writer-editor-pattern-learning",
+ "label": "Writer Learning From Editor Patterns",
+ "score": 11,
+ "impact": 90,
+ "evidence": [
+ "headlineSuccess=0.7",
+ "structureSuccess=2.8",
+ "evidenceSuccess=2.2"
+ ],
+ "operatingRule": "The Writer reads pattern lessons before drafting, while the Story Dossier supplies facts.",
+ "reasoningRule": "Treat editor decisions as craft lessons, not content to imitate.",
+ "correctionRule": "Every repeated rejection becomes a pre-draft prevention rule for the Writer, Headline Editor, and Dossier Builder.",
+ "executionRule": "Before each draft, apply the top three failing pattern rules from Writing Intelligence.",
+ "verificationMetric": "first-pass acceptance and pattern success rates must rise without weakening editor gates.",
+ "nextAction": "Turn the weakest pattern into the first required writer instruction for the next cycle.",
+ "priority": 89.4,
+ "status": "critical"
+ },
+ {
+ "key": "predictive-brain",
+ "label": "Predictive Brain",
+ "score": 60,
+ "impact": 94,
+ "evidence": [
+ "predictionScore=60",
+ "pipelineReadiness=83"
+ ],
+ "operatingRule": "Forecast degradation before it affects public output.",
+ "reasoningRule": "Use trends across feed latency, source failures, dossier completeness, editor rejections, and article output.",
+ "correctionRule": "When a metric trends down twice, create a preventive action instead of waiting for a public failure.",
+ "executionRule": "Attach a next-check deadline and target metric to every preventive action.",
+ "verificationMetric": "forecastSignals, preventedFailures, and post-action metric improvements.",
+ "nextAction": "Create source/article/editor risk forecasts for the next rebuild cycle.",
+ "priority": 60.5,
+ "status": "needs-focus"
+ },
+ {
+ "key": "story-dossier-builder",
+ "label": "Story Dossier Builder",
+ "score": 64,
+ "impact": 96,
+ "evidence": [
+ "dossierStories=180",
+ "sourceFamilies=4",
+ "dossierFailures=83"
+ ],
+ "operatingRule": "The Writer receives a structured dossier, not RSS snippets or raw publisher summaries.",
+ "reasoningRule": "Classify who, what, when, where, official evidence, independent reports, contradictions, unknowns, and confidence before writing.",
+ "correctionRule": "If topic drift appears, demote the draft and rebuild the dossier cluster before attempting another article.",
+ "executionRule": "Collector and sub-dossier workers must feed tab-specific evidence into the main dossier before Writer selection.",
+ "verificationMetric": "article-body-topic-drift, mixed-source-topic, and insufficient-full-article-facts must decline.",
+ "nextAction": "Add a hard ready-for-writer gate requiring known facts, evidence classes, and topic-isolation score.",
+ "priority": 58.8,
+ "status": "needs-focus"
+ },
+ {
+ "key": "cross-subsystem-reasoning",
+ "label": "Cross-Subsystem Reasoning",
+ "score": 74,
+ "impact": 92,
+ "evidence": [
+ "reasoningScore=67",
+ "verifiedActions=91",
+ "graphEdges=6595"
+ ],
+ "operatingRule": "No subsystem should diagnose in isolation when another subsystem may be the cause.",
+ "reasoningRule": "Test causal chains: feed quality -> dossier quality -> writer quality -> editor acceptance -> public output.",
+ "correctionRule": "When a downstream stage fails, inspect upstream telemetry before changing the downstream subsystem.",
+ "executionRule": "Write a causal note into proof memory for every high-impact repair.",
+ "verificationMetric": "causal links recorded and repeated failures reduced after upstream repair.",
+ "nextAction": "Add causal scoring between feed reliability, dossier quality, headline quality, and article approvals.",
+ "priority": 51.1,
+ "status": "developing"
+ }
+ ],
+ "executionOrder": [
+ "Headline Intelligence",
+ "Writer Learning From Editor Patterns",
+ "Predictive Brain",
+ "Story Dossier Builder",
+ "Cross-Subsystem Reasoning"
+ ],
+ "sharedVerificationRule": "Every high-impact improvement must name the metric it expects to improve, rerun after execution, and record whether the metric moved.",
+ "rollbackRule": "If a change reduces public output, weakens editor gates, or increases topic drift/headline mismatch, revert that change and preserve the lesson as a failed experiment.",
+ "rule": "Visible quality improves fastest when Headline Intelligence, Story Dossier Builder, Predictive Brain, Cross-subsystem Reasoning, and Writer/Editor Pattern Learning improve together."
+}

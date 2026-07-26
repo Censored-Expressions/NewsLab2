@@ -1,0 +1,149 @@
+{
+  "version": "20260718-behavioral-lexicon-v1",
+  "updatedAt": "2026-07-18T13:14:04.822Z",
+  "purpose": "Measure whether learned vocabulary and usage guidance are influencing published writing, not merely being stored.",
+  "metrics": {
+    "totalVocabulary": 16,
+    "newVocabularyTracked": 0,
+    "activeVocabulary": 6,
+    "lexiconUtilization": 37.5,
+    "publishedStoriesReviewed": 35,
+    "uniquePublishedWordCount": 1687,
+    "repeatedWordRate": 25.5
+  },
+  "activeVocabulary": [
+    "confirmed",
+    "said",
+    "alleged",
+    "investigate",
+    "said",
+    "according to"
+  ],
+  "overusedPublishedTerms": [
+    {
+      "word": "the",
+      "count": 396
+    },
+    {
+      "word": "and",
+      "count": 208
+    },
+    {
+      "word": "for",
+      "count": 63
+    },
+    {
+      "word": "whether",
+      "count": 54
+    },
+    {
+      "word": "from",
+      "count": 54
+    },
+    {
+      "word": "that",
+      "count": 47
+    },
+    {
+      "word": "next",
+      "count": 40
+    },
+    {
+      "word": "after",
+      "count": 38
+    },
+    {
+      "word": "officials",
+      "count": 36
+    },
+    {
+      "word": "are",
+      "count": 35
+    },
+    {
+      "word": "trump",
+      "count": 33
+    },
+    {
+      "word": "should",
+      "count": 30
+    },
+    {
+      "word": "with",
+      "count": 27
+    },
+    {
+      "word": "confirmed",
+      "count": 25
+    },
+    {
+      "word": "his",
+      "count": 25
+    },
+    {
+      "word": "can",
+      "count": 23
+    },
+    {
+      "word": "was",
+      "count": 23
+    },
+    {
+      "word": "about",
+      "count": 21
+    },
+    {
+      "word": "reports",
+      "count": 21
+    },
+    {
+      "word": "come",
+      "count": 21
+    },
+    {
+      "word": "new",
+      "count": 20
+    },
+    {
+      "word": "official",
+      "count": 19
+    },
+    {
+      "word": "security",
+      "count": 18
+    },
+    {
+      "word": "while",
+      "count": 18
+    },
+    {
+      "word": "president",
+      "count": 18
+    },
+    {
+      "word": "how",
+      "count": 17
+    },
+    {
+      "word": "policy",
+      "count": 16
+    },
+    {
+      "word": "states",
+      "count": 16
+    },
+    {
+      "word": "one",
+      "count": 16
+    },
+    {
+      "word": "major",
+      "count": 16
+    }
+  ],
+  "learningRule": "The Lexicon Learner must track which learned words, verbs, transitions, and reference-informed usage principles are actually used, whether repetition falls, and whether usage improves first-pass editorial acceptance.",
+  "writerDirective": "Before drafting, select vocabulary by story type, evidence certainty, tone, repetition history, and reference-informed meaning. Never copy reference wording. After publishing, measure which selected vocabulary actually appeared and whether repetition fell.",
+  "referencePolicyAware": true,
+  "referencePolicyVersion": "20260718-lexicon-reference-policy-v1",
+  "referenceLearningBoundary": "Use public references for meaning, connotation, usage boundaries, and context only; never copy definitions, examples, article text, or source phrasing."
+}

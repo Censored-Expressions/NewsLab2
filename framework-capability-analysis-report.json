@@ -1,0 +1,677 @@
+{
+ "generatedAt": "2026-07-06T03:56:23.335Z",
+ "version": "20260705-framework-capability-analysis",
+ "purpose": "Treat the Brain like a real organization: measure observable capabilities, identify gaps, and turn missing capability into teachable ability.",
+ "overall": 78,
+ "weakest": {
+ "key": "prediction",
+ "label": "Prediction",
+ "score": 60,
+ "status": "early",
+ "current": "Has trend signals but is still more reactive than predictive.",
+ "evidence": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "nextImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication.",
+ "subsystem": "Predictive Intelligence",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 60,
+ "evidenceSupportsAssessment": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "materialImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication."
+ }
+ },
+ "capabilities": [
+ {
+ "key": "learning",
+ "label": "Learning",
+ "score": 83,
+ "status": "developing",
+ "current": "Learns from articles, editor decisions, owner feedback, source behavior, patch history, and proof logs.",
+ "evidence": [
+ "editorSignals=0",
+ "repeatedPatternSignals=0",
+ "proofEntries=100"
+ ],
+ "nextImprovement": "Build Pattern Intelligence so repeated article/editor failures become pattern-level rules with failure rates.",
+ "subsystem": "Pattern Intelligence",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 83,
+ "evidenceSupportsAssessment": [
+ "editorSignals=0",
+ "repeatedPatternSignals=0",
+ "proofEntries=100"
+ ],
+ "materialImprovement": "Build Pattern Intelligence so repeated article/editor failures become pattern-level rules with failure rates."
+ }
+ },
+ {
+ "key": "reasoning",
+ "label": "Reasoning",
+ "score": 67,
+ "status": "early",
+ "current": "Reasons through dossier inputs, writer handoff, evidence, context, and self-critique.",
+ "evidence": [
+ "writerReasoning=67",
+ "pipelineReadiness=83",
+ "firstPassAcceptance=100.0"
+ ],
+ "nextImprovement": "Require every story to pass through Dossier -> Evidence -> Context -> Hypothesis/Counterfactual checks before drafting.",
+ "subsystem": "Context Reasoning Engine",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 67,
+ "evidenceSupportsAssessment": [
+ "writerReasoning=67",
+ "pipelineReadiness=83",
+ "firstPassAcceptance=100.0"
+ ],
+ "materialImprovement": "Require every story to pass through Dossier -> Evidence -> Context -> Hypothesis/Counterfactual checks before drafting."
+ }
+ },
+ {
+ "key": "prediction",
+ "label": "Prediction",
+ "score": 60,
+ "status": "early",
+ "current": "Has trend signals but is still more reactive than predictive.",
+ "evidence": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "nextImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication.",
+ "subsystem": "Predictive Intelligence",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 60,
+ "evidenceSupportsAssessment": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "materialImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication."
+ }
+ },
+ {
+ "key": "planning",
+ "label": "Planning",
+ "score": 77,
+ "status": "developing",
+ "current": "Creates tasking and roadmaps, but still needs richer milestone/dependency planning.",
+ "evidence": [
+ "abilityBacklog=5",
+ "gapCount=5",
+ "pipelineReadiness=83"
+ ],
+ "nextImprovement": "Turn every owner goal into milestones, dependencies, resource needs, verification points, and finish criteria.",
+ "subsystem": "Planning Engine",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 77,
+ "evidenceSupportsAssessment": [
+ "abilityBacklog=5",
+ "gapCount=5",
+ "pipelineReadiness=83"
+ ],
+ "materialImprovement": "Turn every owner goal into milestones, dependencies, resource needs, verification points, and finish criteria."
+ }
+ },
+ {
+ "key": "execution",
+ "label": "Execution",
+ "score": 65,
+ "status": "early",
+ "current": "Executes bounded actions and approved structured patches, but some actions still lack verified improvement.",
+ "evidence": [
+ "actionCount=156",
+ "metricImprovedActions=71",
+ "verifiedActions=16"
+ ],
+ "nextImprovement": "Attach a mandatory post-action verification window and next-check deadline to every Brain action.",
+ "subsystem": "Execution Scheduler",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 65,
+ "evidenceSupportsAssessment": [
+ "actionCount=156",
+ "metricImprovedActions=71",
+ "verifiedActions=16"
+ ],
+ "materialImprovement": "Attach a mandatory post-action verification window and next-check deadline to every Brain action."
+ }
+ },
+ {
+ "key": "recovery",
+ "label": "Recovery",
+ "score": 73,
+ "status": "early",
+ "current": "Handles some runtime failures with fallbacks, but recovery needs stronger automatic close-the-loop behavior.",
+ "evidence": [
+ "runtimeStability=96",
+ "verifiedActions=16"
+ ],
+ "nextImprovement": "Detect failure, recover, verify the same metric, and store prevention memory without waiting for owner notice.",
+ "subsystem": "Recovery Engine",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 73,
+ "evidenceSupportsAssessment": [
+ "runtimeStability=96",
+ "verifiedActions=16"
+ ],
+ "materialImprovement": "Detect failure, recover, verify the same metric, and store prevention memory without waiting for owner notice."
+ }
+ },
+ {
+ "key": "knowledge",
+ "label": "Knowledge",
+ "score": 100,
+ "status": "strong",
+ "current": "Maintains source registry, article memory, knowledge graph, and entity memory.",
+ "evidence": [
+ "sourceCount=576",
+ "sourceFamilies=4",
+ "consolidationSignals=0"
+ ],
+ "nextImprovement": "Add weekly Knowledge Consolidation: summarize lessons, merge duplicates, retire stale lessons, promote permanent knowledge.",
+ "subsystem": "Knowledge Consolidation",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 100,
+ "evidenceSupportsAssessment": [
+ "sourceCount=576",
+ "sourceFamilies=4",
+ "consolidationSignals=0"
+ ],
+ "materialImprovement": "Add weekly Knowledge Consolidation: summarize lessons, merge duplicates, retire stale lessons, promote permanent knowledge."
+ }
+ },
+ {
+ "key": "editorial",
+ "label": "Editorial",
+ "score": 92,
+ "status": "strong",
+ "current": "Editor and writer learn from decisions, but pattern learning and pre-draft application need more force.",
+ "evidence": [
+ "editorialScore=92",
+ "firstPassAcceptance=100.0",
+ "repeatedPatternSignals=0"
+ ],
+ "nextImprovement": "Make the Writer read pattern-level Editorial Memory before drafting and block known-failing patterns earlier.",
+ "subsystem": "Editorial Intelligence v2",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 92,
+ "evidenceSupportsAssessment": [
+ "editorialScore=92",
+ "firstPassAcceptance=100.0",
+ "repeatedPatternSignals=0"
+ ],
+ "materialImprovement": "Make the Writer read pattern-level Editorial Memory before drafting and block known-failing patterns earlier."
+ }
+ },
+ {
+ "key": "investigation",
+ "label": "Investigation",
+ "score": 97,
+ "status": "strong",
+ "current": "Has source triangulation, timeline, contradiction, and evidence classification pieces, but needs stronger newsroom tooling.",
+ "evidence": [
+ "officialSources=9",
+ "courtSources=0",
+ "researchSources=5",
+ "contradictions=15",
+ "timelineItems=35"
+ ],
+ "nextImprovement": "Strengthen contradiction detection, source triangulation, fact provenance, entity relationship tracking, and follow-up recommendations.",
+ "subsystem": "Investigation Desk",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 97,
+ "evidenceSupportsAssessment": [
+ "officialSources=9",
+ "courtSources=0",
+ "researchSources=5",
+ "contradictions=15",
+ "timelineItems=35"
+ ],
+ "materialImprovement": "Strengthen contradiction detection, source triangulation, fact provenance, entity relationship tracking, and follow-up recommendations."
+ }
+ },
+ {
+ "key": "autonomy",
+ "label": "Autonomy",
+ "score": 65,
+ "status": "early",
+ "current": "Can act in bounded areas and apply owner-approved structured patches, but still depends on verification and teaching loops.",
+ "evidence": [
+ "autonomousActions=156",
+ "executionGaps=1",
+ "verificationRate=10.3"
+ ],
+ "nextImprovement": "Promote repeated successful Codex-taught operations into reusable Brain abilities with approval gates and measurable verification.",
+ "subsystem": "Autonomy Governor",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 65,
+ "evidenceSupportsAssessment": [
+ "autonomousActions=156",
+ "executionGaps=1",
+ "verificationRate=10.3"
+ ],
+ "materialImprovement": "Promote repeated successful Codex-taught operations into reusable Brain abilities with approval gates and measurable verification."
+ }
+ }
+ ],
+ "proposedSubsystems": [
+ {
+ "level": "Learning",
+ "name": "Pattern Intelligence",
+ "purpose": "Recognize repeated failed writing/code/source patterns across many records and attach failure rates."
+ },
+ {
+ "level": "Learning",
+ "name": "Causal Learning Engine",
+ "purpose": "Connect feed reliability, dossier quality, editor rejection, and publication output into causal chains."
+ },
+ {
+ "level": "Learning",
+ "name": "Knowledge Consolidation",
+ "purpose": "Weekly lesson summary, duplicate merge, stale lesson retirement, and permanent knowledge promotion."
+ },
+ {
+ "level": "Improvement",
+ "name": "Improvement Optimizer",
+ "purpose": "Rank improvements by expected return and work the highest-value item first."
+ },
+ {
+ "level": "Improvement",
+ "name": "Predictive Intelligence",
+ "purpose": "Forecast likely failure or degradation and trigger preventive action."
+ },
+ {
+ "level": "Improvement",
+ "name": "Experiment Manager",
+ "purpose": "Compare Version A/Version B changes, learn from outcomes, and keep the winner."
+ },
+ {
+ "level": "Execution",
+ "name": "Planning Engine",
+ "purpose": "Turn goals into milestones, dependencies, execution plans, and finish criteria."
+ },
+ {
+ "level": "Execution",
+ "name": "Execution Scheduler",
+ "purpose": "Prioritize CPU, memory, API calls, time, and worker attention."
+ },
+ {
+ "level": "Execution",
+ "name": "Recovery Engine",
+ "purpose": "Detect failures, recover, verify, and convert recovery into prevention memory."
+ }
+ ],
+ "newsroomAbilities": [
+ "investigative journalism support",
+ "contradiction detection",
+ "timeline generation",
+ "source triangulation",
+ "fact provenance",
+ "entity relationship tracking",
+ "impact analysis",
+ "audience-specific summaries",
+ "multilingual reporting",
+ "follow-up recommendations"
+ ],
+ "capabilityTable": [
+ {
+ "capability": "Headline generation",
+ "current": "Moderate",
+ "evidence": "High rewrite/rejection counts and recent Headline Dossier upgrade.",
+ "nextImprovement": "Generate and validate from structured headline dossiers after article body is complete."
+ },
+ {
+ "capability": "Editorial learning",
+ "current": "Strong",
+ "evidence": "Persistent editor learning logs and subsystem directives.",
+ "nextImprovement": "Learn reusable writing patterns across many articles with pattern failure percentages."
+ },
+ {
+ "capability": "Source evaluation",
+ "current": "Strong",
+ "evidence": "Source Reliability Registry v2 tracks source family, evidence weight, availability, corrections, and originality.",
+ "nextImprovement": "Add long-term performance trends and source-type validation."
+ },
+ {
+ "capability": "Cross-subsystem reasoning",
+ "current": "Developing",
+ "evidence": "Independent subsystem telemetry exists; causal chains are emerging.",
+ "nextImprovement": "Build causal links between feed quality, dossier strength, writing quality, and publication outcomes."
+ },
+ {
+ "capability": "Predictive maintenance",
+ "current": "Early",
+ "evidence": "Trend tracking exists, but preventive forecasts are limited.",
+ "nextImprovement": "Forecast subsystem degradation before it affects publication."
+ }
+ ],
+ "frameworkGapAnalysis": {
+ "gapCount": 5,
+ "learningGaps": 1,
+ "improvementGaps": 1,
+ "executionGaps": 1,
+ "capabilityGaps": 2,
+ "lowReadinessSubsystems": 2,
+ "teachingNeeded": 2
+ },
+ "maturityModel": [
+ {
+ "key": "learning",
+ "label": "Learning",
+ "score": 83,
+ "status": "developing"
+ },
+ {
+ "key": "reasoning",
+ "label": "Reasoning",
+ "score": 67,
+ "status": "early"
+ },
+ {
+ "key": "prediction",
+ "label": "Prediction",
+ "score": 60,
+ "status": "early"
+ },
+ {
+ "key": "planning",
+ "label": "Planning",
+ "score": 77,
+ "status": "developing"
+ },
+ {
+ "key": "execution",
+ "label": "Execution",
+ "score": 65,
+ "status": "early"
+ },
+ {
+ "key": "recovery",
+ "label": "Recovery",
+ "score": 73,
+ "status": "early"
+ },
+ {
+ "key": "knowledge",
+ "label": "Knowledge",
+ "score": 100,
+ "status": "strong"
+ },
+ {
+ "key": "editorial",
+ "label": "Editorial",
+ "score": 92,
+ "status": "strong"
+ },
+ {
+ "key": "investigation",
+ "label": "Investigation",
+ "score": 97,
+ "status": "strong"
+ },
+ {
+ "key": "autonomy",
+ "label": "Autonomy",
+ "score": 65,
+ "status": "early"
+ }
+ ],
+ "rule": "Every capability asks four questions: can the Brain do this today, how well, what evidence supports it, and what would make it materially better.",
+ "capabilityCenter": {
+ "generatedAt": "2026-07-06T03:56:23.447Z",
+ "version": "20260705-capability-center-v1",
+ "centralQuestion": "What is my weakest capability, what evidence supports that conclusion, and what single improvement would raise it the most?",
+ "weakestCapability": {
+ "key": "prediction",
+ "label": "Prediction",
+ "score": 60,
+ "status": "early",
+ "current": "Has trend signals but is still more reactive than predictive.",
+ "evidence": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "nextImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication.",
+ "subsystem": "Predictive Intelligence",
+ "questions": {
+ "canBrainDoThisToday": true,
+ "howWell": 60,
+ "evidenceSupportsAssessment": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "materialImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication."
+ }
+ },
+ "strategicDecision": {
+ "highestValueImprovement": "Attach a mandatory post-action verification window and next-check deadline to every Brain action.",
+ "targetCapability": "Execution",
+ "targetSubsystem": "Execution Scheduler",
+ "expectedLift": 22,
+ "strategicValue": 67.3,
+ "whyThisNow": "score=65; gap=35; strategicPriority=10",
+ "verificationPlan": [
+ "Measure Execution before change.",
+ "Apply one bounded improvement.",
+ "Measure the same capability after the change.",
+ "Promote only if the metric improves and no dependent capability regresses."
+ ],
+ "rollbackPlan": "Keep rollback instructions mandatory before execution; revert if the target metric or public site behavior regresses."
+ },
+ "nextGenerationFocus": [
+ "Predictive reasoning",
+ "Causal reasoning",
+ "Strategic planning",
+ "Pattern generalization",
+ "Execution autonomy with verification and rollback"
+ ],
+ "candidates": [
+ {
+ "key": "execution",
+ "label": "Execution",
+ "score": 65,
+ "evidence": [
+ "actionCount=156",
+ "metricImprovedActions=71",
+ "verifiedActions=16"
+ ],
+ "proposedImprovement": "Attach a mandatory post-action verification window and next-check deadline to every Brain action.",
+ "subsystem": "Execution Scheduler",
+ "expectedLift": 22,
+ "strategicValue": 67.3,
+ "verificationNeed": 12,
+ "rollbackNeed": "required",
+ "reason": "score=65; gap=35; strategicPriority=10"
+ },
+ {
+ "key": "autonomy",
+ "label": "Autonomy",
+ "score": 65,
+ "evidence": [
+ "autonomousActions=156",
+ "executionGaps=1",
+ "verificationRate=10.3"
+ ],
+ "proposedImprovement": "Promote repeated successful Codex-taught operations into reusable Brain abilities with approval gates and measurable verification.",
+ "subsystem": "Autonomy Governor",
+ "expectedLift": 22,
+ "strategicValue": 67.3,
+ "verificationNeed": 12,
+ "rollbackNeed": "required",
+ "reason": "score=65; gap=35; strategicPriority=10"
+ },
+ {
+ "key": "prediction",
+ "label": "Prediction",
+ "score": 60,
+ "evidence": [
+ "forecastSignals=1",
+ "feedIntelligence=100"
+ ],
+ "proposedImprovement": "Forecast feed, source, article-output, and editor-rejection degradation before it affects publication.",
+ "subsystem": "Predictive Intelligence",
+ "expectedLift": 24,
+ "strategicValue": 66.1,
+ "verificationNeed": 6,
+ "rollbackNeed": "standard",
+ "reason": "score=60; gap=40; strategicPriority=10"
+ },
+ {
+ "key": "reasoning",
+ "label": "Reasoning",
+ "score": 67,
+ "evidence": [
+ "writerReasoning=67",
+ "pipelineReadiness=83",
+ "firstPassAcceptance=100.0"
+ ],
+ "proposedImprovement": "Require every story to pass through Dossier -> Evidence -> Context -> Hypothesis/Counterfactual checks before drafting.",
+ "subsystem": "Context Reasoning Engine",
+ "expectedLift": 22,
+ "strategicValue": 57.8,
+ "verificationNeed": 6,
+ "rollbackNeed": "standard",
+ "reason": "score=67; gap=33; strategicPriority=10"
+ },
+ {
+ "key": "planning",
+ "label": "Planning",
+ "score": 77,
+ "evidence": [
+ "abilityBacklog=5",
+ "gapCount=5",
+ "pipelineReadiness=83"
+ ],
+ "proposedImprovement": "Turn every owner goal into milestones, dependencies, resource needs, verification points, and finish criteria.",
+ "subsystem": "Planning Engine",
+ "expectedLift": 18,
+ "strategicValue": 46,
+ "verificationNeed": 6,
+ "rollbackNeed": "standard",
+ "reason": "score=77; gap=23; strategicPriority=10"
+ },
+ {
+ "key": "recovery",
+ "label": "Recovery",
+ "score": 73,
+ "evidence": [
+ "runtimeStability=96",
+ "verifiedActions=16"
+ ],
+ "proposedImprovement": "Detect failure, recover, verify the same metric, and store prevention memory without waiting for owner notice.",
+ "subsystem": "Recovery Engine",
+ "expectedLift": 13,
+ "strategicValue": 43,
+ "verificationNeed": 12,
+ "rollbackNeed": "required",
+ "reason": "score=73; gap=27; strategicPriority=4"
+ }
+ ],
+ "causalReasoning": {
+ "status": "gap",
+ "questions": [
+ "Did feed/source quality reduce dossier completeness?",
+ "Did dossier weakness increase editor rejection?",
+ "Did headline pattern failure lower article approval?",
+ "Did runtime load reduce publication output?",
+ "Did owner-approved changes improve the metric they targeted?"
+ ],
+ "rule": "The Brain should connect causes across feed quality, dossier quality, writing quality, runtime load, and publication output before choosing a fix."
+ },
+ "patternGeneralization": {
+ "weakestPattern": "headline",
+ "weakestPatternSuccessRate": 0.5,
+ "rule": "Promote patterns only after repeated verified success; keep failed patterns in repair memory."
+ },
+ "executionAutonomy": {
+ "verifiedActions": 16,
+ "improvedActions": 71,
+ "rule": "Autonomy increases only when execution is verified and rollback remains available."
+ },
+ "capabilityPromotion": [
+ {
+ "capability": "Editorial Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "writingPatterns=6",
+ "recentEditorDecisions=250",
+ "approvedPatterns=1"
+ ],
+ "nextRequirement": "Reach stable first-pass writing pattern success above 85%, then generalize to Creator Desk and Newsletter.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Runtime Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "sources=394",
+ "sourceErrorSignals=0",
+ "verifiedActions=94"
+ ],
+ "nextRequirement": "Verify that adaptive feed/source actions reduce the exact provider-level error rate they target.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Engineering Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "structuredPatches=54",
+ "appliedPatches=0",
+ "improvedActions=26"
+ ],
+ "nextRequirement": "Promote only patch patterns that apply cleanly, verify, and avoid duplicate proposals.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Knowledge Graph Loop",
+ "currentLevel": "capability",
+ "evidence": [
+ "nodes=4494",
+ "edges=6440",
+ "dossierStories=180"
+ ],
+ "nextRequirement": "Promote recurring entities and relationships only when multiple independent dossiers confirm them.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Owner Decision Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "pendingApprovals=55",
+ "appliedPatches=0"
+ ],
+ "nextRequirement": "Learn owner decision heuristics from approved, denied, and completed outcomes without bypassing approval gates.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "News Output Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "dossierStories=180",
+ "approvedStories=9"
+ ],
+ "nextRequirement": "Use more accepted dossiers to raise output while keeping the Editor strict.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ }
+ ],
+ "proofSignals": {
+ "proofEntries": 100,
+ "evolutionOverall": 52,
+ "metaLearnerScore": 38
+ },
+ "rule": "Capability Analysis is Framework 2.0's command center; feature work should follow the highest-value capability improvement."
+ }
+}

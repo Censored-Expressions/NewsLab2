@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2026-07-17T11:03:36.332Z",
+  "rootCause": {
+    "duplicates": "Newsletter dedupe previously ran inside individual lists and used URL+display+brief, so the same source URL could reappear in Top News, Quick Links, What To Watch, or section-derived lists under different labels.",
+    "mojibake": "Content cleanup handled several known broken encodings but did not normalize all extended/decoded characters before rendered HTML/text was saved."
+  },
+  "fix": {
+    "code": [
+      "uniqueNewsletterItems now dedupes by URL independently of display label.",
+      "dedupeNewsletterIssueLists dedupes across Top News, Quick Links, What To Watch, and sourceDirections before render.",
+      "cleanEncodingArtifacts normalizes and strips residual extended mojibake characters for public text."
+    ],
+    "data": [
+      "Existing Creator Desk and Newsletter JSON was normalized to ASCII-safe public text.",
+      "Newsletter duplicate references were removed across public lists.",
+      "Rendered html/text was rebuilt from cleaned records."
+    ]
+  },
+  "before": {
+    "creatorSuspicious": 1,
+    "newsletterSuspicious": 1,
+    "newsletterDuplicateRecords": 4,
+    "newsletterDuplicateTotal": 19
+  },
+  "after": {
+    "creatorSuspicious": 0,
+    "newsletterSuspicious": 0,
+    "newsletterDuplicateRecords": 0,
+    "newsletterDuplicateTotal": 0
+  },
+  "removedDuplicates": [
+    {
+      "id": "newsletter_2026-07-04",
+      "removed": [
+        {
+          "list": "quickLinks",
+          "title": "'Behind the Rain' Explores Childhood Sexual Abuse in Striking Black and White",
+          "url": "https://www.hollywoodreporter.com/movies/movie-news/behind-the-rain-film-karlovy-vary-childhood-sexual-abuse-1236643769/"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Fed Chair Warsh will be in the hot seat as lawmakers press for his read on the economy",
+          "url": "https://www.marketwatch.com/story/fed-chair-warsh-will-be-in-the-hot-seat-as-lawmakers-press-for-his-read-on-the-economy-959ac784?mod=mw_rss_topstories"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Vietnam's baby bonuses unlikely to stop the aging clock",
+          "url": "https://www.dw.com/en/vietnam-s-baby-bonuses-unlikely-to-stop-the-aging-clock/a-77901363?maca=en-rss-en-world-4025-rdf"
+        },
+        {
+          "list": "upcoming",
+          "title": "'Big Brother' Season 28 Cast Revealed: 'RuPaul's Drag Race' Alum, Rocket Scientist, MMA Fighter and More",
+          "url": "https://www.hollywoodreporter.com/lists/big-brother-season-28-cast/"
+        }
+      ]
+    },
+    {
+      "id": "newsletter_2026-06-27",
+      "removed": [
+        {
+          "list": "quickLinks",
+          "title": "5 takeaways from President Donald Trump's interview with CNBC",
+          "url": "https://www.cnbc.com/2026/07/02/5-takeaways-from-president-donald-trumps-interview-with-cnbc.html"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Selma High senior gains hands-on experience through paid fire department internship",
+          "url": "https://abc30.com/post/selma-high-senior-gains-hands-experience-paid-fire-department-internship/19380294/"
+        },
+        {
+          "list": "quickLinks",
+          "title": "First known congressional SpaceX stock buys surface after record IPO",
+          "url": "https://www.cnbc.com/2026/07/03/spacex-stock-congress-meuser-cisneros-ipo-disclosure.html"
+        }
+      ]
+    },
+    {
+      "id": "newsletter_2026-06-13",
+      "removed": [
+        {
+          "list": "quickLinks",
+          "title": "Latest pop culture, music, and movie headlines",
+          "url": "https://variety.com/"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Latest CNN headlines",
+          "url": "https://www.cnn.com/"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Latest AP headlines",
+          "url": "https://apnews.com/"
+        },
+        {
+          "list": "upcoming",
+          "title": "Latest pop culture, music, and movie headlines",
+          "url": "https://variety.com/"
+        },
+        {
+          "list": "upcoming",
+          "title": "Latest CNN headlines",
+          "url": "https://www.cnn.com/"
+        },
+        {
+          "list": "upcoming",
+          "title": "Latest AP headlines",
+          "url": "https://apnews.com/"
+        },
+        {
+          "list": "upcoming",
+          "title": "Chicago local news pulse",
+          "url": "https://news.google.com/search?q=Chicago%20local%20news"
+        },
+        {
+          "list": "upcoming",
+          "title": "New York local news pulse",
+          "url": "https://news.google.com/search?q=New%20York%20local%20news"
+        },
+        {
+          "list": "upcoming",
+          "title": "Los Angeles local news pulse",
+          "url": "https://news.google.com/search?q=Los%20Angeles%20local%20news"
+        }
+      ]
+    },
+    {
+      "id": "newsletter_2026-06-06",
+      "removed": [
+        {
+          "list": "quickLinks",
+          "title": "Coaching the U.S. was a big test for Mauricio Pochettino. Then his World Cup opener went 'amazing.'",
+          "url": "https://www.nbcnews.com/sports/soccer/coaching-us-big-test-mauricio-pochettino-world-cup-opener-rcna349915"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Map: How much you pay in federal and state gas taxes",
+          "url": "https://www.nbcnews.com/data-graphics/federal-gas-tax-rate-states-trump-iran-war-prices-map-rcna344540"
+        },
+        {
+          "list": "quickLinks",
+          "title": "Michael Busch hits 3-run homer to back Javier Assad's strong start, Cubs beat Giants 5-1",
+          "url": "https://abcnews.com/Sports/wireStory/michael-busch-hits-3-run-homer-back-javier-133839192"
+        }
+      ]
+    }
+  ]
+}

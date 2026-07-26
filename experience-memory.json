@@ -1,0 +1,145 @@
+{
+  "version": "20260722-experience-memory-v1",
+  "updatedAt": "2026-07-23T19:08:39.132Z",
+  "purpose": "Significant Framework experiences retained because they changed behavior, created a capability, exposed a major failure, or carry audit value.",
+  "lastDistillation": {
+    "reason": "scheduled-background-distillation",
+    "at": "2026-07-23T19:08:39.132Z"
+  },
+  "experiences": [
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:07:47.103Z",
+      "decision": "Autonomous action: worker-slice-clean-dossier-handoff",
+      "reason": "The Framework detected an issue, selected worker-slice-clean-dossier-handoff, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:07:52.138Z",
+      "decision": "Autonomous action: worker-slice-clean-dossier-handoff",
+      "reason": "The Framework detected an issue, selected worker-slice-clean-dossier-handoff, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:07:56.989Z",
+      "decision": "Autonomous action: worker-slice-thin-evidence-pre-editor-hold",
+      "reason": "The Framework detected an issue, selected worker-slice-thin-evidence-pre-editor-hold, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:01.595Z",
+      "decision": "Autonomous action: worker-slice-clean-dossier-handoff",
+      "reason": "The Framework detected an issue, selected worker-slice-clean-dossier-handoff, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:06.740Z",
+      "decision": "Autonomous action: worker-slice-thin-evidence-pre-editor-hold",
+      "reason": "The Framework detected an issue, selected worker-slice-thin-evidence-pre-editor-hold, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:10.369Z",
+      "decision": "Autonomous action: worker-slice-clean-dossier-handoff",
+      "reason": "The Framework detected an issue, selected worker-slice-clean-dossier-handoff, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:14.738Z",
+      "decision": "Autonomous action: worker-slice-thin-evidence-pre-editor-hold",
+      "reason": "The Framework detected an issue, selected worker-slice-thin-evidence-pre-editor-hold, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:19.072Z",
+      "decision": "Autonomous action: worker-slice-clean-dossier-handoff",
+      "reason": "The Framework detected an issue, selected worker-slice-clean-dossier-handoff, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:23.708Z",
+      "decision": "Autonomous action: worker-slice-thin-evidence-pre-editor-hold",
+      "reason": "The Framework detected an issue, selected worker-slice-thin-evidence-pre-editor-hold, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:27.535Z",
+      "decision": "Autonomous action: worker-slice-clean-dossier-handoff",
+      "reason": "The Framework detected an issue, selected worker-slice-clean-dossier-handoff, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:31.714Z",
+      "decision": "Autonomous action: worker-slice-thin-evidence-pre-editor-hold",
+      "reason": "The Framework detected an issue, selected worker-slice-thin-evidence-pre-editor-hold, acted, measured the result, and saved prevention memory.",
+      "outcome": "recorded",
+      "improvement": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_1784833719132",
+      "at": "2026-07-23T19:08:34.490Z",
+      "decision": "Framework learning event",
+      "reason": "Framework learning proof entry saved.",
+      "outcome": "recorded",
+      "improvement": "Convert into reusable behavior when repeated evidence supports it.",
+      "futureConfidence": 0.78,
+      "retainRaw": false
+    },
+    {
+      "id": "experience_image_intelligence_1784833719132",
+      "at": "2026-07-23T03:07:25.569Z",
+      "decision": "Image Intelligence moved visual improvement out of article publication path.",
+      "reason": "Licensed image lookup can improve article-specific visuals without blocking article publication or using publisher images.",
+      "outcome": "reviewed=12; upgraded=0",
+      "improvement": "Future image work should use Pexels/Pixabay/source-reviewed/CE-generated lanes with provenance and editor checks.",
+      "futureConfidence": 0.45,
+      "retainRaw": true
+    }
+  ],
+  "retentionSignals": {
+    "totalBytesReviewed": 527013763,
+    "rawExperienceRule": "Keep only significant decision/reason/outcome/improvement records; ordinary task files become working memory after their lesson is extracted."
+  }
+}

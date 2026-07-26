@@ -1,0 +1,346 @@
+{
+  "version": "20260713-lexicon-intelligence-v1",
+  "updatedAt": "2026-07-13T23:12:48.079Z",
+  "purpose": "Help the Brain choose precise, original, context-aware language without copying dictionary entries or publisher style.",
+  "boundaries": [
+    "Do not copy proprietary dictionary definitions.",
+    "Do not memorize publisher wording, headlines, or article structure.",
+    "Store reusable usage guidance, tone, context, reading level, and editorial preference.",
+    "Facts come from Story Dossier; word choice comes from Lexicon Intelligence."
+  ],
+  "engines": {
+    "vocabulary": {
+      "active": true,
+      "job": "Choose words by meaning, context, tone, strength, reading level, and evidence support."
+    },
+    "repetitionMonitor": {
+      "active": true,
+      "job": "Detect overused verbs, transitions, intros, and paragraph moves across News Lab, Creator Desk, and Newsletter."
+    },
+    "sentenceIntelligence": {
+      "active": true,
+      "job": "Vary sentence rhythm and placement without changing facts."
+    },
+    "transitionIntelligence": {
+      "active": true,
+      "job": "Move from fact to context to consequence without repeating the same bridge."
+    }
+  },
+  "vocabulary": {
+    "reportVerbs": [
+      {
+        "word": "confirmed",
+        "partOfSpeech": "verb",
+        "meaning": "states a fact as verified by an official, document, or reliable record",
+        "strength": "strong verification verb",
+        "tone": "neutral",
+        "journalisticUsage": "excellent when evidence is direct",
+        "formal": true,
+        "opinionated": false,
+        "typicalContexts": [
+          "official statements",
+          "court records",
+          "public safety",
+          "business filings"
+        ],
+        "similarWords": [
+          "verified",
+          "stated",
+          "announced"
+        ],
+        "avoidConfusionWith": [
+          "claimed",
+          "speculated"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Use only when the dossier has direct verification.",
+        "confidence": {
+          "accuracy": 98,
+          "neutrality": 100,
+          "journalisticPreference": 97,
+          "emotionalLoad": 2
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      },
+      {
+        "word": "said",
+        "partOfSpeech": "verb",
+        "meaning": "attributes a statement to a person or organization",
+        "strength": "plain attribution verb",
+        "tone": "neutral",
+        "journalisticUsage": "excellent but easily overused",
+        "formal": true,
+        "opinionated": false,
+        "typicalContexts": [
+          "all categories"
+        ],
+        "similarWords": [
+          "stated",
+          "told",
+          "announced"
+        ],
+        "avoidConfusionWith": [
+          "confirmed"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Use for clean attribution; rotate when repeated.",
+        "confidence": {
+          "accuracy": 95,
+          "neutrality": 100,
+          "journalisticPreference": 92,
+          "emotionalLoad": 1
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      },
+      {
+        "word": "alleged",
+        "partOfSpeech": "verb",
+        "meaning": "presents an unproven claim, charge, or accusation",
+        "strength": "legal caution verb",
+        "tone": "neutral",
+        "journalisticUsage": "excellent for allegations and charges",
+        "formal": true,
+        "opinionated": false,
+        "typicalContexts": [
+          "crime",
+          "courts",
+          "investigations"
+        ],
+        "similarWords": [
+          "accused",
+          "claimed"
+        ],
+        "avoidConfusionWith": [
+          "confirmed",
+          "proved"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Use before guilt or responsibility is established.",
+        "confidence": {
+          "accuracy": 96,
+          "neutrality": 96,
+          "journalisticPreference": 95,
+          "emotionalLoad": 8
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      },
+      {
+        "word": "investigate",
+        "partOfSpeech": "verb",
+        "meaning": "examine facts to determine what happened",
+        "strength": "strong investigative verb",
+        "tone": "neutral",
+        "journalisticUsage": "excellent",
+        "formal": true,
+        "opinionated": false,
+        "typicalContexts": [
+          "politics",
+          "crime",
+          "business",
+          "science"
+        ],
+        "similarWords": [
+          "examine",
+          "review",
+          "analyze",
+          "inspect",
+          "probe"
+        ],
+        "avoidConfusionWith": [
+          "speculate",
+          "assume"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Preferred over 'look into' when an actual inquiry exists.",
+        "confidence": {
+          "accuracy": 97,
+          "neutrality": 96,
+          "journalisticPreference": 96,
+          "emotionalLoad": 5
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      },
+      {
+        "word": "warned",
+        "partOfSpeech": "verb",
+        "meaning": "signaled risk or possible consequence",
+        "strength": "caution verb",
+        "tone": "serious",
+        "journalisticUsage": "usable when the source explicitly describes a risk",
+        "formal": true,
+        "opinionated": false,
+        "typicalContexts": [
+          "weather",
+          "markets",
+          "public safety",
+          "foreign affairs"
+        ],
+        "similarWords": [
+          "cautioned",
+          "alerted"
+        ],
+        "avoidConfusionWith": [
+          "proved",
+          "confirmed"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Use only when the warning is tied to a named source or evidence.",
+        "confidence": {
+          "accuracy": 86,
+          "neutrality": 74,
+          "journalisticPreference": 78,
+          "emotionalLoad": 35
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      }
+    ],
+    "creatorDeskWords": [
+      {
+        "word": "compelling",
+        "partOfSpeech": "adjective",
+        "meaning": "strong enough to deserve attention",
+        "strength": "measured praise",
+        "tone": "positive",
+        "journalisticUsage": "usable in commentary",
+        "formal": true,
+        "opinionated": true,
+        "typicalContexts": [
+          "culture",
+          "argument",
+          "public case"
+        ],
+        "similarWords": [
+          "persuasive",
+          "strong",
+          "convincing"
+        ],
+        "avoidConfusionWith": [
+          "perfect",
+          "proven"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Preferred over generic 'great' when explaining why something deserves attention.",
+        "confidence": {
+          "accuracy": 90,
+          "neutrality": 90,
+          "journalisticPreference": 85,
+          "emotionalLoad": 10
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      },
+      {
+        "word": "distinctive",
+        "partOfSpeech": "adjective",
+        "meaning": "noticeably different in a useful or recognizable way",
+        "strength": "moderate description",
+        "tone": "neutral-positive",
+        "journalisticUsage": "usable",
+        "formal": true,
+        "opinionated": false,
+        "typicalContexts": [
+          "culture",
+          "branding",
+          "strategy"
+        ],
+        "similarWords": [
+          "specific",
+          "recognizable",
+          "separate"
+        ],
+        "avoidConfusionWith": [
+          "better"
+        ],
+        "difficulty": "medium",
+        "readingLevel": "Grade 9",
+        "sentencePlacement": "Use where the action is clear from the subject.",
+        "editorialPreference": "Use when describing identity without overstating quality.",
+        "confidence": {
+          "accuracy": 90,
+          "neutrality": 90,
+          "journalisticPreference": 85,
+          "emotionalLoad": 10
+        },
+        "learnedFrom": "Framework editorial experience and reusable language principles, not copied dictionary wording."
+      }
+    ],
+    "transitionMoves": [
+      {
+        "name": "fact-to-context",
+        "guidance": "After the verified fact, explain the setting without repeating the headline.",
+        "avoid": [
+          "The story is this",
+          "The broader context is"
+        ]
+      },
+      {
+        "name": "context-to-consequence",
+        "guidance": "Move from background to who is affected or what changes next.",
+        "avoid": [
+          "repeating This matters because across paragraphs"
+        ]
+      },
+      {
+        "name": "source-specific-claim",
+        "guidance": "Use source attribution only when a detail is unique or not broadly confirmed.",
+        "avoid": [
+          "reporting trail",
+          "source signals",
+          "dossier includes"
+        ]
+      }
+    ],
+    "overusedPhrases": [
+      "said",
+      "according to",
+      "meanwhile",
+      "however",
+      "this matters because",
+      "the useful question",
+      "the next piece to watch",
+      "the broader context"
+    ]
+  },
+  "guidanceBySurface": {
+    "newsLab": [
+      "Prefer neutral, evidence-calibrated verbs: confirmed for verified records, alleged for accusations, said/stated for attribution, warned only when risk is explicit.",
+      "Avoid opinion-loaded verbs unless the evidence supports them.",
+      "Do not mention internal dossiers, source signals, or confidence mechanics in public articles."
+    ],
+    "creatorDesk": [
+      "Use stronger opinion language only after the story fact is clear.",
+      "Vary transitions so each daily editorial does not sound like the same template.",
+      "Prefer precise values language over generic phrases like great, bad, important, or concerning."
+    ],
+    "newsletter": [
+      "Rotate openings by week: strongest signal, consequence, what changed, what still needs proof, and what comes next.",
+      "Use a magazine-like rhythm with short paragraphs and varied transitions.",
+      "Do not repeat the same intro, bridge, or values paragraph from week to week."
+    ]
+  },
+  "writerDirective": "Before drafting, choose words by evidence, tone, context, and repetition history. Prefer precise neutral verbs in news, varied values language in Creator Desk, and fresh weekly transitions in Newsletter.",
+  "rule": "Lexicon Intelligence is a semantic writing system, not a dictionary cache.",
+  "behavioralLayer": {
+    "updatedAt": "2026-07-17T12:49:39.108Z",
+    "sourceFile": "behavioral-lexicon.json",
+    "rule": "Use contextual word-choice preferences before drafting. Learn choices, not just words.",
+    "contexts": [
+      "governmentOfficial",
+      "courtRuling",
+      "companyFiling",
+      "publicSafety",
+      "sportsResult"
+    ]
+  }
+}

@@ -1,0 +1,593 @@
+{
+  "generatedAt": "2026-07-18T14:12:43.407Z",
+  "version": "20260716-evolution-engine-v1",
+  "reason": "corrected-public-shelf-measurement",
+  "purpose": "Measure whether the Framework is becoming more capable, not merely larger.",
+  "flow": [
+    "Observe",
+    "Measure",
+    "Compare",
+    "Identify Change",
+    "Measure Impact",
+    "Promote Capability",
+    "Write Evolution Report"
+  ],
+  "morningQuestion": "Is the Framework becoming more capable, or is it just becoming larger?",
+  "answer": "The Framework shows measurable capability movement, but unresolved regressions must be reduced before promotion.",
+  "measurements": {
+    "generatedAt": "2026-07-18T14:12:43.384Z",
+    "frameworkScore": 78,
+    "publicStoryCount": 35,
+    "visibleStoryObjects": 4,
+    "approvedBeforePublisher": 5,
+    "rejectedNeedsRepair": 8,
+    "approvedAfterRepair": 0,
+    "storyObjectCount": 258,
+    "duplicatePublicTitleGroups": 1,
+    "approvalRate": 0.47,
+    "publicationRate": 102.94,
+    "editorialReviews": 7214,
+    "approvedArticles": 34,
+    "rejectedDrafts": 7180,
+    "publishedArticlesCounter": 4,
+    "firstPassApprovals": 40,
+    "cacheMode": "prepared-api-cache",
+    "cacheBridgeAdded": 0,
+    "cacheBridgeSkippedDuplicate": 0,
+    "cacheBridgeSkippedIncomplete": 0,
+    "verifiedActions": 0,
+    "improvedActions": 0,
+    "proofEntries": 0,
+    "repeatedLessonSignals": 0
+  },
+  "comparisons": [
+    {
+      "key": "frameworkScore",
+      "previous": 78,
+      "current": 78,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "publicStoryCount",
+      "previous": 0,
+      "current": 35,
+      "delta": 35,
+      "direction": "up"
+    },
+    {
+      "key": "visibleStoryObjects",
+      "previous": 4,
+      "current": 4,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "approvedBeforePublisher",
+      "previous": 5,
+      "current": 5,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "rejectedNeedsRepair",
+      "previous": 8,
+      "current": 8,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "approvedAfterRepair",
+      "previous": 0,
+      "current": 0,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "storyObjectCount",
+      "previous": 258,
+      "current": 258,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "duplicatePublicTitleGroups",
+      "previous": 0,
+      "current": 1,
+      "delta": 1,
+      "direction": "up"
+    },
+    {
+      "key": "approvalRate",
+      "previous": 0.47,
+      "current": 0.47,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "publicationRate",
+      "previous": 0,
+      "current": 102.94,
+      "delta": 102.94,
+      "direction": "up"
+    },
+    {
+      "key": "verifiedActions",
+      "previous": 0,
+      "current": 0,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "improvedActions",
+      "previous": 0,
+      "current": 0,
+      "delta": 0,
+      "direction": "flat"
+    },
+    {
+      "key": "repeatedLessonSignals",
+      "previous": 0,
+      "current": 0,
+      "delta": 0,
+      "direction": "flat"
+    }
+  ],
+  "behaviorChanges": [
+    {
+      "subsystem": "Story Object Store",
+      "change": "Article state is durable enough to compare approval, repair, and public visibility.",
+      "evidence": "storyObjectCount=258, visibleStoryObjects=4",
+      "impact": "state-persistence-supports-debugging-and-repair"
+    }
+  ],
+  "measurableImprovements": [
+    {
+      "key": "publicStoryCount",
+      "previous": 0,
+      "current": 35,
+      "delta": 35,
+      "direction": "up"
+    },
+    {
+      "key": "publicationRate",
+      "previous": 0,
+      "current": 102.94,
+      "delta": 102.94,
+      "direction": "up"
+    }
+  ],
+  "regressions": [
+    {
+      "key": "duplicatePublicTitleGroups",
+      "previous": 0,
+      "current": 1,
+      "delta": 1,
+      "direction": "up"
+    }
+  ],
+  "capabilityAdvancements": [
+    {
+      "capability": "Editorial Loop",
+      "level": "repeated",
+      "score": 42,
+      "promoted": false,
+      "nextRequirement": "Reach stable first-pass writing pattern success above 85%, then generalize to Creator Desk and Newsletter."
+    },
+    {
+      "capability": "Runtime Loop",
+      "level": "repeated",
+      "score": 42,
+      "promoted": false,
+      "nextRequirement": "Verify that adaptive feed/source actions reduce the exact provider-level error rate they target."
+    },
+    {
+      "capability": "Engineering Loop",
+      "level": "repeated",
+      "score": 42,
+      "promoted": false,
+      "nextRequirement": "Promote only patch patterns that apply cleanly, verify, and avoid duplicate proposals."
+    },
+    {
+      "capability": "Knowledge Graph Loop",
+      "level": "capability",
+      "score": 96,
+      "promoted": true,
+      "nextRequirement": "Promote recurring entities and relationships only when multiple independent dossiers confirm them."
+    },
+    {
+      "capability": "Owner Decision Loop",
+      "level": "repeated",
+      "score": 42,
+      "promoted": false,
+      "nextRequirement": "Learn owner decision heuristics from approved, denied, and completed outcomes without bypassing approval gates."
+    },
+    {
+      "capability": "News Output Loop",
+      "level": "repeated",
+      "score": 42,
+      "promoted": false,
+      "nextRequirement": "Use more accepted dossiers to raise output while keeping the Editor strict."
+    }
+  ],
+  "sections": {
+    "brainEvolution": {
+      "purpose": "Track whether the Framework itself is improving.",
+      "metrics": {
+        "totalCapabilities": {
+          "previous": 6,
+          "current": 6,
+          "delta": 0,
+          "trend": "flat",
+          "improved": false
+        },
+        "newCapabilitiesPromoted": {
+          "previous": 1,
+          "current": 1,
+          "delta": 0,
+          "trend": "flat",
+          "improved": false
+        },
+        "capabilityGapsClosed": {
+          "previous": 24,
+          "current": 0,
+          "delta": -24,
+          "trend": "down",
+          "improved": false
+        },
+        "newGapsFound": {
+          "previous": 0,
+          "current": 0,
+          "delta": 0,
+          "trend": "flat",
+          "improved": false
+        },
+        "capabilityMaturityScore": {
+          "previous": 78,
+          "current": 78,
+          "delta": 0,
+          "trend": "flat",
+          "improved": false
+        }
+      }
+    },
+    "lexiconEvolution": {
+      "purpose": "Measure whether vocabulary improves writing, not just whether word count grows.",
+      "totalVocabulary": 0,
+      "newVocabularyLearned": 0,
+      "activeVocabulary": 0,
+      "vocabularyDiversity": 0,
+      "rareButAppropriateWordUsage": 0,
+      "repetitionReduction": {
+        "previous": 0,
+        "current": 0,
+        "delta": 0,
+        "trend": "flat",
+        "improved": false
+      },
+      "repeatedWordCount": 0,
+      "domainVocabularyGrowth": {
+        "politics": 0,
+        "business": 0,
+        "science": 0,
+        "sports": 0,
+        "technology": 0,
+        "world": 0
+      },
+      "lexiconUtilization": 0
+    },
+    "writingEvolution": {
+      "purpose": "Measure whether the Writer is producing better drafts.",
+      "averageSentenceLength": 0,
+      "passiveVoiceFrequency": 0,
+      "readingLevelProxy": 0,
+      "transitionVariety": 0,
+      "leadStrength": 84,
+      "paragraphCohesion": 100,
+      "headlineClarity": 88,
+      "editorialRepairRate": 3.1,
+      "firstPassAcceptance": 0.47
+    },
+    "editorialEvolution": {
+      "purpose": "Track how much intervention is required.",
+      "firstPassApproval": 0.47,
+      "repairRequired": 8,
+      "grammarFixes": 0,
+      "headlineFixes": 1,
+      "bodyFixes": 0,
+      "fatalFailures": 8,
+      "goal": "Less repair over time."
+    },
+    "learningEvolution": {
+      "purpose": "Prove learning changed behavior.",
+      "lessonsCaptured": 0,
+      "lessonsPromoted": 1,
+      "lessonsApplied": 0,
+      "behaviorChanged": 1,
+      "publicationImprovement": 102.94,
+      "rule": "Do not stop at lesson stored; measure whether behavior changed."
+    },
+    "storyIntelligence": {
+      "purpose": "Measure clustering, dossier quality, evidence quality, and mixed-story reduction.",
+      "clusteringQuality": 90,
+      "dossierQuality": 93,
+      "evidenceCompleteness": 100,
+      "mixedStoryRisk": 0,
+      "entityExtractionProxy": 0
+    },
+    "runtimeEvolution": {
+      "purpose": "Measure whether the system stays responsive while the Brain works.",
+      "workerSpeed": "prepared-api-cache",
+      "queueLatency": "measured by worker status files",
+      "recoveryRate": 0,
+      "buildTime": "tracked by news-lab-worker-status.json",
+      "memoryUsage": "tracked by process runtime, not yet persisted",
+      "apiResponseTime": "verified externally during Codex test",
+      "runtimeScore": 100
+    },
+    "capabilityEvolution": {
+      "purpose": "Track maturity score by subsystem.",
+      "subsystems": [
+        {
+          "subsystem": "Story Dossier",
+          "score": 93,
+          "trend": "down"
+        },
+        {
+          "subsystem": "Writer",
+          "score": 4,
+          "trend": "flat"
+        },
+        {
+          "subsystem": "Publishing Editor",
+          "score": 100,
+          "trend": "up"
+        },
+        {
+          "subsystem": "Validator",
+          "score": 92,
+          "trend": "flat"
+        },
+        {
+          "subsystem": "Lexicon Learner",
+          "score": 0,
+          "trend": "flat"
+        },
+        {
+          "subsystem": "Newsletter",
+          "score": 0,
+          "trend": "flat"
+        }
+      ]
+    },
+    "patentEvolution": {
+      "purpose": "Track implementation maturity of reusable IP concepts.",
+      "implementedInventions": [
+        "Owner-approved patch governance",
+        "Story Object repair memory",
+        "Prepared API cache-first public serving",
+        "Evolution Engine worker reporting",
+        "Approved Story Object publication bridge"
+      ],
+      "newArchitecturalNovelty": [
+        "Evolution Engine worker report",
+        "Behavior-change measurement",
+        "Lexicon utilization scoring"
+      ],
+      "commercialDifferentiation": "Framework measures whether capability improves instead of merely reporting more diagnostics.",
+      "newReusableCapability": "Morning Evolution Report structure usable across applications.",
+      "crossDomainApplicability": [
+        "news",
+        "commerce",
+        "operations",
+        "content",
+        "site reliability"
+      ]
+    },
+    "recommendations": {
+      "biggestImprovement": "publicStoryCount changed by 35.",
+      "biggestWeakness": "Duplicate public headlines are still consuming article slots.",
+      "highestRoiNextChange": "Dedupe after public headline polishing, then refill open slots from complete approved Story Objects."
+    }
+  },
+  "brainEvolution": {
+    "purpose": "Track whether the Framework itself is improving.",
+    "metrics": {
+      "totalCapabilities": {
+        "previous": 6,
+        "current": 6,
+        "delta": 0,
+        "trend": "flat",
+        "improved": false
+      },
+      "newCapabilitiesPromoted": {
+        "previous": 1,
+        "current": 1,
+        "delta": 0,
+        "trend": "flat",
+        "improved": false
+      },
+      "capabilityGapsClosed": {
+        "previous": 24,
+        "current": 0,
+        "delta": -24,
+        "trend": "down",
+        "improved": false
+      },
+      "newGapsFound": {
+        "previous": 0,
+        "current": 0,
+        "delta": 0,
+        "trend": "flat",
+        "improved": false
+      },
+      "capabilityMaturityScore": {
+        "previous": 78,
+        "current": 78,
+        "delta": 0,
+        "trend": "flat",
+        "improved": false
+      }
+    }
+  },
+  "lexiconEvolution": {
+    "purpose": "Measure whether vocabulary improves writing, not just whether word count grows.",
+    "totalVocabulary": 0,
+    "newVocabularyLearned": 0,
+    "activeVocabulary": 0,
+    "vocabularyDiversity": 0,
+    "rareButAppropriateWordUsage": 0,
+    "repetitionReduction": {
+      "previous": 0,
+      "current": 0,
+      "delta": 0,
+      "trend": "flat",
+      "improved": false
+    },
+    "repeatedWordCount": 0,
+    "domainVocabularyGrowth": {
+      "politics": 0,
+      "business": 0,
+      "science": 0,
+      "sports": 0,
+      "technology": 0,
+      "world": 0
+    },
+    "lexiconUtilization": 0
+  },
+  "writingEvolution": {
+    "purpose": "Measure whether the Writer is producing better drafts.",
+    "averageSentenceLength": 0,
+    "passiveVoiceFrequency": 0,
+    "readingLevelProxy": 0,
+    "transitionVariety": 0,
+    "leadStrength": 84,
+    "paragraphCohesion": 100,
+    "headlineClarity": 88,
+    "editorialRepairRate": 3.1,
+    "firstPassAcceptance": 0.47
+  },
+  "editorialEvolution": {
+    "purpose": "Track how much intervention is required.",
+    "firstPassApproval": 0.47,
+    "repairRequired": 8,
+    "grammarFixes": 0,
+    "headlineFixes": 1,
+    "bodyFixes": 0,
+    "fatalFailures": 8,
+    "goal": "Less repair over time."
+  },
+  "learningEvolution": {
+    "purpose": "Prove learning changed behavior.",
+    "lessonsCaptured": 0,
+    "lessonsPromoted": 1,
+    "lessonsApplied": 0,
+    "behaviorChanged": 1,
+    "publicationImprovement": 102.94,
+    "rule": "Do not stop at lesson stored; measure whether behavior changed."
+  },
+  "storyIntelligence": {
+    "purpose": "Measure clustering, dossier quality, evidence quality, and mixed-story reduction.",
+    "clusteringQuality": 90,
+    "dossierQuality": 93,
+    "evidenceCompleteness": 100,
+    "mixedStoryRisk": 0,
+    "entityExtractionProxy": 0
+  },
+  "runtimeEvolution": {
+    "purpose": "Measure whether the system stays responsive while the Brain works.",
+    "workerSpeed": "prepared-api-cache",
+    "queueLatency": "measured by worker status files",
+    "recoveryRate": 0,
+    "buildTime": "tracked by news-lab-worker-status.json",
+    "memoryUsage": "tracked by process runtime, not yet persisted",
+    "apiResponseTime": "verified externally during Codex test",
+    "runtimeScore": 100
+  },
+  "capabilityEvolution": {
+    "purpose": "Track maturity score by subsystem.",
+    "subsystems": [
+      {
+        "subsystem": "Story Dossier",
+        "score": 93,
+        "trend": "down"
+      },
+      {
+        "subsystem": "Writer",
+        "score": 4,
+        "trend": "flat"
+      },
+      {
+        "subsystem": "Publishing Editor",
+        "score": 100,
+        "trend": "up"
+      },
+      {
+        "subsystem": "Validator",
+        "score": 92,
+        "trend": "flat"
+      },
+      {
+        "subsystem": "Lexicon Learner",
+        "score": 0,
+        "trend": "flat"
+      },
+      {
+        "subsystem": "Newsletter",
+        "score": 0,
+        "trend": "flat"
+      }
+    ]
+  },
+  "patentEvolution": {
+    "purpose": "Track implementation maturity of reusable IP concepts.",
+    "implementedInventions": [
+      "Owner-approved patch governance",
+      "Story Object repair memory",
+      "Prepared API cache-first public serving",
+      "Evolution Engine worker reporting",
+      "Approved Story Object publication bridge"
+    ],
+    "newArchitecturalNovelty": [
+      "Evolution Engine worker report",
+      "Behavior-change measurement",
+      "Lexicon utilization scoring"
+    ],
+    "commercialDifferentiation": "Framework measures whether capability improves instead of merely reporting more diagnostics.",
+    "newReusableCapability": "Morning Evolution Report structure usable across applications.",
+    "crossDomainApplicability": [
+      "news",
+      "commerce",
+      "operations",
+      "content",
+      "site reliability"
+    ]
+  },
+  "recommendations": {
+    "biggestImprovement": "publicStoryCount changed by 35.",
+    "biggestWeakness": "Duplicate public headlines are still consuming article slots.",
+    "highestRoiNextChange": "Dedupe after public headline polishing, then refill open slots from complete approved Story Objects."
+  },
+  "promotedCapabilities": [
+    {
+      "capability": "Knowledge Graph Loop",
+      "level": "capability",
+      "score": 96,
+      "promoted": true,
+      "nextRequirement": "Promote recurring entities and relationships only when multiple independent dossiers confirm them."
+    }
+  ],
+  "highestImpactNextImprovement": {
+    "target": "Public Shelf Dedupe",
+    "reason": "Duplicate final headlines consume visible board slots and make article output look smaller than the approved candidate pool.",
+    "action": "Dedupe after public headline polishing, then refill open slots from complete approved Story Objects.",
+    "expectedMetric": "Increase unique publicStoryCount without weakening editorial standards."
+  },
+  "spiralSummary": {
+    "overall": 52,
+    "weakestLoop": "Editorial Loop",
+    "promotedCapabilityCount": 1,
+    "nextImprovement": "Improve Editorial Loop: Reach stable first-pass writing pattern success above 85%, then generalize to Creator Desk and Newsletter."
+  },
+  "rule": "A lesson is not an improvement until behavior changes and a measured outcome improves. Regressions stay active until a later report proves recovery."
+}

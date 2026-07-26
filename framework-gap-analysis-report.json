@@ -1,0 +1,72 @@
+{
+ "generatedAt": "2026-07-05T12:35:09.380Z",
+ "purpose": "Current Brain gap snapshot: learning gaps, improvement gaps, execution gaps, and capability gaps that should become closeable abilities.",
+ "summary": {
+ "gapCount": 2,
+ "sourceCount": 315,
+ "sourceFamilyCounts": {
+ "journalism": 307,
+ "unknown": 2,
+ "research": 4,
+ "government": 2
+ },
+ "publishedStoryCount": 6,
+ "unverifiedActionCount": 118,
+ "latestFullRead": {
+ "selectedForFullRead": 10,
+ "successfulReads": 6,
+ "timeoutMs": 1800,
+ "budgetMs": 4200
+ },
+ "latestProduction": {
+ "approvedArticles": 6,
+ "rejectedDrafts": 12,
+ "publicStoryCount": 6
+ }
+ },
+ "gaps": [
+ {
+ "type": "capability-gap",
+ "title": "Approved article output is below the page-fill target.",
+ "evidence": {
+ "approvedArticles": 6,
+ "rejectedDrafts": 12,
+ "publicStoryCount": 6
+ },
+ "closeableAbility": "Convert editor rejections into pre-draft writer constraints and reroute failures to the earliest failing subsystem."
+ },
+ {
+ "type": "improvement-gap",
+ "title": "Some Brain actions still lack verified metric improvement.",
+ "evidence": {
+ "unverifiedActionCount": 118
+ },
+ "closeableAbility": "Mandatory post-action verification window with before metric, after metric, result metric, and next-check deadline."
+ }
+ ],
+ "nextAbilities": [
+ {
+ "abilityId": "gap-ability-1",
+ "from": "Approved article output is below the page-fill target.",
+ "build": "Convert editor rejections into pre-draft writer constraints and reroute failures to the earliest failing subsystem.",
+ "verify": "Compare the same metric before and after the ability runs, then save proof only when the metric improves."
+ },
+ {
+ "abilityId": "gap-ability-2",
+ "from": "Some Brain actions still lack verified metric improvement.",
+ "build": "Mandatory post-action verification window with before metric, after metric, result metric, and next-check deadline.",
+ "verify": "Compare the same metric before and after the ability runs, then save proof only when the metric improves."
+ }
+ ],
+ "notYetCapableOf": [
+ {
+ "limitation": "Approved article output is below the page-fill target.",
+ "routeToCapability": "Convert editor rejections into pre-draft writer constraints and reroute failures to the earliest failing subsystem."
+ },
+ {
+ "limitation": "Some Brain actions still lack verified metric improvement.",
+ "routeToCapability": "Mandatory post-action verification window with before metric, after metric, result metric, and next-check deadline."
+ }
+ ],
+ "rule": "The Brain should treat each gap as a task: understand it, create the missing ability, execute safely, verify improvement, and store the procedure for the next similar case."
+}

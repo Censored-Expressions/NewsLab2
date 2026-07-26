@@ -1,0 +1,165 @@
+{
+ "generatedAt": "2026-07-06T01:33:26.589Z",
+ "version": "20260705-content-orchestration",
+ "purpose": "Shift the Framework from isolated content generation to content orchestration across News Lab, Creator Desk, and Newsletter.",
+ "flow": [
+ "World Events",
+ "Evidence Collection",
+ "Story Dossier",
+ "Knowledge Graph",
+ "Editorial Intelligence",
+ "Audience Intelligence",
+ "Execution Engine"
+ ],
+ "outputs": [
+ "News Lab",
+ "Creator Desk",
+ "Newsletter"
+ ],
+ "overall": 81,
+ "weakest": {
+ "key": "audience-intelligence",
+ "label": "Audience Intelligence",
+ "score": 56,
+ "status": "early",
+ "evidence": [
+ "audienceSignals=310",
+ "approvedStories=9"
+ ],
+ "nextAction": "Use searches, engagement, and story coverage as inputs without letting popularity override editorial judgment.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ "stages": [
+ {
+ "key": "world-events",
+ "label": "World Events",
+ "score": 82,
+ "status": "developing",
+ "evidence": [
+ "sourceStoryCount=180",
+ "sourceFamilies=4"
+ ],
+ "nextAction": "Expand event intake beyond RSS into official, court, research, corporate, and local primary sources.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ {
+ "key": "evidence-collection",
+ "label": "Evidence Collection",
+ "score": 96,
+ "status": "ready",
+ "evidence": [
+ "sourceCount=483",
+ "sourceFamilies=4"
+ ],
+ "nextAction": "Collect more diverse evidence families and weight them through Source Registry v2.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ {
+ "key": "story-dossier",
+ "label": "Story Dossier",
+ "score": 87,
+ "status": "developing",
+ "evidence": [
+ "dossierSourceStoryCount=180",
+ "pipelineReadiness=83"
+ ],
+ "nextAction": "Make every output lane consume the same structured dossier instead of rebuilding isolated context.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ {
+ "key": "knowledge-graph",
+ "label": "Knowledge Graph",
+ "score": 92,
+ "status": "ready",
+ "evidence": [
+ "nodes=4339",
+ "edges=6140"
+ ],
+ "nextAction": "Use graph relationships to connect recurring people, organizations, locations, and events across outputs.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ {
+ "key": "editorial-intelligence",
+ "label": "Editorial Intelligence",
+ "score": 92,
+ "status": "ready",
+ "evidence": [
+ "editorialCapability=92",
+ "reasoningCapability=67"
+ ],
+ "nextAction": "Apply opinion only in Creator Desk/Newsletter lanes and keep News Lab fact-based.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ {
+ "key": "audience-intelligence",
+ "label": "Audience Intelligence",
+ "score": 56,
+ "status": "early",
+ "evidence": [
+ "audienceSignals=310",
+ "approvedStories=9"
+ ],
+ "nextAction": "Use searches, engagement, and story coverage as inputs without letting popularity override editorial judgment.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ },
+ {
+ "key": "execution-engine",
+ "label": "Execution Engine",
+ "score": 64,
+ "status": "early",
+ "evidence": [
+ "executionCapability=64",
+ "lanes=3"
+ ],
+ "nextAction": "Route the same orchestrated intelligence to News Lab, Creator Desk, and Newsletter with lane-specific rules.",
+ "rule": "Content orchestration stages should pass structured context forward instead of generating isolated output."
+ }
+ ],
+ "contentLanes": [
+ {
+ "key": "news-lab",
+ "label": "News Lab",
+ "role": "Fact-based public reporting from dossiers.",
+ "currentOutput": 9,
+ "targetOutput": 10,
+ "source": "Execution Engine -> News Lab",
+ "status": "needs-more-approved-output",
+ "nextAction": "Use orchestration to route stronger dossiers and audience signals into fact-based CE Media articles."
+ },
+ {
+ "key": "creator-desk",
+ "label": "Creator Desk",
+ "role": "Opinion/editorial output using owner values and selected public-impact stories.",
+ "currentOutput": 23,
+ "targetOutput": 1,
+ "source": "Execution Engine -> Creator Desk",
+ "status": "ready",
+ "nextAction": "Use the same Story Dossier/Knowledge Graph as News Lab, but apply Editorial Intelligence and owner values."
+ },
+ {
+ "key": "newsletter",
+ "label": "Newsletter",
+ "role": "Weekly recap and forecast using the weekâ€™s evidence and audience interest.",
+ "currentOutput": 3,
+ "targetOutput": 1,
+ "source": "Execution Engine -> Newsletter",
+ "status": "ready",
+ "nextAction": "Use the orchestrated week dossier, audience intelligence, and forecast signals before writing."
+ }
+ ],
+ "capabilityDependencies": {
+ "reasoning": 67,
+ "editorial": 92,
+ "investigation": 87,
+ "execution": 64,
+ "maturityOverall": 87,
+ "capabilityOverall": 77
+ },
+ "executionModel": {
+ "newsLab": "Use shared evidence/dossier/graph, write neutral fact-based CE Media articles, then publish only editor-approved full stories.",
+ "creatorDesk": "Use the same event intelligence, apply owner values and opinion, then publish specific accountability/editorial commentary.",
+ "newsletter": "Use the week-level event intelligence, audience signals, and forecast context to produce recap plus upcoming-watch commentary."
+ },
+ "nextImprovement": "Improve Audience Intelligence: Use searches, engagement, and story coverage as inputs without letting popularity override editorial judgment.",
+ "rule": "The Brain should orchestrate one shared intelligence pipeline, then execute lane-specific outputs instead of letting each product generate in isolation."
+}

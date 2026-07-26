@@ -1,0 +1,186 @@
+{
+  "version": "20260722-knowledge-consolidation-report-v1",
+  "generatedAt": "2026-07-23T19:08:39.677Z",
+  "reason": "scheduled-background-distillation",
+  "nonDestructive": true,
+  "summary": {
+    "semanticDomains": 5,
+    "skills": 6,
+    "patterns": 5,
+    "significantExperiences": 13,
+    "confidenceUpdates": 5,
+    "totalBytesReviewed": 527013763,
+    "deletionEnabled": false
+  },
+  "pipeline": [
+    "Input File",
+    "Analyze",
+    "Extract Patterns",
+    "Update Skills",
+    "Update Semantic Memory",
+    "Update Confidence Scores",
+    "Mark Working File Temporary or Preserved"
+  ],
+  "memoryWrites": [
+    {
+      "memory": "semantic-memory",
+      "file": "D:\\CensoredExpressions\\News-Lab\\data\\semantic-memory.json",
+      "domains": 5
+    },
+    {
+      "memory": "skill-memory",
+      "file": "D:\\CensoredExpressions\\News-Lab\\data\\skill-memory.json",
+      "skills": 6
+    },
+    {
+      "memory": "pattern-memory",
+      "file": "D:\\CensoredExpressions\\News-Lab\\data\\pattern-memory.json",
+      "patterns": 5
+    },
+    {
+      "memory": "experience-memory",
+      "file": "D:\\CensoredExpressions\\News-Lab\\data\\experience-memory.json",
+      "experiences": 13
+    }
+  ],
+  "retentionDecisions": [
+    {
+      "label": "News Lab story objects",
+      "layer": "working-memory",
+      "bytes": 230213781,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Current and historical story objects are required for public visibility, repair, updates, and audit."
+    },
+    {
+      "label": "News Lab public payload",
+      "layer": "working-memory",
+      "bytes": 314931,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Visible public shelf must remain intact; compact only expired non-visible article history."
+    },
+    {
+      "label": "Approval recovery queue",
+      "layer": "working-memory",
+      "bytes": 65245279,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Retain active repairs; distill rejection patterns and remove resolved duplicate records later."
+    },
+    {
+      "label": "Headline repair queue",
+      "layer": "working-memory",
+      "bytes": 66542207,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Retain active headline repair evidence; promote repeated fixes to headline skill memory."
+    },
+    {
+      "label": "Article approval intelligence",
+      "layer": "episodic-memory",
+      "bytes": 71507,
+      "decision": "review",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Approval and rejection reasons should become behavior-changing editorial lessons."
+    },
+    {
+      "label": "Daily article memory",
+      "layer": "working-memory",
+      "bytes": 2031397,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Raw article memory can grow quickly; retain only public articles, active dossiers, and extracted knowledge."
+    },
+    {
+      "label": "Framework learning proof log",
+      "layer": "episodic-memory",
+      "bytes": 3062054,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Proof logs are audit evidence but should be periodically summarized into capability memory."
+    },
+    {
+      "label": "Framework action log",
+      "layer": "episodic-memory",
+      "bytes": 100382826,
+      "decision": "review",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Action logs should feed capability and skill outcomes rather than grow without bound."
+    },
+    {
+      "label": "Adaptive weight proof log",
+      "layer": "episodic-memory",
+      "bytes": 3201349,
+      "decision": "review",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Adaptive-weight evidence should become confidence updates and compact proofs."
+    },
+    {
+      "label": "Patch directions for Codex",
+      "layer": "working-memory",
+      "bytes": 53533932,
+      "decision": "temporary-after-distillation",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Old teaching prompts should be reduced to reusable patch skills after resolved."
+    },
+    {
+      "label": "News Lab collector outputs",
+      "layer": "working-memory",
+      "bytes": 2414500,
+      "decision": "preserve-or-distill-copy",
+      "deletionGate": "disabled-until-CE_KNOWLEDGE_DISTILLATION_DELETE=true-and-active-public-audit-gates-pass",
+      "reason": "Collector data should remain available for active dossiers and become source coverage lessons after use."
+    }
+  ],
+  "cleanupCandidates": [
+    {
+      "label": "News Lab story objects",
+      "bytes": 230213781,
+      "action": "preserve-and-distill",
+      "reason": "Current and historical story objects are required for public visibility, repair, updates, and audit."
+    },
+    {
+      "label": "Approval recovery queue",
+      "bytes": 65245279,
+      "action": "distill-then-compact",
+      "reason": "Retain active repairs; distill rejection patterns and remove resolved duplicate records later."
+    },
+    {
+      "label": "Headline repair queue",
+      "bytes": 66542207,
+      "action": "distill-then-compact",
+      "reason": "Retain active headline repair evidence; promote repeated fixes to headline skill memory."
+    },
+    {
+      "label": "Article approval intelligence",
+      "bytes": 71507,
+      "action": "distill-and-retain-summary",
+      "reason": "Approval and rejection reasons should become behavior-changing editorial lessons."
+    },
+    {
+      "label": "Daily article memory",
+      "bytes": 2031397,
+      "action": "distill-then-archive",
+      "reason": "Raw article memory can grow quickly; retain only public articles, active dossiers, and extracted knowledge."
+    },
+    {
+      "label": "Patch directions for Codex",
+      "bytes": 53533932,
+      "action": "distill-then-compact",
+      "reason": "Old teaching prompts should be reduced to reusable patch skills after resolved."
+    },
+    {
+      "label": "News Lab collector outputs",
+      "bytes": 2414500,
+      "action": "preserve-active-distill-old",
+      "reason": "Collector data should remain available for active dossiers and become source coverage lessons after use."
+    }
+  ],
+  "nextActions": [
+    "Wire every worker completion to emit a distillation signal with task, lesson, affected subsystem, and confidence delta.",
+    "Promote repeated successful repairs into skill memory only after measurable improvement is observed.",
+    "Keep deletion disabled until active/public/audit gates can be verified per file instead of globally.",
+    "Expose semantic, skill, pattern, experience, and consolidation status on Owner Desk."
+  ]
+}

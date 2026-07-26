@@ -1,0 +1,1818 @@
+{
+  "version": "20260706-article-approval-intelligence-v1",
+  "updatedAt": "2026-07-23T03:42:08.155Z",
+  "purpose": "Make article approval the central operating metric: draft -> review -> rejection -> repair -> resubmission -> approval -> publication.",
+  "currentCycle": {
+    "generatedCandidates": 1,
+    "editorialReviewed": 1,
+    "firstPassApproved": 1,
+    "finalReviewed": 1,
+    "finalApproved": 1,
+    "finalBlocked": 0,
+    "approvalRecoveryAttempted": 1,
+    "approvalRecoveryResolved": 0,
+    "approvalRecoveryStillHeld": 1,
+    "publishedShelfCount": 14
+  },
+  "recoveryOutput": {
+    "generated": 1,
+    "rejected": 1,
+    "repairAttempted": 1,
+    "repairPassed": 11,
+    "resubmitted": 44,
+    "approved": 1,
+    "publishedAfterRepair": 11,
+    "rule": "Track the full recovery funnel: generated -> rejected -> repair attempted -> repair passed -> resubmitted -> approved -> published after repair."
+  },
+  "lifetime": {
+    "editorialReviewed": 7180,
+    "approvedArticles": 18,
+    "rejectedDrafts": 7162,
+    "publishedArticles": 0
+  },
+  "approvalRates": {
+    "firstPassApprovalRate": 1,
+    "finalApprovalRate": 1,
+    "finalRecoverySuccessRate": 0,
+    "publishAfterReviewRate": 14
+  },
+  "topBlockers": [
+    {
+      "reason": "headline-editor-needs-rewrite",
+      "count": 98,
+      "repairable": true,
+      "requiredAction": "Send through Headline Dossier Builder, clean clipped headline fragments, generate headline-only candidates from the repaired body/dossier, then resubmit without rewriting the whole article."
+    },
+    {
+      "reason": "headline-word-salad",
+      "count": 84,
+      "repairable": true,
+      "requiredAction": "Send through Headline Dossier Builder, clean clipped headline fragments, generate headline-only candidates from the repaired body/dossier, then resubmit without rewriting the whole article."
+    },
+    {
+      "reason": "headline-lead-topic-mismatch",
+      "count": 19,
+      "repairable": true,
+      "requiredAction": "Send through Headline Dossier Builder, clean clipped headline fragments, generate headline-only candidates from the repaired body/dossier, then resubmit without rewriting the whole article."
+    },
+    {
+      "reason": "title-looks-truncated",
+      "count": 14,
+      "repairable": true,
+      "requiredAction": "Send through Headline Dossier Builder, clean clipped headline fragments, generate headline-only candidates from the repaired body/dossier, then resubmit without rewriting the whole article."
+    },
+    {
+      "reason": "body-too-short",
+      "count": 13,
+      "repairable": true,
+      "requiredAction": "Return to Evidence Engine and Context Engine, add verified facts, then regenerate the article body."
+    },
+    {
+      "reason": "generic-weak-headline",
+      "count": 12,
+      "repairable": true,
+      "requiredAction": "Send through Headline Dossier Builder, clean clipped headline fragments, generate headline-only candidates from the repaired body/dossier, then resubmit without rewriting the whole article."
+    },
+    {
+      "reason": "mixed-source-topic",
+      "count": 11,
+      "repairable": true,
+      "requiredAction": "Rebuild the Story Dossier around one event, remove off-topic source fragments, then rewrite from the dossier."
+    },
+    {
+      "reason": "incomplete-sentence-detected",
+      "count": 11,
+      "repairable": true,
+      "requiredAction": "Publishing Editor removes clipped sentences, rebuilds missing context from known facts, then resubmits the repaired article."
+    },
+    {
+      "reason": "missing-reporting-context",
+      "count": 10,
+      "repairable": true,
+      "requiredAction": "Return to Evidence Engine and Context Engine, add verified facts, then regenerate the article body."
+    },
+    {
+      "reason": "weak-topic-integrity",
+      "count": 9,
+      "repairable": true,
+      "requiredAction": "Rebuild the Story Dossier around one event, remove off-topic source fragments, then rewrite from the dossier."
+    },
+    {
+      "reason": "headline-source-no-overlap",
+      "count": 9,
+      "repairable": true,
+      "requiredAction": "Send through Headline Dossier Builder, clean clipped headline fragments, generate headline-only candidates from the repaired body/dossier, then resubmit without rewriting the whole article."
+    },
+    {
+      "reason": "paragraph-topic-contamination",
+      "count": 8,
+      "repairable": true,
+      "requiredAction": "Rebuild the Story Dossier around one event, remove off-topic source fragments, then rewrite from the dossier."
+    }
+  ],
+  "repairQueues": {
+    "approvalRecovery": {
+      "totals": {
+        "rejected": 49,
+        "repairAttempted": 44,
+        "repairSuccessful": 11,
+        "resubmitted": 44,
+        "approved": 11,
+        "published": 11,
+        "stillFailed": 37
+      },
+      "recoveryRates": {
+        "repairAttemptRate": 0.9,
+        "repairSuccessRate": 0.25,
+        "approvalAfterRejectionRate": 0.22,
+        "publicationAfterRejectionRate": 0.22
+      },
+      "topReasons": [
+        {
+          "reason": "headline-editor-needs-rewrite",
+          "count": 36,
+          "repairable": true
+        },
+        {
+          "reason": "headline-word-salad",
+          "count": 30,
+          "repairable": true
+        },
+        {
+          "reason": "headline-lead-topic-mismatch",
+          "count": 19,
+          "repairable": true
+        },
+        {
+          "reason": "body-too-short",
+          "count": 13,
+          "repairable": true
+        },
+        {
+          "reason": "mixed-source-topic",
+          "count": 11,
+          "repairable": true
+        },
+        {
+          "reason": "incomplete-sentence-detected",
+          "count": 11,
+          "repairable": true
+        },
+        {
+          "reason": "missing-reporting-context",
+          "count": 10,
+          "repairable": true
+        },
+        {
+          "reason": "weak-topic-integrity",
+          "count": 9,
+          "repairable": true
+        }
+      ]
+    },
+    "headlineRepair": {
+      "totals": {
+        "rejected": 66,
+        "repairAttempted": 65,
+        "repairSuccessful": 8,
+        "resubmitted": 65,
+        "approved": 14,
+        "published": 6,
+        "stillFailed": 14,
+        "retiredNonExecutable": 0
+      },
+      "recoveryRates": {
+        "repairAttemptRate": 0.98,
+        "repairSuccessRate": 0.12,
+        "approvalAfterRejectionRate": 0.21,
+        "publicationAfterRejectionRate": 0.09
+      },
+      "topReasons": [
+        {
+          "reason": "headline-editor-needs-rewrite",
+          "count": 62,
+          "repairable": true
+        },
+        {
+          "reason": "headline-word-salad",
+          "count": 54,
+          "repairable": true
+        },
+        {
+          "reason": "title-looks-truncated",
+          "count": 8,
+          "repairable": true
+        },
+        {
+          "reason": "generic-weak-headline",
+          "count": 7,
+          "repairable": true
+        },
+        {
+          "reason": "headline-source-no-overlap",
+          "count": 6,
+          "repairable": true
+        },
+        {
+          "reason": "publisher-headline-too-close",
+          "count": 3,
+          "repairable": true
+        },
+        {
+          "reason": "semantic-title-source-mismatch",
+          "count": 1,
+          "repairable": true
+        }
+      ]
+    }
+  },
+  "bottleneck": {
+    "stage": "approval-recovery",
+    "reason": "Some repaired articles still failed validation after resubmission.",
+    "nextAction": "Trace one still-held record from rejection through repair, validation, resubmission, and final decision."
+  },
+  "behaviorRule": "Any rejected article must become a repair task, receive a targeted fix, re-enter validation, and only then remain blocked if it still fails.",
+  "lastCycleEvidence": {
+    "qualityGate": {
+      "reviewedAt": "2026-07-13T19:57:08.562Z",
+      "reviewedCount": 1,
+      "candidateReviewedCount": 4,
+      "candidateExpansion": {
+        "sourceStoryCount": 1,
+        "draftStoryObjectCount": 4,
+        "originalCandidateStoryCount": 4,
+        "candidateStoryCount": 4,
+        "fallbackCandidateExpansionApplied": false,
+        "candidatesPerStory": 4,
+        "rule": "The Brain creates multiple headline/article candidates per story, lets the Editor score them, then keeps the strongest reviewed candidate for publication."
+      },
+      "passedCount": 1,
+      "repairedCount": 0,
+      "flaggedCount": 0,
+      "rejectionLearningSummary": {
+        "issueCounts": {},
+        "stageCounts": {},
+        "nextActionCounts": {},
+        "topFixes": []
+      },
+      "editorDecisionLearning": {
+        "updatedAt": "2026-07-13T19:58:02.485Z",
+        "topIssues": [
+          {
+            "issue": "headline-lead-topic-mismatch",
+            "count": 631
+          },
+          {
+            "issue": "headline-editor-needs-rewrite",
+            "count": 593
+          },
+          {
+            "issue": "paragraph-topic-contamination",
+            "count": 369
+          },
+          {
+            "issue": "headline-subject-too-stacked",
+            "count": 297
+          },
+          {
+            "issue": "semantic-title-source-mismatch",
+            "count": 269
+          },
+          {
+            "issue": "headline-missing-action",
+            "count": 254
+          },
+          {
+            "issue": "headline-word-salad",
+            "count": 217
+          },
+          {
+            "issue": "generic-weak-headline",
+            "count": 210
+          }
+        ],
+        "topActions": [
+          {
+            "action": "route-to-earliest-failing-subsystem",
+            "count": 154
+          },
+          {
+            "action": "rerun-headline-generator-and-headline-editor",
+            "count": 121
+          },
+          {
+            "action": "reuse-approved-pattern",
+            "count": 96
+          },
+          {
+            "action": "add-natural-reporting-context",
+            "count": 42
+          },
+          {
+            "action": "rewrite-impact-headline-from-dossier",
+            "count": 34
+          },
+          {
+            "action": "split-cluster-and-rebuild-dossier",
+            "count": 34
+          },
+          {
+            "action": "tighten-dossier-source-roles",
+            "count": 25
+          },
+          {
+            "action": "remove-contaminated-paragraphs-and-regenerate",
+            "count": 15
+          }
+        ],
+        "rule": "Every editor approval, repair, rejection, denial, or bypass becomes shared memory. Writer, collectors, subsystems, and publisher must use this memory before the next cycle so fewer drafts need correction."
+      },
+      "applicationIntelligence": {
+        "updatedAt": "2026-07-13T20:18:16.116Z",
+        "maturity": {
+          "collectsLessons": 100,
+          "organizesLessons": 100,
+          "appliesLessons": 27,
+          "behaviorChange": 66,
+          "overall": 73
+        },
+        "totals": {
+          "lessonsSeen": 38468,
+          "lessonsApplied": 314,
+          "experiments": 38320,
+          "adoptedCapabilities": 148,
+          "ignoredLessons": 0,
+          "editorialFailuresPrevented": 227,
+          "headlineRewritesAvoided": 117,
+          "improvementPercent": 66.7
+        },
+        "currentStage": "lesson-storage",
+        "latestCycle": {
+          "at": "2026-07-13T20:18:16.116Z",
+          "context": {
+            "stage": "prepublish-quality-gate",
+            "reviewedAt": "2026-07-13T19:57:08.562Z"
+          },
+          "reviewedCount": 1,
+          "candidateCount": 4,
+          "passedCount": 1,
+          "failedCount": 0,
+          "repairedCount": 0,
+          "passRate": 100,
+          "previousPassRate": 33.3,
+          "lessonsSeen": 4,
+          "lessonsApplied": 1,
+          "behaviorChanges": [
+            "Editorial Coach used editor-repair-rereview before or during review."
+          ],
+          "improvedApplications": 4,
+          "editorialFailuresPrevented": 13,
+          "headlineRewritesAvoided": 1,
+          "issueCounts": {},
+          "applicationRecords": [
+            {
+              "key": "predraft-memory-brief",
+              "subsystem": "Article Writer",
+              "applied": false,
+              "improved": true,
+              "repeated": 0,
+              "severity": 5,
+              "evidence": "0/1 reviewed stories carried pre-draft memory.",
+              "decision": "experiment",
+              "lessonApplied": false,
+              "metricImproved": true,
+              "behaviorChange": "Article Writer did not apply predraft-memory-brief.",
+              "nextAction": "Run another measured cycle and compare failure rates before promotion."
+            },
+            {
+              "key": "headline-memory-brief",
+              "subsystem": "Headline Generator",
+              "applied": false,
+              "improved": true,
+              "repeated": 0,
+              "severity": 5,
+              "evidence": "0/1 stories carried headline memory; avoided=1.",
+              "decision": "experiment",
+              "lessonApplied": false,
+              "metricImproved": true,
+              "behaviorChange": "Headline Generator did not apply headline-memory-brief.",
+              "nextAction": "Run another measured cycle and compare failure rates before promotion."
+            },
+            {
+              "key": "editor-repair-rereview",
+              "subsystem": "Editorial Coach",
+              "applied": true,
+              "improved": true,
+              "repeated": 1,
+              "severity": 4,
+              "evidence": "1 repair attempts; 1 passed after repair; 0 corrected issues.",
+              "decision": "experiment",
+              "lessonApplied": true,
+              "metricImproved": true,
+              "behaviorChange": "Editorial Coach used editor-repair-rereview before or during review.",
+              "nextAction": "Run another measured cycle and compare failure rates before promotion."
+            },
+            {
+              "key": "story-identity-gate",
+              "subsystem": "Publisher",
+              "applied": false,
+              "improved": true,
+              "repeated": 0,
+              "severity": 5,
+              "evidence": "identityIssues=0",
+              "decision": "experiment",
+              "lessonApplied": false,
+              "metricImproved": true,
+              "behaviorChange": "Publisher did not apply story-identity-gate.",
+              "nextAction": "Run another measured cycle and compare failure rates before promotion."
+            }
+          ]
+        },
+        "subsystemApplication": {
+          "Article Writer": {
+            "subsystem": "Article Writer",
+            "appliedCount": 83,
+            "improvedCount": 43,
+            "experiments": 9588,
+            "adopted": 29,
+            "ignored": 0,
+            "recent": [
+              {
+                "at": "2026-07-13T20:18:16.116Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/1 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T19:57:46.562Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "18/18 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T19:08:08.436Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "2/2 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T18:12:34.684Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "3/3 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T16:57:04.223Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "2/2 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T16:55:20.754Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "16/16 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T16:10:20.189Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "2/2 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T14:01:01.972Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "2/2 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T13:33:03.306Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "12/12 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T12:10:34.912Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1/1 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T11:19:25.215Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "14/14 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T11:17:25.291Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/3 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T10:42:45.928Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "1/1 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T10:18:05.737Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/2 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T10:04:24.650Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "12/12 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T09:55:10.440Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/2 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T05:17:41.325Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5/5 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T05:02:57.858Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "15/15 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:59:04.373Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/4 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:47:51.099Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/4 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:39:35.497Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5/5 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:33:23.079Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "0/0 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:29:10.529Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1/1 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:23:23.655Z",
+                "key": "predraft-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1/1 reviewed stories carried pre-draft memory."
+              },
+              {
+                "at": "2026-07-13T04:23:15.661Z",
+                "key": "predraft-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "8/8 reviewed stories carried pre-draft memory."
+              }
+            ]
+          },
+          "Headline Generator": {
+            "subsystem": "Headline Generator",
+            "appliedCount": 83,
+            "improvedCount": 9579,
+            "experiments": 9581,
+            "adopted": 36,
+            "ignored": 0,
+            "recent": [
+              {
+                "at": "2026-07-13T20:18:16.116Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/1 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T19:57:46.562Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "18/18 stories carried headline memory; avoided=6."
+              },
+              {
+                "at": "2026-07-13T19:08:08.436Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "2/2 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T18:12:34.684Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "3/3 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T16:57:04.223Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "2/2 stories carried headline memory; avoided=0."
+              },
+              {
+                "at": "2026-07-13T16:55:20.754Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "16/16 stories carried headline memory; avoided=8."
+              },
+              {
+                "at": "2026-07-13T16:10:20.189Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "2/2 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T14:01:01.972Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "2/2 stories carried headline memory; avoided=0."
+              },
+              {
+                "at": "2026-07-13T13:33:03.306Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "12/12 stories carried headline memory; avoided=6."
+              },
+              {
+                "at": "2026-07-13T12:10:34.912Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1/1 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T11:19:25.215Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "14/14 stories carried headline memory; avoided=6."
+              },
+              {
+                "at": "2026-07-13T11:17:25.291Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/3 stories carried headline memory; avoided=2."
+              },
+              {
+                "at": "2026-07-13T10:42:45.928Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "1/1 stories carried headline memory; avoided=0."
+              },
+              {
+                "at": "2026-07-13T10:18:05.737Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/2 stories carried headline memory; avoided=2."
+              },
+              {
+                "at": "2026-07-13T10:04:24.650Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "12/12 stories carried headline memory; avoided=7."
+              },
+              {
+                "at": "2026-07-13T09:55:10.440Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/2 stories carried headline memory; avoided=2."
+              },
+              {
+                "at": "2026-07-13T05:17:41.325Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5/5 stories carried headline memory; avoided=2."
+              },
+              {
+                "at": "2026-07-13T05:02:57.858Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "15/15 stories carried headline memory; avoided=9."
+              },
+              {
+                "at": "2026-07-13T04:59:04.373Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/4 stories carried headline memory; avoided=3."
+              },
+              {
+                "at": "2026-07-13T04:47:51.099Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/4 stories carried headline memory; avoided=3."
+              },
+              {
+                "at": "2026-07-13T04:39:35.497Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5/5 stories carried headline memory; avoided=3."
+              },
+              {
+                "at": "2026-07-13T04:33:23.079Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "0/0 stories carried headline memory; avoided=0."
+              },
+              {
+                "at": "2026-07-13T04:29:10.529Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1/1 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T04:23:23.655Z",
+                "key": "headline-memory-brief",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1/1 stories carried headline memory; avoided=1."
+              },
+              {
+                "at": "2026-07-13T04:23:15.661Z",
+                "key": "headline-memory-brief",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "8/8 stories carried headline memory; avoided=5."
+              }
+            ]
+          },
+          "Editorial Coach": {
+            "subsystem": "Editorial Coach",
+            "appliedCount": 89,
+            "improvedCount": 89,
+            "experiments": 9534,
+            "adopted": 83,
+            "ignored": 0,
+            "recent": [
+              {
+                "at": "2026-07-13T20:18:16.116Z",
+                "key": "editor-repair-rereview",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1 repair attempts; 1 passed after repair; 0 corrected issues."
+              },
+              {
+                "at": "2026-07-13T19:57:46.562Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "33 repair attempts; 6 passed after repair; 49 corrected issues."
+              },
+              {
+                "at": "2026-07-13T19:08:08.436Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "3 repair attempts; 1 passed after repair; 1 corrected issues."
+              },
+              {
+                "at": "2026-07-13T18:12:34.684Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5 repair attempts; 1 passed after repair; 3 corrected issues."
+              },
+              {
+                "at": "2026-07-13T16:57:04.223Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "4 repair attempts; 0 passed after repair; 3 corrected issues."
+              },
+              {
+                "at": "2026-07-13T16:55:20.754Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "26 repair attempts; 8 passed after repair; 32 corrected issues."
+              },
+              {
+                "at": "2026-07-13T16:10:20.189Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "3 repair attempts; 1 passed after repair; 7 corrected issues."
+              },
+              {
+                "at": "2026-07-13T14:01:01.972Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5 repair attempts; 0 passed after repair; 8 corrected issues."
+              },
+              {
+                "at": "2026-07-13T13:33:03.306Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "19 repair attempts; 5 passed after repair; 23 corrected issues."
+              },
+              {
+                "at": "2026-07-13T12:10:34.912Z",
+                "key": "editor-repair-rereview",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1 repair attempts; 1 passed after repair; 1 corrected issues."
+              },
+              {
+                "at": "2026-07-13T11:19:25.215Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "28 repair attempts; 3 passed after repair; 40 corrected issues."
+              },
+              {
+                "at": "2026-07-13T11:17:25.291Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "5 repair attempts; 1 passed after repair; 7 corrected issues."
+              },
+              {
+                "at": "2026-07-13T10:42:45.928Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "2 repair attempts; 0 passed after repair; 1 corrected issues."
+              },
+              {
+                "at": "2026-07-13T10:18:05.737Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "3 repair attempts; 1 passed after repair; 7 corrected issues."
+              },
+              {
+                "at": "2026-07-13T10:04:24.650Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "22 repair attempts; 6 passed after repair; 35 corrected issues."
+              },
+              {
+                "at": "2026-07-13T09:55:10.440Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "2 repair attempts; 2 passed after repair; 4 corrected issues."
+              },
+              {
+                "at": "2026-07-13T05:17:41.325Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "9 repair attempts; 2 passed after repair; 14 corrected issues."
+              },
+              {
+                "at": "2026-07-13T05:02:57.858Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "29 repair attempts; 5 passed after repair; 46 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:59:04.373Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "7 repair attempts; 2 passed after repair; 10 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:47:51.099Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "7 repair attempts; 2 passed after repair; 10 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:39:35.497Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "7 repair attempts; 3 passed after repair; 12 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:33:23.079Z",
+                "key": "editor-repair-rereview",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "0 repair attempts; 0 passed after repair; 0 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:29:10.529Z",
+                "key": "editor-repair-rereview",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1 repair attempts; 1 passed after repair; 2 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:23:23.655Z",
+                "key": "editor-repair-rereview",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "1 repair attempts; 1 passed after repair; 2 corrected issues."
+              },
+              {
+                "at": "2026-07-13T04:23:15.661Z",
+                "key": "editor-repair-rereview",
+                "decision": "adopt",
+                "improved": true,
+                "evidence": "16 repair attempts; 3 passed after repair; 24 corrected issues."
+              }
+            ]
+          },
+          "Publisher": {
+            "subsystem": "Publisher",
+            "appliedCount": 59,
+            "improvedCount": 9615,
+            "experiments": 9617,
+            "adopted": 0,
+            "ignored": 0,
+            "recent": [
+              {
+                "at": "2026-07-13T20:18:16.116Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T19:57:46.562Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T19:08:08.436Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T18:12:34.684Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T16:57:04.223Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T16:55:20.754Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T16:10:20.189Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T14:01:01.972Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T13:33:03.306Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T12:10:34.912Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T11:19:25.215Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T11:17:25.291Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T10:42:45.928Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T10:18:05.737Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T10:04:24.650Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T09:55:10.440Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T05:17:41.325Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T05:02:57.858Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T04:59:04.373Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "identityIssues=1"
+              },
+              {
+                "at": "2026-07-13T04:47:51.099Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": false,
+                "evidence": "identityIssues=1"
+              },
+              {
+                "at": "2026-07-13T04:39:35.497Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T04:33:23.079Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T04:29:10.529Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T04:23:23.655Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              },
+              {
+                "at": "2026-07-13T04:23:15.661Z",
+                "key": "story-identity-gate",
+                "decision": "experiment",
+                "improved": true,
+                "evidence": "identityIssues=0"
+              }
+            ]
+          }
+        },
+        "activeExperiments": [
+          {
+            "at": "2026-07-13T20:18:16.116Z",
+            "key": "predraft-memory-brief",
+            "subsystem": "Article Writer",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "0/1 reviewed stories carried pre-draft memory.",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Article Writer did not apply predraft-memory-brief.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T20:18:16.116Z",
+            "key": "headline-memory-brief",
+            "subsystem": "Headline Generator",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "0/1 stories carried headline memory; avoided=1.",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Headline Generator did not apply headline-memory-brief.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T20:18:16.116Z",
+            "key": "editor-repair-rereview",
+            "subsystem": "Editorial Coach",
+            "applied": true,
+            "improved": true,
+            "repeated": 1,
+            "severity": 4,
+            "evidence": "1 repair attempts; 1 passed after repair; 0 corrected issues.",
+            "decision": "experiment",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Editorial Coach used editor-repair-rereview before or during review.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T20:18:16.116Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Publisher did not apply story-identity-gate.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": true,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Publisher used story-identity-gate before or during review.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Publisher did not apply story-identity-gate.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Publisher did not apply story-identity-gate.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T16:57:04.223Z",
+            "key": "predraft-memory-brief",
+            "subsystem": "Article Writer",
+            "applied": true,
+            "improved": false,
+            "repeated": 2,
+            "severity": 5,
+            "evidence": "2/2 reviewed stories carried pre-draft memory.",
+            "decision": "experiment",
+            "lessonApplied": true,
+            "metricImproved": false,
+            "behaviorChange": "Article Writer used predraft-memory-brief before or during review.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T16:57:04.223Z",
+            "key": "headline-memory-brief",
+            "subsystem": "Headline Generator",
+            "applied": true,
+            "improved": false,
+            "repeated": 2,
+            "severity": 5,
+            "evidence": "2/2 stories carried headline memory; avoided=0.",
+            "decision": "experiment",
+            "lessonApplied": true,
+            "metricImproved": false,
+            "behaviorChange": "Headline Generator used headline-memory-brief before or during review.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T16:57:04.223Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Publisher did not apply story-identity-gate.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T16:55:20.754Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": true,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Publisher used story-identity-gate before or during review.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          },
+          {
+            "at": "2026-07-13T16:10:20.189Z",
+            "key": "story-identity-gate",
+            "subsystem": "Publisher",
+            "applied": false,
+            "improved": true,
+            "repeated": 0,
+            "severity": 5,
+            "evidence": "identityIssues=0",
+            "decision": "experiment",
+            "lessonApplied": false,
+            "metricImproved": true,
+            "behaviorChange": "Publisher did not apply story-identity-gate.",
+            "nextAction": "Run another measured cycle and compare failure rates before promotion."
+          }
+        ],
+        "adoptedCapabilities": [
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "key": "predraft-memory-brief",
+            "subsystem": "Article Writer",
+            "applied": true,
+            "improved": true,
+            "repeated": 18,
+            "severity": 5,
+            "evidence": "18/18 reviewed stories carried pre-draft memory.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Article Writer used predraft-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "key": "headline-memory-brief",
+            "subsystem": "Headline Generator",
+            "applied": true,
+            "improved": true,
+            "repeated": 18,
+            "severity": 5,
+            "evidence": "18/18 stories carried headline memory; avoided=6.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Headline Generator used headline-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "key": "editor-repair-rereview",
+            "subsystem": "Editorial Coach",
+            "applied": true,
+            "improved": true,
+            "repeated": 33,
+            "severity": 4,
+            "evidence": "33 repair attempts; 6 passed after repair; 49 corrected issues.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Editorial Coach used editor-repair-rereview before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "key": "predraft-memory-brief",
+            "subsystem": "Article Writer",
+            "applied": true,
+            "improved": true,
+            "repeated": 2,
+            "severity": 5,
+            "evidence": "2/2 reviewed stories carried pre-draft memory.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Article Writer used predraft-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "key": "headline-memory-brief",
+            "subsystem": "Headline Generator",
+            "applied": true,
+            "improved": true,
+            "repeated": 2,
+            "severity": 5,
+            "evidence": "2/2 stories carried headline memory; avoided=1.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Headline Generator used headline-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "key": "editor-repair-rereview",
+            "subsystem": "Editorial Coach",
+            "applied": true,
+            "improved": true,
+            "repeated": 3,
+            "severity": 4,
+            "evidence": "3 repair attempts; 1 passed after repair; 1 corrected issues.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Editorial Coach used editor-repair-rereview before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "key": "predraft-memory-brief",
+            "subsystem": "Article Writer",
+            "applied": true,
+            "improved": true,
+            "repeated": 3,
+            "severity": 5,
+            "evidence": "3/3 reviewed stories carried pre-draft memory.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Article Writer used predraft-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "key": "headline-memory-brief",
+            "subsystem": "Headline Generator",
+            "applied": true,
+            "improved": true,
+            "repeated": 3,
+            "severity": 5,
+            "evidence": "3/3 stories carried headline memory; avoided=1.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Headline Generator used headline-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "key": "editor-repair-rereview",
+            "subsystem": "Editorial Coach",
+            "applied": true,
+            "improved": true,
+            "repeated": 5,
+            "severity": 4,
+            "evidence": "5 repair attempts; 1 passed after repair; 3 corrected issues.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Editorial Coach used editor-repair-rereview before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T16:57:04.223Z",
+            "key": "editor-repair-rereview",
+            "subsystem": "Editorial Coach",
+            "applied": true,
+            "improved": true,
+            "repeated": 4,
+            "severity": 4,
+            "evidence": "4 repair attempts; 0 passed after repair; 3 corrected issues.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Editorial Coach used editor-repair-rereview before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T16:55:20.754Z",
+            "key": "predraft-memory-brief",
+            "subsystem": "Article Writer",
+            "applied": true,
+            "improved": true,
+            "repeated": 16,
+            "severity": 5,
+            "evidence": "16/16 reviewed stories carried pre-draft memory.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Article Writer used predraft-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          },
+          {
+            "at": "2026-07-13T16:55:20.754Z",
+            "key": "headline-memory-brief",
+            "subsystem": "Headline Generator",
+            "applied": true,
+            "improved": true,
+            "repeated": 16,
+            "severity": 5,
+            "evidence": "16/16 stories carried headline memory; avoided=8.",
+            "decision": "adopt",
+            "lessonApplied": true,
+            "metricImproved": true,
+            "behaviorChange": "Headline Generator used headline-memory-brief before or during review.",
+            "nextAction": "Promote as a standing capability and keep measuring regression."
+          }
+        ],
+        "behaviorChanges": [
+          {
+            "at": "2026-07-13T20:18:16.116Z",
+            "subsystem": "Editorial Coach",
+            "key": "editor-repair-rereview",
+            "change": "Editorial Coach used editor-repair-rereview before or during review.",
+            "improved": true,
+            "decision": "experiment"
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "subsystem": "Article Writer",
+            "key": "predraft-memory-brief",
+            "change": "Article Writer used predraft-memory-brief before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "subsystem": "Headline Generator",
+            "key": "headline-memory-brief",
+            "change": "Headline Generator used headline-memory-brief before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "subsystem": "Editorial Coach",
+            "key": "editor-repair-rereview",
+            "change": "Editorial Coach used editor-repair-rereview before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T19:57:46.562Z",
+            "subsystem": "Publisher",
+            "key": "story-identity-gate",
+            "change": "Publisher used story-identity-gate before or during review.",
+            "improved": true,
+            "decision": "experiment"
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "subsystem": "Article Writer",
+            "key": "predraft-memory-brief",
+            "change": "Article Writer used predraft-memory-brief before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "subsystem": "Headline Generator",
+            "key": "headline-memory-brief",
+            "change": "Headline Generator used headline-memory-brief before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T19:08:08.436Z",
+            "subsystem": "Editorial Coach",
+            "key": "editor-repair-rereview",
+            "change": "Editorial Coach used editor-repair-rereview before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "subsystem": "Article Writer",
+            "key": "predraft-memory-brief",
+            "change": "Article Writer used predraft-memory-brief before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "subsystem": "Headline Generator",
+            "key": "headline-memory-brief",
+            "change": "Headline Generator used headline-memory-brief before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T18:12:34.684Z",
+            "subsystem": "Editorial Coach",
+            "key": "editor-repair-rereview",
+            "change": "Editorial Coach used editor-repair-rereview before or during review.",
+            "improved": true,
+            "decision": "adopt"
+          },
+          {
+            "at": "2026-07-13T16:57:04.223Z",
+            "subsystem": "Article Writer",
+            "key": "predraft-memory-brief",
+            "change": "Article Writer used predraft-memory-brief before or during review.",
+            "improved": false,
+            "decision": "experiment"
+          }
+        ],
+        "centralQuestion": "What exactly changed in system behavior because of this lesson?",
+        "rule": "Every lesson is routed to Ignore, Experiment, or Adopt. A lesson becomes intelligence only when behavior changes and metrics improve."
+      },
+      "headlinePatternMemory": {
+        "updatedAt": "2026-07-13T20:18:14.644Z",
+        "acceptedPatterns": 250,
+        "rejectedPatterns": 250,
+        "publisherSimilarityFailures": 7,
+        "wordSaladFailures": 250,
+        "successfulRepairs": 250,
+        "rule": "Headline learning stores reusable construction patterns and repair outcomes, not publisher phrasing."
+      },
+      "repairReview": {
+        "reviewedRepairCycles": 1,
+        "passedAfterRepair": 1,
+        "stillHeldAfterRepair": 0,
+        "averageAttempts": 1,
+        "topRemainingIssues": [],
+        "rule": "Repairs are no longer counted as done until the Editor re-reviews the repaired draft and records whether it passed, changed failure type, or still needs teaching."
+      },
+      "minimumRules": [
+        "title must not look truncated",
+        "body must include intro, body, and ending",
+        "body should be at least five paragraphs or 900 characters",
+        "article must include enough full-read or extracted factual material",
+        "public article cannot contain internal instructions, copied noise, or editorial-language drift",
+        "article must carry reporting/source context",
+        "Editorial Coach must approve repeated phrasing, copied wording, evidence support, transitions, and template-language checks"
+      ],
+      "flaggedStories": []
+    },
+    "finalPublishDiagnostics": {
+      "finalReviewedCount": 1,
+      "finalCompleteCount": 1,
+      "finalBlockedCount": 0,
+      "approvalRecoveryAttempted": 1,
+      "approvalRecoveryResolved": 0,
+      "approvalRecoveryStillHeld": 1,
+      "issueCounts": {},
+      "rejectionLearningSummary": {
+        "issueCounts": {},
+        "stageCounts": {},
+        "nextActionCounts": {},
+        "topFixes": []
+      },
+      "blockedStories": []
+    },
+    "productivity": {
+      "cycles": 0,
+      "skippedCycles": 0,
+      "builds": 0,
+      "editorialReviews": 0,
+      "approvedArticles": 0,
+      "rejectedDrafts": 0,
+      "publishedArticles": 0,
+      "highQualityPublishedArticlesPerHour": 0,
+      "averagePublicationLatencyMs": 0,
+      "preEditorRepairedDrafts": 0,
+      "preEditorHeldDrafts": 0,
+      "usefulDraftsForEditor": 0,
+      "uselessDraftsPrevented": 0
+    }
+  },
+  "secondPassApproval": {
+    "attempted": 0,
+    "headlinePassed": 0,
+    "headlineOnlyRepairApplied": 0,
+    "articleRepairApplied": 0,
+    "imageRepairApplied": 0,
+    "bundledArticleRepairApplied": 0,
+    "resubmitted": 0,
+    "finalApproved": 0,
+    "stillFailed": 0,
+    "headlinePassRate": 0,
+    "finalApprovalRate": 0,
+    "rule": "Second-pass repair rebuilds headlines from Story Snapshot/Dossier, resubmits them, separates headline/body/image repairs, and measures headline pass plus final approval."
+  },
+  "publicProcessLanguageLearning": {
+    "updatedAt": "2026-07-23T03:32:25.506Z",
+    "issue": "news-lab-process-language",
+    "ownerDirection": "Do not reject visible articles for this issue when safe cleanup is possible; clean them and teach upstream systems.",
+    "responsibleFixer": "Publishing Editor",
+    "upstreamTeaching": {
+      "Writer": "Do not say what CE Media, the Brain, the dossier, or the reporting trail is doing in reader-facing article copy.",
+      "StoryDossierBuilder": "Keep workflow fields private and hand the Writer only reportable facts, timeline, entities, and public context.",
+      "Validator": "Block or return any process-language leak before publication unless Publishing Editor has already removed it."
+    },
+    "repairAction": "sanitize-public-copy-before-validation-and-public-shelf-merge",
+    "lastVerification": "0 public process-language matches after cleanup"
+  },
+  "encodingArtifactLearning": {
+    "updatedAt": "2026-07-23T03:42:08.155Z",
+    "issue": "encoding-or-ellipsis-artifact",
+    "responsibleFixer": "Publishing Editor",
+    "validatorRule": "Reject or repair encoded entities, mojibake, replacement characters, malformed entity fragments, and degraded smart-quote prefixes before publication.",
+    "upstreamTeaching": {
+      "Collector": "Decode feed titles/descriptions before storing.",
+      "StoryDossierBuilder": "Do not pass encoded source fragments to Writer.",
+      "Writer": "Write from cleaned facts, not raw encoded snippets.",
+      "Publisher": "Count publication only after visible copy passes encoding scan."
+    },
+    "lastVerification": "0 public mojibake/entity matches"
+  },
+  "generalizedFailureClassLearning": {
+    "updatedAt": "2026-07-23T16:44:56.518Z",
+    "rule": "Top blockers are grouped by failure class first and issue code second so future similar failures are repaired automatically.",
+    "classes": {
+      "headline-integrity": {
+        "label": "Headline integrity failure",
+        "examples": [
+          "headline-word-salad",
+          "headline-editor-needs-rewrite",
+          "title-looks-truncated",
+          "publisher-headline-too-close"
+        ],
+        "detect": "Any scrambled, clipped, generic, copied, or body-mismatched headline, even when the exact bad words are new.",
+        "repair": "Rebuild headline from Story Dossier and completed body; resubmit headline-only when body is otherwise sound.",
+        "prevent": "Headline Generator must use actor + action + consequence and verify body overlap before editor review."
+      },
+      "language-integrity": {
+        "label": "Language integrity failure",
+        "examples": [
+          "incomplete-sentence-detected",
+          "mojibake",
+          "misspelled-or-clipped-word",
+          "copied-or-noisy-source-fragment"
+        ],
+        "detect": "Any incomplete word, clipped sentence, mojibake, grammar break, or noisy copied fragment, not just previously seen strings.",
+        "repair": "Publishing Editor cleans or removes bad sentence, normalizes encoding, rebuilds missing context from dossier facts, then resubmits.",
+        "prevent": "Run generalized paragraph language checks before validation."
+      },
+      "story-identity-integrity": {
+        "label": "Story identity failure",
+        "examples": [
+          "paragraph-topic-contamination",
+          "article-body-topic-drift",
+          "mixed-source-topic",
+          "story-identity-mismatch"
+        ],
+        "detect": "Any paragraph/source/headline whose primary event differs from the canonical Story Dossier event.",
+        "repair": "Split cluster, remove off-event evidence, rebuild one-event dossier, rewrite affected sections.",
+        "prevent": "Every paragraph must map to one event id or explicit dossier relationship before writing."
+      },
+      "originality-and-public-copy": {
+        "label": "Originality and public-copy failure",
+        "examples": [
+          "summary-repeats-body",
+          "process-language",
+          "generic-template-language",
+          "repetitive-sentence-leak"
+        ],
+        "detect": "Any repeated phrasing, summary/body duplication, backend-process language, or generic template wording.",
+        "repair": "Draft Optimization rewrites summary/transitions and removes internal language before editor review.",
+        "prevent": "Compare against CE recent output and forbidden public-copy classes before publication."
+      },
+      "evidence-depth": {
+        "label": "Evidence depth failure",
+        "examples": [
+          "body-too-short",
+          "missing-reporting-context",
+          "insufficient-full-article-facts"
+        ],
+        "detect": "Any article that lacks enough verified facts, context, or full article structure for its publication tier.",
+        "repair": "Return to Evidence Engine and Dossier Builder to expand verified facts, then regenerate weak sections.",
+        "prevent": "Writer must prove it used a complete Story Dossier before first draft."
+      }
+    }
+  },
+  "tabFillHardPush": {
+    "at": "2026-07-23T17:31:33.274Z",
+    "selectedCount": 49,
+    "counts": {
+      "world": 7,
+      "politics": 7,
+      "business": 7,
+      "technology": 7,
+      "sports": 7,
+      "entertainment": 7,
+      "local": 7
+    },
+    "lesson": "Rejected articles should generalize issue classes, rebuild from clean event facts, regenerate headlines from the completed article body, then resubmit to publisher instead of sitting in storage.",
+    "prevention": "Collectors and dossier builders must send category-specific clean facts to the writer; publisher bridge must not rely on rejected currentHeadline values."
+  }
+}

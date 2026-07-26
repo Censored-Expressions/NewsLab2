@@ -1,0 +1,310 @@
+{
+  "version": "20260723-learner-lexicon-v1",
+  "updatedAt": "2026-07-23T19:08:39.687Z",
+  "purpose": "Shared conceptual knowledge base for the Brain so all workers use the same concepts, terminology, relationships, and abstractions.",
+  "boundaries": [
+    "Store concepts, relationships, usage rules, confidence, and subsystem guidance; do not store raw article text as reusable memory.",
+    "Learn editorial craft and conceptual meaning, not publisher expression, source headline structure, or copied definitions.",
+    "Facts stay in Story Dossiers and evidence records; Learner Lexicon stores reusable understanding that helps workers reason and write.",
+    "Public dictionary, thesaurus, encyclopedia, and reference sources may inform meaning only after distillation into original Framework guidance."
+  ],
+  "concepts": {
+    "attribution": {
+      "id": "attribution",
+      "type": "editorial-concept",
+      "definition": "A claim or statement that identifies the evidence, person, document, or organization behind it.",
+      "observedUses": 6,
+      "confidence": 99,
+      "relatedConcepts": [
+        "verification",
+        "source-reliability",
+        "evidence-classification",
+        "public-trust"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [
+        "attribution/evidence signal observed"
+      ],
+      "writerGuidance": "Attribute source-specific or not-yet-broadly-confirmed claims naturally inside the article; do not expose internal reporting mechanics.",
+      "validatorGuidance": "Flag unsupported claims, vague source language, and internal process wording that reaches public copy.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    },
+    "verification": {
+      "id": "verification",
+      "type": "evidence-concept",
+      "definition": "The process of matching a claim to official records, independent reporting, direct statements, or multiple source confirmations.",
+      "observedUses": 6,
+      "confidence": 98,
+      "relatedConcepts": [
+        "attribution",
+        "confidence",
+        "official-source",
+        "contradiction"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [
+        "verification/dossier signal observed"
+      ],
+      "writerGuidance": "Use stronger verbs such as confirmed only when the evidence layer supports that level of certainty.",
+      "validatorGuidance": "Route weak or unsupported facts back to the Evidence Engine instead of forcing a language-only repair.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    },
+    "story-identity": {
+      "id": "story-identity",
+      "type": "story-intelligence-concept",
+      "definition": "The primary actor, event, action, consequence, and category that define one publishable story.",
+      "observedUses": 0,
+      "confidence": 97,
+      "relatedConcepts": [
+        "topic-isolation",
+        "headline-body-alignment",
+        "event-clustering"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [],
+      "writerGuidance": "Write from one clean event dossier; do not merge fragments from nearby but different events.",
+      "validatorGuidance": "Reject or repair headline/body mismatch, paragraph topic contamination, and wrong-category placement before publication.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    },
+    "topic-isolation": {
+      "id": "topic-isolation",
+      "type": "dossier-concept",
+      "definition": "Keeping each article anchored to one event while preserving related context as background, not as a second story.",
+      "observedUses": 9,
+      "confidence": 96,
+      "relatedConcepts": [
+        "story-identity",
+        "deduplication",
+        "paragraph-cohesion"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [
+        "topic/category contamination signal observed"
+      ],
+      "writerGuidance": "Use related articles only when they clarify the same event; move unrelated facts out before drafting.",
+      "validatorGuidance": "Classify mixed-topic paragraphs as repairable dossier failures, not terminal article failures.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    },
+    "headline-body-alignment": {
+      "id": "headline-body-alignment",
+      "type": "headline-concept",
+      "definition": "The headline's actor, action, and consequence must match the article's central event and body evidence.",
+      "observedUses": 9,
+      "confidence": 97,
+      "relatedConcepts": [
+        "story-identity",
+        "headline-originality",
+        "reader-trust"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [
+        "headline/editor issue observed during consolidation"
+      ],
+      "writerGuidance": "Generate headlines from the completed story dossier and article body, not from publisher headlines.",
+      "validatorGuidance": "Repair the headline only when the body is sound; send the story back to dossier repair when the body and dossier disagree.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    },
+    "lexical-precision": {
+      "id": "lexical-precision",
+      "type": "writing-concept",
+      "definition": "Choosing words by evidence level, category, tone, and reader clarity instead of repeating generic phrases.",
+      "observedUses": 9,
+      "confidence": 94,
+      "relatedConcepts": [
+        "attribution",
+        "verification",
+        "writing-variety",
+        "reader-clarity"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [
+        "language precision signal observed"
+      ],
+      "writerGuidance": "Use the Behavioral Lexicon to select verbs and transitions before the first draft; avoid template phrases and internal process language.",
+      "validatorGuidance": "Treat repeated generic terms, mojibake, incomplete words, and process leakage as repairable language failures.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    },
+    "knowledge-distillation": {
+      "id": "knowledge-distillation",
+      "type": "brain-concept",
+      "definition": "Turning raw experience into reusable concepts, skills, patterns, confidence updates, and future behavior changes.",
+      "observedUses": 3,
+      "confidence": 96,
+      "relatedConcepts": [
+        "semantic-memory",
+        "skill-memory",
+        "reasoning-memory",
+        "behavioral-adaptation"
+      ],
+      "usedBy": [
+        "News Lab",
+        "Creator Desk",
+        "Newsletter",
+        "Validator",
+        "Owner Desk",
+        "Knowledge Distillation"
+      ],
+      "signals": [
+        "distillation run: scheduled-background-distillation"
+      ],
+      "writerGuidance": "Use distilled lessons as craft constraints, not as source content.",
+      "validatorGuidance": "Measure whether stored lessons changed future behavior and first-pass quality.",
+      "consolidationRule": "Merge duplicate observations into this concept instead of storing raw repeated experience."
+    }
+  },
+  "techniques": {
+    "actor-action-consequence-headline": {
+      "type": "headline-technique",
+      "pattern": "Actor + Action + Consequence",
+      "successRate": 0,
+      "bestCategories": [
+        "top",
+        "world",
+        "politics",
+        "business",
+        "technology",
+        "sports",
+        "entertainment",
+        "local"
+      ],
+      "useWhen": "The story dossier has a clear actor and confirmed action.",
+      "avoidWhen": "The event is still unverified or the actor is unknown.",
+      "repairGuidance": "If the headline becomes word salad, rebuild who/what/consequence from the Story Dossier instead of rearranging source-title keywords."
+    },
+    "fact-context-consequence-body": {
+      "type": "article-technique",
+      "pattern": "Verified fact -> necessary context -> consequence or next confirmed step",
+      "successRate": 0,
+      "bestCategories": [
+        "newsLab",
+        "newsletter",
+        "creatorDesk"
+      ],
+      "useWhen": "The article needs substance without opinion or internal process language.",
+      "avoidWhen": "The body lacks dossier evidence; request Evidence Engine expansion first.",
+      "repairGuidance": "Remove summary-repeat-body loops and replace them with distinct verified details from the dossier."
+    }
+  },
+  "relationships": [
+    {
+      "from": "attribution",
+      "to": "verification",
+      "type": "supports",
+      "confidence": 99
+    },
+    {
+      "from": "verification",
+      "to": "confidence",
+      "type": "calibrates",
+      "confidence": 96
+    },
+    {
+      "from": "story-identity",
+      "to": "topic-isolation",
+      "type": "depends-on",
+      "confidence": 98
+    },
+    {
+      "from": "headline-body-alignment",
+      "to": "reader-trust",
+      "type": "protects",
+      "confidence": 95
+    },
+    {
+      "from": "knowledge-distillation",
+      "to": "behavioral-adaptation",
+      "type": "enables",
+      "confidence": 94
+    }
+  ],
+  "surfaceGuidance": {
+    "newsLab": [
+      "Use concepts to keep article facts, headline, category, and image aligned to one event.",
+      "Do not publish public text about dossiers, source signals, confidence mechanics, or internal workflow.",
+      "Repair incomplete sentences, mojibake, generic placeholder language, and duplicate-event articles before publication."
+    ],
+    "creatorDesk": [
+      "Use concepts to connect opinion to the specific facts of the day without repeating the same values paragraph.",
+      "Keep commentary distinct from News Lab fact reporting."
+    ],
+    "newsletter": [
+      "Use concepts to vary weekly openings, transitions, and recap structure while preserving the weekly-summary mission.",
+      "Avoid repeating stories or recycling the same phrasing across issues."
+    ]
+  },
+  "consolidation": {
+    "inputMemories": [
+      "semantic-memory",
+      "skill-memory",
+      "pattern-memory",
+      "reasoning-memory-graph",
+      "writing-pattern-library",
+      "headline-pattern-memory",
+      "editorial-learning"
+    ],
+    "promoteWhen": "A concept or technique repeatedly improves first-pass approval, repair success, public quality, or subsystem coordination.",
+    "demoteWhen": "A concept causes false positives, generic writing, topic drift, or publication stalls.",
+    "discardRawExperienceAfterDistillation": true,
+    "lastRunAt": "2026-07-23T19:08:39.687Z",
+    "lastReason": "scheduled-background-distillation",
+    "lastInputSummary": {
+      "semanticDomains": 5,
+      "skills": 6,
+      "patterns": 5,
+      "experiences": 13
+    }
+  },
+  "metrics": {
+    "conceptCount": 7,
+    "techniqueCount": 2,
+    "relationshipCount": 5,
+    "observedUses": 42,
+    "appliedThisRun": 1,
+    "behaviorChangeSignals": 5,
+    "lexiconUtilization": 75
+  },
+  "rule": "Every subsystem may contribute to Learner Lexicon, but every stored item must be a reusable concept, technique, relationship, or confidence update.",
+  "lastReason": "scheduled-background-distillation"
+}

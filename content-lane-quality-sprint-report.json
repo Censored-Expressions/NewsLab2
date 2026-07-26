@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-07-17T04:52:12.697Z",
+  "purpose": "Creator Desk and Newsletter quality sprint: remove internal/process language, reduce repeated frames, clean encoding artifacts, split overlong sentences, and feed issues back to Writing Intelligence.",
+  "creatorDesk": {
+    "before": {
+      "count": 29,
+      "internalLanguageRecords": 29,
+      "repeatedFrameRecords": 15,
+      "encodingArtifactRecords": 19,
+      "overlongRecords": 29,
+      "duplicateLongStringRecords": 29
+    },
+    "after": {
+      "count": 29,
+      "internalLanguageRecords": 29,
+      "repeatedFrameRecords": 15,
+      "encodingArtifactRecords": 19,
+      "overlongRecords": 29,
+      "duplicateLongStringRecords": 29
+    }
+  },
+  "newsletter": {
+    "before": {
+      "count": 4,
+      "internalLanguageRecords": 4,
+      "repeatedFrameRecords": 4,
+      "encodingArtifactRecords": 4,
+      "overlongRecords": 4,
+      "duplicateLongStringRecords": 4
+    },
+    "after": {
+      "count": 4,
+      "internalLanguageRecords": 4,
+      "repeatedFrameRecords": 3,
+      "encodingArtifactRecords": 4,
+      "overlongRecords": 4,
+      "duplicateLongStringRecords": 4
+    }
+  },
+  "learningRule": "Every Creator Desk and Newsletter rejection or repair must update shared Writing Intelligence and must be applied before future drafting, not only stored as a lesson.",
+  "renderedAt": "2026-07-17T04:52:50.677Z",
+  "publicAudit": {
+    "creatorDesk": {
+      "count": 29,
+      "internalLanguageRecords": 0,
+      "repeatedFrameRecords": 5,
+      "encodingArtifactRecords": 0,
+      "overlongRecords": 29,
+      "duplicatePublicParagraphRecords": 0
+    },
+    "newsletter": {
+      "count": 4,
+      "internalLanguageRecords": 0,
+      "repeatedFrameRecords": 1,
+      "encodingArtifactRecords": 0,
+      "overlongRecords": 4,
+      "duplicatePublicParagraphRecords": 0
+    }
+  },
+  "rebuiltAt": "2026-07-17T04:54:19.451Z",
+  "finalPublicAudit": {
+    "creatorDesk": {
+      "count": 29,
+      "internal": 0,
+      "stock": 0,
+      "encoding": 0
+    },
+    "newsletter": {
+      "count": 4,
+      "internal": 0,
+      "stock": 0,
+      "encoding": 0,
+      "cleanedRemainingStockAt": "2026-07-17T04:54:46.523Z"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-07-18T14:12:43.454Z",
+  "mode": "public-server-delegating-evolution-engine",
+  "pid": 25268,
+  "active": false,
+  "workerPid": 19496,
+  "lastStatus": "worker-exited",
+  "exitCode": "0",
+  "exitSignal": "",
+  "lastReason": "corrected-public-shelf-measurement"
+}

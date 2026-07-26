@@ -1,0 +1,59 @@
+{
+  "version": "20260718-lexicon-reference-policy-v1",
+  "updatedAt": "2026-07-18T13:14:04.822Z",
+  "purpose": "Allow the Lexicon Learner to use public dictionaries, thesauruses, encyclopedias, and style/reference sources for understanding word meaning and usage without copying protected expression.",
+  "rule": "Reference sources educate the Framework; they do not become article, newsletter, or Creator Desk text.",
+  "transformRule": "Reference sources inform understanding only; never copy definitions, examples, usage notes, encyclopedia sentences, or source phrasing.",
+  "allowedReferenceTypes": [
+    {
+      "type": "dictionary",
+      "use": "Understand definition range, part of speech, connotation, register, and usage boundaries."
+    },
+    {
+      "type": "thesaurus",
+      "use": "Compare related words and choose precise alternatives based on tone and evidence certainty."
+    },
+    {
+      "type": "encyclopedia",
+      "use": "Understand concepts, historical context, entities, institutions, and domain terminology."
+    },
+    {
+      "type": "style-reference",
+      "use": "Understand grammar, clarity, attribution, punctuation, and plain-language principles."
+    }
+  ],
+  "prohibitedUses": [
+    "Do not copy definitions verbatim.",
+    "Do not copy example sentences.",
+    "Do not copy usage notes, encyclopedia passages, or reference-source phrasing.",
+    "Do not store reference-source wording as a writing template.",
+    "Do not imitate a reference source or publisher style.",
+    "Do not use reference sources as a substitute for evidence in a news story."
+  ],
+  "memoryTransform": [
+    "Extract concept-level meaning in original CE wording.",
+    "Store neutral usage guidance, tone guidance, and avoid-confusion rules.",
+    "Separate factual evidence from vocabulary/style learning.",
+    "Track whether reference-informed word choices improve first-pass acceptance and reduce repetition.",
+    "Prefer precise, reader-clear words over rare words when the story needs direct reporting."
+  ],
+  "surfaces": [
+    "News Lab",
+    "Creator Desk",
+    "Newsletter"
+  ],
+  "lexiconLearnerResponsibilities": [
+    "Map words to story context, evidence certainty, tone, and reader clarity.",
+    "Recommend alternatives only when they improve precision or reduce repetition.",
+    "Flag words whose meaning, legal implication, or certainty level does not match the evidence.",
+    "Feed improved usage guidance to Writer, Publishing Editor, Validator Mentor, and Evolution Engine."
+  ],
+  "auditFields": [
+    "referenceType",
+    "conceptLearned",
+    "storedInOriginalWords",
+    "surfaceApplied",
+    "writingOutcome",
+    "copiedTextCheck"
+  ]
+}

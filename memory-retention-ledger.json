@@ -1,0 +1,136 @@
+{
+  "version": "20260722-memory-retention-ledger-v1",
+  "updatedAt": "2026-07-23T19:08:39.674Z",
+  "purpose": "Classify large or high-churn files by memory layer before any cleanup is attempted.",
+  "nonDestructive": true,
+  "totalBytesReviewed": 527013763,
+  "files": [
+    {
+      "label": "News Lab story objects",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-story-objects.json",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "preserve-and-distill",
+      "reason": "Current and historical story objects are required for public visibility, repair, updates, and audit.",
+      "bytes": 230213781,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T19:02:05.146Z"
+    },
+    {
+      "label": "News Lab public payload",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-published-payload.json",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "preserve",
+      "reason": "Visible public shelf must remain intact; compact only expired non-visible article history.",
+      "bytes": 314931,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T19:02:11.218Z"
+    },
+    {
+      "label": "Approval recovery queue",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\approval-recovery-queue.json",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "distill-then-compact",
+      "reason": "Retain active repairs; distill rejection patterns and remove resolved duplicate records later.",
+      "bytes": 65245279,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T00:38:26.557Z"
+    },
+    {
+      "label": "Headline repair queue",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\headline-repair-queue.json",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "distill-then-compact",
+      "reason": "Retain active headline repair evidence; promote repeated fixes to headline skill memory.",
+      "bytes": 66542207,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T16:19:49.728Z"
+    },
+    {
+      "label": "Article approval intelligence",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\article-approval-intelligence.json",
+      "exists": true,
+      "layer": "episodic-memory",
+      "action": "distill-and-retain-summary",
+      "reason": "Approval and rejection reasons should become behavior-changing editorial lessons.",
+      "bytes": 71507,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T17:31:33.312Z"
+    },
+    {
+      "label": "Daily article memory",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\daily-article-memory.json",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "distill-then-archive",
+      "reason": "Raw article memory can grow quickly; retain only public articles, active dossiers, and extracted knowledge.",
+      "bytes": 2031397,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T19:08:34.461Z"
+    },
+    {
+      "label": "Framework learning proof log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\framework-learning-proof-log.json",
+      "exists": true,
+      "layer": "episodic-memory",
+      "action": "summarize-and-archive",
+      "reason": "Proof logs are audit evidence but should be periodically summarized into capability memory.",
+      "bytes": 3062054,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T19:08:35.127Z"
+    },
+    {
+      "label": "Framework action log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\framework-action-log.json",
+      "exists": true,
+      "layer": "episodic-memory",
+      "action": "summarize-and-archive",
+      "reason": "Action logs should feed capability and skill outcomes rather than grow without bound.",
+      "bytes": 100382826,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T19:08:31.296Z"
+    },
+    {
+      "label": "Adaptive weight proof log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\adaptive-weight-proof-log.json",
+      "exists": true,
+      "layer": "episodic-memory",
+      "action": "summarize-and-archive",
+      "reason": "Adaptive-weight evidence should become confidence updates and compact proofs.",
+      "bytes": 3201349,
+      "itemCount": 1,
+      "modifiedAt": "2026-07-23T19:01:02.302Z"
+    }
+  ],
+  "directories": [
+    {
+      "label": "Patch directions for Codex",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\patch-directions-for-codex",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "distill-then-compact",
+      "reason": "Old teaching prompts should be reduced to reusable patch skills after resolved.",
+      "bytes": 53533932,
+      "itemCount": 14702
+    },
+    {
+      "label": "News Lab collector outputs",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-collectors",
+      "exists": true,
+      "layer": "working-memory",
+      "action": "preserve-active-distill-old",
+      "reason": "Collector data should remain available for active dossiers and become source coverage lessons after use.",
+      "bytes": 2414500,
+      "itemCount": 16
+    }
+  ],
+  "recommendations": [
+    "Do not count raw storage growth as learning. Distill rejection, repair, source, and writing outcomes into compact semantic and skill memory.",
+    "Do not delete story objects or public payload records that are visible, searchable, under repair, or needed for story updates.",
+    "Compact queues only after each record is resolved, lesson extraction is complete, and the public payload or archive owns the final article state.",
+    "Archive proof and action logs after they are summarized into capability, semantic, and skill memory."
+  ]
+}

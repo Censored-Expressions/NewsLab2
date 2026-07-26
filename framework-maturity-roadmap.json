@@ -1,0 +1,123 @@
+{
+  "version": "20260718-six-month-framework-maturity-roadmap",
+  "updatedAt": "2026-07-18T13:29:37.660Z",
+  "purpose": "Prioritize compounding capability improvements rather than adding disconnected subsystems.",
+  "priorities": [
+    {
+      "rank": 1,
+      "capability": "Story Intelligence Dossier",
+      "goal": "Use seven-layer Story DNA and Story Curator to organize events before writing.",
+      "successMetric": "Fewer mixed-topic articles and stronger first-pass body coherence."
+    },
+    {
+      "rank": 2,
+      "capability": "Writing Intelligence Engine",
+      "goal": "Improve drafts before editorial review using technique registry, lexicon, headline memory, and story DNA.",
+      "successMetric": "First-pass acceptance rises while repair count falls."
+    },
+    {
+      "rank": 3,
+      "capability": "Validator Mentor",
+      "goal": "Turn validation into guided improvement with repair routing and prevention learning.",
+      "successMetric": "Second-pass approval and repair success increase."
+    },
+    {
+      "rank": 4,
+      "capability": "Behavioral Lexicon",
+      "goal": "Measure lexicon utilization and contextual word-choice impact, not vocabulary size.",
+      "successMetric": "Lexicon utilization rises and repeated phrase rate falls."
+    },
+    {
+      "rank": 5,
+      "capability": "Evolution Engine",
+      "goal": "Report whether behavior changed and whether improvements measurably worked.",
+      "successMetric": "Lessons applied, behavior changed, failures prevented."
+    },
+    {
+      "rank": 6,
+      "capability": "Cross-Subsystem Learning",
+      "goal": "Ensure each repair teaches Writer, Dossier, Editor, Validator, Publisher, and collectors as needed.",
+      "successMetric": "Same rejection categories decline across future cycles."
+    }
+  ],
+  "weaknesses": [
+    {
+      "subsystem": "Validator",
+      "score": 7.8,
+      "next": "Validator Mentor"
+    },
+    {
+      "subsystem": "Lexicon Learner",
+      "score": 8.4,
+      "next": "Behavioral Lexicon utilization"
+    },
+    {
+      "subsystem": "Headline Intelligence",
+      "score": 8.3,
+      "next": "Align headline criteria with Story DNA and audit bad accepted patterns"
+    }
+  ],
+  "rule": "Each improvement must propagate across the platform and prove changed behavior, not just create another memory record.",
+  "articleIntelligenceEngine": {
+    "active": true,
+    "file": "data/article-intelligence-engine.json",
+    "priority": "highest-first-pass-quality-leverage",
+    "goal": "Make every draft begin from a complete narrative and reader plan.",
+    "metrics": [
+      "firstPassAcceptance",
+      "repairCountBeforePublish",
+      "validatorMentorRepairCoverage",
+      "lexiconUtilization",
+      "headlineBodyAlignment",
+      "readerQuestionCoverage",
+      "narrativePlanCompleteness"
+    ],
+    "rule": "Before drafting, Article Intelligence creates a reader-centered narrative plan. Writing begins only after the story, reader value, arc, evidence, headline direction, and ending direction are known."
+  },
+  "newCapabilities": [
+    {
+      "id": "historical-context-engine",
+      "name": "Historical Context Engine",
+      "addedAt": "2026-07-18T13:29:37.660Z",
+      "purpose": "Score and package materially relevant historical context before the Story Dossier reaches the Writer.",
+      "connectedSubsystems": [
+        "Search Intelligence",
+        "Story Curator",
+        "Knowledge Graph",
+        "Story Dossier",
+        "Writer",
+        "Publishing Editor"
+      ],
+      "maturityTarget": "Articles explain relevant background and causal history without generic filler, topic drift, or unfair implication."
+    },
+    {
+      "id": "lexicon-reference-policy",
+      "name": "Lexicon Public Reference Policy",
+      "addedAt": "2026-07-18T13:14:19.171Z",
+      "purpose": "Permit dictionary, thesaurus, encyclopedia, and style-reference learning for meaning and usage while prohibiting copied phrasing.",
+      "connectedSubsystems": [
+        "Lexicon Learner",
+        "Writer",
+        "Publishing Editor",
+        "Newsletter",
+        "Creator Desk"
+      ],
+      "maturityTarget": "Better vocabulary precision and lower repetition without copying reference-source expression."
+    },
+    {
+      "id": "reasoning-memory-graph",
+      "name": "Reasoning Memory Graph",
+      "addedAt": "2026-07-18T13:14:19.171Z",
+      "purpose": "Connect decisions, reasons, outcomes, improvements, and future confidence across Framework subsystems.",
+      "connectedSubsystems": [
+        "Story Dossier",
+        "Writer",
+        "Publishing Editor",
+        "Validator",
+        "Lexicon Learner",
+        "Evolution Engine"
+      ],
+      "maturityTarget": "Behavioral adaptation based on why prior decisions worked or failed."
+    }
+  ]
+}

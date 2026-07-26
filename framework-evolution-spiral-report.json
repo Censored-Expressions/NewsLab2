@@ -1,0 +1,261 @@
+{
+ "generatedAt": "2026-07-06T03:33:01.227Z",
+ "version": "20260705-framework-evolution-spiral-v1",
+ "purpose": "Convert repeated successful experiences into verified capabilities without reinforcing unverified mistakes.",
+ "model": "spiral-with-controlled-feedback-loops",
+ "flow": [
+ "External Evidence",
+ "Observation & Collection",
+ "Evidence Classification",
+ "Core Knowledge Layer",
+ "Specialized Learning Loops",
+ "Capability Review",
+ "Promotion Gate",
+ "Reuse"
+ ],
+ "promotionGate": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "overall": 52,
+ "metaLearner": {
+ "score": 38,
+ "fastestLoop": "Knowledge Graph Loop",
+ "weakestLoop": "Editorial Loop",
+ "repeatedLessonSignals": 1,
+ "stalledLoops": [
+ "Editorial Loop",
+ "Runtime Loop",
+ "Engineering Loop",
+ "Owner Decision Loop",
+ "News Output Loop"
+ ],
+ "promotedCapabilityCount": 1,
+ "question": "Which learning loops improve fastest, which repeat the same lesson, and which verified abilities should be promoted to Core?"
+ },
+ "loops": [
+ {
+ "key": "editorial-loop",
+ "label": "Editorial Loop",
+ "currentLevel": "repeated",
+ "score": 42,
+ "experienceCount": 371,
+ "successRate": 55.2,
+ "verificationCount": 1,
+ "generalized": false,
+ "evidence": [
+ "writingPatterns=6",
+ "recentEditorDecisions=250",
+ "approvedPatterns=1"
+ ],
+ "nextRequirement": "Reach stable first-pass writing pattern success above 85%, then generalize to Creator Desk and Newsletter.",
+ "promotionPath": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "rule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "key": "runtime-loop",
+ "label": "Runtime Loop",
+ "currentLevel": "repeated",
+ "score": 42,
+ "experienceCount": 394,
+ "successRate": 0,
+ "verificationCount": 94,
+ "generalized": true,
+ "evidence": [
+ "sources=394",
+ "sourceErrorSignals=0",
+ "verifiedActions=94"
+ ],
+ "nextRequirement": "Verify that adaptive feed/source actions reduce the exact provider-level error rate they target.",
+ "promotionPath": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "rule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "key": "engineering-loop",
+ "label": "Engineering Loop",
+ "currentLevel": "repeated",
+ "score": 42,
+ "experienceCount": 199,
+ "successRate": 17.9,
+ "verificationCount": 94,
+ "generalized": false,
+ "evidence": [
+ "structuredPatches=54",
+ "appliedPatches=0",
+ "improvedActions=26"
+ ],
+ "nextRequirement": "Promote only patch patterns that apply cleanly, verify, and avoid duplicate proposals.",
+ "promotionPath": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "rule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "key": "knowledge-loop",
+ "label": "Knowledge Graph Loop",
+ "currentLevel": "capability",
+ "score": 96,
+ "experienceCount": 4494,
+ "successRate": 100,
+ "verificationCount": 6440,
+ "generalized": true,
+ "evidence": [
+ "nodes=4494",
+ "edges=6440",
+ "dossierStories=180"
+ ],
+ "nextRequirement": "Promote recurring entities and relationships only when multiple independent dossiers confirm them.",
+ "promotionPath": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "rule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "key": "owner-decision-loop",
+ "label": "Owner Decision Loop",
+ "currentLevel": "repeated",
+ "score": 42,
+ "experienceCount": 55,
+ "successRate": 73,
+ "verificationCount": 0,
+ "generalized": false,
+ "evidence": [
+ "pendingApprovals=55",
+ "appliedPatches=0"
+ ],
+ "nextRequirement": "Learn owner decision heuristics from approved, denied, and completed outcomes without bypassing approval gates.",
+ "promotionPath": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "rule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "key": "news-output-loop",
+ "label": "News Output Loop",
+ "currentLevel": "repeated",
+ "score": 42,
+ "experienceCount": 180,
+ "successRate": 72,
+ "verificationCount": 9,
+ "generalized": false,
+ "evidence": [
+ "dossierStories=180",
+ "approvedStories=9"
+ ],
+ "nextRequirement": "Use more accepted dossiers to raise output while keeping the Editor strict.",
+ "promotionPath": [
+ "observed",
+ "repeated",
+ "validated",
+ "generalized",
+ "capability"
+ ],
+ "rule": "Experience becomes ability only after repeated, verified, generalized success."
+ }
+ ],
+ "capabilityRegistry": [
+ {
+ "capability": "Editorial Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "writingPatterns=6",
+ "recentEditorDecisions=250",
+ "approvedPatterns=1"
+ ],
+ "nextRequirement": "Reach stable first-pass writing pattern success above 85%, then generalize to Creator Desk and Newsletter.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Runtime Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "sources=394",
+ "sourceErrorSignals=0",
+ "verifiedActions=94"
+ ],
+ "nextRequirement": "Verify that adaptive feed/source actions reduce the exact provider-level error rate they target.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Engineering Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "structuredPatches=54",
+ "appliedPatches=0",
+ "improvedActions=26"
+ ],
+ "nextRequirement": "Promote only patch patterns that apply cleanly, verify, and avoid duplicate proposals.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Knowledge Graph Loop",
+ "currentLevel": "capability",
+ "evidence": [
+ "nodes=4494",
+ "edges=6440",
+ "dossierStories=180"
+ ],
+ "nextRequirement": "Promote recurring entities and relationships only when multiple independent dossiers confirm them.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "Owner Decision Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "pendingApprovals=55",
+ "appliedPatches=0"
+ ],
+ "nextRequirement": "Learn owner decision heuristics from approved, denied, and completed outcomes without bypassing approval gates.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ },
+ {
+ "capability": "News Output Loop",
+ "currentLevel": "repeated",
+ "evidence": [
+ "dossierStories=180",
+ "approvedStories=9"
+ ],
+ "nextRequirement": "Use more accepted dossiers to raise output while keeping the Editor strict.",
+ "promotionRule": "Experience becomes ability only after repeated, verified, generalized success."
+ }
+ ],
+ "offRamp": {
+ "executionPath": "Execution -> Verification -> Success?",
+ "success": "Learning Queue -> Capability Review -> Promotion Gate",
+ "failure": "Repair Queue -> Root Cause -> Retest before learning",
+ "rule": "Nothing becomes Core Knowledge until verification proves the outcome."
+ },
+ "separation": {
+ "experience": "Things the Brain has observed, such as articles processed, headline rewrites, feed failures, owner decisions, and patch outcomes.",
+ "ability": "Things the Brain has demonstrated repeatedly with verification, such as headline generation, source isolation, story dossiers, or structured patches."
+ },
+ "nextImprovement": "Improve Editorial Loop: Reach stable first-pass writing pattern success above 85%, then generalize to Creator Desk and Newsletter.",
+ "rule": "The Brain learns in a spiral: observe, experiment, verify, generalize, promote, then reuse across News Lab, Creator Desk, Newsletter, and future applications."
+}

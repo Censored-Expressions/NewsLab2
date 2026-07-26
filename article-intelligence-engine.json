@@ -1,0 +1,94 @@
+{
+  "version": "20260718-article-intelligence-engine-v1",
+  "updatedAt": "2026-07-18T12:21:57.657Z",
+  "purpose": "Move the Framework from article production to excellent first-pass article planning. The Writer should never discover the story while writing.",
+  "pipeline": [
+    "Search Intelligence",
+    "Story Clustering",
+    "Story Curator",
+    "Story Dossier",
+    "Article Intelligence",
+    "Writer",
+    "Writing Intelligence",
+    "Publishing Editor",
+    "Validator",
+    "Repair Engine",
+    "Publisher"
+  ],
+  "coreDiagnosis": "Most writing failures begin before the first sentence: weak story focus, weak narrative plan, weak reader question, weak headline direction, or context-insensitive language selection.",
+  "preDraftQuestions": [
+    "What story am I telling?",
+    "Who am I telling it to?",
+    "Why will they care?",
+    "How should it feel?",
+    "What should they remember?",
+    "What is the main story?",
+    "What is supporting context only?",
+    "What remains unknown?",
+    "What is the expected ending direction?"
+  ],
+  "dossierRequirements": {
+    "mustDeliver": [
+      "Main Story",
+      "Supporting Story",
+      "Background",
+      "Conflict",
+      "Reader Question",
+      "Narrative Arc",
+      "Ending Direction",
+      "Headline Direction"
+    ],
+    "rule": "The Dossier must be opinionated enough to tell the Writer what matters most, what belongs in the background, and what should be left out."
+  },
+  "storyPlan": [
+    "Opening",
+    "Explanation",
+    "Evidence",
+    "Reaction",
+    "What Comes Next",
+    "Closing"
+  ],
+  "writingIntelligenceChecks": [
+    "rhythm",
+    "paragraph flow",
+    "transitions",
+    "repetition",
+    "pacing",
+    "sentence variation",
+    "emphasis",
+    "readability",
+    "headline/body alignment",
+    "reader question coverage"
+  ],
+  "repairCauseLadder": [
+    "Headline failed",
+    "Story focus weak",
+    "Narrative weak",
+    "Lead weak",
+    "Dossier incomplete or not opinionated",
+    "Repair upstream cause",
+    "Regenerate headline from repaired article"
+  ],
+  "behavioralLearningLoop": {
+    "event": "Every accepted or repaired edit becomes a reusable lesson.",
+    "route": [
+      "Publishing Editor",
+      "Lexicon Learner",
+      "Writing Intelligence",
+      "Writer",
+      "Future Articles"
+    ],
+    "example": "If Publishing Editor changes said to confirmed, Lexicon learns government/official stories prefer confirmed only when dossier evidence supports verification."
+  },
+  "firstPassQualityMetrics": [
+    "firstPassAcceptance",
+    "repairCountBeforePublish",
+    "validatorMentorRepairCoverage",
+    "lexiconUtilization",
+    "headlineBodyAlignment",
+    "readerQuestionCoverage",
+    "narrativePlanCompleteness"
+  ],
+  "readerExperienceQuestion": "What experience should the reader have?",
+  "rule": "Before drafting, Article Intelligence creates a reader-centered narrative plan. Writing begins only after the story, reader value, arc, evidence, headline direction, and ending direction are known."
+}

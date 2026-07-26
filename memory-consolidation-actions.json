@@ -1,0 +1,217 @@
+{
+  "version": "20260722-memory-consolidation-actions-v1",
+  "generatedAt": "2026-07-23T19:08:39.880Z",
+  "reason": "scheduled-background-distillation",
+  "purpose": "Concrete non-destructive consolidation actions: merge duplicate lessons, promote verified capabilities, retire stale patterns, and mark temporary raw artifacts after safety gates.",
+  "deletionEnabled": false,
+  "summary": {
+    "duplicateLessonClusters": 2,
+    "promoteCandidates": 3,
+    "retireCandidates": 2,
+    "temporaryCandidates": 1,
+    "preserveCount": 7,
+    "blockedDeletes": 9,
+    "skillsTracked": 6,
+    "semanticDomains": 5
+  },
+  "mergeActions": [
+    {
+      "key": "autonomous action worker slice clean dossier handoff reuse",
+      "count": 6,
+      "examples": [
+        "Autonomous action: worker-slice-clean-dossier-handoff Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-clean-dossier-handoff Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-clean-dossier-handoff Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-clean-dossier-handoff Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-clean-dossier-handoff Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+      ],
+      "memory": "experience-memory",
+      "action": "merge-similar-experiences"
+    },
+    {
+      "key": "autonomous action worker slice thin evidence pre editor",
+      "count": 5,
+      "examples": [
+        "Autonomous action: worker-slice-thin-evidence-pre-editor-hold Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-thin-evidence-pre-editor-hold Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-thin-evidence-pre-editor-hold Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-thin-evidence-pre-editor-hold Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+        "Autonomous action: worker-slice-thin-evidence-pre-editor-hold Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+      ],
+      "memory": "experience-memory",
+      "action": "merge-similar-experiences"
+    }
+  ],
+  "promoteActions": [
+    {
+      "id": "headline-dossier-first-pattern",
+      "sourceMemory": "pattern-memory",
+      "targetMemory": "semantic-memory",
+      "action": "promote-if-current-validator-confirms",
+      "confidence": 0.88,
+      "reason": "Headlines pass more reliably when generated from story identity and dossier facts rather than publisher headline fragments.",
+      "useWhen": "Creating or repairing any News Lab headline.",
+      "avoidWhen": "The dossier is incomplete or the story identity is not yet isolated."
+    },
+    {
+      "id": "writing-technique-not-content-pattern",
+      "sourceMemory": "pattern-memory",
+      "targetMemory": "semantic-memory",
+      "action": "promote-if-current-validator-confirms",
+      "confidence": 0.93,
+      "reason": "The Brain should learn editorial technique, not article wording or publisher expression.",
+      "useWhen": "Distilling article, newsletter, creator-desk, or editor feedback.",
+      "avoidWhen": "The raw text is needed as a public article, legal record, correction audit, or owner-approved historical artifact."
+    },
+    {
+      "id": "raw-memory-distillation-pattern",
+      "sourceMemory": "pattern-memory",
+      "targetMemory": "semantic-memory",
+      "action": "promote-if-current-validator-confirms",
+      "confidence": 0.9,
+      "reason": "Large raw queues and logs should become compact lessons, confidence updates, and skills before any raw compaction occurs.",
+      "useWhen": "A worker finishes a task, a queue resolves, or a packaging pass finds large working-memory files.",
+      "avoidWhen": "The raw object is public-facing, active, unresolved, or required for audit."
+    }
+  ],
+  "retireActions": [
+    {
+      "id": "article-approval-throughput-pattern",
+      "action": "do-not-promote-yet",
+      "confidence": 0.51,
+      "reason": "Low confidence means this stays as monitored learning instead of a permanent rule."
+    },
+    {
+      "id": "licensed-image-after-publication-pattern",
+      "action": "do-not-promote-yet",
+      "confidence": 0.45,
+      "reason": "Low confidence means this stays as monitored learning instead of a permanent rule."
+    }
+  ],
+  "temporaryFileActions": [
+    {
+      "label": "Patch directions for Codex",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\patch-directions-for-codex",
+      "bytes": 53533932,
+      "action": "mark-temporary-after-distillation",
+      "deletionEnabled": false
+    }
+  ],
+  "preserveActions": [
+    {
+      "label": "News Lab story objects",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-story-objects.json",
+      "bytes": 230213781,
+      "action": "preserve",
+      "reason": "Current and historical story objects are required for public visibility, repair, updates, and audit."
+    },
+    {
+      "label": "News Lab public payload",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-published-payload.json",
+      "bytes": 314931,
+      "action": "preserve",
+      "reason": "Visible public shelf must remain intact; compact only expired non-visible article history."
+    },
+    {
+      "label": "Approval recovery queue",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\approval-recovery-queue.json",
+      "bytes": 65245279,
+      "action": "preserve",
+      "reason": "Retain active repairs; distill rejection patterns and remove resolved duplicate records later."
+    },
+    {
+      "label": "Headline repair queue",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\headline-repair-queue.json",
+      "bytes": 66542207,
+      "action": "preserve",
+      "reason": "Retain active headline repair evidence; promote repeated fixes to headline skill memory."
+    },
+    {
+      "label": "Daily article memory",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\daily-article-memory.json",
+      "bytes": 2031397,
+      "action": "preserve",
+      "reason": "Raw article memory can grow quickly; retain only public articles, active dossiers, and extracted knowledge."
+    },
+    {
+      "label": "Framework learning proof log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\framework-learning-proof-log.json",
+      "bytes": 3062054,
+      "action": "preserve",
+      "reason": "Proof logs are audit evidence but should be periodically summarized into capability memory."
+    },
+    {
+      "label": "News Lab collector outputs",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-collectors",
+      "bytes": 2414500,
+      "action": "preserve",
+      "reason": "Collector data should remain available for active dossiers and become source coverage lessons after use."
+    }
+  ],
+  "blockedDeleteActions": [
+    {
+      "label": "News Lab story objects",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-story-objects.json",
+      "bytes": 230213781,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Approval recovery queue",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\approval-recovery-queue.json",
+      "bytes": 65245279,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Headline repair queue",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\headline-repair-queue.json",
+      "bytes": 66542207,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Daily article memory",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\daily-article-memory.json",
+      "bytes": 2031397,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Framework learning proof log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\framework-learning-proof-log.json",
+      "bytes": 3062054,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Framework action log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\framework-action-log.json",
+      "bytes": 100382826,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Adaptive weight proof log",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\adaptive-weight-proof-log.json",
+      "bytes": 3201349,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "Patch directions for Codex",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\patch-directions-for-codex",
+      "bytes": 53533932,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    },
+    {
+      "label": "News Lab collector outputs",
+      "path": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-collectors",
+      "bytes": 2414500,
+      "blockedBecause": "global-deletion-disabled",
+      "requiredGate": "not active, not public/searchable, not under repair, not audit-required, reusable lesson written to long-term memory"
+    }
+  ],
+  "workerRule": "Workers should emit distilled lessons at task completion. The consolidation worker clusters and promotes the lesson, not the raw file, unless legal/public/audit value requires retention."
+}

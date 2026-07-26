@@ -1,0 +1,295 @@
+{
+  "generatedAt": "2026-07-17T03:16:18.775Z",
+  "creatorDesk": {
+    "count": 29,
+    "flagged": [
+      {
+        "id": "creator_2026-07-16",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-12",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-11",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-08",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-07",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-06",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-05",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-04",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-03",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-02",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-07-01",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-30",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-29",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-28",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "creator-internal-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-24",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "encoding-or-ellipsis-artifact",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-23",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-22",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "repeated-editorial-frame"
+        ]
+      },
+      {
+        "id": "creator_2026-06-21",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "repeated-editorial-frame"
+        ]
+      },
+      {
+        "id": "creator_2026-06-20",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "encoding-or-ellipsis-artifact",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-19",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-18",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-17",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-16",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-15",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-14",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-13",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-12",
+        "title": "When The Script Gets Loud, Ask Better Questions",
+        "issues": [
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "creator_2026-06-11",
+        "title": "What The Crowd Missed Today",
+        "issues": [
+          "repeated-editorial-frame"
+        ]
+      },
+      {
+        "id": "creator_2026-06-10",
+        "title": "Culture Keeps Knocking At The Front Door",
+        "issues": [
+          "repeated-editorial-frame"
+        ]
+      }
+    ]
+  },
+  "newsletter": {
+    "count": 4,
+    "flagged": [
+      {
+        "id": "newsletter_2026-07-04",
+        "title": "Censored Expressions Weekly Signal",
+        "issues": [
+          "newsletter-public-direction-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "newsletter_2026-06-27",
+        "title": "Censored Expressions Weekly Signal",
+        "issues": [
+          "newsletter-public-direction-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "newsletter_2026-06-13",
+        "title": "Censored Expressions Weekly Signal",
+        "issues": [
+          "encoding-or-ellipsis-artifact",
+          "newsletter-public-direction-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      },
+      {
+        "id": "newsletter_2026-06-06",
+        "title": "Censored Expressions Weekly Signal",
+        "issues": [
+          "encoding-or-ellipsis-artifact",
+          "newsletter-public-direction-language",
+          "repeated-editorial-frame",
+          "overlong-sentence"
+        ]
+      }
+    ]
+  },
+  "rule": "Creator Desk and Newsletter archives are audited as Writing Intelligence inputs; editor findings must update shared writing pattern and technique memory."
+}

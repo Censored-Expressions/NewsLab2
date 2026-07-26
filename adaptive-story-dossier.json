@@ -1,0 +1,59 @@
+{
+  "version": "20260717-adaptive-story-dossier-v1",
+  "updatedAt": "2026-07-17T12:49:39.108Z",
+  "purpose": "Prioritize facts like an experienced journalist before the Writer begins.",
+  "factScores": [
+    "importance",
+    "confidence",
+    "novelty",
+    "publicImpact",
+    "recency",
+    "controversy",
+    "historicalContext"
+  ],
+  "scoringRubric": {
+    "importance": "Does this fact define the event or change the reader understanding?",
+    "confidence": "How strongly is it supported by official records, independent reports, documents, or repeated coverage?",
+    "novelty": "Does this add something beyond the headline?",
+    "publicImpact": "Who is affected and how directly?",
+    "recency": "Is this the latest confirmed development?",
+    "controversy": "Are sources disagreeing or using different frames?",
+    "historicalContext": "Does memory/knowledge graph make this more understandable?"
+  },
+  "writerContract": "Writer receives ranked facts, not raw feed order. Lead uses highest importance + confidence + impact. Context uses historicalContext. Updates use recency. Caveats use controversy/unknowns.",
+  "currentObservedGaps": [
+    {
+      "reason": "body-too-short",
+      "count": 13,
+      "fix": "Return to Evidence Engine and Context Engine, add verified facts, then regenerate the article body."
+    },
+    {
+      "reason": "mixed-source-topic",
+      "count": 11,
+      "fix": "Rebuild the Story Dossier around one event, remove off-topic source fragments, then rewrite from the dossier."
+    },
+    {
+      "reason": "missing-reporting-context",
+      "count": 10,
+      "fix": "Return to Evidence Engine and Context Engine, add verified facts, then regenerate the article body."
+    },
+    {
+      "reason": "weak-topic-integrity",
+      "count": 9,
+      "fix": "Rebuild the Story Dossier around one event, remove off-topic source fragments, then rewrite from the dossier."
+    },
+    {
+      "reason": "paragraph-topic-contamination",
+      "count": 8,
+      "fix": "Rebuild the Story Dossier around one event, remove off-topic source fragments, then rewrite from the dossier."
+    }
+  ],
+  "nextBehaviorChange": "Before writing, reject or split any dossier whose highest-ranked facts belong to different events.",
+  "storyIntelligenceEvolution": {
+    "active": true,
+    "version": "20260717-story-intelligence-dossier-v1",
+    "change": "Story Dossier evolved into Story Intelligence Dossier with evidence, intelligence, narrative, and Story DNA layers.",
+    "writerBehavior": "Writer must draft from the event model and use RSS/source material as evidence/provenance only.",
+    "updatedAt": "2026-07-17T14:33:39.303Z"
+  }
+}

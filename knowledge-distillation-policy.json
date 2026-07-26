@@ -1,0 +1,55 @@
+{
+  "version": "20260722-knowledge-distillation-policy-v1",
+  "updatedAt": "2026-07-23T03:21:44.003Z",
+  "purpose": "Retain reusable knowledge instead of keeping every raw workflow experience forever.",
+  "mode": "non-destructive-first-pass",
+  "layers": [
+    {
+      "id": "working-memory",
+      "purpose": "Short-lived operational material such as active feeds, current story drafts, dossiers, editor reviews, image prompts, and pending patches.",
+      "lifetime": "minutes-to-seven-days-unless-active-or-public",
+      "retentionRule": "Keep while active; distill lessons and compact after publication, abandonment, or learning extraction."
+    },
+    {
+      "id": "episodic-memory",
+      "purpose": "Compressed lessons from events, rejections, repairs, source failures, and publication outcomes.",
+      "lifetime": "rolling-history",
+      "retentionRule": "Store what happened, why it mattered, and what changed; avoid retaining full article text unless needed for visible publication or audit."
+    },
+    {
+      "id": "semantic-memory",
+      "purpose": "Generalized topic, writing, evidence, source, and editorial knowledge that improves future behavior.",
+      "lifetime": "long-term",
+      "retentionRule": "Promote repeated successful lessons into compact rules with confidence and usage evidence."
+    },
+    {
+      "id": "pattern-memory",
+      "purpose": "Reusable statistical observations such as first-pass approval patterns, headline failures, image fit, and source reliability trends.",
+      "lifetime": "long-term",
+      "retentionRule": "Store pattern, confidence, evidence count, use-when, and avoid-when. Do not store raw article text as the pattern."
+    },
+    {
+      "id": "experience-memory",
+      "purpose": "Only significant decisions, failures, breakthroughs, and owner-approved capability changes.",
+      "lifetime": "rolling-significant-history",
+      "retentionRule": "Store decision, reason, outcome, improvement, and future confidence; discard ordinary raw experience after distillation gates pass."
+    },
+    {
+      "id": "skills",
+      "purpose": "Reusable operational procedures such as source isolation, headline repair, reject-repair-resubmit, payload visibility checks, and memory compaction.",
+      "lifetime": "long-term",
+      "retentionRule": "Keep as named capabilities only while verification evidence shows they still work."
+    },
+    {
+      "id": "identity",
+      "purpose": "Owner intent, editorial boundaries, legal policy, brand standards, architecture rules, and governance expectations.",
+      "lifetime": "permanent",
+      "retentionRule": "Never delete through cleanup; update only through explicit owner or framework-approved change."
+    }
+  ],
+  "deletionPolicy": {
+    "enabled": false,
+    "reason": "First pass classifies and distills only. Raw deletion/compaction requires proven public visibility and learning preservation.",
+    "futureGate": "A raw item can be deleted only after it is not active, not public-facing, not needed for audit, and its reusable lesson has been written to semantic, skill, pattern, or experience memory."
+  }
+}

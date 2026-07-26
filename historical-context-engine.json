@@ -1,0 +1,103 @@
+{
+  "version": "20260718-historical-reasoning-system-v2",
+  "updatedAt": "2026-07-18T13:45:33.302Z",
+  "purpose": "Turn historical context from retrieval into reasoning: cause, context, pattern, prediction-aware background, and writer understanding.",
+  "position": "Search Intelligence -> Story Curator -> Historical Reasoning System -> Story Dossier -> Writer",
+  "rule": "The output is understanding, not old articles. Historical reasoning explains the current event only when it is material, scored, fair, and clearly bounded.",
+  "contextTypes": [
+    "Entity History",
+    "Relationship History",
+    "Topic History",
+    "Causal History"
+  ],
+  "contextCategories": [
+    "Legal History",
+    "Financial History",
+    "Political History",
+    "Family History",
+    "Business History",
+    "Scientific History",
+    "Military History",
+    "Legislative History",
+    "Technological History",
+    "International History"
+  ],
+  "contextThresholds": {
+    "articleEligible": 72,
+    "dossierMemory": 55,
+    "rejectBelow": 40
+  },
+  "scoringInputs": [
+    "relevance",
+    "timeDistance",
+    "narrativeImportance",
+    "readerValue",
+    "relationshipStrength",
+    "confidence",
+    "currentInfluence"
+  ],
+  "retrievalQuestions": [
+    "What prior events help explain this story?",
+    "Why is this history relevant now?",
+    "How did it influence today's events?",
+    "Should readers know this to understand the current story?",
+    "How should context be summarized without overwhelming the article?"
+  ],
+  "writerOutputContract": {
+    "currentStoryFirst": true,
+    "includeOnlyIfMaterial": true,
+    "summarizeBriefly": true,
+    "doNotOverwhelmCurrentEvent": true,
+    "provideUnderstandingNotOldLinks": true,
+    "suggestedContextParagraph": "Generated only when historical reasoning shows reader value and current-event relevance."
+  },
+  "editorialGuardrails": [
+    "History should explain, not distract.",
+    "Historical context must be clearly attributed when it involves specific prior events.",
+    "Distinguish allegations, charges, convictions, settlements, dismissals, and acquittals.",
+    "Do not imply past events prove current claims.",
+    "Do not include legally sensitive history unless it is material to the current event and accurately described.",
+    "Do not let historical context become the lead unless the current event is explicitly a continuation of prior events."
+  ],
+  "learningMetrics": [
+    "contextUsedInPublishedArticle",
+    "contextRemovedByEditor",
+    "contextImprovedReaderClarity",
+    "contextCausedDrift",
+    "firstPassAcceptanceAfterContext"
+  ],
+  "futureEvolution": "Promote context patterns only when they improve article completeness without increasing topic drift, unfair implication, or generic background.",
+  "modelShift": {
+    "from": "Current Story -> Search History -> Return Articles -> Writer",
+    "to": "Current Story -> Historical Reasoning -> Cause -> Context -> Pattern -> Outcome Learning -> Writer"
+  },
+  "reasoningModules": [
+    "Family Chronicle",
+    "Event Lineage",
+    "Institutional Memory",
+    "Behavioral History",
+    "Relationship Evolution",
+    "Historical Importance Score",
+    "Historical DNA",
+    "Historical Outcome Learning"
+  ],
+  "historicalDNA": {
+    "purpose": "Create evolving fingerprints for people, companies, organizations, governments, court cases, legislation, products, and recurring events.",
+    "fields": [
+      "recurringTopics",
+      "historicalPositions",
+      "policyChanges",
+      "influenceScore",
+      "commonRelationships",
+      "publishedArticleMemory",
+      "verifiedOutcomeMemory"
+    ],
+    "memoryRule": "Published CE articles should enrich long-term understanding instead of being forgotten after publication."
+  },
+  "historicalOutcomeLearning": {
+    "purpose": "Remember how similar prior stories developed without treating those outcomes as predictions.",
+    "exampleResponsibleLanguage": "Similar investigations in recent years have sometimes taken multiple years to resolve, though each case follows its own legal path.",
+    "guardrail": "Historical parallels are context, not forecasts or proof of the current outcome."
+  },
+  "knowledgeOperatingSystemLoop": "Search -> Reason -> Remember -> Understand -> Explain -> Write -> Learn -> Remember Better"
+}
