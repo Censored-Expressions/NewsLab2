@@ -12,6 +12,11 @@ const workerEvents = [];
 const webSyncBaseUrl = String(process.env.CE_WEB_SYNC_URL || process.env.CE_PUBLIC_SITE_URL || process.env.PUBLIC_SITE_URL || "").replace(/\/+$/, "");
 const workerSyncEnabled = process.env.CE_WORKER_SYNC_ENABLED !== "false" && Boolean(webSyncBaseUrl);
 const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_INTERVAL_MS || 60000));
+const workerCpuGuardEnabled = process.env.CE_WORKER_CPU_GUARD !== "false";
+const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECTORS || (workerCpuGuardEnabled ? 4 : 99)));
+const roleStartupStaggerMs = Math.max(0, Number(process.env.CE_WORKER_ROLE_STARTUP_STAGGER_MS || (workerCpuGuardEnabled ? 4500 : 0)));
+const maxOneShotConcurrency = Math.max(1, Number(process.env.CE_WORKER_MAX_ONESHOT_CONCURRENCY || 1));
+const oneShotChildren = new Map();
 const ownerAdminToken = process.env.OWNER_ADMIN_TOKEN || process.env.NEWSLETTER_ADMIN_TOKEN || "";
 const syncFileSpecs = [
   { key: "news-lab-published-payload", file: path.join(dataDir, "news-lab-published-payload.json") },
@@ -241,6 +246,17 @@ function spawnRole(name, env = {}, options = {}) {
 }
 
 function spawnOneShot(name, env = {}) {
+  const activeOneShots = [...oneShotChildren.values()].filter(child => child.exitCode === null && !child.killed).length;
+  if (oneShotChildren.has(name)) {
+    console.log(`[worker] skipped one-shot ${name}: already running`);
+    recordWorkerEvent({ type: "one-shot-skipped", name, reason: "already-running" });
+    return null;
+  }
+  if (activeOneShots >= maxOneShotConcurrency) {
+    console.log(`[worker] skipped one-shot ${name}: one-shot concurrency limit ${maxOneShotConcurrency}`);
+    recordWorkerEvent({ type: "one-shot-skipped", name, reason: "concurrency-limit", activeOneShots, maxOneShotConcurrency });
+    return null;
+  }
   const child = childProcess.spawn(nodePath, [serverPath], {
     cwd: __dirname,
     env: {
@@ -251,13 +267,16 @@ function spawnOneShot(name, env = {}) {
     },
     stdio: ["ignore", "inherit", "inherit"]
   });
+  oneShotChildren.set(name, child);
   child.on("exit", (code, signal) => {
+    oneShotChildren.delete(name);
     recordWorkerEvent({ type: "one-shot-exited", name, code, signal: signal || "" });
     writeWorkerObservability(`one-shot-exited-${name}`);
     syncWorkerOutputs(`after-one-shot-${name}`).catch(() => {});
     console.log(`[worker] one-shot ${name} exited code=${code} signal=${signal || ""}`);
   });
   child.on("error", error => {
+    oneShotChildren.delete(name);
     recordWorkerEvent({ type: "one-shot-error", name, error: error.message || String(error) });
     writeWorkerObservability(`one-shot-error-${name}`);
     console.error(`[worker] one-shot ${name} failed: ${error.message || error}`);
@@ -287,8 +306,23 @@ console.log("Censored Expressions background worker orchestrator starting");
 recordWorkerEvent({ type: "orchestrator-started", pid: process.pid });
 writeWorkerObservability("orchestrator-started");
 console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
+console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency}`);
 
-spawnRole("scheduled-site-content", {
+const enabledCollectorCategories = categories.slice(0, maxCollectorWorkers);
+const parkedCollectorCategories = categories.slice(maxCollectorWorkers);
+if (parkedCollectorCategories.length) {
+  recordWorkerEvent({ type: "collector-workers-parked", categories: parkedCollectorCategories, maxCollectorWorkers });
+  console.log(`[worker] parked collectors for CPU guard: ${parkedCollectorCategories.join(",")}`);
+}
+
+let startupSlot = 0;
+function scheduleSpawnRole(name, env = {}, options = {}) {
+  const delayMs = startupSlot * roleStartupStaggerMs;
+  startupSlot += 1;
+  setTimeout(() => spawnRole(name, env, options), delayMs);
+}
+
+scheduleSpawnRole("scheduled-site-content", {
   CE_SITE_SCHEDULED_CONTENT_WORKER: "1",
   CE_NEWS_LAB_PRODUCTION_LOOP: "false",
   CE_NEWS_LAB_WORKER_PROCESS: "false",
@@ -296,25 +330,25 @@ spawnRole("scheduled-site-content", {
   CE_NEWS_LAB_COLLECTOR_WORKER_PROCESS: "false",
   CE_NEWS_LAB_STUCK_RESCUE_WORKER_PROCESS: "false",
   CE_RENDER_EMBEDDED_WORKER_FALLBACK: "false"
-}, { restartDelayMs: 15000 });
-spawnRole("news-lab-production", {
+}, { restartDelayMs: 30000 });
+scheduleSpawnRole("news-lab-production", {
   CE_NEWS_LAB_WORKER: "1",
   CE_NEWS_LAB_WORKER_REASON: "worker-orchestrator-production"
-}, { restartDelayMs: 10000 });
+}, { restartDelayMs: 20000 });
 
-spawnRole("news-lab-api-response", {
+scheduleSpawnRole("news-lab-api-response", {
   CE_NEWS_LAB_API_WORKER: "1"
-}, { restartDelayMs: 10000 });
+}, { restartDelayMs: 20000 });
 
-spawnRole("news-lab-stuck-rescue", {
+scheduleSpawnRole("news-lab-stuck-rescue", {
   CE_NEWS_LAB_STUCK_RESCUE_WORKER: "1",
   CE_NEWS_LAB_STUCK_RESCUE_WORKER_PROCESS: "true"
-}, { restartDelayMs: 15000 });
+}, { restartDelayMs: 30000 });
 
-for (const category of categories) {
-  spawnRole(`collector-${category}`, {
+for (const category of enabledCollectorCategories) {
+  scheduleSpawnRole(`collector-${category}`, {
     CE_NEWS_LAB_COLLECTOR_WORKER: category
-  }, { restartDelayMs: 15000 });
+  }, { restartDelayMs: 30000 });
 }
 
 function runDistillation(reason = "worker-orchestrator-scheduled-distillation") {
@@ -338,14 +372,14 @@ function runImagePass(reason = "worker-orchestrator-scheduled-image-pass") {
   });
 }
 
-setTimeout(() => runDistillation("worker-orchestrator-startup-distillation"), 30000);
-setInterval(runDistillation, Math.max(5 * 60 * 1000, Number(process.env.CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS || 15 * 60 * 1000)));
+setTimeout(() => runDistillation("worker-orchestrator-startup-distillation"), Math.max(10 * 60 * 1000, Number(process.env.CE_KNOWLEDGE_DISTILLATION_STARTUP_DELAY_MS || 30 * 60 * 1000)));
+setInterval(runDistillation, Math.max(60 * 60 * 1000, Number(process.env.CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS || 6 * 60 * 60 * 1000)));
 
-setTimeout(() => runEvolution("worker-orchestrator-startup-evolution"), 45000);
-setInterval(runEvolution, Math.max(10 * 60 * 1000, Number(process.env.CE_EVOLUTION_ENGINE_INTERVAL_MS || 60 * 60 * 1000)));
+setTimeout(() => runEvolution("worker-orchestrator-startup-evolution"), Math.max(20 * 60 * 1000, Number(process.env.CE_EVOLUTION_ENGINE_STARTUP_DELAY_MS || 45 * 60 * 1000)));
+setInterval(runEvolution, Math.max(60 * 60 * 1000, Number(process.env.CE_EVOLUTION_ENGINE_INTERVAL_MS || 4 * 60 * 60 * 1000)));
 
-setTimeout(() => runImagePass("worker-orchestrator-startup-image-pass"), 60000);
-setInterval(runImagePass, Math.max(10 * 60 * 1000, Number(process.env.CE_IMAGE_WORKER_INTERVAL_MS || 30 * 60 * 1000)));
+setTimeout(() => runImagePass("worker-orchestrator-startup-image-pass"), Math.max(5 * 60 * 1000, Number(process.env.CE_IMAGE_WORKER_STARTUP_DELAY_MS || 15 * 60 * 1000)));
+setInterval(runImagePass, Math.max(30 * 60 * 1000, Number(process.env.CE_IMAGE_WORKER_INTERVAL_MS || 60 * 60 * 1000)));
 
 setTimeout(() => syncWorkerOutputs("startup-sync"), 15000);
 setInterval(() => syncWorkerOutputs("scheduled-sync"), workerSyncIntervalMs);
@@ -355,6 +389,9 @@ setInterval(() => {
   const syncState = workerSyncStateSummary();
   console.log(`[worker] heartbeat activeRoles=${children.size} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"}`);
 }, 60 * 1000);
+
+
+
 
 
 

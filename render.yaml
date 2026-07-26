@@ -48,6 +48,26 @@
         value: "true"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
+      - key: CE_WORKER_CPU_GUARD
+        value: "true"
+      - key: CE_WORKER_MAX_COLLECTORS
+        value: "4"
+      - key: CE_WORKER_ROLE_STARTUP_STAGGER_MS
+        value: "4500"
+      - key: CE_WORKER_MAX_ONESHOT_CONCURRENCY
+        value: "1"
+      - key: CE_KNOWLEDGE_DISTILLATION_STARTUP_DELAY_MS
+        value: "1800000"
+      - key: CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS
+        value: "21600000"
+      - key: CE_EVOLUTION_ENGINE_STARTUP_DELAY_MS
+        value: "2700000"
+      - key: CE_EVOLUTION_ENGINE_INTERVAL_MS
+        value: "14400000"
+      - key: CE_IMAGE_WORKER_STARTUP_DELAY_MS
+        value: "900000"
+      - key: CE_IMAGE_WORKER_INTERVAL_MS
+        value: "3600000"
       - key: OPENAI_API_KEY
         sync: false
       - key: PEXELS_API_KEY
@@ -56,6 +76,3 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
-
-
-

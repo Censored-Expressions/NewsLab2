@@ -189,3 +189,30 @@ After the Background Worker deploys, its logs should show one of these sync line
 If you do not see a sync line, the deployed `worker.js` is stale or the worker has not stayed alive long enough to reach the sync timer.
 
 
+
+## Worker CPU guard
+
+The Background Worker now has a CPU guard so article production does not max out the Render instance during startup or heavy learning passes.
+
+Recommended worker environment values:
+
+```text
+CE_WORKER_CPU_GUARD=true
+CE_WORKER_MAX_COLLECTORS=4
+CE_WORKER_ROLE_STARTUP_STAGGER_MS=4500
+CE_WORKER_MAX_ONESHOT_CONCURRENCY=1
+CE_KNOWLEDGE_DISTILLATION_STARTUP_DELAY_MS=1800000
+CE_KNOWLEDGE_DISTILLATION_INTERVAL_MS=21600000
+CE_EVOLUTION_ENGINE_STARTUP_DELAY_MS=2700000
+CE_EVOLUTION_ENGINE_INTERVAL_MS=14400000
+CE_IMAGE_WORKER_STARTUP_DELAY_MS=900000
+CE_IMAGE_WORKER_INTERVAL_MS=3600000
+```
+
+If CPU remains high, lower `CE_WORKER_MAX_COLLECTORS` to `2`. If CPU is stable and article coverage needs more throughput, raise it gradually to `6` or `8`.
+
+Expected worker log after deploy:
+
+```text
+[worker] cpu guard enabled=true maxCollectors=4 startupStaggerMs=4500 maxOneShots=1
+```
