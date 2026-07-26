@@ -1,4 +1,4 @@
-﻿services:
+services:
   - type: web
     name: censored-expressions-web
     runtime: node
@@ -51,7 +51,7 @@
       - key: CE_WORKER_CPU_GUARD
         value: "true"
       - key: CE_WORKER_MAX_COLLECTORS
-        value: "4"
+        value: "3"
       - key: CE_WORKER_MIN_COLLECTORS
         value: "1"
       - key: CE_WORKER_ROLE_STARTUP_STAGGER_MS
