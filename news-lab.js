@@ -1,4 +1,4 @@
-const grid = document.querySelector("[data-news-lab-grid]");
+﻿const grid = document.querySelector("[data-news-lab-grid]");
 const statusEl = document.querySelector("[data-news-lab-status]");
 const refreshButtons = document.querySelectorAll("[data-refresh-news-lab]");
 const sourceStoryCount = document.querySelector("[data-source-story-count]");
@@ -68,12 +68,18 @@ function marketQuoteMarkup(item = {}) {
   const marketCap = item.marketCap ? `<small>${escapeHtml(item.marketCap)} market cap</small>` : "";
   const exchangeText = item.exchange ? ` / ${item.exchange}` : "";
   const state = item.marketState ? `<small>${escapeHtml(item.marketState + exchangeText)}</small>` : (item.symbol ? `<small>${escapeHtml(item.symbol)}</small>` : "");
+  const displayLabel = item.label || item.symbol || "Market";
+  const directionLabel = changeClass === "positive" ? "up" : changeClass === "negative" ? "down" : "flat";
   return `
     <article class="market-quote ${changeClass}">
-      <span>${escapeHtml(item.label || item.symbol || "Market")}</span>
-      <strong>${hasPrice ? formatMarketNumber(item.price) : "Live data warming"}</strong>
-      <button class="market-change-toggle" type="button" data-market-percent="${escapeHtml(percentLabel)}" data-market-dollar="${escapeHtml(dollarLabel)}" aria-label="Toggle dollar or percent change">${escapeHtml(changeLabel)}</button>
-      ${marketCap || state}
+      <span class="market-quote-icon" aria-hidden="true"></span>
+      <span class="market-quote-label">${escapeHtml(displayLabel)}</span>
+      <span class="market-quote-values">
+        <strong>${hasPrice ? formatMarketNumber(item.price) : "Live data warming"}</strong>
+        <button class="market-change-toggle" type="button" data-market-percent="${escapeHtml(percentLabel)}" data-market-dollar="${escapeHtml(dollarLabel)}" aria-label="Toggle dollar or percent change">${escapeHtml(changeLabel)}</button>
+        <small class="market-direction-label">${escapeHtml(directionLabel)}</small>
+        ${marketCap || state}
+      </span>
     </article>
   `;
 }
@@ -655,5 +661,7 @@ loadMarketSnapshot(false);
 if (marketSearchForm) marketSearchForm.addEventListener("submit", handleMarketSearch);
 setInterval(() => loadNewsLab(true), autoRefreshMs);
 setInterval(() => loadMarketSnapshot(true), marketRefreshMs);
+
+
 
 
