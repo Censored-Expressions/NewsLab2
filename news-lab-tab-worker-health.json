@@ -1,0 +1,178 @@
+{
+  "generatedAt": "2026-07-17T16:21:43.785Z",
+  "publicVisibleArticles": 35,
+  "rule": "Each tab collector must gather category-specific source material; the Brain/writer must convert valid collector material into public articles without shrinking the existing shelf.",
+  "categories": [
+    {
+      "category": "top",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 260,
+      "sourceCount": 120,
+      "buildMs": 4816,
+      "generatedAt": "2026-07-17T16:01:35.726Z",
+      "publicPrimary": 0,
+      "publicSecondary": 8,
+      "visibleCount": 20,
+      "targetCount": 20,
+      "publicationGap": 0,
+      "walkthroughArticles": 8,
+      "health": "tab-filled"
+    },
+    {
+      "category": "world",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 220,
+      "sourceCount": 38,
+      "buildMs": 2694,
+      "generatedAt": "2026-07-17T16:01:38.574Z",
+      "publicPrimary": 6,
+      "publicSecondary": 0,
+      "visibleCount": 6,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 1,
+      "health": "tab-filled"
+    },
+    {
+      "category": "politics",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 212,
+      "sourceCount": 37,
+      "buildMs": 4660,
+      "generatedAt": "2026-07-17T16:01:43.444Z",
+      "publicPrimary": 10,
+      "publicSecondary": 0,
+      "visibleCount": 10,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 1,
+      "health": "tab-filled"
+    },
+    {
+      "category": "business",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 220,
+      "sourceCount": 40,
+      "buildMs": 1717,
+      "generatedAt": "2026-07-17T16:01:45.361Z",
+      "publicPrimary": 5,
+      "publicSecondary": 0,
+      "visibleCount": 5,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 1,
+      "health": "tab-filled"
+    },
+    {
+      "category": "technology",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 220,
+      "sourceCount": 42,
+      "buildMs": 1893,
+      "generatedAt": "2026-07-17T16:01:47.460Z",
+      "publicPrimary": 2,
+      "publicSecondary": 2,
+      "visibleCount": 4,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 2,
+      "health": "tab-filled"
+    },
+    {
+      "category": "sports",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 220,
+      "sourceCount": 44,
+      "buildMs": 2806,
+      "generatedAt": "2026-07-17T16:01:50.451Z",
+      "publicPrimary": 4,
+      "publicSecondary": 0,
+      "visibleCount": 4,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 1,
+      "health": "tab-filled"
+    },
+    {
+      "category": "entertainment",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 220,
+      "sourceCount": 40,
+      "buildMs": 2340,
+      "generatedAt": "2026-07-17T16:01:52.959Z",
+      "publicPrimary": 4,
+      "publicSecondary": 4,
+      "visibleCount": 8,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 1,
+      "health": "tab-filled"
+    },
+    {
+      "category": "local",
+      "collectorStatus": "cache-refreshed",
+      "collectorStories": 220,
+      "sourceCount": 239,
+      "buildMs": 3450,
+      "generatedAt": "2026-07-17T16:01:56.619Z",
+      "publicPrimary": 4,
+      "publicSecondary": 0,
+      "visibleCount": 4,
+      "targetCount": 4,
+      "publicationGap": 0,
+      "walkthroughArticles": 1,
+      "health": "tab-filled"
+    }
+  ],
+  "findings": [],
+  "walkthrough": {
+    "completed": true,
+    "newArticles": [
+      {
+        "id": "news_lab_technology:walkthrough_20260717_u-s-ai-competition-concerns-grow-after-chinese-model-breakout_extra",
+        "category": "technology",
+        "title": "U.S. AI Competition Concerns Grow After Chinese Model Breakout"
+      },
+      {
+        "id": "news_lab_world:walkthrough_20260717_burnham-transition-puts-britain-s-foreign-role-under-review_0",
+        "category": "world",
+        "title": "Burnham Transition Puts Britain's Foreign Role Under Review"
+      },
+      {
+        "id": "news_lab_politics:walkthrough_20260717_pentagon-press-escort-rule-returns-during-access-fight_1",
+        "category": "politics",
+        "title": "Pentagon Press Escort Rule Returns During Access Fight"
+      },
+      {
+        "id": "news_lab_business:walkthrough_20260717_truist-leans-on-digital-banking-to-deepen-customer-ties_2",
+        "category": "business",
+        "title": "Truist Leans on Digital Banking to Deepen Customer Ties"
+      },
+      {
+        "id": "news_lab_technology:walkthrough_20260717_ai-race-and-cybersecurity-stocks-drive-tech-market-focus_3",
+        "category": "technology",
+        "title": "AI Race and Cybersecurity Stocks Drive Tech Market Focus"
+      },
+      {
+        "id": "news_lab_sports:walkthrough_20260717_open-championship-round-brings-record-scores-at-royal-birkdale_4",
+        "category": "sports",
+        "title": "Open Championship Round Brings Record Scores at Royal Birkdale"
+      },
+      {
+        "id": "news_lab_entertainment:walkthrough_20260717_iko-uwais-crime-series-moves-forward-at-alcon-entertainment_5",
+        "category": "entertainment",
+        "title": "Iko Uwais Crime Series Moves Forward at Alcon Entertainment"
+      },
+      {
+        "id": "news_lab_local:walkthrough_20260717_san-francisco-bay-boat-disaster-leaves-families-waiting-for-answers_6",
+        "category": "local",
+        "title": "San Francisco Bay Boat Disaster Leaves Families Waiting for Answers"
+      }
+    ]
+  },
+  "nextActions": [
+    "All primary tabs meet the current minimum. Continue running tab collectors and use the full lifecycle walkthrough whenever publication gaps return.",
+    "Improve first-pass acceptance so future tab articles do not require manual controlled walkthroughs.",
+    "Keep monitoring classification leaks where secondary categories place a story in the wrong tab."
+  ]
+}

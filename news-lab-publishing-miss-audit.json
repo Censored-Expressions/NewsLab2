@@ -1,0 +1,11 @@
+[
+ {
+ "recordedAt": "2026-07-17T03:03:46.027Z",
+ "issue": "clipped-source-headline-chain-published-as-complete-sentence",
+ "affectedStoryId": "news_lab_entertainment:news-lab-entertainment-event-record-industry-proposes-adding-labels-ai-generated-music-these-9",
+ "affectedStoryTitle": "Record Industry Proposes Labels for AI-Generated Music",
+ "missedBecause": "The incomplete-sentence detector only checked terminal punctuation and dangling connector words. The bad paragraph ended with L.A., so punctuation made it look complete even though it was a chain of unrelated source headlines.",
+ "correction": "Rebuilt the article body from the actual AI-music labeling facts, fixed category to entertainment, removed clipped source fragments from public payloads and durable memory, and added newsLabClippedSourceFragmentParagraph to sanitizer and public issue detection.",
+ "prevention": "Publishing Editor now flags source-headline chains and clipped L.A./trending-story fragments as copied-or-noisy-source-fragment before publication."
+ }
+]

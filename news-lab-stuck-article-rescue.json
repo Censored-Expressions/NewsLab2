@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-07-18T17:43:10.704Z",
+  "attempted": 1,
+  "approved": 0,
+  "held": 1,
+  "compaction": {
+    "generatedAt": "2026-07-18T17:43:10.700Z",
+    "approval": {
+      "generatedAt": "2026-07-18T17:43:07.525Z",
+      "label": "approval-recovery",
+      "beforeActive": 168,
+      "beforePending": 0,
+      "afterActive": 168,
+      "archivedForLearning": 0,
+      "discardedDuplicateCount": 0,
+      "uniqueGroups": 168,
+      "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+    },
+    "headline": {
+      "generatedAt": "2026-07-18T17:43:09.661Z",
+      "label": "headline-repair",
+      "beforeActive": 159,
+      "beforePending": 0,
+      "afterActive": 159,
+      "archivedForLearning": 0,
+      "discardedDuplicateCount": 0,
+      "uniqueGroups": 159,
+      "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+    },
+    "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+  },
+  "attempts": [
+    {
+      "articleId": "news_lab_local:news-lab-local-event-minnesota-canadian-midwest-quality-smoke-wildfires-worst-0__candidate_4",
+      "title": "Local Update Centers on Smoke Quality Wildfires Alerts Canadian",
+      "sourceQueue": "headline-repair",
+      "initialIssues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "titleRepair": {
+        "candidate": "Local Smoke Quality Wildfires Minnesota Thursday",
+        "passed": false,
+        "issues": [
+          "headline-missing-action",
+          "headline-subject-too-stacked"
+        ],
+        "score": 64,
+        "evidenceSharedTerms": 5
+      },
+      "passed": false,
+      "issues": [
+        "headline-missing-action",
+        "headline-subject-too-stacked",
+        "headline-editor-needs-rewrite"
+      ],
+      "bodyLength": 1131,
+      "paragraphCount": 4
+    }
+  ],
+  "visibleStoryCount": 8,
+  "rule": "A stuck article is useful only if it can be repaired from its Story Snapshot/Dossier and re-enter the public shelf without lowering editorial standards."
+}

@@ -1,0 +1,359 @@
+{
+  "version": "20260718-reasoning-memory-graph-v1",
+  "updatedAt": "2026-07-18T13:45:33.302Z",
+  "purpose": "Store decision reasoning as a connected graph: Decision -> Reason -> Outcome -> Improvement -> Future Confidence.",
+  "rule": "Every significant Framework change should record why it was chosen, what happened, what improved, and what future decisions should trust more or less.",
+  "futureConfidenceRule": "Future confidence rises only after verified outcome metrics improve; it falls when the same issue repeats without measurable improvement.",
+  "connectedSubsystems": [
+    "Story Dossier",
+    "Writer",
+    "Publishing Editor",
+    "Validator",
+    "Lexicon Learner",
+    "Evolution Engine",
+    "Headline Intelligence",
+    "Application Intelligence",
+    "Historical Context Engine",
+    "Knowledge Graph",
+    "Story Curator",
+    "Historical Reasoning System",
+    "Historical DNA",
+    "Historical Outcome Learning"
+  ],
+  "nodeTypes": [
+    "decision",
+    "reason",
+    "outcome",
+    "improvement",
+    "futureConfidence",
+    "subsystem"
+  ],
+  "edgeTypes": [
+    "because",
+    "produced",
+    "improved",
+    "adjustsConfidenceFor",
+    "teaches",
+    "informs"
+  ],
+  "nodes": [
+    {
+      "id": "decision-seven-layer-story-dna",
+      "type": "decision",
+      "label": "Use seven-layer Story DNA before writing",
+      "createdAt": "2026-07-18T13:14:04.822Z",
+      "subsystem": "Story Dossier"
+    },
+    {
+      "id": "reason-writer-discovered-story-while-drafting",
+      "type": "reason",
+      "label": "The Writer was still discovering the event while drafting, which increased mixed-topic and generic-body failures.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "outcome-dossier-handoff-expanded",
+      "type": "outcome",
+      "label": "Writer handoff now includes curated event intelligence, evidence intelligence, narrative intelligence, reader questions, writing strategy, and editorial warnings.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "improvement-first-pass-planning",
+      "type": "improvement",
+      "label": "Expected improvement is fewer mixed-topic drafts, stronger leads, and fewer downstream repairs before publication.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "confidence-story-dna",
+      "type": "futureConfidence",
+      "label": "Trust Story DNA more when first-pass acceptance rises and repair count falls.",
+      "score": 72,
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "decision-validator-mentor",
+      "type": "decision",
+      "label": "Turn validation into mentoring instead of terminal rejection where safe repair is possible.",
+      "createdAt": "2026-07-18T13:14:04.822Z",
+      "subsystem": "Validator"
+    },
+    {
+      "id": "reason-terminal-rejections-reduced-throughput",
+      "type": "reason",
+      "label": "Terminal rejections were preventing repairable articles from becoming visible public stories.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "outcome-repair-routing-before-terminal-block",
+      "type": "outcome",
+      "label": "Repairable issues are routed through publishing-editor repair and validation rather than being treated as final failure.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "improvement-publication-recovery",
+      "type": "improvement",
+      "label": "Expected improvement is higher second-pass approval and more articles reaching the public shelf.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "confidence-validator-mentor",
+      "type": "futureConfidence",
+      "label": "Trust validator mentor repairs more when repaired articles publish without quality regressions.",
+      "score": 68,
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "decision-lexicon-reference-policy",
+      "type": "decision",
+      "label": "Allow public dictionaries, thesauruses, and encyclopedias as understanding sources for the Lexicon Learner.",
+      "createdAt": "2026-07-18T13:14:04.822Z",
+      "subsystem": "Lexicon Learner"
+    },
+    {
+      "id": "reason-lexicon-needs-meaning-not-copying",
+      "type": "reason",
+      "label": "Writing quality needs better word meaning, context, connotation, and usage boundaries without copying reference-source expression.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "outcome-reference-policy-memory",
+      "type": "outcome",
+      "label": "Lexicon Learner receives a policy that permits concept-level learning and prohibits copied definitions, examples, source phrasing, and templates.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "improvement-word-choice-and-context",
+      "type": "improvement",
+      "label": "Expected improvement is more precise vocabulary, fewer repetitive transitions, and better articles, newsletters, and Creator Desk writing.",
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "confidence-lexicon-reference-policy",
+      "type": "futureConfidence",
+      "label": "Trust reference-informed lexicon guidance more when vocabulary utilization rises and repetition falls without copied phrasing.",
+      "score": 66,
+      "createdAt": "2026-07-18T13:14:04.822Z"
+    },
+    {
+      "id": "decision-historical-context-engine",
+      "type": "decision",
+      "label": "Add Historical Context Engine between Story Curator and Story Dossier",
+      "createdAt": "2026-07-18T13:29:37.660Z",
+      "subsystem": "Historical Context Engine"
+    },
+    {
+      "id": "reason-context-must-be-material",
+      "type": "reason",
+      "label": "Articles need explanatory memory, but old articles should not be included merely because names match.",
+      "createdAt": "2026-07-18T13:29:37.660Z"
+    },
+    {
+      "id": "outcome-scored-history-before-dossier",
+      "type": "outcome",
+      "label": "Historical context is now scored by entity, relationship, topic, causal relevance, reader value, confidence, and current influence before reaching the Writer.",
+      "createdAt": "2026-07-18T13:29:37.660Z"
+    },
+    {
+      "id": "improvement-explanatory-articles",
+      "type": "improvement",
+      "label": "Expected improvement is articles that explain relevant background naturally without distracting from the current event.",
+      "createdAt": "2026-07-18T13:29:37.660Z"
+    },
+    {
+      "id": "confidence-historical-context-engine",
+      "type": "futureConfidence",
+      "label": "Trust historical context more when it raises completeness without causing topic drift or unfair legal implication.",
+      "score": 64,
+      "createdAt": "2026-07-18T13:29:37.660Z"
+    },
+    {
+      "id": "decision-historical-reasoning-system",
+      "type": "decision",
+      "label": "Upgrade Historical Context Engine into Historical Reasoning System",
+      "createdAt": "2026-07-18T13:45:33.302Z",
+      "subsystem": "Historical Reasoning System"
+    },
+    {
+      "id": "reason-history-should-produce-understanding",
+      "type": "reason",
+      "label": "The Framework needs to understand cause, context, pattern, relationship evolution, and outcomes rather than merely returning old articles.",
+      "createdAt": "2026-07-18T13:45:33.302Z"
+    },
+    {
+      "id": "outcome-historical-dna-and-outcome-learning",
+      "type": "outcome",
+      "label": "HCE now produces historical DNA, event lineage, institutional memory, behavioral history, relationship evolution, and outcome learning.",
+      "createdAt": "2026-07-18T13:45:33.302Z"
+    },
+    {
+      "id": "improvement-explanatory-news-memory",
+      "type": "improvement",
+      "label": "Expected improvement is articles that explain what the Framework already understands about a subject while keeping current verified facts first.",
+      "createdAt": "2026-07-18T13:45:33.302Z"
+    },
+    {
+      "id": "confidence-historical-reasoning",
+      "type": "futureConfidence",
+      "label": "Trust historical reasoning more when it improves completeness without causing drift, unfair implication, or prediction leakage.",
+      "score": 68,
+      "createdAt": "2026-07-18T13:45:33.302Z"
+    }
+  ],
+  "edges": [
+    {
+      "from": "decision-seven-layer-story-dna",
+      "to": "reason-writer-discovered-story-while-drafting",
+      "type": "because"
+    },
+    {
+      "from": "decision-seven-layer-story-dna",
+      "to": "outcome-dossier-handoff-expanded",
+      "type": "produced"
+    },
+    {
+      "from": "outcome-dossier-handoff-expanded",
+      "to": "improvement-first-pass-planning",
+      "type": "improved"
+    },
+    {
+      "from": "improvement-first-pass-planning",
+      "to": "confidence-story-dna",
+      "type": "adjustsConfidenceFor"
+    },
+    {
+      "from": "decision-validator-mentor",
+      "to": "reason-terminal-rejections-reduced-throughput",
+      "type": "because"
+    },
+    {
+      "from": "decision-validator-mentor",
+      "to": "outcome-repair-routing-before-terminal-block",
+      "type": "produced"
+    },
+    {
+      "from": "outcome-repair-routing-before-terminal-block",
+      "to": "improvement-publication-recovery",
+      "type": "improved"
+    },
+    {
+      "from": "improvement-publication-recovery",
+      "to": "confidence-validator-mentor",
+      "type": "adjustsConfidenceFor"
+    },
+    {
+      "from": "decision-lexicon-reference-policy",
+      "to": "reason-lexicon-needs-meaning-not-copying",
+      "type": "because"
+    },
+    {
+      "from": "decision-lexicon-reference-policy",
+      "to": "outcome-reference-policy-memory",
+      "type": "produced"
+    },
+    {
+      "from": "outcome-reference-policy-memory",
+      "to": "improvement-word-choice-and-context",
+      "type": "improved"
+    },
+    {
+      "from": "improvement-word-choice-and-context",
+      "to": "confidence-lexicon-reference-policy",
+      "type": "adjustsConfidenceFor"
+    },
+    {
+      "from": "decision-lexicon-reference-policy",
+      "to": "Writer",
+      "type": "teaches"
+    },
+    {
+      "from": "decision-lexicon-reference-policy",
+      "to": "Publishing Editor",
+      "type": "teaches"
+    },
+    {
+      "from": "decision-lexicon-reference-policy",
+      "to": "Evolution Engine",
+      "type": "informs"
+    },
+    {
+      "from": "decision-historical-context-engine",
+      "to": "reason-context-must-be-material",
+      "type": "because"
+    },
+    {
+      "from": "decision-historical-context-engine",
+      "to": "outcome-scored-history-before-dossier",
+      "type": "produced"
+    },
+    {
+      "from": "outcome-scored-history-before-dossier",
+      "to": "improvement-explanatory-articles",
+      "type": "improved"
+    },
+    {
+      "from": "improvement-explanatory-articles",
+      "to": "confidence-historical-context-engine",
+      "type": "adjustsConfidenceFor"
+    },
+    {
+      "from": "decision-historical-context-engine",
+      "to": "Story Dossier",
+      "type": "teaches"
+    },
+    {
+      "from": "decision-historical-context-engine",
+      "to": "Writer",
+      "type": "teaches"
+    },
+    {
+      "from": "decision-historical-reasoning-system",
+      "to": "reason-history-should-produce-understanding",
+      "type": "because"
+    },
+    {
+      "from": "decision-historical-reasoning-system",
+      "to": "outcome-historical-dna-and-outcome-learning",
+      "type": "produced"
+    },
+    {
+      "from": "outcome-historical-dna-and-outcome-learning",
+      "to": "improvement-explanatory-news-memory",
+      "type": "improved"
+    },
+    {
+      "from": "improvement-explanatory-news-memory",
+      "to": "confidence-historical-reasoning",
+      "type": "adjustsConfidenceFor"
+    },
+    {
+      "from": "decision-historical-reasoning-system",
+      "to": "Story Dossier",
+      "type": "teaches"
+    },
+    {
+      "from": "decision-historical-reasoning-system",
+      "to": "Knowledge Graph",
+      "type": "teaches"
+    },
+    {
+      "from": "decision-historical-reasoning-system",
+      "to": "Writer",
+      "type": "teaches"
+    }
+  ],
+  "strongestRecentPatterns": [
+    "Historical reasoning should produce understanding, not merely retrieve old articles.",
+    "Historical context should be scored for material reader value before it reaches the Writer.",
+    "Decision reasoning should be attached to measurable outcomes, not stored as isolated lessons.",
+    "Repairable editorial failures should route to repair and resubmission before terminal rejection.",
+    "Writing guidance should learn technique and meaning, not copied expression.",
+    "Future confidence should change only after visible publication and quality metrics confirm improvement."
+  ],
+  "metrics": {
+    "decisionCount": 5,
+    "reasonCount": 5,
+    "outcomeCount": 5,
+    "improvementCount": 5,
+    "futureConfidenceCount": 5,
+    "connectedSubsystemCount": 14
+  }
+}

@@ -1,0 +1,4995 @@
+{
+  "version": "20260705-writing-intelligence-v1",
+  "updatedAt": "2026-07-23T18:55:11.563Z",
+  "philosophy": "Learn reusable writing techniques, not article content or publisher expression.",
+  "boundaries": [
+    "Do not memorize article bodies, publisher phrasing, or publisher headline structure.",
+    "Store craft principles, issue frequencies, success rates, and prevention rules only.",
+    "Use the Story Dossier for facts and the Writing Pattern Library for technique."
+  ],
+  "patterns": {
+    "lead": {
+      "principle": "Start with the most newsworthy verified fact and reach the point within two sentences.",
+      "successes": 151,
+      "failures": 164,
+      "successRate": 47.9,
+      "relatedIssues": {
+        "editor-approved": 151,
+        "headline-lead-topic-mismatch": 136,
+        "lead-topic-mismatch": 28
+      },
+      "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+      "teachWriter": "Start with the most newsworthy verified fact and reach the point within two sentences."
+    },
+    "structure": {
+      "principle": "Answer who, what, when, and where before context or analysis.",
+      "successes": 151,
+      "failures": 463,
+      "successRate": 24.6,
+      "relatedIssues": {
+        "editor-approved": 151,
+        "image-topic-mismatch": 88,
+        "article-body-topic-drift": 6,
+        "weak-topic-integrity": 46,
+        "summary-repeats-body": 11,
+        "incomplete-sentence-detected": 78,
+        "repetitive-sentence-leak": 62,
+        "story-identity-mismatch": 26,
+        "missing-reporting-context": 114,
+        "repetitive-paragraphs": 10,
+        "body-needs-intro-body-ending": 11,
+        "body-too-short": 8,
+        "overlong-sentence": 1,
+        "headline-body-primary-entity-mismatch": 2
+      },
+      "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+      "teachWriter": "Answer who, what, when, and where before context or analysis."
+    },
+    "transition": {
+      "principle": "Move from facts to context before analysis, without repeating the same sentence function.",
+      "successes": 152,
+      "failures": 189,
+      "successRate": 44.6,
+      "relatedIssues": {
+        "editor-approved": 151,
+        "generic-weak-headline": 127,
+        "coach-repeated-phrases": 61,
+        "newsletter-repeated-editorial-frame": 1,
+        "repeated-sentence": 1
+      },
+      "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+      "teachWriter": "Move from facts to context before analysis, without repeating the same sentence function."
+    },
+    "evidence": {
+      "principle": "Attribute claims, separate confirmed facts from developing information, and qualify single-source details.",
+      "successes": 151,
+      "failures": 162,
+      "successRate": 48.2,
+      "relatedIssues": {
+        "editor-approved": 151,
+        "article-body-topic-drift": 6,
+        "mixed-source-topic": 57,
+        "paragraph-topic-contamination": 26,
+        "headline-source-no-overlap": 34,
+        "semantic-title-source-mismatch": 38,
+        "copied-or-noisy-source-fragment": 1
+      },
+      "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+      "teachWriter": "Attribute claims, separate confirmed facts from developing information, and qualify single-source details."
+    },
+    "headline": {
+      "principle": "Create headlines from the completed CE story dossier using actor + action + consequence.",
+      "successes": 151,
+      "failures": 850,
+      "successRate": 15.1,
+      "relatedIssues": {
+        "editor-approved": 151,
+        "headline-lead-topic-mismatch": 136,
+        "generic-weak-headline": 127,
+        "headline-word-salad": 195,
+        "headline-editor-needs-rewrite": 268,
+        "title-looks-truncated": 33,
+        "headline-source-no-overlap": 34,
+        "publisher-headline-too-close": 10,
+        "coach-copied-headline-risk": 7,
+        "semantic-title-source-mismatch": 38,
+        "headline-body-primary-entity-mismatch": 2
+      },
+      "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+      "teachWriter": "Build the headline after the article/dossier is complete; do not rewrite from publisher headlines."
+    },
+    "ending": {
+      "principle": "End with why the confirmed development matters or what verified next step readers should watch.",
+      "successes": 151,
+      "failures": 11,
+      "successRate": 93.2,
+      "relatedIssues": {
+        "editor-approved": 151,
+        "body-needs-intro-body-ending": 11
+      },
+      "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+      "teachWriter": "End with why the confirmed development matters or what verified next step readers should watch."
+    }
+  },
+  "lessons": [
+    {
+      "at": "2026-07-23T18:55:11.227Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.226Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.226Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.226Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.223Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.222Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.222Z",
+      "decision": "approved-pattern",
+      "category": "sports",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.222Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "semantic-title-source-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.222Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.221Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.221Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.221Z",
+      "decision": "approved-pattern",
+      "category": "sports",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.221Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.221Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.221Z",
+      "decision": "approved-pattern",
+      "category": "world",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.220Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.220Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.220Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.220Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.220Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.218Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.218Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.218Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence"
+      ],
+      "issues": [
+        "semantic-title-source-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T18:55:11.218Z",
+      "decision": "approved-pattern",
+      "category": "politics",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T18:55:11.217Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-source-no-overlap",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "transition"
+      ],
+      "issues": [
+        "headline-lead-topic-mismatch",
+        "generic-weak-headline",
+        "headline-word-salad",
+        "lead-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "approved-pattern",
+      "category": "politics",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead",
+        "transition"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "title-looks-truncated",
+        "headline-word-salad"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "evidence"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "semantic-title-source-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.787Z",
+      "decision": "approved-pattern",
+      "category": "politics",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T16:19:41.786Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.786Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence"
+      ],
+      "issues": [
+        "semantic-title-source-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.786Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.786Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.786Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T16:19:41.786Z",
+      "decision": "approved-pattern",
+      "category": "world",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "approved-pattern",
+      "category": "sports",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead",
+        "transition"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.840Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "approved-pattern",
+      "category": "politics",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "approved-pattern",
+      "category": "politics",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-23T15:09:10.839Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "evidence",
+        "ending",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "semantic-title-source-mismatch",
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-23T15:09:10.838Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Evidence Engine",
+      "patternKeys": [
+        "structure"
+      ],
+      "issues": [
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "title-looks-truncated"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "generic-weak-headline",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "ending",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "missing-reporting-context",
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "ending",
+        "transition",
+        "lead",
+        "evidence"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "body-needs-intro-body-ending",
+        "story-identity-mismatch",
+        "generic-weak-headline",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch",
+        "article-body-topic-drift"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Article Writer",
+      "patternKeys": [
+        "structure",
+        "evidence",
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "article-body-topic-drift",
+        "paragraph-topic-contamination",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "approved-pattern",
+      "category": "entertainment",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "transition",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "generic-weak-headline",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "lead",
+        "transition",
+        "evidence"
+      ],
+      "issues": [
+        "headline-body-primary-entity-mismatch",
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repeated-sentence",
+        "publisher-headline-too-close"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T15:25:34.241Z",
+      "decision": "approved-pattern",
+      "category": "world",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T15:25:34.240Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T15:25:34.240Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:53:23.563Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:53:23.563Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "summary-repeats-body",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:45:55.252Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-source-no-overlap",
+        "incomplete-sentence-detected",
+        "headline-editor-needs-rewrite",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:45:55.251Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "summary-repeats-body",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:37:53.241Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "summary-repeats-body",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:37:53.237Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:34:37.197Z",
+      "decision": "approved-pattern",
+      "category": "newsletter",
+      "stage": "Publishing Editor",
+      "patternKeys": [
+        "transition"
+      ],
+      "issues": [
+        "newsletter-repeated-editorial-frame"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "transition",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "generic-weak-headline",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "story-identity-mismatch",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "lead",
+        "transition",
+        "evidence"
+      ],
+      "issues": [
+        "headline-body-primary-entity-mismatch",
+        "story-identity-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "approved-pattern",
+      "category": "entertainment",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure",
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "story-identity-mismatch",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "headline-word-salad"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "approved-pattern",
+      "category": "world",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context",
+        "story-identity-mismatch",
+        "headline-word-salad",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "evidence"
+      ],
+      "issues": [
+        "paragraph-topic-contamination"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-18T14:24:27.839Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-18T14:24:27.838Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close",
+        "coach-copied-headline-risk"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close",
+        "coach-copied-headline-risk"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "structure",
+        "evidence"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "article-body-topic-drift",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "transition",
+        "lead"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "paragraph-topic-contamination",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "semantic-title-source-mismatch",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch",
+        "article-body-topic-drift",
+        "paragraph-topic-contamination"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "ending"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "body-needs-intro-body-ending",
+        "body-too-short"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "lead-topic-mismatch",
+        "incomplete-sentence-detected",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "evidence",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-lead-topic-mismatch",
+        "paragraph-topic-contamination",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs",
+        "coach-repeated-phrases",
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:51:08.728Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close",
+        "coach-copied-headline-risk"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "approved-pattern",
+      "category": "local",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "approved-pattern",
+      "category": "entertainment",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T14:07:14.599Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.520Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "evidence",
+        "structure",
+        "ending"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch",
+        "paragraph-topic-contamination",
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.517Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "evidence",
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "paragraph-topic-contamination",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.514Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.510Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "lead-topic-mismatch",
+        "missing-reporting-context",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.506Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.502Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "transition",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "generic-weak-headline",
+        "headline-source-no-overlap",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.499Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "incomplete-sentence-detected",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.493Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.488Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.481Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure"
+      ],
+      "issues": [
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.477Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.473Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T12:01:20.468Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure"
+      ],
+      "issues": [
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.463Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "evidence"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context",
+        "copied-or-noisy-source-fragment",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.459Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.455Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.452Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T12:01:20.450Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "approved-pattern",
+      "category": "technology",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "approved-pattern",
+      "category": "sports",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "approved-pattern",
+      "category": "sports",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Article Writer",
+      "patternKeys": [
+        "structure",
+        "ending",
+        "headline",
+        "lead",
+        "transition"
+      ],
+      "issues": [
+        "body-needs-intro-body-ending",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs",
+        "coach-repeated-phrases",
+        "incomplete-sentence-detected",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "evidence",
+        "structure",
+        "ending"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch",
+        "paragraph-topic-contamination",
+        "semantic-title-source-mismatch",
+        "body-needs-intro-body-ending",
+        "body-too-short"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.467Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.466Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.466Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.466Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T11:29:37.466Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "approved-pattern",
+      "category": "sports",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.247Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "incomplete-sentence-detected",
+        "generic-weak-headline"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "transition",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "incomplete-sentence-detected",
+        "generic-weak-headline",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "incomplete-sentence-detected",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "coach-copied-headline-risk",
+        "incomplete-sentence-detected",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "paragraph-topic-contamination",
+        "headline-editor-needs-rewrite",
+        "lead-topic-mismatch",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "approved-pattern",
+      "category": "business",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.246Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs",
+        "coach-repeated-phrases",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T04:31:59.245Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T02:27:45.692Z",
+      "decision": "approved-pattern",
+      "category": "entertainment",
+      "stage": "Publisher",
+      "patternKeys": [
+        "lead",
+        "structure",
+        "transition",
+        "evidence",
+        "headline",
+        "ending"
+      ],
+      "issues": [
+        "editor-approved"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Promote the successful construction pattern, not the article wording."
+    },
+    {
+      "at": "2026-07-17T02:21:13.149Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.201Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.201Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs",
+        "coach-repeated-phrases",
+        "incomplete-sentence-detected",
+        "headline-word-salad",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.201Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.201Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.201Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.201Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "incomplete-sentence-detected",
+        "repetitive-sentence-leak"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "semantic-title-source-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.200Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "publisher-headline-too-close",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:49:05.199Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "semantic-title-source-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.076Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-source-no-overlap",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.071Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "lead",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "generic-weak-headline",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.066Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "lead",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.062Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.059Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.055Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-source-no-overlap",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.052Z",
+      "decision": "repair-needed",
+      "category": "technology",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure",
+        "evidence",
+        "lead"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "usable",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.045Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.042Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.039Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "structure"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.034Z",
+      "decision": "repair-needed",
+      "category": "world",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition",
+        "lead",
+        "evidence",
+        "structure"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "headline-lead-topic-mismatch",
+        "paragraph-topic-contamination",
+        "overlong-sentence",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.029Z",
+      "decision": "repair-needed",
+      "category": "entertainment",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "title-looks-truncated",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases",
+        "incomplete-sentence-detected"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.025Z",
+      "decision": "repair-needed",
+      "category": "politics",
+      "stage": "Editor",
+      "patternKeys": [
+        "structure"
+      ],
+      "issues": [
+        "image-topic-mismatch"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.023Z",
+      "decision": "repair-needed",
+      "category": "sports",
+      "stage": "Headline Editor",
+      "patternKeys": [
+        "headline",
+        "evidence",
+        "structure",
+        "lead"
+      ],
+      "issues": [
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "mixed-source-topic",
+        "weak-topic-integrity",
+        "headline-lead-topic-mismatch",
+        "missing-reporting-context"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:29:01.020Z",
+      "decision": "repair-needed",
+      "category": "local",
+      "stage": "Editor",
+      "patternKeys": [
+        "headline",
+        "structure",
+        "transition"
+      ],
+      "issues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "repetitive-sentence-leak",
+        "coach-repeated-phrases"
+      ],
+      "scoreBand": "needs-repair",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    },
+    {
+      "at": "2026-07-17T01:08:39.362Z",
+      "decision": "repair-needed",
+      "category": "business",
+      "stage": "Headline Generator",
+      "patternKeys": [
+        "headline",
+        "transition"
+      ],
+      "issues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-editor-needs-rewrite"
+      ],
+      "scoreBand": "strong",
+      "storedContent": false,
+      "lesson": "Teach the Writer the craft failure before the next draft reaches the Editor."
+    }
+  ],
+  "writerDirective": "Before drafting, read the Story Dossier for facts and this pattern library for craft. Never imitate source wording.",
+  "rule": "Writing Intelligence stores technique-level lessons only. Story Dossier stores facts. Publisher text is never a style template.",
+  "overall": 46,
+  "weakestPattern": {
+    "key": "headline",
+    "principle": "Create headlines from the completed CE story dossier using actor + action + consequence.",
+    "successes": 151,
+    "failures": 850,
+    "successRate": 15.1,
+    "relatedIssues": {
+      "editor-approved": 151,
+      "headline-lead-topic-mismatch": 136,
+      "generic-weak-headline": 127,
+      "headline-word-salad": 195,
+      "headline-editor-needs-rewrite": 268,
+      "title-looks-truncated": 33,
+      "headline-source-no-overlap": 34,
+      "publisher-headline-too-close": 10,
+      "coach-copied-headline-risk": 7,
+      "semantic-title-source-mismatch": 38,
+      "headline-body-primary-entity-mismatch": 2
+    },
+    "lastLearnedAt": "2026-07-23T18:55:11.227Z",
+    "teachWriter": "Build the headline after the article/dossier is complete; do not rewrite from publisher headlines."
+  }
+}

@@ -1,0 +1,378 @@
+{
+  "generatedAt": "2026-07-23T00:49:11.490Z",
+  "backup": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-published-payload.before-quality-sprint-2026-07-23T00-48-58-475Z.json",
+  "repairedCount": 46,
+  "repairs": [
+    {
+      "id": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
+      "title": "Sen. Lindsey Graham Dies at 71 After Sudden Illness",
+      "category": "politics",
+      "issues": []
+    },
+    {
+      "id": "news_lab_technology:walkthrough_20260717_u-s-ai-competition-concerns-grow-after-chinese-model-breakout_extra",
+      "title": "U.s. AI Competition Concerns Grow After Chinese Model Breakout",
+      "category": "world",
+      "issues": []
+    },
+    {
+      "id": "news_lab_worker_slice_local_0_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "title": "U.s. Strikes Iran as Hormuz Tensions Rise",
+      "category": "politics",
+      "issues": []
+    },
+    {
+      "id": "news_lab_politics:news-lab-politics-event-judge-trump-trump-s-lawsuit-refers-apos-president-0",
+      "title": "Federal Judge Sanctions Trump Lawyers over Irs Lawsuit",
+      "category": "politics",
+      "issues": []
+    },
+    {
+      "id": "news_lab_politics:event:trump-new-york-times-air-force-one-subpoenas-administration-reporters-journalists_0__candidate_4",
+      "title": "Trump Administration Subpoenas New York Times Reporters over Plane Coverage",
+      "category": "politics",
+      "issues": []
+    },
+    {
+      "id": "news_lab_politics:news-lab-business-event-paramount-blasts-states-lawsuit-aimed-blocking-warner-bros-deal-24__candidate_2",
+      "title": "States Challenge Paramount-warner Bros. Deal as Studio Pushes Back",
+      "category": "entertainment",
+      "issues": []
+    },
+    {
+      "id": "news_lab_worker_slice_world_1_entertainment-update-centers-on-nurses-work-aspire-b",
+      "title": "Indian Nurses Face Long Visa Backlogs as U.s. Hospitals Seek Staff",
+      "category": "politics",
+      "issues": []
+    },
+    {
+      "id": "news_lab_entertainment:news-lab-entertainment-event-record-industry-proposes-adding-labels-ai-generated-music-these-9",
+      "title": "Record Industry Proposes Labels for AI-generated Music",
+      "category": "entertainment",
+      "issues": []
+    },
+    {
+      "id": "ce-local-maine-fatal-shooting-ice-personnel-investigation",
+      "title": "Maine Officials Investigate Fatal Shooting Involving Ice Personnel",
+      "category": "politics",
+      "issues": []
+    },
+    {
+      "id": "ce-entertainment-sam-neill-tributes-film-career",
+      "title": "Sam Neill Tributes Highlight Six-decade Film Career",
+      "category": "entertainment",
+      "issues": []
+    },
+    {
+      "id": "ce-business-tsmc-june-sales-earnings-watch",
+      "title": "Tsmc Reports June Sales Jump Ahead of Earnings",
+      "category": "business",
+      "issues": []
+    },
+    {
+      "id": "ce-local-canadian-wildfire-smoke-air-quality-alerts",
+      "title": "Canadian Wildfire Smoke Triggers Air Quality Alerts Across U.s",
+      "category": "local",
+      "issues": []
+    },
+    {
+      "id": "ce-business-states-paramount-warner-antitrust-lawsuit",
+      "title": "States Challenge Paramount-warner Merger in Antitrust Suit",
+      "category": "entertainment",
+      "issues": []
+    },
+    {
+      "id": "news_lab_world_hard_push_can-india-become-the-next-semiconductor-hub-after-taiwan_1784764035130_0",
+      "title": "Can India Become the Next Semiconductor Hub After Taiwan",
+      "category": "world",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_world_hard_push_world-report-tracks-russia-is-luring-foreign-nationals-to-fight-in-ukr_1784764035131_1",
+      "title": "How Russia Is Luring Foreign Nationals to Fight in Ukraine",
+      "category": "world",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_world_hard_push_germany-s-growing-interest-in-africa-a-win-for-both-sides_1784764035131_2",
+      "title": "Germany's Growing Interest in Africa: a Win for Both Sides",
+      "category": "world",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_business_hard_push_ai-made-founding-a-startup-easier-than-ever-but-vc-data-shows_1784764035138_3",
+      "title": "AI Made Founding a Startup Easier Than Ever but Vc Data Shows Funding",
+      "category": "business",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_business_hard_push_gop-legislators-call-for-extension-of-scc-s-review-time-of-dominion_1784764035139_4",
+      "title": "Gop Legislators Call for Extension of Scc S Review Time of Dominion Merger",
+      "category": "business",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_business_hard_push_judiciary-subcommittee-summons-compass-mred-ceos-for-briefing_1784764035139_5",
+      "title": "Judiciary Subcommittee Summons Compass, Mred Ceos for Briefing",
+      "category": "business",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_business_hard_push_x2018-i-have-a-2-000-deductible-x2019-i-reported-a-cracked-windshield-_1784764035139_6",
+      "title": "‘i Have a $2,000 Deductible’: I Reported a Cracked Windshield on My Hertz",
+      "category": "business",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_business_hard_push_grains-chicago-wheat-jumps-on-renewed-attack-on-black-sea-ports_1784764035140_7",
+      "title": "Grains-chicago Wheat Jumps on Renewed Attack on Black Sea Ports",
+      "category": "business",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_data-breach-delays-start-of-sumner-county-school-year_1784764035144_8",
+      "title": "Data Breach Delays Start of Sumner County School Year",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_violent-extremist-s-sentencing-a-call-to-protect-kids-online-says-cath_1784764035145_9",
+      "title": "Violent Extremist's Sentencing a Call to Protect Kids Online, Says Catholic Legal Scholar",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_alphabet-s-ai-investment-surge-revives-semiconductor-stock-hopes_1784764035146_10",
+      "title": "Alphabet's AI Investment Surge Revives Semiconductor Stock Hopes -",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_ai-audits-and-osint-featured-in-house-intel-bill_1784764035146_11",
+      "title": "AI, Audits and OSINT Featured in House Intel Bill",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_new-ransomware-group-uses-printers-to-deliver-ransom-notes_1784764035146_12",
+      "title": "New Ransomware Group Uses Printers to Deliver Ransom Notes",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_medtronic-spark-connects-young-innovators-to-hands-on-experiences-in-h_1784764035147_13",
+      "title": "Medtronic Spark Connects Young Innovators to Hands-on Experiences in Health Tech",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_technology_hard_push_5-billion-in-federal-research-funding-announced-for-artificial-intelli_1784764035147_14",
+      "title": "$$5 Billion in Federal Research Funding Announced for Artificial-intelligence Projects",
+      "category": "technology",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_red-sox-match-team-record-with-15th-straight-win_1784764035155_15",
+      "title": "Red Sox Match Team Record with 15th Straight Win",
+      "category": "sports",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_yanks-caballero-targeted-in-pitch-clock-crackdown_1784764035155_16",
+      "title": "Yanks' Caballero Targeted in Pitch Clock Crackdown",
+      "category": "sports",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_chiefs-unveil-renderings-of-3b-dome-stadium_1784764035155_17",
+      "title": "Chiefs Unveil Renderings of $$3B Dome Stadium",
+      "category": "sports",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_entertainment_hard_push_japan-s-prime-minister-sanae-takaichi-has-said-she-gets-just-zero-to_1784764035161_18",
+      "title": "Japan's Prime Minister Sanae Takaichi Has Said She Gets Just Zero to Three",
+      "category": "entertainment",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_entertainment_hard_push_8216-kpop-demon-hunters-8217-expand-funko-collab-with-saja-boys-blind-_1784764035162_19",
+      "title": "‘kpop Demon Hunters’ Expand Funko Collab with Saja Boys Blind Box and Worldwide",
+      "category": "entertainment",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_local_hard_push_spa-worker-arrested-accused-of-assaulting-woman-during-massage-in-magn_1784764035171_20",
+      "title": "Spa Worker Arrested, Accused of Assaulting Woman During Massage in Magnolia, MCSO Says",
+      "category": "local",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_local_hard_push_active-bills-impacting-local-permitting_1784764035172_21",
+      "title": "Active Bills Impacting Local Permitting",
+      "category": "local",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_local_hard_push_oakland-mayor-revives-controversial-sanitation-first-homeless-encampme_1784764035172_22",
+      "title": "Oakland Mayor Revives Controversial 'sanitation-first' Homeless Encampment Pilot Program",
+      "category": "local",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_red-sox-match-team-record-with-15th-straight-win_1784764092883_0",
+      "title": "Red Sox Match Team Record with 15th Straight Win",
+      "category": "sports",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_yanks-caballero-targeted-in-pitch-clock-crackdown_1784764092897_1",
+      "title": "Yanks' Caballero Targeted in Pitch Clock Crackdown",
+      "category": "sports",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_entertainment_hard_push_former-child-star-kaylee-hottle-s-cause-of-death-revealed_1784764092905_2",
+      "title": "Former Child Star Kaylee Hottle 's Cause of Death Revealed",
+      "category": "entertainment",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_entertainment_hard_push_now-ya-ll-know-trina-never-played-about-yungmiami-in-a-recent-intervie_1784764092906_3",
+      "title": "Now Y'all Know Trina Never Played About Yung Miami! in a Recent Interview",
+      "category": "entertainment",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_local_hard_push_chaplains-casualty-officers-provide-support-following-loss-of-active-d_1784764092913_4",
+      "title": "Chaplains, Casualty Officers Provide Support Following Loss of Active Duty Military Members",
+      "category": "local",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_local_hard_push_active-bills-impacting-local-permitting_1784764092913_5",
+      "title": "Active Bills Impacting Local Permitting",
+      "category": "local",
+      "issues": [
+        "published-visible-language-artifact",
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_world_hard_push_ready_germany-s-growing-interest-in-africa-a-win-for-both-sides_1784764171191_0",
+      "title": "Germany's Growing Interest in Africa: a Win for Both Sides",
+      "category": "world",
+      "issues": [
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_ready_red-sox-match-team-record-with-15th-straight-win_1784764171197_1",
+      "title": "Red Sox Match Team Record with 15th Straight Win",
+      "category": "sports",
+      "issues": [
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_sports_hard_push_ready_yanks-caballero-targeted-in-pitch-clock-crackdown_1784764171198_2",
+      "title": "Yanks' Caballero Targeted in Pitch Clock Crackdown",
+      "category": "sports",
+      "issues": [
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    },
+    {
+      "id": "news_lab_local_hard_push_ready_active-bills-impacting-local-permitting_1784764171206_3",
+      "title": "Active Bills Impacting Local Permitting",
+      "category": "local",
+      "issues": [
+        "bridge-or-artifact-article-rewritten-for-public-language"
+      ]
+    }
+  ]
+}

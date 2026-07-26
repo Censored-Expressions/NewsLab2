@@ -1,0 +1,621 @@
+{
+ "version": 1,
+ "updatedAt": "2026-07-11T19:20:43.619Z",
+ "queryCount": 130,
+ "queries": {
+ "iran": {
+ "query": "iran",
+ "count": 20,
+ "firstSearchedAt": "2026-06-14T02:57:12.555Z",
+ "lastSearchedAt": "2026-06-29T03:26:47.172Z",
+ "lastResultCount": 13,
+ "lastTotalPages": 2,
+ "topResultTypes": [
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article"
+ ]
+ },
+ "killeen": {
+ "query": "killeen",
+ "count": 19,
+ "firstSearchedAt": "2026-06-14T02:43:17.239Z",
+ "lastSearchedAt": "2026-06-14T05:02:57.917Z",
+ "lastResultCount": 42,
+ "lastTotalPages": 5,
+ "topResultTypes": [
+ "Web news",
+ "Web news",
+ "Web news",
+ "Web news",
+ "Web news"
+ ]
+ },
+ "trump": {
+ "query": "trump",
+ "count": 19,
+ "firstSearchedAt": "2026-06-14T01:39:16.998Z",
+ "lastSearchedAt": "2026-07-11T19:20:43.618Z",
+ "lastResultCount": 25,
+ "lastTotalPages": 3,
+ "topResultTypes": [
+ "CE generated article",
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article"
+ ]
+ },
+ "chicago storms": {
+ "query": "chicago storms",
+ "count": 12,
+ "firstSearchedAt": "2026-06-13T23:32:25.716Z",
+ "lastSearchedAt": "2026-06-14T03:08:39.373Z",
+ "lastResultCount": 7,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Editorial",
+ "Live news",
+ "Editorial",
+ "Newsletter",
+ "Web search"
+ ]
+ },
+ "donald trump": {
+ "query": "donald trump",
+ "count": 9,
+ "firstSearchedAt": "2026-06-14T01:48:04.224Z",
+ "lastSearchedAt": "2026-06-14T03:12:29.379Z",
+ "lastResultCount": 134,
+ "lastTotalPages": 14,
+ "topResultTypes": [
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news"
+ ]
+ },
+ "travelers championship": {
+ "query": "travelers championship",
+ "count": 6,
+ "firstSearchedAt": "2026-06-29T03:06:47.346Z",
+ "lastSearchedAt": "2026-06-29T03:26:46.906Z",
+ "lastResultCount": 4,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Live news",
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "austin metcalf": {
+ "query": "austin metcalf",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T03:20:47.238Z",
+ "lastSearchedAt": "2026-06-14T03:21:26.221Z",
+ "lastResultCount": 33,
+ "lastTotalPages": 4,
+ "topResultTypes": [
+ "Web news",
+ "Web news",
+ "Web news",
+ "Web news",
+ "Web news"
+ ]
+ },
+ "world cup": {
+ "query": "world cup",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T01:39:17.047Z",
+ "lastSearchedAt": "2026-07-04T01:07:19.183Z",
+ "lastResultCount": 188,
+ "lastTotalPages": 19,
+ "topResultTypes": [
+ "CE generated article",
+ "CE generated article",
+ "Context source article",
+ "Absorbed source article",
+ "Absorbed source article"
+ ]
+ },
+ "killeen tx": {
+ "query": "killeen tx",
+ "count": 4,
+ "firstSearchedAt": "2026-06-14T02:54:44.388Z",
+ "lastSearchedAt": "2026-06-14T02:59:28.679Z",
+ "lastResultCount": 3,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "local crime": {
+ "query": "local crime",
+ "count": 4,
+ "firstSearchedAt": "2026-06-14T02:54:44.498Z",
+ "lastSearchedAt": "2026-06-14T02:59:29.276Z",
+ "lastResultCount": 3,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "weather": {
+ "query": "weather",
+ "count": 4,
+ "firstSearchedAt": "2026-06-14T02:54:44.532Z",
+ "lastSearchedAt": "2026-06-14T02:59:29.356Z",
+ "lastResultCount": 5,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Editorial",
+ "Newsletter",
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "shooting": {
+ "query": "shooting",
+ "count": 4,
+ "firstSearchedAt": "2026-06-23T12:32:16.200Z",
+ "lastSearchedAt": "2026-06-23T12:54:02.084Z",
+ "lastResultCount": 55,
+ "lastTotalPages": 6,
+ "topResultTypes": [
+ "CE generated article",
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article",
+ "Absorbed source article"
+ ]
+ },
+ "local": {
+ "query": "local",
+ "count": 3,
+ "firstSearchedAt": "2026-06-14T01:39:17.147Z",
+ "lastSearchedAt": "2026-06-14T02:58:04.407Z",
+ "lastResultCount": 16,
+ "lastTotalPages": 2,
+ "topResultTypes": [
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news"
+ ]
+ },
+ "newsletter": {
+ "query": "newsletter",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:40:36.919Z",
+ "lastSearchedAt": "2026-06-14T02:43:47.812Z",
+ "lastResultCount": 1,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Newsletter"
+ ]
+ },
+ "creator desk": {
+ "query": "creator desk",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:40:36.956Z",
+ "lastSearchedAt": "2026-06-14T02:43:47.836Z",
+ "lastResultCount": 6,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Editorial",
+ "Editorial",
+ "Editorial",
+ "Editorial",
+ "Live news"
+ ]
+ },
+ "news": {
+ "query": "news",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T01:39:17.100Z",
+ "lastSearchedAt": "2026-06-14T02:56:27.464Z",
+ "lastResultCount": 17,
+ "lastTotalPages": 2,
+ "topResultTypes": [
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news"
+ ]
+ },
+ "zzzznotrealquery": {
+ "query": "zzzznotrealquery",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:54:44.556Z",
+ "lastSearchedAt": "2026-06-14T02:58:04.448Z",
+ "lastResultCount": 3,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "landstuhl": {
+ "query": "landstuhl",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T04:49:31.171Z",
+ "lastSearchedAt": "2026-06-14T04:49:38.515Z",
+ "lastResultCount": 4,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Web news",
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "detroit": {
+ "query": "detroit",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:42:56.410Z",
+ "lastSearchedAt": "2026-07-01T02:59:04.243Z",
+ "lastResultCount": 3,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "doanld trump": {
+ "query": "doanld trump",
+ "count": 1,
+ "firstSearchedAt": "2026-06-14T01:47:27.109Z",
+ "lastSearchedAt": "2026-06-14T01:47:27.109Z",
+ "lastResultCount": 141,
+ "lastTotalPages": 15,
+ "topResultTypes": [
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news"
+ ]
+ },
+ "killeen, tx": {
+ "query": "killeen, tx",
+ "count": 1,
+ "firstSearchedAt": "2026-06-14T01:47:50.644Z",
+ "lastSearchedAt": "2026-06-14T01:47:50.644Z",
+ "lastResultCount": 141,
+ "lastTotalPages": 15,
+ "topResultTypes": [
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news",
+ "Live news"
+ ]
+ },
+ "israeli prime": {
+ "query": "israeli prime",
+ "count": 1,
+ "firstSearchedAt": "2026-07-04T01:03:58.899Z",
+ "lastSearchedAt": "2026-07-04T01:03:58.899Z",
+ "lastResultCount": 3,
+ "lastTotalPages": 1,
+ "topResultTypes": [
+ "Web search",
+ "Web search",
+ "Web search"
+ ]
+ },
+ "new york": {
+ "query": "new york",
+ "count": 1,
+ "firstSearchedAt": "2026-07-04T10:35:58.415Z",
+ "lastSearchedAt": "2026-07-04T10:35:58.415Z",
+ "lastResultCount": 448,
+ "lastTotalPages": 45,
+ "topResultTypes": [
+ "CE generated article",
+ "CE generated article",
+ "CE generated article",
+ "CE generated article",
+ "CE generated article"
+ ]
+ }
+ },
+ "terms": {
+ "trump": {
+ "term": "trump",
+ "count": 30,
+ "firstSearchedAt": "2026-06-14T01:39:16.998Z",
+ "lastSearchedAt": "2026-07-11T19:20:43.618Z",
+ "lastQuery": "trump"
+ },
+ "killeen": {
+ "term": "killeen",
+ "count": 25,
+ "firstSearchedAt": "2026-06-14T01:47:50.644Z",
+ "lastSearchedAt": "2026-06-14T05:02:57.917Z",
+ "lastQuery": "killeen"
+ },
+ "iran": {
+ "term": "iran",
+ "count": 20,
+ "firstSearchedAt": "2026-06-14T02:57:12.555Z",
+ "lastSearchedAt": "2026-06-29T03:26:47.172Z",
+ "lastQuery": "iran"
+ },
+ "chicago": {
+ "term": "chicago",
+ "count": 12,
+ "firstSearchedAt": "2026-06-13T23:32:25.716Z",
+ "lastSearchedAt": "2026-06-14T03:08:39.373Z",
+ "lastQuery": "chicago storms"
+ },
+ "storms": {
+ "term": "storms",
+ "count": 12,
+ "firstSearchedAt": "2026-06-13T23:32:25.716Z",
+ "lastSearchedAt": "2026-06-14T03:08:39.373Z",
+ "lastQuery": "chicago storms"
+ },
+ "donald": {
+ "term": "donald",
+ "count": 9,
+ "firstSearchedAt": "2026-06-14T01:48:04.224Z",
+ "lastSearchedAt": "2026-06-14T03:12:29.379Z",
+ "lastQuery": "donald trump"
+ },
+ "local": {
+ "term": "local",
+ "count": 7,
+ "firstSearchedAt": "2026-06-14T01:39:17.147Z",
+ "lastSearchedAt": "2026-06-14T02:59:29.276Z",
+ "lastQuery": "local crime"
+ },
+ "travelers": {
+ "term": "travelers",
+ "count": 6,
+ "firstSearchedAt": "2026-06-29T03:06:47.346Z",
+ "lastSearchedAt": "2026-06-29T03:26:46.906Z",
+ "lastQuery": "travelers championship"
+ },
+ "championship": {
+ "term": "championship",
+ "count": 6,
+ "firstSearchedAt": "2026-06-29T03:06:47.346Z",
+ "lastSearchedAt": "2026-06-29T03:26:46.906Z",
+ "lastQuery": "travelers championship"
+ },
+ "tx": {
+ "term": "tx",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T01:47:50.644Z",
+ "lastSearchedAt": "2026-06-14T02:59:28.679Z",
+ "lastQuery": "killeen tx"
+ },
+ "austin": {
+ "term": "austin",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T03:20:47.238Z",
+ "lastSearchedAt": "2026-06-14T03:21:26.221Z",
+ "lastQuery": "austin metcalf"
+ },
+ "metcalf": {
+ "term": "metcalf",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T03:20:47.238Z",
+ "lastSearchedAt": "2026-06-14T03:21:26.221Z",
+ "lastQuery": "austin metcalf"
+ },
+ "world": {
+ "term": "world",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T01:39:17.047Z",
+ "lastSearchedAt": "2026-07-04T01:07:19.183Z",
+ "lastQuery": "world cup"
+ },
+ "cup": {
+ "term": "cup",
+ "count": 5,
+ "firstSearchedAt": "2026-06-14T01:39:17.047Z",
+ "lastSearchedAt": "2026-07-04T01:07:19.183Z",
+ "lastQuery": "world cup"
+ },
+ "crime": {
+ "term": "crime",
+ "count": 4,
+ "firstSearchedAt": "2026-06-14T02:54:44.498Z",
+ "lastSearchedAt": "2026-06-14T02:59:29.276Z",
+ "lastQuery": "local crime"
+ },
+ "weather": {
+ "term": "weather",
+ "count": 4,
+ "firstSearchedAt": "2026-06-14T02:54:44.532Z",
+ "lastSearchedAt": "2026-06-14T02:59:29.356Z",
+ "lastQuery": "weather"
+ },
+ "shooting": {
+ "term": "shooting",
+ "count": 4,
+ "firstSearchedAt": "2026-06-23T12:32:16.200Z",
+ "lastSearchedAt": "2026-06-23T12:54:02.084Z",
+ "lastQuery": "shooting"
+ },
+ "landstuhl": {
+ "term": "landstuhl",
+ "count": 3,
+ "clickCount": 1,
+ "firstSearchedAt": "2026-06-14T04:49:31.171Z",
+ "lastSearchedAt": "2026-06-14T04:49:53.902Z",
+ "lastQuery": "landstuhl"
+ },
+ "newsletter": {
+ "term": "newsletter",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:40:36.919Z",
+ "lastSearchedAt": "2026-06-14T02:43:47.812Z",
+ "lastQuery": "newsletter"
+ },
+ "creator": {
+ "term": "creator",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:40:36.956Z",
+ "lastSearchedAt": "2026-06-14T02:43:47.836Z",
+ "lastQuery": "creator desk"
+ },
+ "desk": {
+ "term": "desk",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:40:36.956Z",
+ "lastSearchedAt": "2026-06-14T02:43:47.836Z",
+ "lastQuery": "creator desk"
+ },
+ "news": {
+ "term": "news",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T01:39:17.100Z",
+ "lastSearchedAt": "2026-06-14T02:56:27.464Z",
+ "lastQuery": "news"
+ },
+ "zzzznotrealquery": {
+ "term": "zzzznotrealquery",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:54:44.556Z",
+ "lastSearchedAt": "2026-06-14T02:58:04.448Z",
+ "lastQuery": "zzzznotrealquery"
+ },
+ "detroit": {
+ "term": "detroit",
+ "count": 2,
+ "firstSearchedAt": "2026-06-14T02:42:56.410Z",
+ "lastSearchedAt": "2026-07-01T02:59:04.243Z",
+ "lastQuery": "detroit"
+ },
+ "doanld": {
+ "term": "doanld",
+ "count": 1,
+ "firstSearchedAt": "2026-06-14T01:47:27.109Z",
+ "lastSearchedAt": "2026-06-14T01:47:27.109Z",
+ "lastQuery": "doanld trump"
+ },
+ "israeli": {
+ "term": "israeli",
+ "count": 1,
+ "firstSearchedAt": "2026-07-04T01:03:58.899Z",
+ "lastSearchedAt": "2026-07-04T01:03:58.899Z",
+ "lastQuery": "israeli prime"
+ },
+ "prime": {
+ "term": "prime",
+ "count": 1,
+ "firstSearchedAt": "2026-07-04T01:03:58.899Z",
+ "lastSearchedAt": "2026-07-04T01:03:58.899Z",
+ "lastQuery": "israeli prime"
+ },
+ "new": {
+ "term": "new",
+ "count": 1,
+ "firstSearchedAt": "2026-07-04T10:35:58.415Z",
+ "lastSearchedAt": "2026-07-04T10:35:58.415Z",
+ "lastQuery": "new york"
+ },
+ "york": {
+ "term": "york",
+ "count": 1,
+ "firstSearchedAt": "2026-07-04T10:35:58.415Z",
+ "lastSearchedAt": "2026-07-04T10:35:58.415Z",
+ "lastQuery": "new york"
+ }
+ },
+ "noResultQueries": [
+ {
+ "query": "killeen",
+ "at": "2026-06-14T02:54:44.284Z",
+ "terms": [
+ "killeen"
+ ]
+ },
+ {
+ "query": "killeen tx",
+ "at": "2026-06-14T02:54:44.388Z",
+ "terms": [
+ "killeen",
+ "tx"
+ ]
+ },
+ {
+ "query": "zzzznotrealquery",
+ "at": "2026-06-14T02:54:44.556Z",
+ "terms": [
+ "zzzznotrealquery"
+ ]
+ },
+ {
+ "query": "killeen",
+ "at": "2026-06-14T02:56:25.863Z",
+ "terms": [
+ "killeen"
+ ]
+ },
+ {
+ "query": "killeen tx",
+ "at": "2026-06-14T02:56:26.794Z",
+ "terms": [
+ "killeen",
+ "tx"
+ ]
+ },
+ {
+ "query": "local crime",
+ "at": "2026-06-14T02:56:27.365Z",
+ "terms": [
+ "local",
+ "crime"
+ ]
+ }
+ ],
+ "clickedResults": {
+ "https://6abc.com/post/ecuador-fans-fill-art-museum-steps-ahead-first-world-cup-match-philadelphia/19292010/": {
+ "url": "https://6abc.com/post/ecuador-fans-fill-art-museum-steps-ahead-first-world-cup-match-philadelphia/19292010/",
+ "title": "Ecuador fans fill Art Museum steps ahead of first World Cup match in Philadelphia",
+ "source": "6ABC Philadelphia",
+ "type": "Live news",
+ "count": 1,
+ "firstClickedAt": "2026-06-14T02:51:37.378Z",
+ "lastClickedAt": "2026-06-14T02:51:37.378Z",
+ "lastQuery": "killeen"
+ },
+ "https://www.bing.com/news/search?q=landstuhl": {
+ "url": "https://www.bing.com/news/search?q=landstuhl",
+ "title": "Search Bing News for \"landstuhl\"",
+ "source": "Bing News",
+ "type": "Web search",
+ "count": 1,
+ "firstClickedAt": "2026-06-14T04:49:53.902Z",
+ "lastClickedAt": "2026-06-14T04:49:53.902Z",
+ "lastQuery": "landstuhl"
+ },
+ "http://127.0.0.1:3030/news-lab-story.html?id=news_lab_entertainment%3airan-inspections-trump-nuclear-agreed_41": {
+ "url": "http://127.0.0.1:3030/news-lab-story.html?id=news_lab_entertainment%3Airan-inspections-trump-nuclear-agreed_41",
+ "title": "Trump Says Iran Agreed to Nuclear Inspections, but Tehran Denies Claim",
+ "source": "Censored Expressions",
+ "type": "CE generated article",
+ "count": 1,
+ "firstClickedAt": "2026-06-23T12:48:03.253Z",
+ "lastClickedAt": "2026-06-23T12:48:03.253Z",
+ "lastQuery": "trump"
+ }
+ }
+}

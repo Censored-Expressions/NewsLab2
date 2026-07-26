@@ -1,0 +1,3732 @@
+{
+  "version": "20260710-stuck-rescue-learning-v1",
+  "runs": [
+    {
+      "generatedAt": "2026-07-18T17:43:10.704Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:43:10.700Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:43:07.525Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:43:09.661Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:42:27.824Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:42:27.766Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:42:23.647Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:42:26.341Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:41:41.004Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:41:41.002Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:41:38.299Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:41:40.189Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:40:59.558Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:40:59.554Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:40:53.009Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:40:58.309Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:40:10.390Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:40:10.386Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:40:07.418Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:40:09.465Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:39:30.270Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:39:30.265Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:39:23.677Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:39:29.118Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:38:40.302Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:38:40.299Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:38:37.492Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:38:39.441Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:37:55.867Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:37:55.863Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:37:52.721Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:37:54.917Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:37:10.210Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:37:10.207Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:37:07.336Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:37:09.393Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:36:24.327Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:36:24.324Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:36:22.272Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:36:23.675Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:35:38.430Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:35:38.428Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:35:36.862Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:35:37.816Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:34:56.275Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:34:56.201Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:34:52.854Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:34:55.199Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:34:09.043Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:34:09.041Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:34:06.994Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:34:08.311Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:33:25.279Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:33:25.275Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:33:22.363Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:33:24.155Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:32:39.427Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:32:39.424Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:32:36.978Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:32:38.512Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:31:54.470Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:31:54.468Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:31:52.362Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:31:53.789Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:31:08.984Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:31:08.769Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:31:06.842Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:31:08.061Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:30:24.735Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:30:24.733Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:30:22.431Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:30:23.917Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:29:38.350Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:29:38.347Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:29:36.772Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:29:37.739Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:28:54.765Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:28:54.760Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:28:52.009Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:28:53.235Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:28:09.819Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:28:09.730Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:28:07.095Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:28:08.420Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:27:24.282Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:27:24.280Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:27:22.160Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:27:23.532Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:26:38.367Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:26:38.363Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:26:36.738Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:26:37.705Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:25:54.457Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:25:54.455Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:25:52.220Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:25:53.624Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:25:08.353Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:25:08.351Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:25:06.718Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:25:07.710Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:24:23.965Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:24:23.963Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:24:22.113Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:24:23.335Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:23:39.095Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:23:39.093Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:23:36.743Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:23:37.979Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:22:54.447Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:22:54.444Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:22:52.207Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:22:53.618Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:22:08.427Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:22:08.424Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:22:06.854Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:22:07.810Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:21:23.853Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:21:23.850Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:21:21.806Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:21:23.088Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:20:39.725Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:20:39.645Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:20:37.215Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:20:38.775Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:19:54.004Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:19:54.002Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:19:51.940Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:19:53.172Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:19:08.759Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:19:08.756Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:19:06.986Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:19:08.152Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:18:24.053Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:18:24.051Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:18:21.956Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:18:23.317Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:17:38.995Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:17:38.992Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:17:37.031Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:17:38.288Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:16:54.469Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:16:54.467Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:16:51.920Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:16:53.733Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:16:08.557Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:16:08.554Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:16:06.714Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:16:07.724Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:15:23.943Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:15:23.940Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:15:22.057Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:15:23.296Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:14:38.276Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:14:38.273Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:14:36.610Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:14:37.604Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:13:55.995Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:13:55.992Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:13:53.366Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:13:54.836Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:13:09.138Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:13:09.136Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:13:06.901Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:13:08.385Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:12:23.713Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:12:23.709Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:12:21.880Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:12:23.075Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:11:39.785Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:11:39.783Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:11:36.953Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:11:39.028Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:10:53.607Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:10:53.604Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:10:51.616Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:10:52.973Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:10:08.751Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:10:08.748Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:10:06.883Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:10:08.091Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:09:24.051Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:09:24.049Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:09:21.570Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:09:22.732Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:08:40.349Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:08:40.346Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:08:37.006Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:08:39.287Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:07:53.353Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:07:53.351Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:07:51.527Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:07:52.691Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:07:08.770Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:07:08.767Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:07:06.831Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:07:08.126Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:06:23.992Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:06:23.699Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:06:21.558Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:06:22.775Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:05:39.057Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:05:39.053Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:05:36.875Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:05:38.406Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:04:53.165Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:04:53.162Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:04:51.540Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:04:52.547Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:04:09.674Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:04:09.671Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:04:06.969Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:04:08.878Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:03:23.411Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:03:23.408Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:03:21.534Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:03:22.713Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:02:38.573Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:02:38.570Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:02:36.749Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:02:37.940Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:01:54.142Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:01:54.139Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:01:51.644Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:01:53.023Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:01:10.714Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:01:10.712Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:01:08.249Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:01:09.927Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T17:00:23.202Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T17:00:23.199Z",
+        "approval": {
+          "generatedAt": "2026-07-18T17:00:21.417Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T17:00:22.583Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:59:38.584Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:59:38.581Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:59:36.754Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:59:37.960Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:58:54.227Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:58:54.224Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:58:51.885Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:58:53.378Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:58:08.794Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:58:08.791Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:58:06.709Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:58:08.158Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:57:23.009Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:57:23.007Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:57:21.376Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:57:22.390Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:56:39.361Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:56:39.359Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:56:36.838Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:56:38.406Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:55:54.479Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:55:54.477Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:55:51.903Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:55:53.731Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:55:07.910Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:55:07.905Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:55:06.320Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:55:07.296Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:54:24.436Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:54:24.433Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:54:22.198Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:54:23.665Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:53:42.058Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:53:42.056Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:53:36.749Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:53:40.642Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:52:54.341Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:52:54.340Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:52:51.771Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:52:53.429Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:52:09.221Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:52:09.219Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:52:06.639Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:52:08.416Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:51:24.988Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:51:24.985Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:51:22.095Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:51:23.991Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:50:39.265Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:50:39.263Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:50:36.684Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:50:38.545Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:49:53.785Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:49:53.782Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:49:51.604Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:49:52.995Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:49:09.689Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:49:09.686Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:49:06.559Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:49:08.755Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:48:25.023Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:48:25.020Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:48:21.850Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:48:24.239Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:47:38.592Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:47:38.590Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:47:36.489Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:47:37.891Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:46:54.543Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:46:54.541Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:46:51.890Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:46:53.691Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:46:11.280Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:46:11.244Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:46:07.444Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:46:10.018Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:45:25.147Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:45:25.144Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:45:21.952Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:45:23.866Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:44:39.870Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:44:39.867Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:44:36.763Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:44:38.803Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:43:56.445Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:43:56.442Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:43:53.130Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:43:55.361Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:43:14.305Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:43:14.301Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:43:09.430Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:43:12.949Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:42:29.640Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:42:29.637Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:42:23.221Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:42:27.767Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:41:43.878Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:41:43.852Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:41:37.759Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:41:42.066Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:40:59.892Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:40:59.889Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:40:57.428Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:40:59.007Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:40:00.960Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:40:00.957Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:39:58.313Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:39:59.963Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:39:19.690Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:39:19.686Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:39:15.881Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:39:18.088Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:38:38.723Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:38:38.720Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:38:36.463Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:38:37.881Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:38:13.231Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:38:13.226Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:38:09.791Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:38:11.690Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:37:32.534Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:37:32.531Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:37:30.328Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:37:31.606Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:37:11.503Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:37:11.448Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:37:06.665Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:37:10.013Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:36:28.642Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:36:28.639Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:36:26.555Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:36:27.803Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:35:55.006Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:35:55.002Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:35:51.563Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:35:53.882Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:35:14.607Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:35:14.604Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:35:12.296Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:35:13.776Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:34:32.771Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:34:32.765Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:34:25.694Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:34:31.047Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:33:41.495Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:33:41.492Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:33:38.734Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:33:40.586Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:32:56.189Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:32:56.187Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:32:53.852Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:32:55.367Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:32:14.961Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:32:14.956Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:32:09.142Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:32:13.710Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:31:26.604Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:31:26.599Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:31:23.330Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:31:25.544Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:30:42.200Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:30:42.196Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:30:38.325Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:30:40.699Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    },
+    {
+      "generatedAt": "2026-07-18T16:29:58.503Z",
+      "attempted": 1,
+      "approved": 0,
+      "held": 1,
+      "compaction": {
+        "generatedAt": "2026-07-18T16:29:58.499Z",
+        "approval": {
+          "generatedAt": "2026-07-18T16:29:55.370Z",
+          "label": "approval-recovery",
+          "beforeActive": 168,
+          "beforePending": 0,
+          "afterActive": 168,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 168,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "headline": {
+          "generatedAt": "2026-07-18T16:29:57.443Z",
+          "label": "headline-repair",
+          "beforeActive": 159,
+          "beforePending": 0,
+          "afterActive": 159,
+          "archivedForLearning": 0,
+          "discardedDuplicateCount": 0,
+          "uniqueGroups": 159,
+          "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+        },
+        "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+      },
+      "issueCounts": {
+        "headline-missing-action": 1,
+        "headline-subject-too-stacked": 1,
+        "headline-editor-needs-rewrite": 1
+      }
+    }
+  ],
+  "upstreamDirectives": {
+    "collector": "Avoid feeding duplicate candidate variants as separate repair work; group same-event stories before writing.",
+    "clustering": "Hard identity/topic mismatches must return to clustering/dossier learning, not quick rescue.",
+    "dossierBuilder": "Every repairable article needs body, knownFacts, sourcePool, and same-event evidence before editorial review.",
+    "writer": "Use the rescue lessons before drafting: no placeholder framing, no copied feed fragments, no summary repeating the body.",
+    "headlineGenerator": "Generate from dossier/body identity. Lock specific evidence-backed headlines against later generic repair overwrite."
+  },
+  "downstreamDirectives": {
+    "publishingEditor": "Repair language and headline issues, but do not publish hard identity/topic mismatches.",
+    "validator": "Treat valid action verbs such as Ends, Suspends, and Withdraws as action verbs.",
+    "publisher": "Count publication only after the article is written to the public payload and visible shelf.",
+    "rescueWorker": "Process stuck articles one by one, after compaction, with a hard cap so rescue cannot starve public APIs."
+  },
+  "updatedAt": "2026-07-18T17:43:18.125Z",
+  "lastRun": {
+    "generatedAt": "2026-07-18T17:43:10.704Z",
+    "attempted": 1,
+    "approved": 0,
+    "held": 1,
+    "issueCounts": {
+      "headline-missing-action": 1,
+      "headline-subject-too-stacked": 1,
+      "headline-editor-needs-rewrite": 1
+    },
+    "visibleStoryCount": 8
+  },
+  "rule": "Stuck-rescue learning must travel upstream to collectors, clustering, dossier, writer, and headline generation, and downstream to editor, validator, publisher, and rescue worker."
+}

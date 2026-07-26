@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2026-07-18T17:43:18.430Z",
+  "mode": "stuck-rescue-worker",
+  "pid": 27592,
+  "active": false,
+  "cycleMs": 45000,
+  "lastStatus": "completed",
+  "lastReason": "scheduled-stuck-rescue",
+  "lastFinishedAt": "2026-07-18T17:43:18.430Z",
+  "lastRun": {
+    "attempted": 1,
+    "approved": 0,
+    "held": 1,
+    "visibleStoryCount": 8,
+    "elapsedMs": 11787
+  },
+  "learningUpdatedAt": "2026-07-18T17:43:18.125Z",
+  "nextRunAt": "2026-07-18T17:44:03.430Z"
+}

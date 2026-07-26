@@ -1,0 +1,138 @@
+{
+  "version": "20260722-working-memory-cleanup-report-v1",
+  "generatedAt": "2026-07-23T19:08:39.676Z",
+  "nonDestructive": true,
+  "summary": "No raw files were deleted. This report identifies what should be distilled, compacted, preserved, or reviewed.",
+  "totalBytesReviewed": 527013763,
+  "largestWorkingMemoryItems": [
+    {
+      "label": "News Lab story objects",
+      "bytes": 230213781,
+      "action": "preserve-and-distill",
+      "layer": "working-memory"
+    },
+    {
+      "label": "Framework action log",
+      "bytes": 100382826,
+      "action": "summarize-and-archive",
+      "layer": "episodic-memory"
+    },
+    {
+      "label": "Headline repair queue",
+      "bytes": 66542207,
+      "action": "distill-then-compact",
+      "layer": "working-memory"
+    },
+    {
+      "label": "Approval recovery queue",
+      "bytes": 65245279,
+      "action": "distill-then-compact",
+      "layer": "working-memory"
+    },
+    {
+      "label": "Patch directions for Codex",
+      "bytes": 53533932,
+      "action": "distill-then-compact",
+      "layer": "working-memory"
+    },
+    {
+      "label": "Adaptive weight proof log",
+      "bytes": 3201349,
+      "action": "summarize-and-archive",
+      "layer": "episodic-memory"
+    },
+    {
+      "label": "Framework learning proof log",
+      "bytes": 3062054,
+      "action": "summarize-and-archive",
+      "layer": "episodic-memory"
+    },
+    {
+      "label": "News Lab collector outputs",
+      "bytes": 2414500,
+      "action": "preserve-active-distill-old",
+      "layer": "working-memory"
+    },
+    {
+      "label": "Daily article memory",
+      "bytes": 2031397,
+      "action": "distill-then-archive",
+      "layer": "working-memory"
+    },
+    {
+      "label": "News Lab public payload",
+      "bytes": 314931,
+      "action": "preserve",
+      "layer": "working-memory"
+    },
+    {
+      "label": "Article approval intelligence",
+      "bytes": 71507,
+      "action": "distill-and-retain-summary",
+      "layer": "episodic-memory"
+    }
+  ],
+  "cleanupCandidates": [
+    {
+      "label": "News Lab story objects",
+      "bytes": 230213781,
+      "action": "preserve-and-distill",
+      "reason": "Current and historical story objects are required for public visibility, repair, updates, and audit."
+    },
+    {
+      "label": "Approval recovery queue",
+      "bytes": 65245279,
+      "action": "distill-then-compact",
+      "reason": "Retain active repairs; distill rejection patterns and remove resolved duplicate records later."
+    },
+    {
+      "label": "Headline repair queue",
+      "bytes": 66542207,
+      "action": "distill-then-compact",
+      "reason": "Retain active headline repair evidence; promote repeated fixes to headline skill memory."
+    },
+    {
+      "label": "Article approval intelligence",
+      "bytes": 71507,
+      "action": "distill-and-retain-summary",
+      "reason": "Approval and rejection reasons should become behavior-changing editorial lessons."
+    },
+    {
+      "label": "Daily article memory",
+      "bytes": 2031397,
+      "action": "distill-then-archive",
+      "reason": "Raw article memory can grow quickly; retain only public articles, active dossiers, and extracted knowledge."
+    },
+    {
+      "label": "Patch directions for Codex",
+      "bytes": 53533932,
+      "action": "distill-then-compact",
+      "reason": "Old teaching prompts should be reduced to reusable patch skills after resolved."
+    },
+    {
+      "label": "News Lab collector outputs",
+      "bytes": 2414500,
+      "action": "preserve-active-distill-old",
+      "reason": "Collector data should remain available for active dossiers and become source coverage lessons after use."
+    }
+  ],
+  "preserveReasons": [
+    {
+      "label": "News Lab story objects",
+      "reason": "Current and historical story objects are required for public visibility, repair, updates, and audit."
+    },
+    {
+      "label": "News Lab public payload",
+      "reason": "Visible public shelf must remain intact; compact only expired non-visible article history."
+    },
+    {
+      "label": "News Lab collector outputs",
+      "reason": "Collector data should remain available for active dossiers and become source coverage lessons after use."
+    }
+  ],
+  "nextActions": [
+    "Run distillation on a schedule before packaging so memory growth becomes compact knowledge, not raw file accumulation.",
+    "Add deletion gates later only for resolved, non-visible, non-audit working-memory records after semantic and skill memory are updated.",
+    "Expose distillation status on Owner Desk after the first few runs prove the ledger is accurate."
+  ]
+}

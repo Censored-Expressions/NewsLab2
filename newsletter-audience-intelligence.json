@@ -1,0 +1,53 @@
+{
+  "version": "20260717-newsletter-audience-intelligence-v1",
+  "updatedAt": "2026-07-17T12:49:39.108Z",
+  "purpose": "Adapt newsletter structure and tone to reader interests while preserving the weekly recap + forecast objective.",
+  "profiles": {
+    "politics": {
+      "interestSignals": 4,
+      "preferredTone": "direct accountability",
+      "preferredLength": "medium",
+      "headlineStyle": "actor + decision + consequence"
+    },
+    "business": {
+      "interestSignals": 4,
+      "preferredTone": "practical cost and risk",
+      "preferredLength": "short-to-medium",
+      "headlineStyle": "money + actor + consequence"
+    },
+    "sports": {
+      "interestSignals": 4,
+      "preferredTone": "standards and competition",
+      "preferredLength": "short",
+      "headlineStyle": "result + consequence"
+    },
+    "technology": {
+      "interestSignals": 4,
+      "preferredTone": "power, privacy, accountability",
+      "preferredLength": "medium",
+      "headlineStyle": "company + action + public effect"
+    },
+    "local": {
+      "interestSignals": 4,
+      "preferredTone": "service and response",
+      "preferredLength": "short-to-medium",
+      "headlineStyle": "place + event + resident impact"
+    }
+  },
+  "currentArchiveSize": 4,
+  "qualitySprintResult": {
+    "count": 4,
+    "internal": 0,
+    "stock": 0,
+    "encoding": 0,
+    "cleanedRemainingStockAt": "2026-07-17T04:54:46.523Z"
+  },
+  "adaptationRules": [
+    "Politics readers get concise accountability framing and clear public consequence.",
+    "Business readers get cost, risk, market, and taxpayer consequence before opinion language.",
+    "Sports readers get result, preparation, standard, and next matchup pressure.",
+    "Technology readers get company action, platform power, privacy/data risk, and public effect.",
+    "Local readers get location, official response, resident impact, and next useful update."
+  ],
+  "nextBehaviorChange": "Newsletter Writer reads audience profile before selecting tone, section length, and forecast emphasis."
+}

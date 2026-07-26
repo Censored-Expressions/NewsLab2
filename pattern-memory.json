@@ -1,0 +1,274 @@
+{
+  "version": "20260722-pattern-memory-v1",
+  "updatedAt": "2026-07-23T19:08:38.562Z",
+  "purpose": "Statistical and reusable patterns distilled from repeated workflow results, without preserving raw files as the learning object.",
+  "lastDistillation": {
+    "reason": "scheduled-background-distillation",
+    "at": "2026-07-23T19:08:38.562Z"
+  },
+  "patterns": [
+    {
+      "id": "article-approval-throughput-pattern",
+      "domain": "publishing",
+      "observation": "Article output improves when rejected drafts become repairable workflow states instead of terminal failures.",
+      "confidence": 0.51,
+      "evidence": {
+        "editorialReviews": 11122,
+        "approved": 396,
+        "rejected": 10726,
+        "topBlockers": [
+          {
+            "key": "headline-editor-needs-rewrite",
+            "count": 98,
+            "qualityCaution": ""
+          },
+          {
+            "key": "headline-word-salad",
+            "count": 84,
+            "qualityCaution": ""
+          },
+          {
+            "key": "headline-lead-topic-mismatch",
+            "count": 19,
+            "qualityCaution": ""
+          },
+          {
+            "key": "title-looks-truncated",
+            "count": 14,
+            "qualityCaution": ""
+          },
+          {
+            "key": "body-too-short",
+            "count": 13,
+            "qualityCaution": ""
+          },
+          {
+            "key": "generic-weak-headline",
+            "count": 12,
+            "qualityCaution": ""
+          },
+          {
+            "key": "incomplete-sentence-detected",
+            "count": 11,
+            "qualityCaution": ""
+          },
+          {
+            "key": "mixed-source-topic",
+            "count": 11,
+            "qualityCaution": ""
+          }
+        ]
+      },
+      "useWhen": "A draft fails editor, validator, headline, image, or publisher review.",
+      "avoidWhen": "The failure is a fatal evidence or legal issue that cannot be repaired safely."
+    },
+    {
+      "id": "headline-dossier-first-pattern",
+      "domain": "headlines",
+      "observation": "Headlines pass more reliably when generated from story identity and dossier facts rather than publisher headline fragments.",
+      "confidence": 0.88,
+      "evidence": {
+        "acceptedPatterns": [
+          {
+            "key": "actor(1)+action+consequence(3)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(3)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(3)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(3)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          }
+        ],
+        "rejectedPatterns": [
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(5)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(7)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(7)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(7)",
+            "count": 100,
+            "qualityCaution": ""
+          },
+          {
+            "key": "actor(1)+action+consequence(7)",
+            "count": 100,
+            "qualityCaution": ""
+          }
+        ]
+      },
+      "useWhen": "Creating or repairing any News Lab headline.",
+      "avoidWhen": "The dossier is incomplete or the story identity is not yet isolated."
+    },
+    {
+      "id": "writing-technique-not-content-pattern",
+      "domain": "writing",
+      "observation": "The Brain should learn editorial technique, not article wording or publisher expression.",
+      "confidence": 0.93,
+      "evidence": {
+        "writingKeys": [
+          "version",
+          "updatedAt",
+          "philosophy",
+          "boundaries",
+          "patterns",
+          "lessons",
+          "writerDirective",
+          "rule",
+          "overall",
+          "weakestPattern"
+        ],
+        "boundaries": [
+          "Do not memorize article bodies, publisher phrasing, or publisher headline structure.",
+          "Store craft principles, issue frequencies, success rates, and prevention rules only.",
+          "Use the Story Dossier for facts and the Writing Pattern Library for technique."
+        ]
+      },
+      "useWhen": "Distilling article, newsletter, creator-desk, or editor feedback.",
+      "avoidWhen": "The raw text is needed as a public article, legal record, correction audit, or owner-approved historical artifact."
+    },
+    {
+      "id": "licensed-image-after-publication-pattern",
+      "domain": "images",
+      "observation": "Image quality can improve after article publication when image search runs out of band with provenance and editor checks.",
+      "confidence": 0.45,
+      "evidence": {
+        "totalStories": 65,
+        "reviewed": 12,
+        "upgraded": 0,
+        "held": 0,
+        "unchanged": 12,
+        "generatedImageBriefsQueued": 12,
+        "generatedImageBriefsAdded": 12,
+        "cacheRebuilt": true
+      },
+      "useWhen": "A published article has a generic, local, duplicate, or low-relevance image.",
+      "avoidWhen": "A source image lacks rights review or a generated image has not been reviewed."
+    },
+    {
+      "id": "raw-memory-distillation-pattern",
+      "domain": "memory",
+      "observation": "Large raw queues and logs should become compact lessons, confidence updates, and skills before any raw compaction occurs.",
+      "confidence": 0.9,
+      "evidence": {
+        "largestFiles": [
+          {
+            "label": "News Lab story objects",
+            "bytes": 230213781,
+            "action": "preserve-and-distill"
+          },
+          {
+            "label": "News Lab public payload",
+            "bytes": 314931,
+            "action": "preserve"
+          },
+          {
+            "label": "Approval recovery queue",
+            "bytes": 65245279,
+            "action": "distill-then-compact"
+          },
+          {
+            "label": "Headline repair queue",
+            "bytes": 66542207,
+            "action": "distill-then-compact"
+          },
+          {
+            "label": "Article approval intelligence",
+            "bytes": 71507,
+            "action": "distill-and-retain-summary"
+          }
+        ]
+      },
+      "useWhen": "A worker finishes a task, a queue resolves, or a packaging pass finds large working-memory files.",
+      "avoidWhen": "The raw object is public-facing, active, unresolved, or required for audit."
+    }
+  ],
+  "confidenceUpdates": [
+    {
+      "id": "article-approval-throughput-pattern",
+      "domain": "publishing",
+      "confidence": 0.51,
+      "reason": "Article output improves when rejected drafts become repairable workflow states instead of terminal failures."
+    },
+    {
+      "id": "headline-dossier-first-pattern",
+      "domain": "headlines",
+      "confidence": 0.88,
+      "reason": "Headlines pass more reliably when generated from story identity and dossier facts rather than publisher headline fragments."
+    },
+    {
+      "id": "writing-technique-not-content-pattern",
+      "domain": "writing",
+      "confidence": 0.93,
+      "reason": "The Brain should learn editorial technique, not article wording or publisher expression."
+    },
+    {
+      "id": "licensed-image-after-publication-pattern",
+      "domain": "images",
+      "confidence": 0.45,
+      "reason": "Image quality can improve after article publication when image search runs out of band with provenance and editor checks."
+    },
+    {
+      "id": "raw-memory-distillation-pattern",
+      "domain": "memory",
+      "confidence": 0.9,
+      "reason": "Large raw queues and logs should become compact lessons, confidence updates, and skills before any raw compaction occurs."
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "version": "20260722-skill-memory-v1",
+  "updatedAt": "2026-07-23T19:08:35.550Z",
+  "purpose": "Reusable Framework skills promoted from repeated repairs and operational fixes.",
+  "lastDistillation": {
+    "reason": "scheduled-background-distillation",
+    "at": "2026-07-23T19:08:35.550Z"
+  },
+  "skills": [
+    {
+      "id": "source-failure-isolation",
+      "confidence": 0.86,
+      "usedBy": [
+        "Feed Reliability",
+        "Source Intelligence",
+        "Story Dossier"
+      ],
+      "procedure": [
+        "Track provider/url/domain",
+        "Apply source-specific timeout/backoff",
+        "Quarantine failing source temporarily",
+        "Use cache/fallback",
+        "Record measured effect"
+      ],
+      "promotionRule": "Promote when provider-specific actions reduce repeated feed errors without reducing tab coverage."
+    },
+    {
+      "id": "headline-repair-from-dossier",
+      "confidence": 0.88,
+      "usedBy": [
+        "Headline Intelligence",
+        "Publishing Editor",
+        "Validator"
+      ],
+      "procedure": [
+        "Load story object",
+        "Load story dossier",
+        "Identify primary actor/action/consequence",
+        "Generate multiple headline candidates",
+        "Validate body alignment",
+        "Replace active headline",
+        "Resubmit"
+      ],
+      "promotionRule": "Promote repairs that improve second-pass approval without publisher-headline similarity risk."
+    },
+    {
+      "id": "editor-reject-repair-resubmit",
+      "confidence": 0.84,
+      "usedBy": [
+        "Publishing Editor",
+        "Approval Recovery",
+        "Publisher"
+      ],
+      "procedure": [
+        "Collect full issue list",
+        "Classify repair level",
+        "Repair safe language/headline/body issues",
+        "Return evidence issues to dossier",
+        "Re-run editor",
+        "Publish only after validator passes"
+      ],
+      "promotionRule": "Promote when repaired articles become visible public articles and reduce repeat rejection reasons."
+    },
+    {
+      "id": "public-payload-visibility-check",
+      "confidence": 0.87,
+      "usedBy": [
+        "Publisher",
+        "News Lab API Worker",
+        "Owner Desk"
+      ],
+      "procedure": [
+        "Require editor pass",
+        "Save story object",
+        "Merge into public payload",
+        "Confirm API shelf count",
+        "Confirm visible article URL",
+        "Count only durable visible publication"
+      ],
+      "promotionRule": "Promote when approved counts and visible public payload counts reconcile."
+    },
+    {
+      "id": "memory-distillation-retention",
+      "confidence": 0.8,
+      "usedBy": [
+        "Brain",
+        "Evolution Engine",
+        "Knowledge Distiller"
+      ],
+      "procedure": [
+        "Classify raw record",
+        "Extract reusable lesson",
+        "Update semantic or skill memory",
+        "Record retention decision",
+        "Compact only after active/public/audit gates pass"
+      ],
+      "promotionRule": "Promote after repeated safe compaction with no loss of public articles, repair context, or owner audit evidence."
+    },
+    {
+      "id": "api-fetch-timeout-and-catch",
+      "confidence": 0.9,
+      "usedBy": [
+        "Feed Reliability",
+        "Market Pulse",
+        "Image Selection"
+      ],
+      "procedure": [
+        "Use bounded timeout",
+        "Catch source-level failure",
+        "Record provider telemetry",
+        "Return fallback payload",
+        "Avoid server crash"
+      ],
+      "promotionRule": "Promote when transient upstream errors no longer interrupt public responses."
+    }
+  ]
+}

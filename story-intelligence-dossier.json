@@ -1,0 +1,85 @@
+{
+  "version": "20260717-story-intelligence-dossier-v1",
+  "name": "Story Intelligence Dossier",
+  "purpose": "Turn raw source material into an event model before the Writer drafts anything.",
+  "architecture": [
+    "Raw Information",
+    "Evidence Layer",
+    "Intelligence Layer",
+    "Narrative Layer"
+  ],
+  "requiredQuestions": {
+    "whatHappened": [
+      "Primary Event",
+      "Supporting Events",
+      "Background",
+      "Timeline",
+      "Current Status",
+      "Expected Next Development"
+    ],
+    "whyItMatters": [
+      "Political",
+      "Economic",
+      "Public Safety",
+      "International Relations",
+      "Technology",
+      "Legal",
+      "Financial Markets",
+      "Consumers"
+    ],
+    "whoMatters": [
+      "Primary Actors",
+      "Supporting Actors",
+      "Organizations",
+      "Governments",
+      "Companies",
+      "Victims",
+      "Experts",
+      "Witnesses",
+      "Opposition",
+      "Neutral Sources"
+    ],
+    "readerQuestions": [
+      "What happened?",
+      "Why now?",
+      "Who benefits?",
+      "Who loses?",
+      "What changes?",
+      "What happens next?",
+      "Why should I care?",
+      "How does this affect everyday people?"
+    ]
+  },
+  "evidenceHierarchy": {
+    "courtFiling": 100,
+    "governmentPressRelease": 95,
+    "companyFiling": 90,
+    "directInterview": 88,
+    "majorNewsOutlet": 82,
+    "industryExpert": 76,
+    "secondarySource": 63,
+    "socialMedia": 22
+  },
+  "storyDNAFields": [
+    "Story Type",
+    "Primary Topic",
+    "Primary Emotion",
+    "Primary Audience",
+    "Primary Impact",
+    "Confidence",
+    "Novelty",
+    "Urgency",
+    "Importance",
+    "Expected Lifespan",
+    "Follow-up Probability"
+  ],
+  "writerContract": "The Writer communicates from the event model. It does not discover the story from RSS snippets while writing.",
+  "behaviorChange": "Every newly built Story Dossier now receives a Story Intelligence Dossier before writerDossierInput is created. Editorial handoff also attaches it to repaired or rescued stories.",
+  "validationRules": [
+    "The Writer must receive storyIntelligenceDossier, storyDNA, readerQuestions, and leadPriority.",
+    "Source-specific claims are attribution material, not generic article body filler.",
+    "Missing information must be listed as unknown, not invented.",
+    "Impact scores guide emphasis but do not replace evidence."
+  ],
+  "updatedAt": "2026-07-17T14:33:39.303Z"
+}

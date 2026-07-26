@@ -1,0 +1,117 @@
+{
+  "version": "20260718-seven-layer-story-dna-standard",
+  "generatedAt": "2026-07-18T05:38:37.364Z",
+  "purpose": "Redesign Story Dossier into seven thinking layers so the Writer receives an organized event understanding, not disconnected article fragments.",
+  "pipeline": [
+    "Search",
+    "Story Curator",
+    "Story Dossier",
+    "Writer",
+    "Publishing Editor",
+    "Validator",
+    "Publisher"
+  ],
+  "storyCurator": {
+    "job": [
+      "merge duplicate reporting",
+      "resolve conflicts when evidence hierarchy supports it",
+      "identify strongest evidence",
+      "discard low-value details",
+      "organize timeline",
+      "determine central narrative"
+    ],
+    "rule": "The Curator creates one canonical event before the dossier enriches it."
+  },
+  "layers": [
+    {
+      "layer": 1,
+      "name": "Event Intelligence",
+      "answers": [
+        "What happened?",
+        "What changed?",
+        "What triggered it?",
+        "What is still unknown?",
+        "What is expected next?"
+      ]
+    },
+    {
+      "layer": 2,
+      "name": "Evidence Intelligence",
+      "tracks": [
+        "confidence",
+        "independent confirmations",
+        "original source",
+        "first reported",
+        "updated time",
+        "contradictions",
+        "remaining uncertainty"
+      ]
+    },
+    {
+      "layer": 3,
+      "name": "Narrative Intelligence",
+      "tracks": [
+        "main event",
+        "background",
+        "consequence",
+        "reaction",
+        "future",
+        "recommended structure"
+      ]
+    },
+    {
+      "layer": 4,
+      "name": "Reader Intelligence",
+      "answers": [
+        "Why is this happening?",
+        "Why today?",
+        "How does this affect me?",
+        "Who benefits?",
+        "Who loses?",
+        "What happens next?",
+        "Why should anyone care?"
+      ]
+    },
+    {
+      "layer": 5,
+      "name": "Knowledge Graph",
+      "tracks": [
+        "people",
+        "organizations",
+        "locations",
+        "documents",
+        "actions",
+        "relationships",
+        "consequences"
+      ]
+    },
+    {
+      "layer": 6,
+      "name": "Writing Intelligence Feed",
+      "tracks": [
+        "story type",
+        "stage",
+        "tone",
+        "sentence length",
+        "reading level",
+        "verb style",
+        "transition style",
+        "avoid list",
+        "headline direction",
+        "lead angle"
+      ]
+    },
+    {
+      "layer": 7,
+      "name": "Editorial Prediction",
+      "tracks": [
+        "expected weaknesses",
+        "pre-draft repairs",
+        "publication risk",
+        "likely rejection reasons"
+      ]
+    }
+  ],
+  "writerContract": "The Writer must communicate from Story DNA. It should not discover the story from RSS snippets while drafting.",
+  "successMetric": "Higher first-pass approval, fewer mixed-topic articles, fewer generic paragraphs, stronger headline/body alignment, and clearer reader utility."
+}

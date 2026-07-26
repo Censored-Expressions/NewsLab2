@@ -1,0 +1,38 @@
+{
+  "version": "20260718-validator-mentor-v1",
+  "updatedAt": "2026-07-18T11:47:30.524Z",
+  "purpose": "Transform Validator from a terminal rule checker into a quality mentor that explains failures, proposes safe repairs, and sends repair guidance upstream and downstream.",
+  "operatingModel": [
+    "Detect all issues at once",
+    "Classify issue severity",
+    "Explain why each issue matters",
+    "Route repair to responsible subsystem",
+    "Propose safe repair",
+    "Revalidate repaired output",
+    "Teach prevention upstream",
+    "Measure second-pass acceptance"
+  ],
+  "severityLevels": {
+    "automatic": "Grammar, punctuation, repetition, transition, formatting, headline wording, image relevance metadata; Publishing Editor repairs without full rewrite.",
+    "headline": "Headline/body mismatch, word salad, source similarity, truncation; Headline Editor repairs only headline and resubmits.",
+    "evidence": "Missing context, source disagreement, weak facts; send to Dossier/Evidence Engine, not Writer guessing.",
+    "fatal": "Fabricated facts, contradictory unreconciled evidence, no reliable source, corrupted article identity; hold until evidence is fixed."
+  },
+  "mentorFields": [
+    "issueCode",
+    "plainEnglishExplanation",
+    "responsibleSubsystem",
+    "safeRepair",
+    "preventionRule",
+    "resubmissionPath",
+    "verificationCheck",
+    "learningSignal"
+  ],
+  "targetMetrics": {
+    "validatorScoreTarget": 90,
+    "secondPassApprovalTarget": 70,
+    "unnecessaryRejectionTarget": "decrease each week",
+    "repairExplanationCoverageTarget": 100
+  },
+  "rule": "Validator should block only unresolved publishability failures after the Publishing Editor has repaired every safe issue. Every block must include repair guidance and a prevention lesson."
+}

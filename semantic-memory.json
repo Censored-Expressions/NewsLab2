@@ -1,0 +1,166 @@
+{
+  "version": "20260722-semantic-memory-v1",
+  "updatedAt": "2026-07-23T19:08:35.549Z",
+  "purpose": "Compact long-term knowledge distilled from Framework experience.",
+  "lastDistillation": {
+    "reason": "scheduled-background-distillation",
+    "at": "2026-07-23T19:08:35.549Z"
+  },
+  "domains": {
+    "writing": {
+      "confidence": 0.86,
+      "principles": [
+        "Write from a clean event dossier rather than raw feed fragments.",
+        "Separate writing technique learning from article-content memory.",
+        "Require leads to establish the central verified fact before context or commentary.",
+        "Repair repeated phrasing and placeholder/process language before editor review."
+      ],
+      "evidence": [
+        {
+          "source": "writing-pattern-library",
+          "observedKeys": [
+            "version",
+            "updatedAt",
+            "philosophy",
+            "boundaries",
+            "patterns",
+            "lessons",
+            "writerDirective",
+            "rule",
+            "overall",
+            "weakestPattern"
+          ]
+        },
+        {
+          "source": "writing-technique-registry",
+          "observedKeys": [
+            "opening.verified_fact_first",
+            "structure.intro_body_ending",
+            "transition.fact_to_context",
+            "evidence.classify_before_claim",
+            "attribution.unique_claim_only",
+            "headline.actor_action_consequence",
+            "conclusion.verified_next_step",
+            "quoteIntegration.claim_context",
+            "timeline.ordered_developments",
+            "contextPlacement.after_verified_core",
+            "factOrdering.topic_isolated_sequence"
+          ]
+        }
+      ]
+    },
+    "headlines": {
+      "confidence": 0.88,
+      "principles": [
+        "Generate headlines from story identity and dossier facts, not publisher headline structure.",
+        "Prefer actor + action + consequence when the dossier supports all three elements.",
+        "Repair headline-only failures without rewriting the full article body.",
+        "Reject word salad, truncation, and headline-body mismatch as repairable states before final block."
+      ],
+      "evidence": [
+        {
+          "source": "headline-pattern-memory",
+          "observedKeys": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14"
+          ]
+        }
+      ]
+    },
+    "editorial": {
+      "confidence": 0.84,
+      "principles": [
+        "Treat most language, grammar, transition, headline, attribution, and formatting failures as repairable.",
+        "Only evidence gaps, mixed topics, fabricated facts, and unresolved contradictions should return to dossier or writer.",
+        "Every rejection should produce a full issue list, repair plan, resubmission state, and learning signal."
+      ],
+      "evidence": [
+        {
+          "source": "article-approval-intelligence",
+          "observedIssueKeys": [
+            "version",
+            "updatedAt",
+            "purpose",
+            "currentCycle",
+            "recoveryOutput",
+            "lifetime",
+            "approvalRates",
+            "topBlockers",
+            "repairQueues",
+            "bottleneck",
+            "behaviorRule",
+            "lastCycleEvidence",
+            "secondPassApproval",
+            "publicProcessLanguageLearning",
+            "encodingArtifactLearning"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "confidence": 0.82,
+      "principles": [
+        "Weight sources by availability, latency, source type, originality, correction behavior, and evidence tier.",
+        "Isolate source failures by provider and URL before treating feed health as an aggregate problem.",
+        "Promote primary-source evidence over secondary reporting when both are available."
+      ],
+      "evidence": [
+        {
+          "source": "news-lab-source-reliability-registry",
+          "observedKeys": [
+            "NBC|nbcnews.com",
+            "IPM Newsroom|news.google.com",
+            "Unknown|unknown-domain",
+            "NYT Politics|nytimes.com",
+            "BBC World|bbc.co.uk",
+            "ABC News & Headlines – Australian Broadcasting Corporation|news.google.com",
+            "Greenville Online|news.google.com",
+            "CNBC|cnbc.com",
+            "WISN|news.google.com",
+            "Travel And Tour World|news.google.com",
+            "The Indian Express|news.google.com",
+            "BBC|news.google.com",
+            "Crypto Briefing|news.google.com",
+            "DW.com|news.google.com",
+            "ABC7 Los Angeles|news.google.com"
+          ]
+        }
+      ]
+    },
+    "memory": {
+      "confidence": 0.9,
+      "principles": [
+        "Retain reusable knowledge, not every raw experience.",
+        "Classify memory into working, episodic, semantic, skill, and identity layers.",
+        "Do not compact raw records until active repairs, public visibility, audit needs, and lesson extraction are complete."
+      ],
+      "evidence": [
+        {
+          "source": "knowledge-distillation-policy",
+          "layers": [
+            "working-memory",
+            "episodic-memory",
+            "semantic-memory",
+            "pattern-memory",
+            "experience-memory",
+            "skills",
+            "identity"
+          ]
+        }
+      ]
+    }
+  }
+}

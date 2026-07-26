@@ -1,0 +1,130 @@
+{
+  "version": "20260717-writing-intelligence-engine-v2",
+  "updatedAt": "2026-07-17T12:49:39.108Z",
+  "purpose": "Turn editorial decisions into behavior changes before the next draft reaches the Publishing Editor.",
+  "pipeline": [
+    "Story Dossier",
+    "Writer Pass 1 Reporter",
+    "Writer Pass 2 Journalist",
+    "Writer Pass 3 Reader",
+    "Writing Intelligence Engine",
+    "Publishing Editor Coach",
+    "Validator Mentor",
+    "Publisher"
+  ],
+  "operatingRule": "No lesson is complete until it changes a future draft, validator repair, lexicon choice, dossier weighting, or newsletter audience profile.",
+  "weakestPatterns": [
+    {
+      "key": "headline",
+      "successRate": 16,
+      "failures": 611,
+      "successes": 116,
+      "principle": "Create headlines from the completed CE story dossier using actor + action + consequence.",
+      "teachWriter": "Build the headline after the article/dossier is complete; do not rewrite from publisher headlines."
+    },
+    {
+      "key": "structure",
+      "successRate": 24.7,
+      "failures": 354,
+      "successes": 116,
+      "principle": "Answer who, what, when, and where before context or analysis.",
+      "teachWriter": "Answer who, what, when, and where before context or analysis."
+    },
+    {
+      "key": "evidence",
+      "successRate": 47.9,
+      "failures": 126,
+      "successes": 116,
+      "principle": "Attribute claims, separate confirmed facts from developing information, and qualify single-source details.",
+      "teachWriter": "Attribute claims, separate confirmed facts from developing information, and qualify single-source details."
+    },
+    {
+      "key": "transition",
+      "successRate": 48.1,
+      "failures": 125,
+      "successes": 116,
+      "principle": "Move from facts to context before analysis, without repeating the same sentence function.",
+      "teachWriter": "Move from facts to context before analysis, without repeating the same sentence function."
+    },
+    {
+      "key": "lead",
+      "successRate": 50.2,
+      "failures": 115,
+      "successes": 116,
+      "principle": "Start with the most newsworthy verified fact and reach the point within two sentences.",
+      "teachWriter": "Start with the most newsworthy verified fact and reach the point within two sentences."
+    }
+  ],
+  "threePassWriter": {
+    "pass1Reporter": {
+      "job": "Produce only factual content from one clean event dossier.",
+      "requiredInputs": [
+        "known facts",
+        "unknowns",
+        "official sources",
+        "independent reports",
+        "timeline",
+        "entities"
+      ],
+      "blockedBy": [
+        "body-too-short",
+        "mixed-source-topic",
+        "missing-reporting-context",
+        "weak-topic-integrity",
+        "paragraph-topic-contamination"
+      ]
+    },
+    "pass2Journalist": {
+      "job": "Improve flow, transitions, pacing, and paragraph order without adding unsupported facts.",
+      "requiredInputs": [
+        "lead fact",
+        "context facts",
+        "consequence",
+        "next confirmed step"
+      ],
+      "weakPatterns": [
+        "structure",
+        "evidence",
+        "transition"
+      ]
+    },
+    "pass3Reader": {
+      "job": "Ask whether a first-time reader understands the lead, each paragraph earns its place, and repetition is removed.",
+      "checks": [
+        "reader-understands-lead",
+        "no-abrupt-transition",
+        "no-unnecessary-repetition",
+        "headline-body-alignment",
+        "paragraph-advances-story"
+      ]
+    }
+  },
+  "preEditorRepairs": {
+    "repetition": "Remove repeated sentence functions before Publishing Editor review.",
+    "transitions": "Replace repeated stock bridges with story-specific context movement.",
+    "headline": "Generate headline from Story Dossier after body is stable, not from publisher headline.",
+    "paragraphFlow": "Reorder paragraphs as fact -> context -> consequence -> next step.",
+    "attribution": "Use evidence-specific verbs from Behavioral Lexicon."
+  },
+  "measurement": {
+    "currentFirstPassApprovalRate": 1,
+    "currentFinalApprovalRate": 1,
+    "lifetimeReviewed": 7180,
+    "lifetimeApproved": 18,
+    "lifetimeRejected": 7162,
+    "creatorDeskFinalPublicAudit": {
+      "count": 29,
+      "internal": 0,
+      "stock": 0,
+      "encoding": 0
+    },
+    "newsletterFinalPublicAudit": {
+      "count": 4,
+      "internal": 0,
+      "stock": 0,
+      "encoding": 0,
+      "cleanedRemainingStockAt": "2026-07-17T04:54:46.523Z"
+    }
+  },
+  "nextBehaviorChange": "Writer must read this engine before drafting and produce three internal passes before Publishing Editor review."
+}
