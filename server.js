@@ -1,4 +1,4 @@
-﻿const http = require("node:http");
+const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
@@ -1381,9 +1381,9 @@ function cleanEncodingArtifacts(value = "") {
     .split(rightDouble).join('"')
     .split(dash).join("-")
     .split(longDash).join("-")
-    .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢|ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âº/g, "'")
-    .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â|ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾|ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¸/g, '"')
-    .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â/g, "-")
+    .replace(/Ã¢â‚¬Ëœ|Ã¢â‚¬â„¢|Ã¢â‚¬Å¡|Ã¢â‚¬â€º/g, "'")
+    .replace(/Ã¢â‚¬Å“|Ã¢â‚¬Â|Ã¢â‚¬Å¾|Ã¢â‚¬Å¸/g, '"')
+    .replace(/Ã¢â‚¬â€œ|Ã¢â‚¬â€/g, "-")
     .replace(/\u00e2\u20ac[\u02dc\u2122\u0153\u009d]?/g, "'")
     .replace(/\u00e2\u20ac[\u009c\u009d]/g, '"')
     .replace(/\u00c3[\u0080-\u00bf]?/g, "")
@@ -1528,10 +1528,65 @@ function readJsonFile(filePath, fallback) {
   }
 }
 
+function compactNewsLabPublicImage(image = null) {
+  if (!image || typeof image !== "object") return image || null;
+  return {
+    primary: image.primary || image.url || image.src || "",
+    fallback: image.fallback || "",
+    url: image.url || image.primary || image.src || "",
+    src: image.src || image.primary || image.url || "",
+    alt: image.alt || "",
+    credit: image.credit || "",
+    query: image.query || image.originalQuery || "",
+    source: image.source || "",
+    photographer: image.photographer || "",
+    license: image.license || "",
+    provenance: image.provenance || null,
+    relevance: image.relevance || null
+  };
+}
+
+function compactNewsLabPublicStory(story = {}) {
+  const keep = [
+    "id", "topicKey", "eventId", "slug", "url", "title", "originalHeadline", "category", "tab", "source",
+    "publishedAt", "originalPublishedAt", "updatedAt", "generatedAt", "savedAt", "summary", "dek", "lead",
+    "body", "paragraphs", "updates", "storyUpdates", "sources", "reportingTrail", "relatedArticles",
+    "storyDossier", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence",
+    "confidence", "popularity", "publicationTier", "isBreaking", "status"
+  ];
+  const compacted = {};
+  keep.forEach(key => {
+    if (story[key] !== undefined && story[key] !== null) compacted[key] = story[key];
+  });
+  compacted.image = compactNewsLabPublicImage(story.image || null);
+  compacted.imageProvenance = story.imageProvenance || compacted.image?.provenance || null;
+  return compacted;
+}
+
+function compactNewsLabPublishedPayload(value) {
+  if (!value || typeof value !== "object" || !Array.isArray(value.ownedStories)) return value;
+  return {
+    generatedAt: value.generatedAt || new Date().toISOString(),
+    status: value.status || "published",
+    purpose: value.purpose || "Publish original Censored Expressions news tiles.",
+    policy: value.policy || undefined,
+    sourceStoryCount: value.sourceStoryCount || 0,
+    dossierSourceStoryCount: value.dossierSourceStoryCount || 0,
+    clusteredStoryCount: value.clusteredStoryCount || 0,
+    writingClusterCount: value.writingClusterCount || 0,
+    tabSubsystems: value.tabSubsystems || undefined,
+    brainInfrastructure: value.brainInfrastructure || undefined,
+    durablePublication: value.durablePublication || undefined,
+    savedAt: value.savedAt || new Date().toISOString(),
+    ownedStories: value.ownedStories.map(compactNewsLabPublicStory)
+  };
+}
+
 function writeJsonFile(filePath, value) {
   ensureDataFiles();
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const finalText = `${JSON.stringify(value, null, 2)}\n`;
+  const valueToWrite = filePath === newsLabPublishedPayloadFile ? compactNewsLabPublishedPayload(value) : value;
+  const finalText = `${JSON.stringify(valueToWrite, null, 2)}\n`;
   const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
   fs.writeFileSync(tempPath, finalText);
   fs.renameSync(tempPath, filePath);
@@ -8820,7 +8875,7 @@ function contentOrchestrationAnalysis(memory = learningMemory(), diagnostics = n
     {
       key: "newsletter",
       label: "Newsletter",
-      role: "Weekly recap and forecast using the weekâ€™s evidence and audience interest.",
+      role: "Weekly recap and forecast using the week’s evidence and audience interest.",
       currentOutput: newsletterRecent,
       targetOutput: 1,
       source: "Execution Engine -> Newsletter",
@@ -10767,8 +10822,8 @@ function reviewCreatorDraft(draft = {}, stories = [], source = "creator-desk") {
   const partialSentenceCount = paragraphs.reduce((count, paragraph) => {
     const fragments = String(paragraph || "")
       .split(/\s+/)
-      .filter(word => /\b(bi|spo|Donal|Uni|Ki|ComparingÃ¢â‚¬â„¢s|Grizzli)\.?\b/i.test(word));
-    return count + fragments.length + Number(/\.{3}|ÃƒÂ¢Ã¢â€šÂ¬|Ã¯Â¿Â½|function\s*\(|=>|fetch-start|headers|params|metrics/i.test(paragraph));
+      .filter(word => /\b(bi|spo|Donal|Uni|Ki|Comparingâ€™s|Grizzli)\.?\b/i.test(word));
+    return count + fragments.length + Number(/\.{3}|Ã¢â‚¬|ï¿½|function\s*\(|=>|fetch-start|headers|params|metrics/i.test(paragraph));
   }, 1000);
   if (partialSentenceCount) {
     issues.push("Remove clipped source text, mojibake, tracking/script fragments, and partial sentences before publishing.");
@@ -12074,14 +12129,14 @@ function decodeHtmlEntities(value = "") {
 
 function cleanNewsletterCopy(value = "") {
   return decodeHtmlEntities(value)
+    .replace(/Ã¢â‚¬â„¢|Ã¢â‚¬Ëœ|Ã¢â‚¬Å¡|Ã¢â‚¬â€º/g, "'")
+    .replace(/Ã¢â‚¬Å“|Ã¢â‚¬Â|Ã¢â‚¬Å¾/g, "\"")
+    .replace(/Ã¢â‚¬â€œ|Ã¢â‚¬â€/g, "-")
     .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢|ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âº/g, "'")
     .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â|ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾/g, "\"")
     .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â/g, "-")
-    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº/g, "'")
-    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾/g, "\"")
-    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â/g, "-")
-    .replace(/ÃƒÆ’Ã¢â‚¬Å¡ /g, " ")
-    .replace(/ÃƒÆ’Ã¢â‚¬Å¡/g, "")
+    .replace(/Ãƒâ€š /g, " ")
+    .replace(/Ãƒâ€š/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -12277,9 +12332,9 @@ function newsletterTopNewsBriefs(signals = []) {
 function newsletterOpeningNote(signals = [], week = workWeekWindow()) {
   const lead = signals[0];
   const variants = lead ? [
-    `This weekï¿½s issue starts with ${newsletterShortMatter(lead.matter)} because that is where the public consequence was easiest to see. The purpose is not to recap every headline; it is to separate passing noise from the stories that still deserve attention.`,
+    `This week�s issue starts with ${newsletterShortMatter(lead.matter)} because that is where the public consequence was easiest to see. The purpose is not to recap every headline; it is to separate passing noise from the stories that still deserve attention.`,
     `The week brought more headlines than clarity, so this issue slows down around ${newsletterShortMatter(lead.matter)} and asks what changed, who carried the cost, and what should be watched next.`,
-    `${sentenceCase(newsletterShortMatter(lead.matter))} shaped the strongest signal this week. The newsletterï¿½s job is to give readers a clean read on the consequence without turning the issue into a pile of links.`
+    `${sentenceCase(newsletterShortMatter(lead.matter))} shaped the strongest signal this week. The newsletter�s job is to give readers a clean read on the consequence without turning the issue into a pile of links.`
   ] : [
     "This issue looks back at the week by separating lasting consequence from passing noise, then looks ahead to the stories most likely to demand clearer answers.",
     "The week did not need more headline stacking. It needed a cleaner read on responsibility, consequence, and the next public decision worth watching.",
@@ -12334,7 +12389,7 @@ function newsletterMainNarrative(signals = [], week = workWeekWindow()) {
   const matters = [...new Set(signals.map(signal => newsletterShortMatter(signal.matter)).filter(Boolean))].slice(0, 4);
   const matterLine = matters.length === 1 ? matters[0] : matters.join(", ");
   const openingVariants = matters.length ? [
-    `The weekï¿½s strongest pattern ran through ${matterLine}. That does not make every story the same; it means each one should be judged by the decision made, the consequence created, and the standard that can be checked later.`,
+    `The week�s strongest pattern ran through ${matterLine}. That does not make every story the same; it means each one should be judged by the decision made, the consequence created, and the standard that can be checked later.`,
     `${sentenceCase(matterLine)} gave the week its shape. The important part is not the number of headlines, but whether any of them reveal who acted, who benefited, and who was left carrying the result.`,
     `The week kept returning to ${matterLine}. A useful weekly signal has to do more than name the topic; it has to explain why the topic still matters after the news cycle moves on.`
   ] : [
@@ -12909,7 +12964,7 @@ function technicalEditorIssues(record = {}, lane = "general") {
   if (!text.trim()) return ["empty-public-text"];
   if (/[ \t]{2,}/.test(text)) issues.push("extra-spacing");
   if (/\s+[,.!?;:]/.test(text)) issues.push("punctuation-spacing");
-  if (/\.{3}|ÃƒÆ’|ÃƒÂ¢Ã¢â€šÂ¬|ÃƒÂ¯Ã‚Â¿Ã‚Â½|&#x27;/.test(text) || text.includes(String.fromCharCode(226, 8364))) {
+  if (/\.{3}|Ãƒ|Ã¢â‚¬|Ã¯Â¿Â½|&#x27;/.test(text) || text.includes(String.fromCharCode(226, 8364))) {
     issues.push("encoding-or-ellipsis-artifact");
   }
   if (/\b(teh|recieve|recieved|seperate|goverment|responsiblity|occuring|additonal|siting|grammer)\b/i.test(text)) {
@@ -13010,7 +13065,7 @@ function technicalEditorFindings(record = {}, lane = "general") {
   publicEntries.forEach(entry => {
     if (/[ \t]{2,}/.test(entry.text)) findings.push(editorFinding("extra-spacing", lane, entry.path, entry.text, "Collapse repeated spaces before save.", "low"));
     if (/\s+[,.!?;:]/.test(entry.text)) findings.push(editorFinding("punctuation-spacing", lane, entry.path, entry.text, "Remove spaces before punctuation.", "low"));
-    if (/\.{3}|ÃƒÆ’Ã†â€™|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½|&#x27;/.test(entry.text) || entry.text.includes(String.fromCharCode(226, 8364))) {
+    if (/\.{3}|ÃƒÆ’|ÃƒÂ¢Ã¢â€šÂ¬|ÃƒÂ¯Ã‚Â¿Ã‚Â½|&#x27;/.test(entry.text) || entry.text.includes(String.fromCharCode(226, 8364))) {
       findings.push(editorFinding("encoding-or-ellipsis-artifact", lane, entry.path, entry.text, "Normalize encoding artifacts and remove ellipses/clipped source fragments.", "high"));
     }
     const spelling = entry.text.match(/\b(teh|recieve|recieved|seperate|goverment|responsiblity|occuring|additonal|siting|grammer)\b/i);
@@ -13154,7 +13209,7 @@ function applyContentLaneQualityGate(record = {}, lane = "general") {
     cleaned.text,
     ...(Array.isArray(cleaned.body) ? cleaned.body : [])
   ].join(" ");
-  const knownBadPattern = /\.{3}|ÃƒÆ’|ÃƒÂ¢Ã¢â€šÂ¬|ÃƒÂ¯Ã‚Â¿Ã‚Â½|&#x27;|fetch-start|fetch-done|headers|Comparing|Grizzli|\bbi\b|\bspo\b|\bDonal\b|\bUni\b|\bKi\b|not a placeholder|approved narrative|loudest room|The reader should be able to identify|The point is not to make every story say the same thing/i;
+  const knownBadPattern = /\.{3}|Ãƒ|Ã¢â‚¬|Ã¯Â¿Â½|&#x27;|fetch-start|fetch-done|headers|Comparing|Grizzli|\bbi\b|\bspo\b|\bDonal\b|\bUni\b|\bKi\b|not a placeholder|approved narrative|loudest room|The reader should be able to identify|The point is not to make every story say the same thing/i;
   const hasEncodingArtifact = publicText.includes(String.fromCharCode(226, 8364))
     || publicText.includes(String.fromCharCode(195))
     || publicText.includes(String.fromCharCode(65533));
@@ -13980,7 +14035,7 @@ function creatorPerspectiveForStory(story, index) {
   if (story.category === "local" || /city|mayor|crime|housing|community/.test(text)) {
     return `${sourceLine} Local stories matter because people live with the consequences directly. The answer cannot always be another office, another subsidy, another campaign promise, or another excuse. Strong families, present fathers, serious churches, private charity, local accountability, and safer streets still matter more than polished language from people who never feel the impact.`;
   }
-  return `${sourceLine} The bigger issue is not just the event itself; it is the pressure to accept the approved interpretation. I believe people should be free to think, speak, disagree, and make private choices. But freedom also means nobody gets to force a belief system into another personÃ¢â‚¬â„¢s home and call that tolerance. ${skepticism}`;
+  return `${sourceLine} The bigger issue is not just the event itself; it is the pressure to accept the approved interpretation. I believe people should be free to think, speak, disagree, and make private choices. But freedom also means nobody gets to force a belief system into another personâ€™s home and call that tolerance. ${skepticism}`;
 }
 
 function creatorPostTitle(stories) {
@@ -14417,7 +14472,7 @@ function creatorDeskText(post) {
 function cleanCreatorEditorialParagraph(paragraph = "") {
   let text = cleanEncodingArtifacts(cleanArticleText(paragraph, 1800) || cleanPublicText(paragraph, 1800));
   text = text
-    .replace(/["Ã¢â‚¬Å“Ã¢â‚¬Â][^"Ã¢â‚¬Å“Ã¢â‚¬Â]{4,220}["Ã¢â‚¬Å“Ã¢â‚¬Â],?\s+as reported by [^,.;]+,?\s+is not a placeholder for a values paragraph;?\s+it is the evidence the column has to work from\.?/gi, "")
+    .replace(/["â€œâ€][^"â€œâ€]{4,220}["â€œâ€],?\s+as reported by [^,.;]+,?\s+is not a placeholder for a values paragraph;?\s+it is the evidence the column has to work from\.?/gi, "")
     .replace(/\bStart with what was actually reported:\s*/gi, "")
     .replace(/\bThe fact pattern is this:\s*/gi, "")
     .replace(/\bThe center of the story is simple enough to test:\s*/gi, "")
@@ -14456,13 +14511,13 @@ function completeCreatorSentences(value = "", limit = 520) {
     .replace(/\.\.\.+/g, ".")
     .replace(/\s+/g, " ")
     .trim();
-  if (!text || /ÃƒÂ¢Ã¢â€šÂ¬|Ã¯Â¿Â½|[\[{][A-Za-z0-9_]{1,8}[)\]}]|function\s*\(|=>|headers|fetch-start|params|metrics/i.test(text)) return "";
+  if (!text || /Ã¢â‚¬|ï¿½|[\[{][A-Za-z0-9_]{1,8}[)\]}]|function\s*\(|=>|headers|fetch-start|params|metrics/i.test(text)) return "";
   const sentences = text
     .split(/(?<=[.!?])\s+/)
     .map(sentence => sentence.trim())
     .filter(sentence => /[.!?]$/.test(sentence))
     .filter(sentence => sentence.length >= 38)
-    .filter(sentence => !/\b(bi|spo|Ki|Donal|Uni|ComparingÃ¢â‚¬â„¢s|x2019)\.?$/i.test(sentence))
+    .filter(sentence => !/\b(bi|spo|Ki|Donal|Uni|Comparingâ€™s|x2019)\.?$/i.test(sentence))
     .filter(sentence => !/click here|advertisement|subscribe|copyright|all rights reserved|read more/i.test(sentence));
   return sentences.join(" ").slice(0, limit).trim();
 }
@@ -14470,9 +14525,9 @@ function completeCreatorSentences(value = "", limit = 520) {
 function summaryLooksUnsafeForEditorial(value = "") {
   const text = String(value || "").trim();
   if (!text) return true;
-  if (/\.{3}|ÃƒÂ¢Ã¢â€šÂ¬|Ã¯Â¿Â½|function\s*\(|=>|fetch-start|headers|params|metrics|content-length|sourceMappingURL/i.test(text)) return true;
+  if (/\.{3}|Ã¢â‚¬|ï¿½|function\s*\(|=>|fetch-start|headers|params|metrics|content-length|sourceMappingURL/i.test(text)) return true;
   if (!/[.!?]\s*$/.test(text) && text.length > 120) return true;
-  if (/\b(bi|spo|Donal|Uni|Ki|ComparingÃ¢â‚¬â„¢s)\.?$/i.test(text)) return true;
+  if (/\b(bi|spo|Donal|Uni|Ki|Comparingâ€™s)\.?$/i.test(text)) return true;
   return false;
 }
 
@@ -15807,7 +15862,7 @@ function storyIdentityTerms(story = {}) {
 function storyNamedEntities(story = {}) {
   const text = `${story.title || ""} ${story.summary || ""} ${story.articleSummary || ""}`;
   const entities = new Set();
-  [...text.matchAll(/\b[A-Z][a-zA-Z'Ã¢â‚¬â„¢.-]{2,}(?:\s+[A-Z][a-zA-Z'Ã¢â‚¬â„¢.-]{2,}){0,4}\b/g)]
+  [...text.matchAll(/\b[A-Z][a-zA-Z'â€™.-]{2,}(?:\s+[A-Z][a-zA-Z'â€™.-]{2,}){0,4}\b/g)]
     .map(match => match[0].trim())
     .filter(value => !/^(The|This|That|And|But|For|From|With|After|Before|Latest|Watch|Video|Breaking|Local|World|News)$/i.test(value))
     .forEach(value => entities.add(value.toLowerCase()));
@@ -29131,7 +29186,7 @@ async function loadWeatherTickerItems() {
       const period = forecast.properties?.periods?.[0];
       if (!period) throw new Error("Forecast period unavailable");
       return {
-        title: `Weather: ${market.market} ${period.temperature}Ã‚Â°${period.temperatureUnit}, ${period.shortForecast}`,
+        title: `Weather: ${market.market} ${period.temperature}Â°${period.temperatureUnit}, ${period.shortForecast}`,
         url: market.url,
         source: "National Weather Service",
         type: "weather",
@@ -29483,7 +29538,7 @@ async function getNewsLabProductionPayload(reason = "scheduled-news-lab-producti
 }
 
 function publicAssetExists(assetPath = "") {
-  const cleanPath = String(assetPath || "").replace(/^\.\//, "");
+  const cleanPath = String(assetPath || "").replace(/^\.?\/+/u, "");
   return Boolean(cleanPath && fs.existsSync(path.join(publicDir, cleanPath)));
 }
 
@@ -29520,17 +29575,17 @@ function newsLabImageProvenance(input = {}) {
 function newsLabImageForStory(story = {}) {
   const text = `${story.title || ""} ${story.summary || ""} ${story.category || ""}`.toLowerCase();
   const options = [
-    { test: /google|android|european union|eu antitrust|antitrust|competition fine|regulator|commission/, image: "./assets/pexels/business-economy.jpg", fallback: "./assets/newsroom-hero.png", label: "business regulation image", query: "technology business regulation" },
-    { test: /storm|weather|flood|power|outage|cleanup|utility|damage/, image: "./assets/pexels/weather-response.jpg", fallback: "./assets/creator-bg-break-silence.png", label: "weather response image", query: "storm cleanup utility crews" },
-    { test: /court|judge|law|legal|rights|settlement|defamation/, image: "./assets/pexels/legal-justice.jpg", fallback: "./assets/creator-bg-no-filter.png", label: "legal accountability image", query: "courthouse justice law" },
-    { test: /war|iran|israel|gaza|ukraine|russia|china|military|foreign|border|visa/, image: "./assets/pexels/global-affairs.jpg", fallback: "./assets/creator-bg-truth-out-loud.png", label: "global affairs image", query: "world news diplomacy" },
-    { test: /school|student|parent|child|family|teacher|children/, image: "./assets/pexels/family-community.jpg", fallback: "./assets/creator-bg-speak-free.png", label: "family and community image", query: "family community school" },
-    { test: /sports|world cup|team|coach|playoff|game|match|season/, image: "./assets/pexels/sports-competition.jpg", fallback: "./assets/creator-bg-unmuted.png", label: "sports competition image", query: "sports competition stadium" },
-    { test: /culture|movie|music|celebrity|artist|hollywood|streaming/, image: "./assets/pexels/culture-media.jpg", fallback: "./assets/creator-bg-speak-free.png", label: "culture and media image", query: "music film culture" },
-    { test: /tax|budget|spending|economy|market|jobs|business/, image: "./assets/pexels/business-economy.jpg", fallback: "./assets/newsroom-hero.png", label: "business and economy image", query: "business economy city" },
-    { test: /mayor|election|campaign|congress|senate|president|policy|government/, image: "./assets/pexels/government-civic.jpg", fallback: "./assets/newsroom-hero.png", label: "civic leadership image", query: "government building civic" }
+    { test: /google|android|european union|eu antitrust|antitrust|competition fine|regulator|commission/, image: "/assets/pexels/business-economy.jpg", fallback: "/assets/newsroom-hero.png", label: "business regulation image", query: "technology business regulation" },
+    { test: /storm|weather|flood|power|outage|cleanup|utility|damage/, image: "/assets/pexels/weather-response.jpg", fallback: "/assets/creator-bg-break-silence.png", label: "weather response image", query: "storm cleanup utility crews" },
+    { test: /court|judge|law|legal|rights|settlement|defamation/, image: "/assets/pexels/legal-justice.jpg", fallback: "/assets/creator-bg-no-filter.png", label: "legal accountability image", query: "courthouse justice law" },
+    { test: /war|iran|israel|gaza|ukraine|russia|china|military|foreign|border|visa/, image: "/assets/pexels/global-affairs.jpg", fallback: "/assets/creator-bg-truth-out-loud.png", label: "global affairs image", query: "world news diplomacy" },
+    { test: /school|student|parent|child|family|teacher|children/, image: "/assets/pexels/family-community.jpg", fallback: "/assets/creator-bg-speak-free.png", label: "family and community image", query: "family community school" },
+    { test: /sports|world cup|team|coach|playoff|game|match|season/, image: "/assets/pexels/sports-competition.jpg", fallback: "/assets/creator-bg-unmuted.png", label: "sports competition image", query: "sports competition stadium" },
+    { test: /culture|movie|music|celebrity|artist|hollywood|streaming/, image: "/assets/pexels/culture-media.jpg", fallback: "/assets/creator-bg-speak-free.png", label: "culture and media image", query: "music film culture" },
+    { test: /tax|budget|spending|economy|market|jobs|business/, image: "/assets/pexels/business-economy.jpg", fallback: "/assets/newsroom-hero.png", label: "business and economy image", query: "business economy city" },
+    { test: /mayor|election|campaign|congress|senate|president|policy|government/, image: "/assets/pexels/government-civic.jpg", fallback: "/assets/newsroom-hero.png", label: "civic leadership image", query: "government building civic" }
   ];
-  const match = options.find(item => item.test.test(text)) || { image: "./assets/pexels/newsroom-general.jpg", fallback: "./assets/newsroom-hero.png", label: "newsroom image", query: "newsroom journalism" };
+  const match = options.find(item => item.test.test(text)) || { image: "/assets/pexels/newsroom-general.jpg", fallback: "/assets/newsroom-hero.png", label: "newsroom image", query: "newsroom journalism" };
   const hasLocalPexelsImage = publicAssetExists(match.image);
   const pexelsCredit = hasLocalPexelsImage ? newsLabPexelsCreditForAsset(match.image) : null;
   const creditText = pexelsCredit?.photographer
@@ -29570,7 +29625,7 @@ function newsLabNewsDataImageCandidate(story = {}) {
   const query = newsLabImageQueryTermsForAudit(story).slice(0, 6).join(" ") || newsLabCategoryLabel(newsLabCategory(story));
   return {
     primary: sourceImage,
-    fallback: "./assets/newsroom-hero.png",
+    fallback: "/assets/newsroom-hero.png",
     url: sourceImage,
     src: sourceImage,
     alt: cleanArticleText(story.title || "News source image", 140),
@@ -29663,7 +29718,7 @@ function newsLabImageQueryTerms(story = {}) {
 
   const titleQuery = title
     .replace(/\b(live updates|watch|analysis|opinion|here are|what to know)\b/gi, " ")
-    .replace(/['"Ã¢â‚¬ËœÃ¢â‚¬â„¢Ã¢â‚¬Å“Ã¢â‚¬Â]/g, "")
+    .replace(/['"â€˜â€™â€œâ€]/g, "")
     .split(/\s+/)
     .filter(word => word.length > 2)
     .slice(0, 7)
@@ -29790,7 +29845,7 @@ async function pixabayImageForStory(story = {}, image = {}, usedPhotoIds = new S
       const retrievedAt = new Date().toISOString();
       return {
         primary: photo.largeImageURL || photo.webformatURL,
-        fallback: image.fallback || "./assets/newsroom-hero.png",
+        fallback: image.fallback || "/assets/newsroom-hero.png",
         alt: photo.tags || image.alt || query,
         credit: `Image by ${photo.user || "Pixabay contributor"} via Pixabay`,
         creditUrl: photo.pageURL || "",
@@ -29855,7 +29910,7 @@ async function pexelsImageForStory(story = {}, image = {}, usedPhotoIds = new Se
         const retrievedAt = new Date().toISOString();
         return {
           primary: photo.src.large,
-          fallback: image.fallback || "./assets/newsroom-hero.png",
+          fallback: image.fallback || "/assets/newsroom-hero.png",
           alt: photo.alt || image.alt || query,
           credit: `Photo by ${photo.photographer} via Pexels`,
           creditUrl: photo.photographer_url || photo.url || "",
@@ -29952,10 +30007,10 @@ function newsLabImageQualityScore(story = {}, image = {}) {
 
 function newsLabGeneratedImagePromptText(value = "", maxLength = 260) {
   return cleanArticleText(String(value || ""), maxLength)
-    .replace(/â€™|â€˜|Ã¢â‚¬â„¢|Ã¢â‚¬Ëœ/g, "'")
-    .replace(/â€œ|â€|Ã¢â‚¬Å“|Ã¢â‚¬Â/g, '"')
-    .replace(/â€“|â€”|Ã¢â‚¬â€œ|Ã¢â‚¬â€?/g, "-")
-    .replace(/Â|Ã¢|â€¦/g, "")
+    .replace(/’|‘|â€™|â€˜/g, "'")
+    .replace(/“|”|â€œ|â€/g, '"')
+    .replace(/–|—|â€“|â€�?/g, "-")
+    .replace(/�|â|…/g, "")
     .replace(/[^\x20-\x7E]/g, "")
     .replace(/\s+/g, " ")
     .replace(/\band mo\.\s*/gi, "")
@@ -30735,9 +30790,9 @@ function newsLabScrambledHeadline(title = "", story = {}) {
     .filter(index => index >= 0);
   const firstActionIndex = actionIndexes.length ? actionIndexes[0] : -1;
   const subjectWords = firstActionIndex > 0 ? words.slice(0, firstActionIndex) : words.slice(0, Math.min(words.length, 7));
-  const stackedSubject = subjectWords.length >= 5 && subjectWords.filter(word => /^[A-Z][A-Za-z0-9'Ã¢â‚¬â„¢-]+$/.test(word)).length >= 4;
+  const stackedSubject = subjectWords.length >= 5 && subjectWords.filter(word => /^[A-Z][A-Za-z0-9'â€™-]+$/.test(word)).length >= 4;
   const fillerEnding = /\b(Draws Industry Attention|Draws Government Scrutiny|Changes Market Outlook|Changes Public Release Plans|Changes Technology Policy|Changes Competitive Stakes|Shifts Tournament Picture|Brings Official Response|Changes Security Situation|Moves Toward Public Decision|Raises Security Questions|Draws Public Attention|Draws Culture Spotlight|Draws Technology Scrutiny|Adds Economic Pressure)\b/i.test(cleanTitle);
-  const mojibake = /ÃƒÆ’|ÃƒÂ¢Ã¢â€šÂ¬|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢|ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â|Ã¯Â¿Â½/.test(cleanTitle);
+  const mojibake = /Ãƒ|Ã¢â‚¬|Ã¢â‚¬â„¢|Ã¢â‚¬Å“|Ã¢â‚¬Â|Ã¢â‚¬â€œ|Ã¢â‚¬â€|ï¿½/.test(cleanTitle);
   const startsWeak = /^(Weather|Fourth|Care|Clock|Crowd|Account|Celebration|Commercial|Declaration|Alleged|Plus|Them|Large|It|The|America|World|Pictures|Video)\b/i.test(cleanTitle) && subjectWords.length >= 3;
   const noEvidenceAction = Boolean(storyText) && firstActionIndex > 0 && !storyText.includes(words[firstActionIndex].toLowerCase()) && !/(wins?|beats?|strikes?|warns?|approves?|blocks?|allows?|returns?|reopens?|leaves?|loses?|upholds?|rejects?|rules?|orders?|fines?|charges?|arrests?|signs?|passes?|defeats?|falls?|rises?|drops?|jumps?|hits?|cuts?|lifts?|opens?|closes?|clears?|delays?|cancels?|investigates?|settles?|kills?|injures?|files?|sues?|launches?|announces?|reports?|refers?|issues?|gains?|positions?)/i.test(lower);
   const incoherentPairs = /\b(Weather Fourth|Care Clock|Clock Crowd|Account Adam|Commercial Declaration|Paraguay World Fanduel|Fourth Guardian|America Fourth States|Barrag Boys|Leafs Maple|Chargers Best Magsafe|Them Moon|It Simply Allows|The Changes Also Mean|Alleged Plus|Cabo Verde Argentina Messi|Wedding Kelce Swift Garden Travis|Kelce Swift Taylor Travis Case|Touts Raises|Warns .* Touts Raises)\b/i.test(cleanTitle);
@@ -30760,7 +30815,7 @@ function newsLabHeadlineHasNaturalGrammar(title = "") {
   if (/\b(Alleged Moves Into|Next Faces|Fine .* Moves Into|Union .* Government Fight|Government Fight|Political Moves Into Government Fight)\b/i.test(cleanTitle)) return false;
   if (/\b(Touts|Says|Warns|Claims|Reports)\b.{0,70}\b(Raises|Moves|Changes|Draws|Brings|Faces|Adds|Shifts)\b/i.test(cleanTitle)) return false;
   if (/\b(Apple Macbook Next Entry-level|Macbook Next Entry-level|Entry-level Spring Creates|Draws New Public Attention|Creates Market Fallout)\b/i.test(cleanTitle)) return false;
-  if (/\bSays\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?[Ã¢â‚¬â„¢']s\s+(Raises|Moves|Creates|Draws|Brings|Faces|Adds|Shifts)\b/.test(cleanTitle)) return false;
+  if (/\bSays\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?[â€™']s\s+(Raises|Moves|Creates|Draws|Brings|Faces|Adds|Shifts)\b/.test(cleanTitle)) return false;
   if (/\b(Moves Into Government Fight|Moves Into Policy Fight|Moves Into Political Fight)\b/i.test(cleanTitle)
     && /\b(Google|Android|European|EU|Antitrust|Fine|Appeal|Court)\b/i.test(cleanTitle)) return false;
   if (/\b(Begins Binding|Pictures Shifts|Power Forces|Dangerous Draws|Russian Raises|Vietnamese Films Capture Raises|Citizenship Germany Video)\b/i.test(cleanTitle)) return false;
@@ -30865,7 +30920,7 @@ function newsLabSentenceQualityOk(sentence = "") {
   if (/^(pic\.twitter|more from|read more|watch live|click here|by [A-Z][a-z]+|image source|photo by|video\b|watch:|live:)/i.test(text)) return false;
   if (/skip to main content|skip to navigation|menu espn scores|advertisement|sign up|newsletter|cookies|privacy policy|terms of service|all rights reserved|follow us|share this article|-->|instant reaction|make history|scores nfl nba mlb|sports director|photo gallery|read full article/i.test(text)) return false;
   if (/^[A-Z][A-Z\s-]+:\s/.test(text)) return false;
-  if (/^[A-Z][A-Z\s.'-]{6,}\s+[Ã¢â‚¬â€œ-]\s+/.test(text)) return false;
+  if (/^[A-Z][A-Z\s.'-]{6,}\s+[â€“-]\s+/.test(text)) return false;
   if (/[,:;]$/.test(text)) return false;
   return true;
 }
@@ -30882,15 +30937,15 @@ function newsLabLooksFactual(value = "") {
 function newsLabFactText(value = "", limit = 360) {
   const text = cleanArticleText(value, limit)
     .replace(/^image source,\s*[^.]+?\s+by\s+[A-Z][^.]+?\s+published\s+\d{1,2}\s+\w+\s+\d{4}\s*/i, "")
-    .replace(/^by\s+[A-Z][A-Za-z\s.'&-]{2,60}[-Ã¢â‚¬â€œ:]\s*/i, "")
+    .replace(/^by\s+[A-Z][A-Za-z\s.'&-]{2,60}[-â€“:]\s*/i, "")
     .replace(/^by\s+[A-Z][A-Za-z\s.'&-]{2,60}\s*/i, "")
     .replace(/^video\s+/i, "")
-    .replace(/^[A-Z][A-Z\s.'-]{6,}\s+[Ã¢â‚¬â€œ-]\s+/i, "")
+    .replace(/^[A-Z][A-Z\s.'-]{6,}\s+[â€“-]\s+/i, "")
     .replace(/\s*-->\s*skip to main content[\s\S]*$/i, "")
     .replace(/\s+/g, " ")
     .replace(/\s+([,.!?;:])/g, "$1")
     .trim();
-  if (/\.{3}|Ã¢â‚¬Â¦/.test(text)) return "";
+  if (/\.{3}|â€¦/.test(text)) return "";
   if (!newsLabLooksFactual(text)) return "";
   return text;
 }
@@ -31053,7 +31108,7 @@ function newsLabHeadlineTruncated(title = "") {
   return !cleaned
     || cleaned.length < 24
     || /\b(the|does|from|with|and|or|of|to|as|in|on|for|by|at|off|into)$/i.test(cleaned)
-    || /[ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“'"][^ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢'"]{1,35}$/i.test(cleaned);
+    || /[Ã¢â‚¬Ëœ'"][^Ã¢â‚¬â„¢'"]{1,35}$/i.test(cleaned);
 }
 
 function newsLabWeakGenericHeadline(title = "") {
@@ -31388,7 +31443,7 @@ function newsLabNaturalAttribution(stories = [], acceptedText = "") {
     .map((story, index) => {
       const detail = newsLabTrimSentence(story.articleSummary || story.summary || story.title, 220);
       if (!detail) return "";
-      if (/\.\.\.|Ã¢â‚¬Â¦|&[a-z]+;/.test(detail)) return "";
+      if (/\.\.\.|â€¦|&[a-z]+;/.test(detail)) return "";
       if (newsLabTextOverlap(acceptedText, detail) >= 0.42) return "";
       const source = story.source || "another outlet";
       if (index === 0) return `${source} also reports: ${detail}`;
@@ -31427,7 +31482,7 @@ function newsLabSourceSpecificDetails(stories = [], acceptedText = "") {
       const detail = newsLabTrimSentence(story.articleSummary || story.summary || "", 260);
       if (!detail) return "";
       if (newsLabTextOverlap(acceptedText, detail) >= 0.48) return "";
-      if (/\.\.\.|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦|&[a-z]+;|read more|sign up|newsletter|advertisement/i.test(detail)) return "";
+      if (/\.\.\.|Ã¢â‚¬Â¦|&[a-z]+;|read more|sign up|newsletter|advertisement/i.test(detail)) return "";
       return `${story.source} reported this additional detail: ${detail}`;
     })
     .filter(Boolean)
@@ -34640,9 +34695,9 @@ function newsLabCleanPublicParagraphSentences(paragraph = "") {
 function newsLabClippedSourceFragmentParagraph(paragraph = "") {
   const text = cleanArticleText(paragraph || "", 900);
   if (!text) return false;
-  const titleCaseRuns = (text.match(/\b[A-Z][a-z]+(?:['â€™][a-z]+)?\b/g) || []).length;
+  const titleCaseRuns = (text.match(/\b[A-Z][a-z]+(?:['’][a-z]+)?\b/g) || []).length;
   const sentenceCount = text.split(/(?<=[.!?])\s+/).filter(Boolean).length;
-  const hasSourceListSignals = /\b(Returns to Number One|Revolving Door|Welcomes Another|Dismisses Odd Behavior|Trending Stories|Exclusive By|What Really Happened|World Cup Quarterfinal|Performs ['â€™"]?Lights|Baby Rose)\b/i.test(text);
+  const hasSourceListSignals = /\b(Returns to Number One|Revolving Door|Welcomes Another|Dismisses Odd Behavior|Trending Stories|Exclusive By|What Really Happened|World Cup Quarterfinal|Performs ['’"]?Lights|Baby Rose)\b/i.test(text);
   const hasClippedLocationTail = /\bon\s+L\.A\.$/i.test(text);
   const tooManyHeadlineFragments = sentenceCount <= 2 && titleCaseRuns >= 12 && text.length >= 130;
   return Boolean(hasClippedLocationTail || (hasSourceListSignals && tooManyHeadlineFragments));
@@ -34811,7 +34866,7 @@ function newsLabPublicArticleIssues(story = {}) {
   const headlineEditor = newsLabHeadlineEditor(title, story);
   if (!headlineEditor.passed) issues.push("headline-editor-needs-rewrite");
   if (/\b(the|does|from|with|and|or|of|to|as|in|on|for|by|at)$/i.test(title)) issues.push("title-looks-truncated");
-  if (/[Ã¢â‚¬Ëœ'"][^Ã¢â‚¬â„¢'"]{1,35}$/i.test(title) || /\b(i will wear|i will|he said|she said|they said)$/i.test(title)) issues.push("title-looks-truncated");
+  if (/[â€˜'"][^â€™'"]{1,35}$/i.test(title) || /\b(i will wear|i will|he said|she said|they said)$/i.test(title)) issues.push("title-looks-truncated");
   if (newsLabHeadlineTooClose(title, story.originalHeadline || "")) issues.push("publisher-headline-too-close");
   if (title && story.originalHeadline) {
     const titleCategory = newsLabCategory({ title, category: "news" });
@@ -34941,7 +34996,7 @@ function newsLabPublicArticleIssues(story = {}) {
     .filter(sentence => sentence.length >= 45)
     .filter((sentence, index, all) => all.indexOf(sentence) !== index).length;
   if (repeatedSentenceCount > 0) issues.push("repetitive-sentence-leak");
-  if (body.some(paragraph => /\.\.\.|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦|&[a-z]+;|skip to main content|advertisement|sign up|newsletter/i.test(paragraph))) {
+  if (body.some(paragraph => /\.\.\.|Ã¢â‚¬Â¦|&[a-z]+;|skip to main content|advertisement|sign up|newsletter/i.test(paragraph))) {
     issues.push("copied-or-noisy-source-fragment");
   }
   const uniqueParagraphs = body.filter((paragraph, index, all) => all.findIndex(item => newsLabTextOverlap(item, paragraph) >= 0.78) === index);
@@ -35126,7 +35181,7 @@ function newsLabDirectCeHeadlineFromSource(story = {}) {
   if (/china/.test(lower) && /space race|space/.test(lower)) {
     return "China Space Ambitions Test Global Competition";
   }
-  if (/ocean temperatures|el ni[ÃƒÂ±n]o|record highs/.test(lower)) {
+  if (/ocean temperatures|el ni[Ã±n]o|record highs/.test(lower)) {
     return "Record Ocean Temperatures Raise Climate Concerns";
   }
   if (/dangerous heat|heat wave|extreme heat/.test(lower)) {
@@ -43079,7 +43134,7 @@ if (isSiteScheduledContentWorkerProcess) {
     }
   }, 60000);
 } else if (isNewsLabImageWorkerProcess) {
-  console.log(`[image-worker] config liveImages=${newsLabLiveImageSearch} hasPexelsKey=${Boolean(pexelsApiKey)} hasPixabayKey=${Boolean(pixabayApiKey)} hasLocalPexelsAssets=${publicAssetExists("./assets/pexels/newsroom-general.jpg")}`);
+  console.log(`[image-worker] config liveImages=${newsLabLiveImageSearch} hasPexelsKey=${Boolean(pexelsApiKey)} hasPixabayKey=${Boolean(pixabayApiKey)} hasLocalPexelsAssets=${publicAssetExists("/assets/pexels/newsroom-general.jpg")}`);
   ensureDataFiles();
   const reason = process.env.CE_NEWS_LAB_IMAGE_WORKER_REASON || "manual-one-shot-image-improvement";
   writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "running", lastReason: reason, startedAt: new Date().toISOString() });

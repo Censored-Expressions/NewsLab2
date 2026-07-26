@@ -107,7 +107,7 @@ function renderStory(story = {}) {
       ${shareMarkup(story)}
     </div>
     <figure class="news-lab-article-image">
-      <img src="${escapeHtml(safeUrl(image.primary || image.fallback || "./assets/newsroom-hero.png"))}" data-fallback-src="${escapeHtml(safeUrl(image.fallback || "./assets/newsroom-hero.png"))}" alt="${escapeHtml(image.alt || "")}" />
+      <img src="${escapeHtml(safeUrl(image.primary || image.fallback || "/assets/newsroom-hero.png"))}" data-fallback-src="${escapeHtml(safeUrl(image.fallback || "/assets/newsroom-hero.png"))}" alt="${escapeHtml(image.alt || "")}" />
       <figcaption>${escapeHtml(image.credit || "")}</figcaption>
     </figure>
     <section class="news-lab-article-body">

@@ -1,4 +1,4 @@
-﻿const grid = document.querySelector("[data-news-lab-grid]");
+const grid = document.querySelector("[data-news-lab-grid]");
 const statusEl = document.querySelector("[data-news-lab-status]");
 const refreshButtons = document.querySelectorAll("[data-refresh-news-lab]");
 const sourceStoryCount = document.querySelector("[data-source-story-count]");
@@ -257,8 +257,8 @@ function visibleStories() {
 
 function storyCard(story, index) {
   const image = story.image || {};
-  const imageUrl = safeUrl(image.primary || image.fallback || "./assets/newsroom-hero.png");
-  const fallback = safeUrl(image.fallback || "./assets/newsroom-hero.png");
+  const imageUrl = safeUrl(image.primary || image.fallback || "/assets/newsroom-hero.png");
+  const fallback = safeUrl(image.fallback || "/assets/newsroom-hero.png");
   const summary = story.summary || (story.body || [])[0] || "Original Censored Expressions reporting is being prepared.";
   const originalDate = story.originalPublishedAt || story.generatedAt;
   const updateDate = story.boardVisibility?.latestUpdateAt || story.lastUpdatedAt || "";
