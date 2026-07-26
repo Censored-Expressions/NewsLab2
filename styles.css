@@ -5665,3 +5665,170 @@ h3 {
   border: 0 !important;
 }
 
+/* News Lab utility panel scale refinement: keep style, reduce dominance. */
+.news-lab-page .workspace {
+  grid-template-columns: 220px minmax(0, 1fr) minmax(300px, 360px);
+  gap: 22px;
+  padding-top: 28px;
+}
+
+.news-lab-page .news-lab-search-panel {
+  min-height: 430px;
+  padding: clamp(24px, 3vw, 38px);
+}
+
+.news-lab-page .news-lab-search-panel .section-head {
+  margin-bottom: 34px;
+}
+
+.news-lab-page .news-lab-search-panel .eyebrow {
+  margin-bottom: 18px;
+  font-size: 0.82rem;
+}
+
+.news-lab-page .news-lab-search-panel h2 {
+  max-width: 600px;
+  font-size: clamp(2.45rem, 4.2vw, 4rem);
+  line-height: 1;
+}
+
+.news-lab-page .news-lab-search-panel h2::after {
+  width: 64px;
+  height: 4px;
+  margin-top: 28px;
+}
+
+.news-lab-page .news-lab-search-panel::after {
+  right: 10%;
+  top: 12%;
+  font-size: clamp(6.8rem, 10vw, 10rem);
+}
+
+.news-lab-page .news-lab-search-panel .site-search-form {
+  width: min(100%, 640px);
+  grid-template-columns: minmax(0, 1fr) 58px;
+  padding: 6px;
+}
+
+.news-lab-page .news-lab-search-panel .site-search-form input {
+  min-height: 50px;
+  padding-left: 58px;
+  font-size: clamp(0.94rem, 1vw, 1.08rem);
+}
+
+.news-lab-page .news-lab-search-panel .site-search-form::before {
+  width: 18px;
+  height: 18px;
+  margin-left: 20px;
+  border-width: 3px;
+}
+
+.news-lab-page .news-lab-search-panel .search-arrow-button {
+  width: 50px;
+  height: 50px;
+}
+
+.news-lab-page .market-snapshot-rail {
+  padding: 22px;
+}
+
+.news-lab-page .market-snapshot-rail .section-head,
+.news-lab-page .market-snapshot-head {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.news-lab-page .market-snapshot-rail .eyebrow {
+  font-size: 0.9rem;
+}
+
+.news-lab-page .market-snapshot-time {
+  font-size: 0.78rem;
+}
+
+.news-lab-page .market-search-form {
+  grid-template-columns: minmax(0, 1fr) 42px;
+  margin-bottom: 18px;
+  padding: 5px;
+}
+
+.news-lab-page .market-search-form input {
+  min-height: 44px;
+  padding-left: 48px;
+  font-size: 0.88rem;
+}
+
+.news-lab-page .market-search-form::before {
+  width: 15px;
+  height: 15px;
+  margin-left: 17px;
+}
+
+.news-lab-page .market-search-button {
+  width: 42px;
+  height: 42px;
+}
+
+.news-lab-page .market-snapshot-rail .market-snapshot-grid {
+  max-height: 330px;
+}
+
+.news-lab-page .market-snapshot-rail .market-snapshot-column {
+  margin-bottom: 12px;
+}
+
+.news-lab-page .market-snapshot-rail .market-snapshot-column h3 {
+  margin-bottom: 4px;
+  font-size: 0.72rem;
+}
+
+.news-lab-page .market-snapshot-rail .market-quote {
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 10px;
+  min-height: 60px;
+  padding: 9px 0;
+}
+
+.news-lab-page .market-snapshot-rail .market-quote-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.news-lab-page .market-snapshot-rail .market-quote-icon::before {
+  width: 12px;
+  height: 12px;
+  border-width: 3px;
+}
+
+.news-lab-page .market-snapshot-rail .market-quote-label {
+  font-size: 0.96rem;
+}
+
+.news-lab-page .market-snapshot-rail .market-quote strong {
+  font-size: 0.95rem;
+}
+
+.news-lab-page .market-snapshot-rail .market-change-toggle {
+  font-size: 0.82rem;
+}
+
+.news-lab-page .market-snapshot-rail .market-quote small:not(.market-direction-label) {
+  font-size: 0.58rem;
+}
+
+.news-lab-page .market-snapshot-rail::after {
+  width: 14px;
+  height: 14px;
+  margin-top: 10px;
+}
+
+@media (max-width: 980px) {
+  .news-lab-page .news-lab-search-panel {
+    min-height: 300px;
+  }
+
+  .news-lab-page .news-lab-search-panel h2 {
+    font-size: clamp(2.1rem, 12vw, 3.2rem);
+  }
+}
+
