@@ -19870,7 +19870,7 @@ function siteSearchResults(query = "", currentStories = []) {
 function newsLabGeneratedSearchResults(query = "", newsLabPayload = null) {
   const terms = searchTerms(query);
   if (!terms.length || !newsLabPayload) return [];
-  return (newsLabPayload.ownedStories || [])
+  return newsLabAllSearchablePayloadStories(newsLabPayload)
     .map(story => normalizeSearchResult({
       title: story.title,
       source: "CE Media",
@@ -19887,7 +19887,7 @@ function newsLabContextSourceSearchResults(query = "", newsLabPayload = null) {
   const terms = searchTerms(query);
   if (!terms.length || !newsLabPayload) return [];
   const contextRecords = [];
-  (newsLabPayload.ownedStories || []).forEach(story => {
+  newsLabAllSearchablePayloadStories(newsLabPayload).forEach(story => {
     const ceTitle = story.title || "";
     const storyUrl = `./news-lab-story.html?id=${encodeURIComponent(story.id || story.title || "story")}`;
     const addRecord = (source = {}, defaults = {}) => {
@@ -23752,16 +23752,21 @@ function newsLabApplyCurrentBoardPolicy(payload = {}) {
     .filter(story => story.boardVisibility?.visible))
     .slice(0, newsLabOwnedStoryLimit);
   const expiredStories = stories.filter(story => !story.boardVisibility?.visible);
+  const searchableArchiveStories = newsLabDedupePublicStoriesPreferFull([
+    ...(Array.isArray(payload.searchableArchiveStories) ? payload.searchableArchiveStories : []),
+    ...expiredStories
+  ]).slice(0, Math.max(newsLabOwnedStoryLimit, Number(process.env.CE_NEWS_LAB_SEARCH_ARCHIVE_LIMIT || 600)));
   return {
     ...payload,
     ownedStories: visibleStories,
+    searchableArchiveStories,
     boardDatePolicy: {
       active: true,
       currentDateKey: newsLabTodayDateKey(),
       visibleCount: visibleStories.length,
       currentVisibleCount: visibleStories.filter(story => story.boardVisibility?.reason === "original-published-today" || story.boardVisibility?.reason === "current-significant-factual-update").length,
       retainedSevenDayCount: visibleStories.filter(story => story.boardVisibility?.reason === "approved-story-within-seven-day-board-window").length,
-      expiredSearchableArchiveCount: expiredStories.length,
+      expiredSearchableArchiveCount: searchableArchiveStories.length,
       boardLimit: newsLabOwnedStoryLimit,
       retentionDays: Math.max(1, Number(process.env.CE_NEWS_LAB_BOARD_RETENTION_DAYS || 7)),
       rule: "New approved articles add to the board instead of replacing older approved articles. Same-story updates replace the prior tile. Articles leave news tabs only after the 7-day board window expires or the board reaches its limit; expired articles remain searchable."
@@ -24080,6 +24085,51 @@ function newsLabNormalizeCategoryBeforeEditor(story = {}) {
   };
 }
 
+function newsLabMergeDurableStoryMetadata(candidate = {}, existing = {}) {
+  if (!existing || typeof existing !== "object") return candidate;
+  const existingOriginal = newsLabStoryOriginalPublishedAt(existing) || existing.originalPublishedAt || existing.publishedAt || "";
+  const candidateOriginal = newsLabStoryOriginalPublishedAt(candidate) || candidate.originalPublishedAt || candidate.publishedAt || "";
+  const originalPublishedAt = newsLabEarliestValidDate([existingOriginal, candidateOriginal]) || existingOriginal || candidateOriginal || "";
+  const updateTimes = [
+    candidate.lastUpdatedAt,
+    candidate.updatedAt,
+    candidate.storyEvolution?.latestUpdateAt,
+    existing.lastUpdatedAt,
+    existing.updatedAt
+  ].map(newsLabValidStoryDateValue).filter(Boolean).sort();
+  const latestUpdateAt = updateTimes[updateTimes.length - 1] || "";
+  const updatesByKey = new Map();
+  [...(existing.storyUpdates || []), ...(candidate.storyUpdates || [])].forEach(update => {
+    if (!update || typeof update !== "object") return;
+    const key = `${update.updatedAt || update.latestUpdateAt || ""}:${cleanArticleText(update.title || update.summary || "", 140).toLowerCase()}`;
+    if (!key.trim()) return;
+    updatesByKey.set(key, update);
+  });
+  return {
+    ...candidate,
+    originalPublishedAt,
+    publishedAt: originalPublishedAt || candidate.publishedAt || existing.publishedAt || "",
+    generatedAt: existing.generatedAt || candidate.generatedAt || originalPublishedAt || "",
+    createdAt: existing.createdAt || candidate.createdAt || originalPublishedAt || "",
+    updatedAt: latestUpdateAt || candidate.updatedAt || existing.updatedAt || "",
+    lastUpdatedAt: latestUpdateAt || candidate.lastUpdatedAt || existing.lastUpdatedAt || "",
+    storyUpdates: [...updatesByKey.values()].slice(-10),
+    publicationContinuity: {
+      ...(existing.publicationContinuity || {}),
+      originalPublishDatePreserved: Boolean(originalPublishedAt),
+      preservedAt: new Date().toISOString(),
+      rule: "Same-event rebuilds keep the original CE publish date. New facts are recorded as updates instead of republishing the article with today's date."
+    }
+  };
+}
+
+function newsLabAllSearchablePayloadStories(payload = {}) {
+  return newsLabDedupePublicStoriesPreferFull([
+    ...(Array.isArray(payload.ownedStories) ? payload.ownedStories : []),
+    ...(Array.isArray(payload.searchableArchiveStories) ? payload.searchableArchiveStories : []),
+    ...(Array.isArray(payload.archiveStories) ? payload.archiveStories : [])
+  ]);
+}
 function newsLabHardMergePublicStories(stories = []) {
   const ranked = [...(Array.isArray(stories) ? stories : [])]
     .filter(newsLabCompleteArticleStory)
@@ -24090,7 +24140,14 @@ function newsLabHardMergePublicStories(stories = []) {
     const key = newsLabHardDuplicateEventKey(story) || newsLabApprovedStoryMergeKey(story) || newsLabStoryMergeAuditKey(story);
     if (!key) return;
     const existing = byKey.get(key);
-    if (!existing || newsLabStoryReplacementRank(story) > newsLabStoryReplacementRank(existing)) byKey.set(key, story);
+    if (!existing) {
+      byKey.set(key, story);
+      return;
+    }
+    const candidate = newsLabStoryReplacementRank(story) > newsLabStoryReplacementRank(existing)
+      ? newsLabMergeDurableStoryMetadata(story, existing)
+      : newsLabMergeDurableStoryMetadata(existing, story);
+    byKey.set(key, candidate);
   });
   return newsLabSortByCoveragePopularity([...byKey.values()]);
 }
@@ -24266,7 +24323,7 @@ function recordNewsLabBreakingBriefFollowups(stories = [], reason = "public-cach
 }
 
 function mergeNewsLabApprovedStories(newStories = [], previousPayload = null) {
-  const previousStories = Array.isArray(previousPayload?.ownedStories) ? previousPayload.ownedStories : [];
+  const previousStories = newsLabAllSearchablePayloadStories(previousPayload || {});
   const rescuedShelf = readJsonFile(newsLabRescuedApprovedShelfFile, { ownedStories: [] });
   const rescuedStories = Array.isArray(rescuedShelf?.ownedStories) ? rescuedShelf.ownedStories : [];
   const merged = [];
@@ -24304,7 +24361,7 @@ function newsLabStoryMergeAuditKey(story = {}) {
 }
 
 function newsLabPublicationOutcomeAudit(approvedStories = [], previousPayload = null, finalStories = []) {
-  const previousStories = Array.isArray(previousPayload?.ownedStories) ? previousPayload.ownedStories : [];
+  const previousStories = newsLabAllSearchablePayloadStories(previousPayload || {});
   const previousIds = new Set(previousStories.map(newsLabPublicStoryVisibleKey).filter(Boolean));
   const finalIds = new Set(finalStories.map(newsLabPublicStoryVisibleKey).filter(Boolean));
   const previousMerge = new Map(previousStories.map(story => [newsLabStoryMergeAuditKey(story), story]).filter(([key]) => key));
@@ -43413,6 +43470,9 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
 
 
 

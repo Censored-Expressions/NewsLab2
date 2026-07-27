@@ -55,9 +55,9 @@
       - key: CE_WORKER_CPU_GUARD
         value: "true"
       - key: CE_WORKER_MAX_COLLECTORS
-        value: "3"
+        value: "4"
       - key: CE_WORKER_COLLECTOR_ROTATION_MS
-        value: "180000"
+        value: "120000"
       - key: CE_NEWS_LAB_MICRO_SOURCE_LIMIT
         value: "48"
       - key: CE_NEWS_LAB_MICRO_CLUSTER_LIMIT
@@ -110,6 +110,8 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
+
 
 
 
