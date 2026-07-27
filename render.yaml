@@ -70,6 +70,12 @@
         value: "75000"
       - key: CE_NEWS_LAB_WORKER_FULL_READS
         value: "true"
+      - key: CE_NEWS_LAB_WORKER_ONCE_FULL_READS
+        value: "true"
+      - key: CE_NEWS_LAB_WORKER_ONCE_FULL_READ_BUDGET_MS
+        value: "3500"
+      - key: CE_NEWS_LAB_WORKER_ONCE_ARTICLE_TIMEOUT_MS
+        value: "2200"
       - key: CE_NEWS_LAB_WORKER_LIVE_IMAGES
         value: "false"
       - key: CE_WORKER_MIN_COLLECTORS
@@ -110,6 +116,8 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
+
 
 
 

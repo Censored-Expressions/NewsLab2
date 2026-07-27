@@ -27041,10 +27041,10 @@ function startNewsLabWorkerProcess(reason = "startup", options = {}) {
         CE_NEWS_LAB_WORKER_ONCE_MEMORY_LIMIT: process.env.CE_NEWS_LAB_WORKER_ONCE_MEMORY_LIMIT || "12",
         CE_NEWS_LAB_MICRO_CLUSTER_LIMIT: process.env.CE_NEWS_LAB_WORKER_ONCE_CLUSTER_LIMIT || "7",
         CE_NEWS_LAB_MICRO_FULL_READ_LIMIT: process.env.CE_NEWS_LAB_WORKER_ONCE_FULL_READ_LIMIT || "2",
-        CE_NEWS_LAB_MICRO_FULL_READ_BUDGET_MS: process.env.CE_NEWS_LAB_WORKER_ONCE_FULL_READ_BUDGET_MS || "1800",
-        CE_NEWS_LAB_MICRO_ARTICLE_TIMEOUT_MS: process.env.CE_NEWS_LAB_WORKER_ONCE_ARTICLE_TIMEOUT_MS || "1400",
+        CE_NEWS_LAB_MICRO_FULL_READ_BUDGET_MS: process.env.CE_NEWS_LAB_WORKER_ONCE_FULL_READ_BUDGET_MS || "3500",
+        CE_NEWS_LAB_MICRO_ARTICLE_TIMEOUT_MS: process.env.CE_NEWS_LAB_WORKER_ONCE_ARTICLE_TIMEOUT_MS || "2200",
         CE_NEWS_LAB_WORKER_ONCE_FINISH_MODE: process.env.CE_NEWS_LAB_WORKER_ONCE_FINISH_MODE || "true",
-        CE_NEWS_LAB_WORKER_ONCE_FULL_READS: process.env.CE_NEWS_LAB_WORKER_ONCE_FULL_READS || "false",
+        CE_NEWS_LAB_WORKER_ONCE_FULL_READS: process.env.CE_NEWS_LAB_WORKER_ONCE_FULL_READS || "true",
         CE_NEWS_LAB_WORKER_ONCE_LIVE_IMAGES: process.env.CE_NEWS_LAB_WORKER_ONCE_LIVE_IMAGES || "false",
         CE_NEWS_LAB_IMAGE_LOOKUP_MS: process.env.CE_NEWS_LAB_WORKER_ONCE_IMAGE_LOOKUP_MS || "500",
         CE_NEWS_LAB_PRODUCTION_CATCHUP_MAX: "1"
@@ -30294,6 +30294,16 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
   let upgraded = 0;
   let held = 0;
   let unchanged = 0;
+  const imageDiagnostics = {
+    storiesNeedingImages: 0,
+    publisherImages: 0,
+    sourceImageCandidates: 0,
+    liveSearchCandidates: 0,
+    pexelsMatches: 0,
+    pixabayMatches: 0,
+    placeholderImages: 0,
+    fallbacks: 0
+  };
   const generationQueueEnabled = process.env.CE_NEWS_LAB_GENERATED_IMAGE_QUEUE !== "false";
   const generatedImageQueueStories = [];
   const nextStories = [];
@@ -30312,9 +30322,19 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     const beforeScore = newsLabImageQualityScore(storyContext, currentImage);
     const candidates = [];
     const sourceCandidate = newsLabNewsDataImageCandidate(storyContext);
-    if (sourceCandidate) candidates.push({ image: sourceCandidate, source: "newsdata-source-reviewed" });
+    if (sourceCandidate) {
+      imageDiagnostics.publisherImages += 1;
+      imageDiagnostics.sourceImageCandidates += 1;
+      candidates.push({ image: sourceCandidate, source: "newsdata-source-reviewed" });
+    }
     const liveCandidate = await boundedNewsLabImageForStory(storyContext, currentImage, usedPhotoIds);
-    if (liveCandidate) candidates.push({ image: liveCandidate, source: liveCandidate.source || "live-image-search" });
+    if (liveCandidate) {
+      const liveSourceText = `${liveCandidate.source || ""} ${liveCandidate.license || ""}`;
+      imageDiagnostics.liveSearchCandidates += 1;
+      if (/pexels/i.test(liveSourceText)) imageDiagnostics.pexelsMatches += 1;
+      if (/pixabay/i.test(liveSourceText)) imageDiagnostics.pixabayMatches += 1;
+      candidates.push({ image: liveCandidate, source: liveCandidate.source || "live-image-search" });
+    }
     candidates.push({ image: currentImage, source: "current-image" });
     const ranked = candidates
       .map(candidate => ({ ...candidate, safety: newsLabImageSafety(candidate.image), score: newsLabImageQualityScore(storyContext, candidate.image) }))
@@ -30327,6 +30347,8 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     const blockingFindings = editorFindings.filter(finding => finding.severity === "high" || finding.priority === "high");
     const currentImageText = `${currentImage?.source || ""} ${currentImage?.license || ""} ${currentImage?.credit || ""} ${currentImage?.primary || ""}`;
     const currentIsPlaceholder = /placeholder|local-placeholder|temporary local image|newsroom-hero|creator-bg/i.test(currentImageText);
+    if (currentIsPlaceholder) imageDiagnostics.placeholderImages += 1;
+    if (currentIsPlaceholder || beforeScore < 24) imageDiagnostics.storiesNeedingImages += 1;
     const bestIsLiveLicensed = /^(Pexels|Pixabay)$/i.test(best?.image?.license || "") && /Pexels|Pixabay/i.test(best?.image?.source || "");
     const promoteThreshold = currentIsPlaceholder && bestIsLiveLicensed ? 18 : Math.max(28, beforeScore + 4);
     const shouldPromote = Boolean(best && bestIdentity && bestIdentity !== currentIdentity && best.score >= promoteThreshold && !blockingFindings.length);
@@ -30360,6 +30382,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
           || blockingFindings.length > 0
           || /placeholder|local-placeholder|temporary local image/i.test(currentImageTextForFallback)
         );
+      if (currentIsPlaceholder && !shouldPromote) imageDiagnostics.fallbacks += 1;
       if (shouldQueueGeneratedFallback) {
         generatedImageQueueStories.push({
           ...storyContext,
@@ -30407,7 +30430,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       lookupTimeoutMs: Math.max(800, Number(process.env.CE_NEWS_LAB_IMAGE_LOOKUP_MS || 2200)),
       limit
     },
-    summary: { totalStories: stories.length, reviewed: auditItems.length, upgraded, held, unchanged, generatedImageBriefsQueued: generatedImageQueue?.summary?.queuedItems || 0, generatedImageBriefsAdded: generatedImageQueue?.summary?.addedThisPass || 0, cacheRebuilt: Boolean(cache) },
+    summary: { totalStories: stories.length, reviewed: auditItems.length, upgraded, held, unchanged, ...imageDiagnostics, generatedImageBriefsQueued: generatedImageQueue?.summary?.queuedItems || 0, generatedImageBriefsAdded: generatedImageQueue?.summary?.addedThisPass || 0, cacheRebuilt: Boolean(cache) },
     items: auditItems
   };
   writeJsonFile(newsLabImageImprovementAuditFile, audit);
@@ -30434,7 +30457,7 @@ function newsLabCategory(story = {}) {
   if (/\btrump\b/.test(text) && /\b(irs|lawyer|lawsuit|federal judge|court|subpoena|white house|administration|congress|senate|policy)\b/.test(text)) return "politics";
   if (/\bukraine\b/.test(text) && /\b(russia|moscow|putin|patriot|missile|war|military|weapons|fuel hub|strike)\b/.test(text)) return "world";
   if (/\bgoogle\b/.test(text) && /\b(android|antitrust|eu|european union|fine|appeal|court)\b/.test(text)) return "technology";
-  if (/b-52s|music festival|festival set|concert|violent storm forces evacuation/.test(focusText)) return "entertainment";
+  if (/b-52s|music festival|festival set|concert|violent storm forces evacuation/.test(text)) return "entertainment";
   if (/fatal|killed|injured|charged|warrant|highway patrol|police|sheriff|mph|slammed into|hit tree|crash|collision|homicide|shooting|arrested|weather|forecast|storm|flood|outage|fire|warehouse|smoke|shelter-in-place|beach hazard|rip current|sneaker wave|heat advisory|heat dome|rain chances|tropical development|saharan dust/.test(text)) return "local";
   if (/movie|music|celebrity|actor|actress|artist|hollywood|streaming|culture|film|television|photographer|photography|concert|festival|tribute|father's day|late husband|late wife|katy perry|justin trudeau|famous exes|van der beek|clive davis|diane warren|rolling stones|album|singer|song|label mogul|billboard/.test(text)) return "entertainment";
   if (/\b(sports|world cup|college world series|world series|fifa|soccer|team|coach|playoff|game|match|season|nfl|nba|mlb|nhl|wimbledon|tennis|odds|picks|u\.s\. open|golf|sam burns|wyndham clark|giannis|senior night|players|trade|trading|score|defeated|championship|shootout|goalkeeper|standings|tournament|grizzlies|blazers|morant|desmond bane|jaren jackson|memphis|portland)\b/.test(text)) return "sports";
@@ -43470,6 +43493,9 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
 
 
 
