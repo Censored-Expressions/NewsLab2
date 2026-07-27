@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   color-scheme: dark;
   --bg: #060606;
   --panel: #111;
@@ -5228,7 +5228,7 @@ h3 {
 .news-lab-page .news-lab-search-panel .site-search-form {
   width: min(100%, 760px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 70px;
+  grid-template-columns: minmax(0, 1fr) 140px;
   gap: 0;
   align-items: center;
   padding: 8px;
@@ -5255,7 +5255,7 @@ h3 {
   grid-column: 1;
   grid-row: 1;
   min-height: 58px;
-  padding: 0 18px 0 68px;
+  padding: 0 24px 0 68px;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -5603,7 +5603,7 @@ h3 {
   }
 
   .news-lab-page .news-lab-search-panel .site-search-form {
-    grid-template-columns: minmax(0, 1fr) 54px;
+    grid-template-columns: minmax(0, 1fr) 82px;
     padding: 6px;
   }
 
@@ -6124,7 +6124,7 @@ h3 {
   }
 
   .news-lab-page .news-lab-search-panel h2::after {
-    width: 46px;
+    min-width: 70px;
     height: 3px;
     margin-top: 14px;
   }
@@ -6193,7 +6193,7 @@ h3 {
 
 /* Market Pulse search fit fix: prevent button text from clipping in compact rail. */
 .news-lab-page .market-search-form {
-  grid-template-columns: minmax(0, 1fr) 54px;
+  grid-template-columns: minmax(0, 1fr) 82px;
   overflow: hidden;
 }
 
@@ -6227,21 +6227,115 @@ h3 {
 
 @media (min-width: 1181px) {
   .news-lab-page .market-search-form {
-    grid-template-columns: minmax(0, 1fr) 48px;
+    grid-template-columns: minmax(0, 1fr) 82px;
   }
 
   .news-lab-page .market-search-button {
-    width: 48px;
+    min-width: 76px;
   }
 }
 
 @media (max-width: 520px) {
   .news-lab-page .market-search-form {
-    grid-template-columns: minmax(0, 1fr) 46px;
+    grid-template-columns: minmax(0, 1fr) 76px;
   }
 
   .news-lab-page .market-search-button {
-    width: 46px;
+    min-width: 70px;
   }
 }
 
+/* Search button fit refinement: keep labels readable in News Lab utility forms. */
+.news-lab-page .news-lab-search-panel .search-arrow-button span,
+.news-lab-page .market-search-button span {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: nowrap;
+}
+.news-lab-page .news-lab-search-panel .search-arrow-button::before,
+.news-lab-page .news-lab-search-panel .search-arrow-button::after,
+.news-lab-page .market-search-button::before,
+.news-lab-page .market-search-button::after {
+  content: none;
+}
+@media (max-width: 520px) {
+  .news-lab-page .news-lab-search-panel .site-search-form {
+    grid-template-columns: minmax(0, 1fr) 76px;
+  }
+  .news-lab-page .news-lab-search-panel .search-arrow-button {
+    min-width: 68px;
+    padding: 0 10px;
+    font-size: 0.82rem;
+  }
+  .news-lab-page .market-search-form {
+    grid-template-columns: minmax(0, 1fr) 74px;
+  }
+  .news-lab-page .market-search-button {
+    min-width: 68px;
+    padding: 0 8px;
+    font-size: 0.68rem;
+  }
+}
+
+/* Final search button sizing: article search gets a wider label button, Market Pulse keeps its label visible. */
+.news-lab-page .news-lab-search-panel .site-search-form {
+  grid-template-columns: minmax(0, 1fr) 140px;
+}
+.news-lab-page .news-lab-search-panel .search-arrow-button {
+  width: auto;
+  min-width: 116px;
+  height: 58px;
+  padding: 0 24px;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.news-lab-page .market-search-form {
+  grid-template-columns: minmax(0, 1fr) 84px;
+}
+.news-lab-page .market-search-button {
+  width: auto;
+  min-width: 78px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.news-lab-page .market-search-button span {
+  font-size: inherit;
+}
+@media (max-width: 760px) {
+  .news-lab-page .news-lab-search-panel .site-search-form {
+    grid-template-columns: minmax(0, 1fr) 96px;
+  }
+  .news-lab-page .news-lab-search-panel .search-arrow-button {
+    min-width: 84px;
+    height: 44px;
+    padding: 0 14px;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 520px) {
+  .news-lab-page .news-lab-search-panel .site-search-form {
+    grid-template-columns: minmax(0, 1fr) 78px;
+  }
+  .news-lab-page .news-lab-search-panel .search-arrow-button {
+    min-width: 70px;
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+  .news-lab-page .market-search-form {
+    grid-template-columns: minmax(0, 1fr) 74px;
+  }
+  .news-lab-page .market-search-button {
+    min-width: 68px;
+    padding: 0 8px;
+    font-size: 0.66rem;
+  }
+}
