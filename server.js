@@ -19994,14 +19994,74 @@ function newsLabTodayDateKey() {
   return newsLabLocalDateKey(new Date().toISOString());
 }
 
+function newsLabValidStoryDateValue(value = "") {
+  if (!value) return "";
+  const time = new Date(value).getTime();
+  if (!time || Number.isNaN(time)) return "";
+  const now = Date.now();
+  if (time > now + 6 * 60 * 60 * 1000) return "";
+  return new Date(time).toISOString();
+}
+
+function newsLabEarliestValidDate(values = []) {
+  const dated = values
+    .map(value => newsLabValidStoryDateValue(value))
+    .filter(Boolean)
+    .map(value => ({ value, time: new Date(value).getTime() }))
+    .filter(item => item.time && !Number.isNaN(item.time))
+    .sort((a, b) => a.time - b.time);
+  return dated[0]?.value || "";
+}
+
+function newsLabStorySourceDateCandidates(story = {}) {
+  const candidates = [];
+  const add = value => {
+    const normalized = newsLabValidStoryDateValue(value);
+    if (normalized) candidates.push(normalized);
+  };
+  add(story.originalPublishedAt);
+  add(story.firstReportedAt);
+  add(story.firstSeenAt);
+  add(story.publishedAt);
+  add(story.published);
+  add(story.date);
+  add(story.originalArticle?.originalPublishedAt);
+  add(story.originalArticle?.firstSeenAt);
+  add(story.originalArticle?.publishedAt);
+  add(story.originalArticle?.published);
+  (story.sources || []).forEach(source => {
+    add(source.firstReportedAt);
+    add(source.firstSeenAt);
+    add(source.publishedAt);
+    add(source.published);
+    add(source.pubDate);
+    add(source.date);
+    add(source.updatedAt);
+  });
+  const dossier = story.storyDossier || story.writerDossierInput || {};
+  (dossier.sourcePool || []).forEach(source => {
+    add(source.firstReportedAt);
+    add(source.firstSeenAt);
+    add(source.publishedAt);
+    add(source.published);
+    add(source.pubDate);
+    add(source.updatedAt);
+  });
+  (dossier.timeline || dossier.historicalTimeline || []).forEach(item => add(item.at || item.date || item.publishedAt || item.firstSeenAt));
+  (story.storyEvolution?.timeline || []).forEach(item => add(item.at || item.date || item.publishedAt || item.firstSeenAt));
+  return candidates;
+}
+
 function newsLabStoryOriginalPublishedAt(story = {}) {
-  return story.originalPublishedAt
-    || story.originalArticle?.originalPublishedAt
-    || story.originalArticle?.generatedAt
-    || story.generatedAt
-    || story.publishedAt
-    || story.published
-    || "";
+  const sourceFirstDate = newsLabEarliestValidDate(newsLabStorySourceDateCandidates(story));
+  if (sourceFirstDate) return sourceFirstDate;
+  return newsLabEarliestValidDate([
+    story.generatedAt,
+    story.createdAt,
+    story.savedAt,
+    story.updatedAt,
+    story.lastUpdatedAt
+  ]);
 }
 
 function newsLabSignificantFactualUpdate(update = {}) {
@@ -30010,8 +30070,8 @@ function newsLabGeneratedImagePromptText(value = "", maxLength = 260) {
   return cleanArticleText(String(value || ""), maxLength)
     .replace(/’|‘|â€™|â€˜/g, "'")
     .replace(/“|”|â€œ|â€/g, '"')
-    .replace(/–|—|â€“|â€�?/g, "-")
-    .replace(/�|â|…/g, "")
+    .replace(/–|—|â€“|â€�?/g, "-")
+    .replace(/�|â|…/g, "")
     .replace(/[^\x20-\x7E]/g, "")
     .replace(/\s+/g, " ")
     .replace(/\band mo\.\s*/gi, "")
@@ -32179,7 +32239,27 @@ function newsLabBuildHistoricalContextEngine(storyDossier = {}, stories = [], op
     ? 72
     : category === "sports" || category === "entertainment" ? 24 : 48;
   const thresholds = policy.contextThresholds || { articleEligible: 72, dossierMemory: 55, rejectBelow: 40 };
-  const candidates = (stories || [])
+  const publishedHistoryPayload = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
+  const searchableHistoryPayload = runtimeState.newsLabSearchPayload && Array.isArray(runtimeState.newsLabSearchPayload.ownedStories)
+    ? runtimeState.newsLabSearchPayload
+    : { ownedStories: [] };
+  const historicalMemoryStories = [
+    ...(Array.isArray(publishedHistoryPayload.ownedStories) ? publishedHistoryPayload.ownedStories : []),
+    ...(Array.isArray(searchableHistoryPayload.ownedStories) ? searchableHistoryPayload.ownedStories : [])
+  ]
+    .filter(story => story && (story.title || story.summary || story.articleSummary || (Array.isArray(story.body) && story.body.length)))
+    .map(story => ({
+      ...story,
+      articleSummary: story.articleSummary || story.summary || (Array.isArray(story.body) ? story.body.join(" ") : ""),
+      dossierRole: story.dossierRole || "historical-memory-source",
+      source: story.source || "CE Media archive"
+    }));
+  const candidateStories = [...(stories || []), ...historicalMemoryStories]
+    .filter((story, index, all) => {
+      const key = story.url || story.id || story.topicKey || ((story.source || "") + ":" + (story.title || ""));
+      return key && all.findIndex(item => (item.url || item.id || item.topicKey || ((item.source || "") + ":" + (item.title || ""))) === key) === index;
+    });
+  const candidates = candidateStories
     .filter(story => story && (story.title || story.summary || story.articleSummary))
     .map((story, index) => {
       const text = [story.title, story.summary, story.articleSummary].join(" ");
@@ -37626,8 +37706,11 @@ function newsLabPublicStoryForViewer(story = {}) {
   const publicSources = (story.sources || []).slice(0, 8).map(source => ({
     title: source.title || source.name || "",
     source: source.source || source.provider || source.publisher || "",
-    url: source.url || source.link || ""
+    url: source.url || source.link || "",
+    publishedAt: source.publishedAt || source.published || source.firstSeenAt || ""
   }));
+  const normalizedImage = newsLabNormalizeStoryImage(story, story.image || null);
+  const originalPublishedAt = newsLabStoryOriginalPublishedAt({ ...story, sources: publicSources.length ? publicSources : story.sources });
   return {
     id: story.id || story.storyId || story.eventId || "",
     storyId: story.storyId || story.id || story.eventId || "",
@@ -37641,11 +37724,12 @@ function newsLabPublicStoryForViewer(story = {}) {
     articleSummary: story.articleSummary || story.summary || "",
     body: Array.isArray(story.body) ? story.body : [],
     sources: publicSources,
-    image: story.image || null,
-    imageProvenance: story.imageProvenance || story.image?.provenance || null,
+    image: normalizedImage,
+    imageProvenance: normalizedImage.provenance || story.imageProvenance || story.image?.provenance || null,
     popularity: story.popularity || story.coverageScore || 0,
-    publishedAt: story.publishedAt || story.generatedAt || story.createdAt || "",
-    generatedAt: story.generatedAt || story.publishedAt || story.createdAt || "",
+    originalPublishedAt,
+    publishedAt: originalPublishedAt || story.publishedAt || story.generatedAt || story.createdAt || "",
+    generatedAt: story.generatedAt || story.publishedAt || story.createdAt || originalPublishedAt || "",
     updatedAt: story.updatedAt || story.lastUpdatedAt || "",
     lastUpdatedAt: story.lastUpdatedAt || story.updatedAt || "",
     storyUpdates: Array.isArray(story.storyUpdates) ? story.storyUpdates.slice(0, 6) : [],
@@ -38164,7 +38248,13 @@ function recordNewsLabBrainPipelineLearning(stories = [], pipelineSummary = {}) 
     },
     proceduralMemory: {
       futureUse: "For every future article, diagnose the earliest weak stage in the evidence-context-reasoning-writing-critique-publishing chain, teach that subsystem, and only then ask downstream stages to publish.",
-      interventionNeeded: Boolean(pipelineSummary.earliestWeakStage)
+      interventionNeeded: Boolean(pipelineSummary.earliestWeakStage),
+      reusableRules: [
+        "Original publish date means the earliest credible source/event timestamp, not the CE approval time.",
+        "Historical context is searchable dossier memory; include it only when it materially explains the current event.",
+        "Public stories must normalize image provenance before display and queue CE-generated briefs when licensed images are not specific enough.",
+        "Learner Lexicon and editor memory should convert exact failures into class-level detectors and repair behaviors."
+      ]
     },
     tags: ["news-lab", "brain", "pipeline-intelligence", "self-critique", "publishing"]
   });

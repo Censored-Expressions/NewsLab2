@@ -1,4 +1,4 @@
-const childProcess = require("node:child_process");
+﻿const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -109,6 +109,7 @@ function writeWorkerObservability(reason = "heartbeat") {
       roles
     },
     sync: workerSyncStateSummary(),
+    articlePipeline: workerArticlePipelineSummary(),
     adaptiveRuntime: {
       cpuGuardEnabled: workerCpuGuardEnabled,
       maxCollectorWorkers,
@@ -154,6 +155,59 @@ function workerSyncStateSummary() {
     lastSyncAt: ledger.lastSyncAt || "",
     acceptedKeys: ledger.acceptedKeys || [],
     rejectedKeys: ledger.rejectedKeys || []
+  };
+}
+function summarizeTabCountsFromPayload(payload = {}) {
+  const stories = Array.isArray(payload.ownedStories) ? payload.ownedStories : [];
+  const counts = Object.fromEntries(categories.map(category => [category, 0]));
+  for (const story of stories) {
+    const category = String(story?.category || "top").toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(counts, category)) counts[category] += 1;
+  }
+  counts.top = stories.length;
+  return counts;
+}
+
+function workerArticlePipelineSummary() {
+  const published = readJson(path.join(dataDir, "news-lab-published-payload.json"), { ownedStories: [] });
+  const workerStatus = readJson(path.join(dataDir, "news-lab-worker-status.json"), {});
+  const productivity = readJson(path.join(dataDir, "news-lab-productivity.json"), {});
+  const approval = readJson(path.join(dataDir, "article-approval-intelligence.json"), {});
+  const imageStatus = readJson(path.join(dataDir, "news-lab-image-worker-status.json"), {});
+  const stories = Array.isArray(published.ownedStories) ? published.ownedStories : [];
+  const currentCycle = approval.currentCycle || {};
+  const recovery = approval.recoveryOutput || {};
+  const lastMetrics = workerStatus.lastMetrics || {};
+  const updatedAt = workerStatus.generatedAt || workerStatus.updatedAt || productivity.updatedAt || published.generatedAt || "";
+  const staleMs = updatedAt ? Math.max(0, Date.now() - Date.parse(updatedAt)) : null;
+  return {
+    updatedAt,
+    staleMs,
+    productionStatus: workerStatus.lastStatus || "unknown",
+    productionReason: workerStatus.lastReason || "unknown",
+    buildMs: Number(lastMetrics.buildMs || 0),
+    publicStoryCount: stories.length,
+    tabCounts: summarizeTabCountsFromPayload(published),
+    sourceStoryCount: Number(lastMetrics.sourceStoryCount || published.sourceStoryCount || 0),
+    attempted: Number(lastMetrics.attemptedCount || currentCycle.generatedCandidates || 0),
+    reviewed: Number(lastMetrics.reviewedCount || currentCycle.editorialReviewed || 0),
+    firstPassApproved: Number(currentCycle.firstPassApproved || productivity.lastHour?.approvedArticles || 0),
+    finalApproved: Number(currentCycle.finalApproved || lastMetrics.approvedCount || 0),
+    finalBlocked: Number(currentCycle.finalBlocked || lastMetrics.rejectedCount || 0),
+    repairAttempted: Number(recovery.repairAttempted || currentCycle.approvalRecoveryAttempted || 0),
+    repairPassed: Number(recovery.repairPassed || currentCycle.approvalRecoveryResolved || 0),
+    publishedAfterRepair: Number(recovery.publishedAfterRepair || 0),
+    lastHour: productivity.lastHour || {},
+    imageStatus: {
+      updatedAt: imageStatus.generatedAt || imageStatus.updatedAt || "",
+      totalStories: Number(imageStatus.summary?.totalStories || imageStatus.totalStories || 0),
+      upgraded: Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0),
+      queuedGeneratedBriefs: Number(imageStatus.summary?.generatedImageBriefsQueued || 0)
+    },
+    diagnosis: stories.length < 20 || Number(currentCycle.finalBlocked || 0) > Number(currentCycle.finalApproved || 0)
+      ? "article-output-attention"
+      : "article-output-stable",
+    rule: "Heartbeat must prove article production, approval, repair, and visible publication, not only worker liveness."
   };
 }
 function collectorRoleName(category) {
@@ -534,8 +588,11 @@ setInterval(() => syncWorkerOutputs("scheduled-sync"), workerSyncIntervalMs);
 setInterval(() => {
   writeWorkerObservability("scheduled-heartbeat");
   const syncState = workerSyncStateSummary();
-  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"}`);
+  const articlePipeline = workerArticlePipelineSummary();
+  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} repairPassed=${articlePipeline.repairPassed} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
+
 
 
 
