@@ -177,6 +177,7 @@ function workerArticlePipelineSummary() {
   const stories = Array.isArray(published.ownedStories) ? published.ownedStories : [];
   const currentCycle = approval.currentCycle || {};
   const recovery = approval.recoveryOutput || {};
+  const topBlockers = Array.isArray(approval.topBlockers) ? approval.topBlockers : [];
   const lastMetrics = workerStatus.lastMetrics || {};
   const updatedAt = workerStatus.generatedAt || workerStatus.updatedAt || productivity.updatedAt || published.generatedAt || "";
   const staleMs = updatedAt ? Math.max(0, Date.now() - Date.parse(updatedAt)) : null;
@@ -197,12 +198,27 @@ function workerArticlePipelineSummary() {
     repairAttempted: Number(recovery.repairAttempted || currentCycle.approvalRecoveryAttempted || 0),
     repairPassed: Number(recovery.repairPassed || currentCycle.approvalRecoveryResolved || 0),
     publishedAfterRepair: Number(recovery.publishedAfterRepair || 0),
+    topBlockers: topBlockers.slice(0, 5).map(item => ({
+      reason: item.reason || item.issue || "unknown",
+      count: Number(item.count || 0),
+      repairOwner: item.repairOwner || "unknown",
+      requiredAction: item.requiredAction || item.nextAction || "Route to responsible repair subsystem and resubmit."
+    })),
+    repairHealth: Number(recovery.repairAttempted || currentCycle.approvalRecoveryAttempted || 0) > 0 && Number(recovery.repairPassed || currentCycle.approvalRecoveryResolved || 0) <= 0
+      ? "repair-loop-not-closing"
+      : "repair-loop-measured",
     lastHour: productivity.lastHour || {},
     imageStatus: {
-      updatedAt: imageStatus.generatedAt || imageStatus.updatedAt || "",
+      status: imageStatus.status || imageStatus.lastStatus || "missing-or-not-run",
+      updatedAt: imageStatus.generatedAt || imageStatus.updatedAt || imageStatus.finishedAt || imageStatus.startedAt || "",
       totalStories: Number(imageStatus.summary?.totalStories || imageStatus.totalStories || 0),
+      reviewed: Number(imageStatus.summary?.reviewed || imageStatus.reviewed || 0),
       upgraded: Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0),
-      queuedGeneratedBriefs: Number(imageStatus.summary?.generatedImageBriefsQueued || 0)
+      held: Number(imageStatus.summary?.held || imageStatus.held || 0),
+      unchanged: Number(imageStatus.summary?.unchanged || imageStatus.unchanged || 0),
+      queuedGeneratedBriefs: Number(imageStatus.summary?.generatedImageBriefsQueued || 0),
+      addedGeneratedBriefs: Number(imageStatus.summary?.generatedImageBriefsAdded || 0),
+      needsAttention: !(imageStatus.generatedAt || imageStatus.updatedAt || imageStatus.finishedAt || imageStatus.startedAt) || Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0) <= 0
     },
     diagnosis: stories.length < 20 || Number(currentCycle.finalBlocked || 0) > Number(currentCycle.finalApproved || 0)
       ? "article-output-attention"
@@ -396,7 +412,8 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     writeWorkerSyncLedger(event);
     tuneRuntimeFromSync(event);
     writeWorkerObservability("worker-sync-complete");
-    console.log(`[worker] sync ${event.status}: accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"}`);
+    const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
+    console.log(`[worker] sync ${event.status}: accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
   } catch (error) {
     const event = { type: "worker-sync-error", reason, status: "error", error: error.message || String(error), at: new Date().toISOString(), skipped };
     recordWorkerEvent(event);
@@ -589,8 +606,11 @@ setInterval(() => {
   writeWorkerObservability("scheduled-heartbeat");
   const syncState = workerSyncStateSummary();
   const articlePipeline = workerArticlePipelineSummary();
-  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} repairPassed=${articlePipeline.repairPassed} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
+  const blockerSummary = (articlePipeline.topBlockers || []).slice(0, 3).map(item => `${item.reason}:${item.count}`).join("|") || "none";
+  const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
+  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
 
 
 
