@@ -1552,7 +1552,8 @@ function compactNewsLabPublicStory(story = {}) {
     "publishedAt", "originalPublishedAt", "updatedAt", "generatedAt", "savedAt", "summary", "dek", "lead",
     "body", "paragraphs", "updates", "storyUpdates", "sources", "reportingTrail", "relatedArticles",
     "storyDossier", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence",
-    "confidence", "popularity", "publicationTier", "isBreaking", "status"
+    "confidence", "popularity", "publicationTier", "qualityGate", "editorEnforcement", "contentLaneQuality",
+    "headlineAudit", "publicArticle", "publicHeadlineRepaired", "fallbackCoverage", "isBreaking", "status"
   ];
   const compacted = {};
   keep.forEach(key => {
@@ -25055,6 +25056,7 @@ function newsLabShelfDisplayReadyStory(story = {}) {
   const minimumParagraphs = tier === 1 ? 4 : tier === 2 ? 2 : 1;
   const minimumLength = tier === 1 ? 520 : tier === 2 ? 320 : 220;
   const shelfTierPublishable = publicationTier.publishable === true || story.publicHeadlineRepaired === true;
+  const effectiveQualityScore = Number(story.qualityGate?.score || (shelfTierPublishable ? 70 : 0));
   return Boolean(story && !story.fallbackCoverage)
     && body.length >= minimumParagraphs
     && bodyText.length >= minimumLength
@@ -25062,7 +25064,7 @@ function newsLabShelfDisplayReadyStory(story = {}) {
     && !newsLabPublicDisplayHeadlineUnsafe(story.title || "", story)
     && !shelfLeakDetected
     && !shelfTitleCutOff
-    && Number(story.qualityGate?.score || 0) >= 55
+    && effectiveQualityScore >= 55
     && !issues.includes("instant-fallback")
     && !issues.includes("fast-fallback")
     && !issues.includes("fallback-coverage-needs-deeper-owned-article");

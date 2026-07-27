@@ -1,4 +1,4 @@
-﻿const childProcess = require("node:child_process");
+const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -21,9 +21,11 @@ const pressureFailureThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSU
 const pressureRecoveryThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_RECOVERY_THRESHOLD || 3));
 const pressureDeferMs = Math.max(5 * 60 * 1000, Number(process.env.CE_WORKER_PRESSURE_DEFER_MS || 15 * 60 * 1000));
 const pressureHardDeferMs = Math.max(10 * 60 * 1000, Number(process.env.CE_WORKER_PRESSURE_HARD_DEFER_MS || 30 * 60 * 1000));
+const collectorRotationMs = Math.max(2 * 60 * 1000, Number(process.env.CE_WORKER_COLLECTOR_ROTATION_MS || 5 * 60 * 1000));
 const oneShotChildren = new Map();
 const parkedRoles = new Set();
 let adaptiveCollectorLimit = maxCollectorWorkers;
+let collectorRotationIndex = 0;
 const runtimePressureState = {
   consecutiveSyncFailures: 0,
   consecutiveSyncOk: 0,
@@ -179,9 +181,23 @@ function stopRole(name, reason = "runtime-pressure") {
   }
 }
 
-function rebalanceCollectorWorkers(reason = "adaptive-runtime-optimization") {
+function collectorWindowCategories() {
+  if (!categories.length) return [];
+  const limit = Math.max(1, Math.min(adaptiveCollectorLimit, categories.length));
+  const window = [];
+  for (let index = 0; index < limit; index += 1) {
+    window.push(categories[(collectorRotationIndex + index) % categories.length]);
+  }
+  return window;
+}
+
+function rebalanceCollectorWorkers(reason = "adaptive-runtime-optimization", options = {}) {
   if (!workerCpuGuardEnabled) return;
-  const wanted = new Set(categories.slice(0, adaptiveCollectorLimit).map(collectorRoleName));
+  if (options.rotate && categories.length > Math.max(1, adaptiveCollectorLimit)) {
+    collectorRotationIndex = (collectorRotationIndex + Math.max(1, adaptiveCollectorLimit)) % categories.length;
+  }
+  const activeWindow = collectorWindowCategories();
+  const wanted = new Set(activeWindow.map(collectorRoleName));
   for (const category of categories) {
     const roleName = collectorRoleName(category);
     if (!wanted.has(roleName)) {
@@ -194,7 +210,11 @@ function rebalanceCollectorWorkers(reason = "adaptive-runtime-optimization") {
     }
   }
   runtimePressureState.adaptiveCollectorLimit = adaptiveCollectorLimit;
+  runtimePressureState.collectorRotationIndex = collectorRotationIndex;
+  runtimePressureState.activeCollectorWindow = activeWindow;
+  runtimePressureState.nextCollectorRotationAt = new Date(Date.now() + collectorRotationMs).toISOString();
   runtimePressureState.lastActionAt = new Date().toISOString();
+  recordWorkerEvent({ type: "collector-window-rebalanced", reason, activeWindow, adaptiveCollectorLimit, collectorRotationIndex });
 }
 
 function tuneRuntimeFromSync(event = {}) {
@@ -428,8 +448,8 @@ writeWorkerObservability("orchestrator-started");
 console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
 console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency}`);
 
-const enabledCollectorCategories = categories.slice(0, adaptiveCollectorLimit);
-const parkedCollectorCategories = categories.slice(adaptiveCollectorLimit);
+const enabledCollectorCategories = collectorWindowCategories();
+const parkedCollectorCategories = categories.filter(category => !enabledCollectorCategories.includes(category));
 if (parkedCollectorCategories.length) {
   recordWorkerEvent({ type: "collector-workers-parked", categories: parkedCollectorCategories, maxCollectorWorkers });
   console.log(`[worker] parked collectors for CPU guard: ${parkedCollectorCategories.join(",")}`);
@@ -471,6 +491,13 @@ for (const category of enabledCollectorCategories) {
   }, { restartDelayMs: 30000 });
 }
 
+if (workerCpuGuardEnabled && categories.length > Math.max(1, adaptiveCollectorLimit)) {
+  setInterval(() => {
+    rebalanceCollectorWorkers("scheduled-collector-rotation", { rotate: true });
+    writeWorkerObservability("scheduled-collector-rotation");
+  }, collectorRotationMs);
+}
+
 function runDistillation(reason = "worker-orchestrator-scheduled-distillation") {
   spawnOneShot("knowledge-distillation", {
     CE_KNOWLEDGE_DISTILLATION_WORKER: "1",
@@ -507,8 +534,12 @@ setInterval(() => syncWorkerOutputs("scheduled-sync"), workerSyncIntervalMs);
 setInterval(() => {
   writeWorkerObservability("scheduled-heartbeat");
   const syncState = workerSyncStateSummary();
-  console.log(`[worker] heartbeat activeRoles=${children.size} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"}`);
+  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"}`);
 }, 60 * 1000);
+
+
+
+
 
 
 

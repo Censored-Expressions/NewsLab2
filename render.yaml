@@ -54,6 +54,22 @@ services:
         value: "true"
       - key: CE_WORKER_MAX_COLLECTORS
         value: "3"
+      - key: CE_WORKER_COLLECTOR_ROTATION_MS
+        value: "180000"
+      - key: CE_NEWS_LAB_MICRO_SOURCE_LIMIT
+        value: "48"
+      - key: CE_NEWS_LAB_MICRO_CLUSTER_LIMIT
+        value: "10"
+      - key: CE_NEWS_LAB_CATCHUP_SOURCE_LIMIT
+        value: "180"
+      - key: CE_NEWS_LAB_CATCHUP_CLUSTER_LIMIT
+        value: "32"
+      - key: CE_NEWS_LAB_PRODUCTION_BUDGET_MS
+        value: "75000"
+      - key: CE_NEWS_LAB_WORKER_FULL_READS
+        value: "true"
+      - key: CE_NEWS_LAB_WORKER_LIVE_IMAGES
+        value: "false"
       - key: CE_WORKER_MIN_COLLECTORS
         value: "1"
       - key: CE_WORKER_ROLE_STARTUP_STAGGER_MS
@@ -88,6 +104,7 @@ services:
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
 
 
 
