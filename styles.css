@@ -6191,3 +6191,57 @@ h3 {
   }
 }
 
+/* Market Pulse search fit fix: prevent button text from clipping in compact rail. */
+.news-lab-page .market-search-form {
+  grid-template-columns: minmax(0, 1fr) 54px;
+  overflow: hidden;
+}
+
+.news-lab-page .market-search-button {
+  width: 54px;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 0;
+}
+
+.news-lab-page .market-search-button span {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: nowrap;
+  font-size: 0;
+}
+
+.news-lab-page .market-search-button::before {
+  width: 12px;
+  height: 12px;
+  border-width: 3px;
+}
+
+.news-lab-page .market-search-button::after {
+  width: 18px;
+  height: 3px;
+}
+
+@media (min-width: 1181px) {
+  .news-lab-page .market-search-form {
+    grid-template-columns: minmax(0, 1fr) 48px;
+  }
+
+  .news-lab-page .market-search-button {
+    width: 48px;
+  }
+}
+
+@media (max-width: 520px) {
+  .news-lab-page .market-search-form {
+    grid-template-columns: minmax(0, 1fr) 46px;
+  }
+
+  .news-lab-page .market-search-button {
+    width: 46px;
+  }
+}
+
