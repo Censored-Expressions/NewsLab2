@@ -1,4 +1,4 @@
-services:
+﻿services:
   - type: web
     name: censored-expressions-web
     runtime: node
@@ -48,6 +48,8 @@ services:
         value: https://censoredexpressionsmedia.com
       - key: CE_WORKER_SYNC_ENABLED
         value: "true"
+      - key: CE_WORKER_SYNC_TIMEOUT_MS
+        value: "20000"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
       - key: CE_WORKER_CPU_GUARD
@@ -96,6 +98,10 @@ services:
         value: "900000"
       - key: CE_IMAGE_WORKER_INTERVAL_MS
         value: "3600000"
+      - key: CE_NEWS_LAB_IMAGE_LOOKUP_MS
+        value: "3500"
+      - key: CE_NEWS_LAB_IMAGE_WORKER_LIMIT
+        value: "24"
       - key: OPENAI_API_KEY
         sync: false
       - key: PEXELS_API_KEY
@@ -104,6 +110,7 @@ services:
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
 
 
 

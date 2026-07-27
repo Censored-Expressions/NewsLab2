@@ -12,6 +12,7 @@ const workerEvents = [];
 const webSyncBaseUrl = String(process.env.CE_WEB_SYNC_URL || process.env.CE_PUBLIC_SITE_URL || process.env.PUBLIC_SITE_URL || "").replace(/\/+$/, "");
 const workerSyncEnabled = process.env.CE_WORKER_SYNC_ENABLED !== "false" && Boolean(webSyncBaseUrl);
 const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_INTERVAL_MS || 60000));
+const workerSyncTimeoutMs = Math.max(5000, Number(process.env.CE_WORKER_SYNC_TIMEOUT_MS || 20000));
 const workerCpuGuardEnabled = process.env.CE_WORKER_CPU_GUARD !== "false";
 const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECTORS || (workerCpuGuardEnabled ? 4 : 99)));
 const minCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MIN_COLLECTORS || 1));
@@ -150,6 +151,7 @@ function workerSyncStateSummary() {
     hasUrl: Boolean(webSyncBaseUrl),
     hasToken: Boolean(ownerAdminToken),
     intervalMs: workerSyncIntervalMs,
+    timeoutMs: workerSyncTimeoutMs,
     lastStatus: ledger.lastStatus || "never",
     lastReason: ledger.lastReason || "never",
     lastSyncAt: ledger.lastSyncAt || "",
@@ -211,6 +213,9 @@ function workerArticlePipelineSummary() {
     imageStatus: {
       status: imageStatus.status || imageStatus.lastStatus || "missing-or-not-run",
       updatedAt: imageStatus.generatedAt || imageStatus.updatedAt || imageStatus.finishedAt || imageStatus.startedAt || "",
+      liveImageSearch: Boolean(imageStatus.config?.liveImageSearch),
+      hasPexelsKey: Boolean(imageStatus.config?.hasPexelsKey),
+      hasPixabayKey: Boolean(imageStatus.config?.hasPixabayKey),
       totalStories: Number(imageStatus.summary?.totalStories || imageStatus.totalStories || 0),
       reviewed: Number(imageStatus.summary?.reviewed || imageStatus.reviewed || 0),
       upgraded: Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0),
@@ -382,6 +387,8 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     return;
   }
   const endpoint = `${webSyncBaseUrl}/api/news-lab/worker-sync`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), workerSyncTimeoutMs);
   try {
     const response = await fetch(endpoint, {
       method: "POST",
@@ -389,6 +396,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
         "content-type": "application/json",
         "x-owner-admin-token": ownerAdminToken
       },
+      signal: controller.signal,
       body: JSON.stringify({
         reason,
         source: "background-worker-orchestrator",
@@ -415,12 +423,14 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
     console.log(`[worker] sync ${event.status}: accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
   } catch (error) {
-    const event = { type: "worker-sync-error", reason, status: "error", error: error.message || String(error), at: new Date().toISOString(), skipped };
+    const event = { type: "worker-sync-error", reason, status: "error", error: error.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : error.message || String(error), at: new Date().toISOString(), skipped };
     recordWorkerEvent(event);
     writeWorkerSyncLedger(event);
     tuneRuntimeFromSync(event);
     writeWorkerObservability("worker-sync-error");
     console.log(`[worker] sync error: ${event.error}`);
+  } finally {
+    clearTimeout(timeout);
   }
 }
 function spawnRole(name, env = {}, options = {}) {
@@ -608,8 +618,11 @@ setInterval(() => {
   const articlePipeline = workerArticlePipelineSummary();
   const blockerSummary = (articlePipeline.topBlockers || []).slice(0, 3).map(item => `${item.reason}:${item.count}`).join("|") || "none";
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
-  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
+  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
+
+
 
 
 
