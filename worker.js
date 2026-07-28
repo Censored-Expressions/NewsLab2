@@ -301,12 +301,49 @@ function stopRole(name, reason = "runtime-pressure") {
   }
 }
 
+function workerPublicTabCounts() {
+  const counts = Object.fromEntries(categories.map(category => [category, 0]));
+  try {
+    const cache = readJson(path.join(dataDir, "news-lab-api-response-cache.json"), null);
+    const cachedStories = Array.isArray(cache?.responses?.all?.ownedStories) ? cache.responses.all.ownedStories : [];
+    const payload = readJson(path.join(dataDir, "news-lab-published-payload.json"), null);
+    const payloadStories = Array.isArray(payload?.ownedStories) ? payload.ownedStories : [];
+    const stories = cachedStories.length ? cachedStories : payloadStories;
+    stories.forEach(story => {
+      const category = String(story?.category || "").toLowerCase().trim();
+      if (Object.prototype.hasOwnProperty.call(counts, category)) counts[category] += 1;
+    });
+  } catch (error) {
+    recordWorkerEvent({ type: "collector-priority-count-error", error: error.message || String(error) });
+  }
+  return counts;
+}
+
+function workerUnderfilledCollectorCategories(target = 7) {
+  const counts = workerPublicTabCounts();
+  return categories
+    .filter(category => category !== "top")
+    .map(category => ({ category, count: Number(counts[category] || 0), needed: Math.max(0, target - Number(counts[category] || 0)) }))
+    .filter(item => item.needed > 0)
+    .sort((a, b) => b.needed - a.needed || a.count - b.count || a.category.localeCompare(b.category))
+    .map(item => item.category);
+}
+
+function collectorPriorityOrder() {
+  const target = Math.max(1, Number(process.env.CE_NEWS_LAB_TAB_TARGET || 7));
+  const underfilled = workerUnderfilledCollectorCategories(target);
+  const order = [...underfilled, ...categories.filter(category => !underfilled.includes(category))];
+  runtimePressureState.underfilledCollectorPriority = underfilled;
+  return order.length ? order : categories;
+}
+
 function collectorWindowCategories() {
   if (!categories.length) return [];
-  const limit = Math.max(1, Math.min(adaptiveCollectorLimit, categories.length));
+  const orderedCategories = collectorPriorityOrder();
+  const limit = Math.max(1, Math.min(adaptiveCollectorLimit, orderedCategories.length));
   const window = [];
   for (let index = 0; index < limit; index += 1) {
-    window.push(categories[(collectorRotationIndex + index) % categories.length]);
+    window.push(orderedCategories[(collectorRotationIndex + index) % orderedCategories.length]);
   }
   return window;
 }
@@ -794,6 +831,7 @@ setInterval(() => {
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
   console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
 
 
 

@@ -15848,6 +15848,90 @@ function startCreatorDeskLoop() {
   }, creatorDeskCheckMs);
 }
 
+function runContentLaneQualityMaintenance(reason = "scheduled-content-quality-sprint") {
+  ensureDataFiles();
+  const generatedAt = new Date().toISOString();
+  const report = {
+    generatedAt,
+    reason,
+    creatorDesk: { reviewed: 0, repaired: 0 },
+    newsletters: { reviewed: 0, repaired: 0 },
+    rule: "Creator Desk and Newsletter lanes share the same learning system as News Lab: clean repetition, mojibake, incomplete wording, and behind-the-scenes language without changing publication state."
+  };
+  try {
+    const posts = readCreatorPosts();
+    const repairedPosts = posts.map(post => {
+      report.creatorDesk.reviewed += 1;
+      const before = JSON.stringify(post);
+      const reviewed = enforceContentEditor({
+        ...post,
+        html: creatorDeskHtml(post),
+        text: creatorDeskText(post)
+      }, "creator-desk");
+      const next = {
+        ...post,
+        ...reviewed,
+        contentLaneQualityMaintenance: {
+          appliedAt: generatedAt,
+          reason,
+          lane: "creator-desk",
+          rule: "Do not archive or depublish for minor writing defects; repair copy in place and teach the content lane."
+        }
+      };
+      if (JSON.stringify(next) !== before) report.creatorDesk.repaired += 1;
+      return next;
+    });
+    if (report.creatorDesk.repaired) writeCreatorPosts(repairedPosts);
+  } catch (error) {
+    report.creatorDesk.error = error.message || String(error);
+  }
+  try {
+    const newsletters = readJsonFile(newslettersFile, []);
+    if (Array.isArray(newsletters)) {
+      const repairedNewsletters = newsletters.map(issue => {
+        report.newsletters.reviewed += 1;
+        const before = JSON.stringify(issue);
+        const polished = polishNewsletterIssue(issue);
+        const reviewed = enforceContentEditor({
+          ...polished,
+          html: newsletterHtml(polished),
+          text: newsletterText(polished)
+        }, "newsletter");
+        const next = {
+          ...issue,
+          ...reviewed,
+          contentLaneQualityMaintenance: {
+            appliedAt: generatedAt,
+            reason,
+            lane: "newsletter",
+            rule: "Newsletter copy should improve from shared editorial memory without cloning the same intro, transition, or cadence each week."
+          }
+        };
+        if (JSON.stringify(next) !== before) report.newsletters.repaired += 1;
+        return next;
+      });
+      if (report.newsletters.repaired) writeJsonFile(newslettersFile, repairedNewsletters);
+    }
+  } catch (error) {
+    report.newsletters.error = error.message || String(error);
+  }
+  writeJsonFile(path.join(dataDir, "content-lane-quality-sprint-report.json"), report);
+  try {
+    const registry = readJsonFile(writingTechniqueRegistryFile, {}) || {};
+    writeJsonFile(writingTechniqueRegistryFile, {
+      ...registry,
+      contentLaneQualityMaintenance: {
+        ...(registry.contentLaneQualityMaintenance || {}),
+        updatedAt: generatedAt,
+        lastReport: report,
+        lesson: "Writing quality learning must apply to News Lab, Creator Desk, and Newsletter lanes, repairing minor copy defects in place instead of waiting for owner intervention."
+      }
+    });
+  } catch {
+    // Learning write failure should not block scheduled content maintenance.
+  }
+  return report;
+}
 function assessStory(story) {
   const reasons = [];
   let allowed = true;
@@ -15984,7 +16068,10 @@ function classifyStoryCategory(story, source = {}) {
     "microsoft", "apple", "meta", "tesla", "the verge", "techcrunch", "wired"
   ];
 
-  const sportsMatch = sportsWords.some(word => text.includes(word));
+  const videoGameOrAppMatch = /\b(video game|video games|gaming|console|xbox|playstation|nintendo|steam|luna app|prime video|streaming app|app integration|cloud gaming)\b/.test(text);
+  const sportsMatchRaw = sportsWords.some(word => text.includes(word));
+  const sportsSpecificMatch = /\b(world cup|fifa|soccer|football|basketball|baseball|hockey|nfl|nba|mlb|nhl|wnba|ncaa|playoff|match|coach|score|goals|goalkeeper|tennis|wimbledon|u\.s\. open|golf|draft|trade|team standings|championship|tournament)\b/.test(text);
+  const sportsMatch = sportsMatchRaw && (!videoGameOrAppMatch || sportsSpecificMatch);
   const localMatch = localWords.some(word => text.includes(word));
   const entertainmentMatch = entertainmentWords.some(word => text.includes(word));
   const politicsMatch = politicsWords.some(word => text.includes(word));
@@ -15995,6 +16082,8 @@ function classifyStoryCategory(story, source = {}) {
   if (sportsMatch) return "sports";
   if (localMatch) return "local";
   if (entertainmentMatch) return "entertainment";
+  if (sourceCategory === "technology" && !politicsMatch && !worldMatch && !localMatch && !sportsMatch) return "technology";
+  if (sourceCategory === "business" && !politicsMatch && !worldMatch && !localMatch && !sportsMatch) return "business";
   if (technologyMatch && !politicsMatch && !worldMatch && !localMatch && !sportsMatch) return "technology";
   if (businessMatch && !technologyMatch) return "business";
   if (politicsMatch) return "politics";
@@ -16841,6 +16930,42 @@ function newsLabPrioritizeUnderfilledCategoryClusters(clusters = [], limit = new
   return selected.slice(0, limit);
 }
 
+function newsLabPrioritizeUnderfilledStoriesForEditor(stories = [], target = 7) {
+  const underfilled = newsLabUnderfilledPublicCategories(target);
+  if (!underfilled.length) return stories;
+  const selected = [];
+  const used = new Set();
+  const storyKey = story => String(story?.id || story?.topicKey || story?.eventId || story?.title || "");
+  underfilled.forEach(({ category, needed }) => {
+    stories
+      .filter(story => newsLabCategory(story) === category)
+      .slice(0, Math.max(1, Math.min(needed, 4)))
+      .forEach(story => {
+        const key = storyKey(story);
+        if (used.has(key)) return;
+        used.add(key);
+        selected.push({
+          ...story,
+          tabProductionPriority: {
+            ...(story.tabProductionPriority || {}),
+            applied: true,
+            category,
+            neededBeforeCycle: needed,
+            stage: "editor-handoff",
+            rule: "Underfilled public tabs must receive editor-reviewable candidates before global popularity sorting can consume every slot."
+          }
+        });
+      });
+  });
+  stories.forEach(story => {
+    const key = storyKey(story);
+    if (!used.has(key)) {
+      used.add(key);
+      selected.push(story);
+    }
+  });
+  return selected;
+}
 function newsLabTopicKeyFromStories(stories = []) {
   const terms = new Map();
   stories
@@ -31114,12 +31239,15 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     const bestIdentity = newsLabImageIdentity(best?.image || {});
     const editorFindings = best ? newsLabImageEditorFindings({ ...storyContext, image: best.image }, "news-lab") : [];
     const blockingFindings = editorFindings.filter(finding => finding.severity === "high" || finding.priority === "high");
+    const currentFindings = newsLabImageEditorFindings({ ...storyContext, image: currentImage }, "news-lab");
+    const currentBlockingFindings = currentFindings.filter(finding => finding.severity === "high" || finding.priority === "high");
     const currentImageText = `${currentImage?.source || ""} ${currentImage?.license || ""} ${currentImage?.credit || ""} ${currentImage?.primary || ""}`;
     const currentIsPlaceholder = /placeholder|local-placeholder|temporary local image|newsroom-hero|creator-bg/i.test(currentImageText);
+    const publishedImageNeedsRepair = Boolean(story.imagePublicationStatus?.needsRepair || !newsLabPublicImageReady(story) || currentBlockingFindings.length);
     if (currentIsPlaceholder) imageDiagnostics.placeholderImages += 1;
-    if (currentIsPlaceholder || beforeScore < 24) imageDiagnostics.storiesNeedingImages += 1;
+    if (currentIsPlaceholder || beforeScore < 24 || publishedImageNeedsRepair) imageDiagnostics.storiesNeedingImages += 1;
     const bestIsLiveLicensed = /^(Pexels|Pixabay)$/i.test(best?.image?.license || "") && /Pexels|Pixabay/i.test(best?.image?.source || "");
-    const promoteThreshold = currentIsPlaceholder && bestIsLiveLicensed ? 18 : Math.max(28, beforeScore + 4);
+    const promoteThreshold = publishedImageNeedsRepair && bestIsLiveLicensed ? Math.max(16, Math.min(24, beforeScore + 2)) : currentIsPlaceholder && bestIsLiveLicensed ? 18 : Math.max(28, beforeScore + 4);
     const shouldPromote = Boolean(best && bestIdentity && bestIdentity !== currentIdentity && best.score >= promoteThreshold && !blockingFindings.length);
     if (shouldPromote) {
       const promotedImage = {
@@ -31161,7 +31289,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       }
       if (best && (blockingFindings.length || best.score > beforeScore)) held += 1;
       else unchanged += 1;
-      auditItems.push({ storyId: story.id || "", title: story.title || "", status: shouldQueueGeneratedFallback ? "generated-image-brief-queued" : best && best.score > beforeScore ? "held-for-image-editor" : "unchanged", beforeScore, candidateScore: best?.score || 0, promoteThreshold, currentWasPlaceholder: currentIsPlaceholder, selectedSource: best?.image?.source || "", selectedLicense: best?.image?.license || "", query: best?.image?.query || best?.image?.originalQuery || "", findings: blockingFindings.map(finding => finding.code || finding.message || "image-editor-finding") });
+      auditItems.push({ storyId: story.id || "", title: story.title || "", status: shouldQueueGeneratedFallback ? "generated-image-brief-queued" : best && best.score > beforeScore ? "held-for-image-editor" : "unchanged", beforeScore, candidateScore: best?.score || 0, promoteThreshold, currentWasPlaceholder: currentIsPlaceholder, currentNeedsRepair: publishedImageNeedsRepair, selectedSource: best?.image?.source || "", selectedLicense: best?.image?.license || "", query: best?.image?.query || best?.image?.originalQuery || "", findings: [...blockingFindings.map(finding => finding.code || finding.message || "image-editor-finding"), ...currentBlockingFindings.map(finding => finding.code || finding.message || "current-image-editor-finding")] });
     }
   }
   const persistentImageAttachmentStories = generationQueueEnabled
@@ -40239,6 +40367,7 @@ async function buildNewsLabPayload(payload = {}) {
       || Number(b.popularity?.relatedArticleCount || 0) - Number(a.popularity?.relatedArticleCount || 0)
       || Number(b.popularity?.reportingScore || 0) - Number(a.popularity?.reportingScore || 0)
     );
+  allOwnedStories = newsLabPrioritizeUnderfilledStoriesForEditor(allOwnedStories, 7);
   if (workerFinishMode) {
     writeNewsLabWorkerStatus({
       active: true,
@@ -44240,6 +44369,8 @@ if (isSiteScheduledContentWorkerProcess) {
   if (backgroundLoopsEnabled) {
     startNewsletterLoop();
     startCreatorDeskLoop();
+    setTimeout(() => runContentLaneQualityMaintenance("scheduled-content-startup-quality-sprint"), 15000);
+    setInterval(() => runContentLaneQualityMaintenance("scheduled-content-interval-quality-sprint"), Math.max(60 * 60 * 1000, Number(process.env.CE_CONTENT_LANE_QUALITY_INTERVAL_MS || 6 * 60 * 60 * 1000)));
   }
   startMarketSnapshotLoop();
   setInterval(() => {
@@ -44431,6 +44562,11 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
 
 
 
