@@ -1764,7 +1764,52 @@ function compactNewsLabPublicStory(story = {}) {
 
 function compactNewsLabPublishedPayload(value) {
   if (!value || typeof value !== "object" || !Array.isArray(value.ownedStories)) return value;
-  const boardReady = value.boardDatePolicy?.active ? value : newsLabApplyCurrentBoardPolicy(value);
+  let boardReady = value.boardDatePolicy?.active ? value : newsLabApplyCurrentBoardPolicy(value);
+  const incomingCount = Number(boardReady.ownedStories?.length || 0);
+  try {
+    const existingPayload = readJsonFile(newsLabPublishedPayloadFile, null);
+    const cachedPayload = readJsonFile(newsLabApiResponseCacheFile, null)?.responses?.all || null;
+    const existingBoard = existingPayload?.ownedStories?.length ? newsLabApplyCurrentBoardPolicy(existingPayload) : null;
+    const cachedBoard = cachedPayload?.ownedStories?.length ? newsLabApplyCurrentBoardPolicy(cachedPayload) : null;
+    const preservationSources = [existingBoard, cachedBoard]
+      .filter(source => Array.isArray(source?.ownedStories) && source.ownedStories.length > incomingCount);
+    if (preservationSources.length) {
+      const preservationStories = preservationSources
+        .flatMap(source => source.ownedStories || [])
+        .map((story, index) => newsLabRepairPublishedStoryBeforeBoard(story, index));
+      const mergedStories = newsLabHardMergePublicStories([
+        ...(boardReady.ownedStories || []),
+        ...preservationStories
+      ]);
+      const preservedBoard = newsLabApplyCurrentBoardPolicy({
+        ...boardReady,
+        ownedStories: mergedStories,
+        searchableArchiveStories: newsLabDedupePublicStoriesPreferFull([
+          ...(Array.isArray(boardReady.searchableArchiveStories) ? boardReady.searchableArchiveStories : []),
+          ...(Array.isArray(existingPayload?.searchableArchiveStories) ? existingPayload.searchableArchiveStories : []),
+          ...(Array.isArray(cachedPayload?.searchableArchiveStories) ? cachedPayload.searchableArchiveStories : [])
+        ]),
+        publicShelfWriteFloor: {
+          applied: true,
+          incomingCount,
+          existingCount: Number(existingBoard?.ownedStories?.length || 0),
+          cachedCount: Number(cachedBoard?.ownedStories?.length || 0),
+          mergedCount: mergedStories.length,
+          rule: "Any public payload write must preserve still-active seven-day stories from the durable payload or prepared API cache. Worker cycles may add or update stories, but they may not collapse the visitor shelf."
+        }
+      });
+      if (Number(preservedBoard.ownedStories?.length || 0) >= incomingCount) boardReady = preservedBoard;
+    }
+  } catch (error) {
+    boardReady = {
+      ...boardReady,
+      publicShelfWriteFloor: {
+        applied: false,
+        error: error.message,
+        rule: "Public shelf preservation is best-effort and must not block writing the payload."
+      }
+    };
+  }
   return {
     generatedAt: boardReady.generatedAt || new Date().toISOString(),
     status: boardReady.status || "published",
@@ -1780,6 +1825,7 @@ function compactNewsLabPublishedPayload(value) {
     boardDatePolicy: boardReady.boardDatePolicy || undefined,
     workerFinishShelfMerge: boardReady.workerFinishShelfMerge || undefined,
     boardPolicyPreservedShelf: boardReady.boardPolicyPreservedShelf || undefined,
+    publicShelfWriteFloor: boardReady.publicShelfWriteFloor || undefined,
     workerFinishModePersisted: boardReady.workerFinishModePersisted || undefined,
     savedAt: boardReady.savedAt || new Date().toISOString(),
     ownedStories: (boardReady.ownedStories || []).map(compactNewsLabPublicStory),
@@ -24123,15 +24169,7 @@ function newsLabPublicImageReady(story = {}) {
 }
 function newsLabBoardDisplayReadyStory(story = {}) {
   if (story.publicArticle === true) {
-    const body = Array.isArray(story.body) ? story.body : [];
-    const bodyText = body.join(" ").trim();
-    const title = String(story.title || story.headline || "").trim();
-    return Boolean(title)
-      && body.length >= 3
-      && bodyText.length >= 420
-      && !story.fallbackCoverage
-      && !((story.qualityGate?.issues || []).includes("instant-fallback"))
-      && !((story.qualityGate?.issues || []).includes("fast-fallback"));
+    return newsLabShelfDisplayReadyStory(story);
   }
   return newsLabShelfDisplayReadyStory(story);
 }
@@ -44328,6 +44366,7 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
 
 
 
