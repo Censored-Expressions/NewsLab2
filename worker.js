@@ -15,6 +15,7 @@ const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_I
 const workerSyncTimeoutMs = Math.max(15000, Number(process.env.CE_WORKER_SYNC_TIMEOUT_MS || 45000));
 const workerSyncRetryCount = Math.max(1, Number(process.env.CE_WORKER_SYNC_RETRY_COUNT || 3));
 const workerSyncRetryDelayMs = Math.max(1000, Number(process.env.CE_WORKER_SYNC_RETRY_DELAY_MS || 3000));
+const workerSyncDeltaEnabled = process.env.CE_WORKER_SYNC_DELTA_ENABLED !== "false";
 const workerCpuGuardEnabled = process.env.CE_WORKER_CPU_GUARD !== "false";
 const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECTORS || (workerCpuGuardEnabled ? 4 : 99)));
 const minCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MIN_COLLECTORS || 1));
@@ -140,11 +141,14 @@ function writeWorkerSyncLedger(event = {}) {
     rejectedCount: Number(event.rejectedCount || 0),
     acceptedKeys: event.acceptedKeys || [],
     rejectedKeys: event.rejectedKeys || [],
+    fileMtimes: event.fileMtimes || existing.fileMtimes || {},
+    lastPayloadBytes: Number(event.payloadBytes || 0),
+    lastElapsedMs: Number(event.elapsedMs || 0),
+    lastServerSyncDiagnostics: event.serverSyncDiagnostics || existing.lastServerSyncDiagnostics || null,
     events: [...(existing.events || []), event].slice(-80),
-    rule: "Worker output must be synced to the web service because Render services do not share a local data folder."
+    rule: "Worker output must be synced to the web service because Render services do not share a local data folder. Scheduled syncs use mtimes so unchanged files do not create avoidable web-service pressure."
   });
 }
-
 
 function workerSyncStateSummary() {
   const ledger = readJson(syncLedgerFile, {});
@@ -158,7 +162,10 @@ function workerSyncStateSummary() {
     lastReason: ledger.lastReason || "never",
     lastSyncAt: ledger.lastSyncAt || "",
     acceptedKeys: ledger.acceptedKeys || [],
-    rejectedKeys: ledger.rejectedKeys || []
+    rejectedKeys: ledger.rejectedKeys || [],
+    deltaEnabled: workerSyncDeltaEnabled,
+    lastPayloadBytes: Number(ledger.lastPayloadBytes || 0),
+    lastElapsedMs: Number(ledger.lastElapsedMs || 0)
   };
 }
 function summarizeTabCountsFromPayload(payload = {}) {
@@ -348,8 +355,10 @@ function transientWorkerSyncError(error = {}) {
   const message = `${error.name || ""} ${error.message || ""}`.toLowerCase();
   return /abort|timeout|fetch failed|socket|econnreset|eai_again|network/.test(message);
 }
-function collectSyncFiles() {
+function collectSyncFiles(options = {}) {
   const maxBytes = Math.max(1024 * 1024, Number(process.env.CE_WORKER_SYNC_MAX_FILE_BYTES || 8 * 1024 * 1024));
+  const fullSync = Boolean(options.fullSync) || !workerSyncDeltaEnabled;
+  const previousMtimes = fullSync ? {} : (readJson(syncLedgerFile, {}).fileMtimes || {});
   const files = [];
   const skipped = [];
   for (const spec of syncFileSpecs) {
@@ -359,21 +368,26 @@ function collectSyncFiles() {
         continue;
       }
       const stat = fs.statSync(spec.file);
+      const mtimeMs = Math.trunc(stat.mtimeMs);
+      if (!fullSync && Number(previousMtimes[spec.key] || 0) === mtimeMs) {
+        skipped.push({ key: spec.key, reason: "unchanged", bytes: stat.size, mtimeMs });
+        continue;
+      }
       if (stat.size > maxBytes) {
-        skipped.push({ key: spec.key, reason: "too-large", bytes: stat.size });
+        skipped.push({ key: spec.key, reason: "too-large", bytes: stat.size, mtimeMs });
         continue;
       }
       const payload = readJson(spec.file, null);
       if (!payload || typeof payload !== "object") {
-        skipped.push({ key: spec.key, reason: "not-json-object" });
+        skipped.push({ key: spec.key, reason: "not-json-object", bytes: stat.size, mtimeMs });
         continue;
       }
-      files.push({ key: spec.key, updatedAt: stat.mtime.toISOString(), payload });
+      files.push({ key: spec.key, updatedAt: stat.mtime.toISOString(), mtimeMs, bytes: stat.size, payload });
     } catch (error) {
       skipped.push({ key: spec.key, reason: error.message || String(error) });
     }
   }
-  return { files, skipped };
+  return { files, skipped, fullSync };
 }
 
 async function syncWorkerOutputs(reason = "scheduled-sync") {
@@ -388,7 +402,8 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     console.log("[worker] sync skipped: missing OWNER_ADMIN_TOKEN/NEWSLETTER_ADMIN_TOKEN");
     return;
   }
-  const { files, skipped } = collectSyncFiles();
+  const fullSync = /startup|manual|full/i.test(String(reason || ""));
+  const { files, skipped } = collectSyncFiles({ fullSync });
   if (!files.length) {
     const event = { type: "worker-sync-skipped", reason: "no-files", skipped, at: new Date().toISOString(), status: "skipped" };
     recordWorkerEvent(event);
@@ -397,10 +412,19 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     return;
   }
   const endpoint = `${webSyncBaseUrl}/api/news-lab/worker-sync`;
+  const syncFileMtimes = Object.fromEntries(files.map(file => [file.key, file.mtimeMs || 0]));
   let lastError = null;
   for (let attempt = 1; attempt <= workerSyncRetryCount; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), workerSyncTimeoutMs);
+    const syncStarted = Date.now();
+    const requestBody = JSON.stringify({
+      reason,
+      source: "background-worker-orchestrator",
+      generatedAt: new Date().toISOString(),
+      deltaSync: workerSyncDeltaEnabled && !fullSync,
+      files
+    });
     try {
       const response = await fetch(endpoint, {
         method: "POST",
@@ -409,12 +433,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
           "x-owner-admin-token": ownerAdminToken
         },
         signal: controller.signal,
-        body: JSON.stringify({
-          reason,
-          source: "background-worker-orchestrator",
-          generatedAt: new Date().toISOString(),
-          files
-        })
+        body: requestBody
       });
       clearTimeout(timeout);
       const result = await response.json().catch(() => ({}));
@@ -429,14 +448,19 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
         rejectedCount: Number(result.rejectedCount || 0),
         acceptedKeys: (result.accepted || []).map(item => item.key).filter(Boolean),
         rejectedKeys: (result.rejected || []).map(item => item.key).filter(Boolean),
-        skipped
+        skipped,
+        elapsedMs: Date.now() - syncStarted,
+        payloadBytes: Buffer.byteLength(requestBody, "utf8"),
+        fileMtimes: response.ok ? { ...(readJson(syncLedgerFile, {}).fileMtimes || {}), ...syncFileMtimes } : (readJson(syncLedgerFile, {}).fileMtimes || {}),
+        serverSyncDiagnostics: result.syncDiagnostics || null
       };
       recordWorkerEvent(event);
       writeWorkerSyncLedger(event);
       tuneRuntimeFromSync(event);
       writeWorkerObservability("worker-sync-complete");
       const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
-      console.log(`[worker] sync ${event.status}: attempt=${attempt}/${workerSyncRetryCount} accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
+      const serverMs = Number(event.serverSyncDiagnostics?.totalMs || 0);
+      console.log(`[worker] sync ${event.status}: attempt=${attempt}/${workerSyncRetryCount} elapsedMs=${event.elapsedMs} serverMs=${serverMs} payloadBytes=${event.payloadBytes} accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
       return;
     } catch (error) {
       clearTimeout(timeout);
@@ -456,7 +480,10 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     error: lastError?.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : lastError?.message || String(lastError || "sync failed"),
     at: new Date().toISOString(),
     retryCount: workerSyncRetryCount,
-    skipped
+    skipped,
+    elapsedMs: 0,
+    payloadBytes: 0,
+    fileMtimes: readJson(syncLedgerFile, {}).fileMtimes || {}
   };
   recordWorkerEvent(event);
   writeWorkerSyncLedger(event);
@@ -651,6 +678,10 @@ setInterval(() => {
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
   console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
+
+
+
 
 
 

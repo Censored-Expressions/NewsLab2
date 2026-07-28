@@ -2633,19 +2633,24 @@ function recordNewsLabWorkerSyncLedger(event = {}) {
 }
 
 async function handleNewsLabWorkerSync(request, response) {
+  const syncStarted = apiProfilerNow();
   if (!isAdminRequest(request)) {
     sendPrivateNotFound(response);
     return;
   }
+  const bodyStarted = apiProfilerNow();
   const body = await readLargeJsonRequestBody(request, Number(process.env.CE_WORKER_SYNC_BODY_LIMIT_BYTES || 16 * 1024 * 1024)).catch(error => ({ parseError: error.message || String(error) }));
+  const bodyMs = Math.max(0, apiProfilerNow() - bodyStarted);
   if (body.parseError) {
-    sendPrivateJson(response, 400, { ok: false, error: body.parseError });
+    sendPrivateJson(response, 400, { ok: false, error: body.parseError, syncDiagnostics: { bodyMs, totalMs: Math.max(0, apiProfilerNow() - syncStarted) } });
     return;
   }
   const allowlist = newsLabWorkerSyncAllowlist();
   const files = Array.isArray(body.files) ? body.files : [];
   const accepted = [];
   const rejected = [];
+  let writeMsTotal = 0;
+  let acceptedBytes = 0;
   for (const file of files) {
     const key = String(file?.key || "").trim();
     const targetPath = allowlist[key];
@@ -2657,18 +2662,31 @@ async function handleNewsLabWorkerSync(request, response) {
       rejected.push({ key, reason: "payload-must-be-json-object-or-array" });
       continue;
     }
+    const fileStarted = apiProfilerNow();
     writeJsonFile(targetPath, file.payload);
-    accepted.push({ key, bytes: Buffer.byteLength(JSON.stringify(file.payload), "utf8") });
+    const writeMs = Math.max(0, apiProfilerNow() - fileStarted);
+    const bytes = Number(file.bytes || 0) || Buffer.byteLength(JSON.stringify(file.payload), "utf8");
+    writeMsTotal += writeMs;
+    acceptedBytes += bytes;
+    accepted.push({ key, bytes, writeMs, mtimeMs: Number(file.mtimeMs || 0) });
   }
+  const ledgerStarted = apiProfilerNow();
   const ledger = recordNewsLabWorkerSyncLedger({
     reason: body.reason || "worker-sync",
     source: body.source || "background-worker",
     generatedAt: body.generatedAt || "",
+    deltaSync: Boolean(body.deltaSync),
     acceptedKeys: accepted.map(item => item.key),
     rejectedKeys: rejected.map(item => item.key),
     accepted,
-    rejected
+    rejected,
+    bodyMs,
+    writeMsTotal,
+    acceptedBytes,
+    totalMs: Math.max(0, apiProfilerNow() - syncStarted)
   });
+  const ledgerMs = Math.max(0, apiProfilerNow() - ledgerStarted);
+  const totalMs = Math.max(0, apiProfilerNow() - syncStarted);
   sendPrivateJson(response, 200, {
     ok: true,
     generatedAt: new Date().toISOString(),
@@ -2676,10 +2694,19 @@ async function handleNewsLabWorkerSync(request, response) {
     rejectedCount: rejected.length,
     accepted,
     rejected,
+    syncDiagnostics: {
+      deltaSync: Boolean(body.deltaSync),
+      fileCount: files.length,
+      bodyMs,
+      writeMsTotal,
+      ledgerMs,
+      totalMs,
+      acceptedBytes,
+      slow: totalMs >= Number(process.env.CE_WORKER_SYNC_SLOW_MS || 5000)
+    },
     ledger: { lastSyncAt: ledger.lastSyncAt, lastReason: ledger.lastReason }
   });
 }
-
 function safeFileAgeMs(filePath = "") {
   try {
     const stat = fs.statSync(filePath);
@@ -43736,6 +43763,7 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
 
 
 

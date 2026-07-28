@@ -41,6 +41,7 @@ OPENAI_API_KEY=your-openai-key
 PEXELS_API_KEY=your-pexels-key
 PIXABAY_API_KEY=your-pixabay-key
 CE_NEWS_LAB_LIVE_IMAGES=true
+CE_NEWS_LAB_WORKER_LIVE_IMAGES=true
 CE_DATA_DIR=/var/data/censored-expressions
 PUBLIC_SITE_URL=https://censoredexpressionsmedia.com
 CE_WEB_SYNC_URL=https://censoredexpressionsmedia.com
@@ -48,6 +49,8 @@ CE_WORKER_SYNC_ENABLED=true
 CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
+CE_WORKER_SYNC_DELTA_ENABLED=true
+CE_WORKER_SYNC_SLOW_MS=5000
 NEWSLETTER_WEBHOOK_URL=https://your-cloudflare-newsletter-worker.workers.dev
 NEWSLETTER_WEBHOOK_SECRET=use-the-same-secret-configured-in-cloudflare
 STRIPE_SECRET_KEY=your-stripe-secret-key
@@ -133,6 +136,8 @@ CE_WORKER_SYNC_ENABLED=true
 CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
+CE_WORKER_SYNC_DELTA_ENABLED=true
+CE_WORKER_SYNC_SLOW_MS=5000
 ```
 
 After deployment, check the Owner observability page. The worker sync row should show recent accepted keys such as `news-lab-published-payload` and `news-lab-api-response-cache`.
@@ -223,5 +228,6 @@ Expected worker log after deploy:
 ```text
 [worker] cpu guard enabled=true maxCollectors=4 startupStaggerMs=4500 maxOneShots=1
 ```
+
 
 

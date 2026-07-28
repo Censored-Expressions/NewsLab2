@@ -27,6 +27,10 @@
         value: "16777216"
       - key: CE_WORKER_SYNC_MAX_FILE_BYTES
         value: "16777216"
+      - key: CE_WORKER_SYNC_DELTA_ENABLED
+        value: "true"
+      - key: CE_WORKER_SYNC_SLOW_MS
+        value: "5000"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
       - key: OPENAI_API_KEY
@@ -60,6 +64,8 @@
         value: "3"
       - key: CE_WORKER_SYNC_RETRY_DELAY_MS
         value: "3000"
+      - key: CE_WORKER_SYNC_DELTA_ENABLED
+        value: "true"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
       - key: CE_WORKER_CPU_GUARD
@@ -87,7 +93,7 @@
       - key: CE_NEWS_LAB_WORKER_ONCE_ARTICLE_TIMEOUT_MS
         value: "2200"
       - key: CE_NEWS_LAB_WORKER_LIVE_IMAGES
-        value: "false"
+        value: "true"
       - key: CE_WORKER_MIN_COLLECTORS
         value: "1"
       - key: CE_WORKER_ROLE_STARTUP_STAGGER_MS
@@ -126,6 +132,12 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
+
+
+
+
+
 
 
 
