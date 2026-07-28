@@ -24005,9 +24005,43 @@ function newsLabBoardDisplayReadyStory(story = {}) {
   return newsLabShelfDisplayReadyStory(story);
 }
 
+function newsLabRepairPublishedStoryBeforeBoard(story = {}, index = 0) {
+  const originalPublishedAt = story.originalPublishedAt || story.publishedAt || story.createdAt || story.generatedAt || "";
+  let repaired = { ...story };
+  repaired = newsLabFinalSemanticEditor(repaired);
+  repaired = newsLabFinalApprovalRepair(repaired);
+  repaired = newsLabAcceptanceRepairPass(repaired);
+  repaired = newsLabSanitizePublicNewsCopy(repaired);
+  const remainingIssues = newsLabBlockingFinalIssues(repaired);
+  const fatalAfterRepair = remainingIssues.filter(issue => /story-identity|mixed-source-topic|article-body-topic-drift|paragraph-topic-contamination|placeholder-guidance-leak|copied-or-noisy-source-fragment|internal-or-editorial-language/.test(issue));
+  return {
+    ...repaired,
+    originalPublishedAt,
+    publishedAt: originalPublishedAt || repaired.publishedAt || repaired.generatedAt || "",
+    generatedAt: repaired.generatedAt || originalPublishedAt || repaired.publishedAt || "",
+    publicShelfRepair: {
+      ...(repaired.publicShelfRepair || {}),
+      checkedAt: new Date().toISOString(),
+      beforeBoardPolicy: true,
+      remainingIssues,
+      fatalAfterRepair,
+      action: fatalAfterRepair.length ? "hold-from-board-after-repair" : "keep-published-after-minor-repair",
+      rule: "Already-published articles with minor fixable issues are repaired in place and stay public; fatal identity, contamination, placeholder, copied-text, or internal-language leaks are held before display."
+    },
+    qualityGate: {
+      ...(repaired.qualityGate || {}),
+      passed: fatalAfterRepair.length ? false : Boolean(repaired.qualityGate?.passed !== false),
+      issues: fatalAfterRepair,
+      remainingIssues: fatalAfterRepair,
+      correctedIssues: [...new Set([...(repaired.qualityGate?.correctedIssues || []), ...remainingIssues.filter(issue => !fatalAfterRepair.includes(issue))])],
+      action: fatalAfterRepair.length ? "published-shelf-repair-held-fatal" : "published-shelf-minor-repair-kept-live"
+    }
+  };
+}
 function newsLabApplyCurrentBoardPolicy(payload = {}) {
   const stories = (payload.ownedStories || [])
     .map(story => newsLabSanitizePublicNewsCopy(newsLabSanitizePublicAuditLanguage(story)))
+    .map((story, index) => newsLabRepairPublishedStoryBeforeBoard(story, index))
     .filter(newsLabBoardDisplayReadyStory)
     .map((story, index) => {
       const annotated = newsLabAnnotateBoardVisibility(story);
@@ -24019,9 +24053,15 @@ function newsLabApplyCurrentBoardPolicy(payload = {}) {
           ready: imageReady,
           needsRepair: !imageReady,
           queuedForRepair: !imageReady,
+          workItem: !imageReady ? {
+            storyId: annotated.id || annotated.storyId || annotated.topicKey || "",
+            status: "image-repair-needed-after-publication",
+            createdAt: annotated.imagePublicationStatus?.workItem?.createdAt || new Date().toISOString(),
+            allowedActions: ["search-licensed-image", "generate-ce-image", "attach-after-image-editor-approval"],
+            rule: "Published article stays live while Image Intelligence searches or generates a matching image tied to this exact story."
+          } : annotated.imagePublicationStatus?.workItem || null,
           rule: "Image readiness is repaired by the image pipeline; it must not remove an otherwise approved article from the public shelf."
-        },
-        title: newsLabPublicHeadline(annotated, index),
+        },        title: newsLabPublicHeadline(annotated, index),
         headlineAudit: {
           ...(annotated.headlineAudit || {}),
           headlineDossier: newsLabHeadlineDossier(annotated, index),
@@ -25131,18 +25171,43 @@ function newsLabPreserveLockedPublicPayload(nextPayload = {}, reason = "public-p
   const nextStories = Array.isArray(nextPayload?.ownedStories) ? nextPayload.ownedStories : [];
   const lockExpiresAt = existingPayload?.tabFillLock?.expiresAt ? new Date(existingPayload.tabFillLock.expiresAt).getTime() : 0;
   const lockActive = existingPayload?.tabFillLock?.active === true && lockExpiresAt > Date.now();
-  if (lockActive && existingStories.length && nextStories.length < existingStories.length) {
-    return {
-      ...existingPayload,
-      tabFillLock: {
-        ...(existingPayload.tabFillLock || {}),
-        preservedAt: new Date().toISOString(),
-        preserveReason: reason,
-        blockedWeakerReplacementCount: nextStories.length,
-        existingStoryCount: existingStories.length,
-        rule: "A weaker direct payload write cannot replace a filled rescue shelf while the tab-fill lock is active."
-      }
-    };
+  if (existingStories.length && nextStories.length < existingStories.length) {
+    const mergedActiveStories = newsLabHardMergePublicStories([
+      ...nextStories,
+      ...existingStories.map((story, index) => newsLabRepairPublishedStoryBeforeBoard(story, index))
+    ]);
+    const boardReady = newsLabApplyCurrentBoardPolicy({
+      ...nextPayload,
+      ownedStories: mergedActiveStories,
+      searchableArchiveStories: newsLabDedupePublicStoriesPreferFull([
+        ...(Array.isArray(existingPayload?.searchableArchiveStories) ? existingPayload.searchableArchiveStories : []),
+        ...(Array.isArray(nextPayload?.searchableArchiveStories) ? nextPayload.searchableArchiveStories : [])
+      ])
+    });
+    if ((boardReady.ownedStories || []).length >= nextStories.length) {
+      return {
+        ...boardReady,
+        publicShelfPreservation: {
+          ...(boardReady.publicShelfPreservation || {}),
+          active: true,
+          appliedAt: new Date().toISOString(),
+          reason,
+          lockActive,
+          previousActiveShelfCount: existingStories.length,
+          attemptedWriteCount: nextStories.length,
+          preservedActiveShelfCount: (boardReady.ownedStories || []).length,
+          rule: "A smaller worker/API write may add or update stories, but it cannot remove still-active approved articles. Expiration and duplicate same-event replacement are handled by board policy, not by worker batch size."
+        },
+        tabFillLock: lockActive ? {
+          ...(existingPayload.tabFillLock || {}),
+          preservedAt: new Date().toISOString(),
+          preserveReason: reason,
+          blockedWeakerReplacementCount: nextStories.length,
+          existingStoryCount: existingStories.length,
+          rule: "A weaker direct payload write cannot replace a filled rescue shelf while the tab-fill lock is active."
+        } : nextPayload.tabFillLock
+      };
+    }
   }
   return nextPayload;
 }
@@ -30409,17 +30474,21 @@ function newsLabImageIdentity(image = {}) {
 function newsLabImageSafety(image = {}) {
   const license = String(image.license || image.provenance?.license || "");
   const source = String(image.source || image.provenance?.source || "");
+  const imagePath = String(image.primary || image.url || image.provenance?.sourceUrl || "");
   const safeLicensed = /^(pexels|pixabay)$/i.test(license) && /pexels|pixabay/i.test(source);
   const safeLocalPexels = /^Pexels$/i.test(license) && /Pexels local asset/i.test(source);
+  const safeCeGenerated = /^CE-generated$/i.test(license)
+    && /CE generated editorial image/i.test(source)
+    && /^\/assets\/generated-news-lab\//.test(imagePath);
   const reviewRequired = /source-provided-review-required|NewsData source image/i.test(`${license} ${source}`);
   return {
     safeLicensed,
     safeLocalPexels,
+    safeCeGenerated,
     reviewRequired,
-    publishable: (safeLicensed || safeLocalPexels) && !reviewRequired
+    publishable: (safeLicensed || safeLocalPexels || safeCeGenerated) && !reviewRequired
   };
 }
-
 function newsLabImageQualityScore(story = {}, image = {}) {
   if (!image || !image.primary) return 0;
   const safety = newsLabImageSafety(image);
@@ -30431,6 +30500,7 @@ function newsLabImageQualityScore(story = {}, image = {}) {
   let score = 20 + relevanceScore + matchedTerms * 3;
   if (safety.safeLicensed && !safety.safeLocalPexels) score += 12;
   if (safety.safeLocalPexels) score += 4;
+  if (safety.safeCeGenerated) score += 18;
   if (/newsroom|general|placeholder/i.test(`${image.alt || ""} ${image.query || ""} ${image.primary || ""}`)) score -= 8;
   if (newsLabCategoryImageMatches(story, image)) score += 8;
   return score;
@@ -30860,8 +30930,21 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       auditItems.push({ storyId: story.id || "", title: story.title || "", status: shouldQueueGeneratedFallback ? "generated-image-brief-queued" : best && best.score > beforeScore ? "held-for-image-editor" : "unchanged", beforeScore, candidateScore: best?.score || 0, promoteThreshold, currentWasPlaceholder: currentIsPlaceholder, selectedSource: best?.image?.source || "", selectedLicense: best?.image?.license || "", query: best?.image?.query || best?.image?.originalQuery || "", findings: blockingFindings.map(finding => finding.code || finding.message || "image-editor-finding") });
     }
   }
+  const persistentImageAttachmentStories = generationQueueEnabled
+    ? nextStories.filter(story => newsLabCompleteArticleStory(story) && !newsLabPublicImageReady(story))
+    : [];
+  persistentImageAttachmentStories.forEach(story => {
+    const storyId = String(story.id || story.storyId || story.topicKey || story.eventId || "");
+    if (!storyId) return;
+    if (generatedImageQueueStories.some(item => String(item.id || item.storyId || item.topicKey || item.eventId || "") === storyId)) return;
+    generatedImageQueueStories.push({
+      ...story,
+      generatedImageFallbackReason: story.imagePublicationStatus?.workItem?.status || "published-article-needs-image-attachment",
+      generatedImageFallbackPolicy: "Published article remains live while Image Intelligence searches licensed sources or generates a CE-owned visual tied to this story ID."
+    });
+  });
   const generatedImageQueue = generationQueueEnabled && generatedImageQueueStories.length
-    ? newsLabGeneratedImageQueueRecord(generatedImageQueueStories, `${reason}:article-ready-image-fallback`)
+    ? newsLabGeneratedImageQueueRecord(generatedImageQueueStories, `${reason}:article-ready-image-attachment`)
     : null;
   const generatedImagePromotion = generationQueueEnabled
     ? newsLabPromoteGeneratedImagesForStories(nextStories, `${reason}:generated-asset-promotion`)
@@ -30899,7 +30982,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       lookupTimeoutMs: Math.max(800, Number(process.env.CE_NEWS_LAB_IMAGE_LOOKUP_MS || 2200)),
       limit
     },
-    summary: { totalStories: stories.length, reviewed: auditItems.length, upgraded, held, unchanged, ...imageDiagnostics, generatedImageBriefsQueued: (generatedImagePromotion.queue || generatedImageQueue)?.summary?.queuedItems || 0, generatedImageBriefsAdded: generatedImageQueue?.summary?.addedThisPass || 0, generatedImageAssetsPromoted: generatedImagePromotion.applied || 0, cacheRebuilt: Boolean(cache) },
+    summary: { totalStories: stories.length, reviewed: auditItems.length, upgraded, held, unchanged, ...imageDiagnostics, generatedImageBriefsQueued: (generatedImagePromotion.queue || generatedImageQueue)?.summary?.queuedItems || 0, generatedImageBriefsAdded: generatedImageQueue?.summary?.addedThisPass || 0, generatedImageAssetsPromoted: generatedImagePromotion.applied || 0, publishedImageAttachmentsQueued: persistentImageAttachmentStories.length, cacheRebuilt: Boolean(cache) },
     items: auditItems
   };
   writeJsonFile(newsLabImageImprovementAuditFile, audit);
@@ -44114,6 +44197,12 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
 
 
 
