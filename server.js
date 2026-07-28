@@ -1,4 +1,4 @@
-﻿const http = require("node:http");
+const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
@@ -69,6 +69,7 @@ const newsLabObservabilityFile = path.join(dataDir, "news-lab-observability.json
 const newsLabWorkerSyncLedgerFile = path.join(dataDir, "news-lab-worker-sync-ledger.json");
 const newsLabProductionLockFile = path.join(dataDir, "news-lab-production.lock.json");
 const newsLabProductivityFile = path.join(dataDir, "news-lab-productivity.json");
+const productionIntelligenceFile = path.join(dataDir, "production-intelligence.json");
 const newsLabThroughputDiagnosticsFile = path.join(dataDir, "news-lab-throughput-diagnostics.json");
 const marketSnapshotFile = path.join(dataDir, "market-snapshot.json");
 const newsLabApiResponseCacheFile = path.join(dataDir, "news-lab-api-response-cache.json");
@@ -1709,6 +1710,7 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(frameworkPatchProposalFile)) fs.writeFileSync(frameworkPatchProposalFile, "[]\n");
   if (!fs.existsSync(ownerMetricsFile)) fs.writeFileSync(ownerMetricsFile, "[]\n");
   if (!fs.existsSync(newsLabProductivityFile)) fs.writeFileSync(newsLabProductivityFile, `${JSON.stringify(defaultNewsLabProductivityLedger(), null, 2)}\n`);
+  if (!fs.existsSync(productionIntelligenceFile)) fs.writeFileSync(productionIntelligenceFile, `${JSON.stringify(defaultProductionIntelligence(), null, 2)}\n`);
   if (!fs.existsSync(newsLabObservabilityFile)) fs.writeFileSync(newsLabObservabilityFile, `${JSON.stringify(defaultNewsLabObservability(), null, 2)}\n`);
   if (!fs.existsSync(newsLabWorkerSyncLedgerFile)) fs.writeFileSync(newsLabWorkerSyncLedgerFile, `${JSON.stringify(defaultNewsLabWorkerSyncLedger(), null, 2)}\n`);
   if (!fs.existsSync(newsLabStoryContinuityFile)) fs.writeFileSync(newsLabStoryContinuityFile, "{}\n");
@@ -2739,6 +2741,7 @@ function newsLabWorkerSyncAllowlist() {
     "news-lab-api-worker-status": newsLabApiWorkerStatusFile,
     "news-lab-observability": newsLabObservabilityFile,
     "news-lab-productivity": newsLabProductivityFile,
+    "production-intelligence": productionIntelligenceFile,
     "news-lab-throughput-diagnostics": newsLabThroughputDiagnosticsFile,
     "article-approval-intelligence": newsLabArticleApprovalIntelligenceFile,
     "news-lab-image-worker-status": newsLabImageWorkerStatusFile,
@@ -3052,6 +3055,181 @@ function defaultNewsLabProductivityLedger() {
   };
 }
 
+function defaultProductionIntelligence() {
+  return {
+    version: "20260728-production-intelligence-v1",
+    updatedAt: new Date().toISOString(),
+    purpose: "Identify unnecessary work in article production and choose one bounded measurable improvement per cycle.",
+    primaryGoal: "Increase first-pass publication rate while reducing repair loops, repeated reasoning, duplicate effort, and blocking runtime work.",
+    current: {
+      firstPassPublicationRate: 0,
+      finalApprovalRate: 0,
+      highQualityPublishedArticlesPerHour: 0,
+      averagePublicationLatencyMs: 0
+    },
+    unnecessaryWork: {
+      repairFrequency: 0,
+      editorialRejections: 0,
+      headlineRewritePressure: 0,
+      duplicateEffort: 0,
+      unnecessaryFileReads: [],
+      repeatedReasoning: 0
+    },
+    boundedImprovementProposal: {
+      subsystem: "Writer Reasoning",
+      action: "Require a complete Story Dossier and failure-prevention rules before first draft.",
+      expectedOutcome: "Raise first-pass publication rate and reduce repair loops without lowering editorial standards.",
+      measurement: "Compare firstPassPublicationRate, finalApprovalRate, headlineRewritePressure, and repairFrequency across the next production window."
+    },
+    failurePreventionMemory: {
+      rules: []
+    },
+    brainRule: "Every rejection should become a prevention rule that the Writer, Dossier Builder, Publishing Editor, and Validator can apply before the next first draft."
+  };
+}
+
+function productionIntelligenceRate(numerator, denominator) {
+  const top = Number(numerator || 0);
+  const bottom = Number(denominator || 0);
+  return bottom > 0 ? Number((top / bottom).toFixed(4)) : 0;
+}
+
+function productionIntelligenceBlockerCount(blockers = [], pattern = /./) {
+  return (Array.isArray(blockers) ? blockers : []).reduce((sum, blocker) => {
+    const reason = String(blocker.reason || blocker.issue || "");
+    return pattern.test(reason) ? sum + Number(blocker.count || blocker.total || blocker.frequency || 1) : sum;
+  }, 0);
+}
+
+function productionIntelligenceSlowFiles(apiPerformance = {}) {
+  const recent = Array.isArray(apiPerformance.recent) ? apiPerformance.recent : [];
+  const fileMap = new Map();
+  recent.forEach(event => {
+    (Array.isArray(event.slowFiles) ? event.slowFiles : []).forEach(item => {
+      const file = item.file || item.filePath || "unknown";
+      const current = fileMap.get(file) || { file, hits: 0, readMs: 0, parseMs: 0, bytes: 0 };
+      current.hits += 1;
+      current.readMs += Number(item.readMs || 0);
+      current.parseMs += Number(item.parseMs || 0);
+      current.bytes = Math.max(Number(current.bytes || 0), Number(item.bytes || item.sizeBytes || 0));
+      fileMap.set(file, current);
+    });
+  });
+  return [...fileMap.values()]
+    .map(item => ({ ...item, totalMs: Number((Number(item.readMs || 0) + Number(item.parseMs || 0)).toFixed(1)) }))
+    .sort((a, b) => b.totalMs - a.totalMs)
+    .slice(0, 8);
+}
+
+function productionIntelligencePreventionRules(blockers = []) {
+  const rules = [];
+  const addRule = (id, appliesTo, preventBy, detection) => {
+    if (!rules.some(rule => rule.id === id)) rules.push({ id, appliesTo, preventBy, detection });
+  };
+  (Array.isArray(blockers) ? blockers : []).slice(0, 12).forEach(blocker => {
+    const reason = String(blocker.reason || blocker.issue || "unknown");
+    if (/headline|title/i.test(reason)) {
+      addRule("prevent-headline-failures-before-editor", "Headline Generator", "Build headline only from the completed event dossier using Actor + Action + Consequence, then score body overlap before editorial review.", "Reject headline candidates with missing actor/action, copied source structure, word salad, or weak body overlap.");
+    } else if (/body|context|evidence|reporting|source|dossier/i.test(reason)) {
+      addRule("prevent-thin-or-unsupported-drafts", "Story Dossier Builder", "Require verified facts, primary actors, timeline, source attribution, and known unknowns before prose generation.", "Mark candidate needs-dossier-evidence instead of letting thin source fragments reach the Writer.");
+    } else if (/duplicate|same-event|repeat/i.test(reason)) {
+      addRule("prevent-duplicate-publication-work", "Story Curator", "Merge same-event candidates before drafting and route added facts into the existing story update path.", "Compare canonical event keys, primary entities, location, date, and action before a new article is created.");
+    } else if (/image|photo|visual/i.test(reason)) {
+      addRule("prevent-image-blocking-publication", "Image Worker", "Treat image mismatch as post-publication repairable when article text is otherwise publishable, while keeping an image-repair attachment on the story object.", "Require image-topic overlap but do not remove a clean article from public view for a fixable visual mismatch.");
+    } else {
+      addRule(`prevent-${reason.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "unknown"}`, "Publishing Editor", "Convert this rejection into a repair instruction and resubmit through validation before abandoning the draft.", `Detect ${reason} and route to the responsible subsystem with the full story snapshot.`);
+    }
+  });
+  return rules.slice(0, 8);
+}
+
+function productionIntelligenceReport(reason = "cycle", options = {}) {
+  const productivity = options.productivity || readJsonFile(newsLabProductivityFile, null) || defaultNewsLabProductivityLedger();
+  const productivitySummary = newsLabProductivitySummary(productivity);
+  const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, defaultNewsLabArticleApprovalIntelligence()) || defaultNewsLabArticleApprovalIntelligence();
+  const apiPerformance = readJsonFile(apiEndpointPerformanceFile, defaultApiEndpointPerformance()) || defaultApiEndpointPerformance();
+  const currentCycle = approval.currentCycle || {};
+  const recovery = approval.recoveryOutput || {};
+  const topBlockers = Array.isArray(approval.topBlockers) ? approval.topBlockers : [];
+  const hour = productivitySummary.lastHour || {};
+  const reviewed = Number(currentCycle.editorialReviewed || hour.editorialReviews || 0);
+  const firstPassApproved = Number(currentCycle.firstPassApproved || hour.approvedArticles || 0);
+  const finalApproved = Number(currentCycle.finalApproved || hour.approvedArticles || 0);
+  const finalBlocked = Number(currentCycle.finalBlocked || hour.rejectedDrafts || 0);
+  const headlineRewritePressure = productionIntelligenceBlockerCount(topBlockers, /headline|title/i);
+  const evidencePressure = productionIntelligenceBlockerCount(topBlockers, /body|context|evidence|reporting|source|dossier|thin/i);
+  const duplicateEffort = productionIntelligenceBlockerCount(topBlockers, /duplicate|same-event|repeat/i) + Number(hour.skippedCycles || 0);
+  const imagePressure = productionIntelligenceBlockerCount(topBlockers, /image|photo|visual/i);
+  const repairFrequency = Number(hour.preEditorRepairedDrafts || 0) + Number(currentCycle.approvalRecoveryAttempted || 0) + Number(recovery.repairAttempted || 0);
+  const repeatedReasoning = Number(recovery.resubmitted || 0) + Math.max(0, Number(repairFrequency || 0) - Number(recovery.repairSuccessful || currentCycle.approvalRecoveryResolved || 0));
+  const slowFiles = productionIntelligenceSlowFiles(apiPerformance);
+  const slowEndpoints = (Array.isArray(apiPerformance.slowestEndpoints) ? apiPerformance.slowestEndpoints : [])
+    .slice(0, 8)
+    .map(item => ({ endpoint: item.endpoint, avgMs: item.avgMs, maxMs: item.maxMs, requests: item.requests, avgFileReadMs: item.avgFileReadMs, avgJsonParseMs: item.avgJsonParseMs, avgResponseBytes: item.avgResponseBytes }));
+
+  const candidates = [
+    { cause: "headline rewrites after drafting", score: headlineRewritePressure, subsystem: "Headline Generator", action: "Generate headline candidates from the completed Story Dossier after the article body exists, then pre-score Actor + Action + Consequence and body overlap before editorial review.", expectedOutcome: "Reduce headline rewrite pressure by 15% and raise first-pass publication rate by 8-12% over the next production window." },
+    { cause: "thin or weak dossier evidence reaching the Writer", score: evidencePressure, subsystem: "Story Dossier Builder", action: "Block thin fragments from the Writer by expanding the dossier first or explicitly marking needs-dossier-evidence with required facts, attribution, and timeline gaps.", expectedOutcome: "Reduce body/context rejections by 15% and cut repair loops by 20% without weakening standards." },
+    { cause: "runtime file reads during production and owner/API requests", score: slowFiles.reduce((sum, item) => sum + Number(item.totalMs || 0), 0), subsystem: "Performance Brain", action: "Serve heavy Owner/Learning/Production summaries from compact cached state and move full JSON reads to background persistence/inspection paths.", expectedOutcome: "Reduce slow endpoint duration by 50% and lower worker sync timeout pressure so image and publication one-shots can run." },
+    { cause: "duplicate effort before publishing", score: duplicateEffort, subsystem: "Story Curator", action: "Run a hard same-event merge before drafting and route added facts into updates instead of creating competing article candidates.", expectedOutcome: "Reduce duplicate drafting work by 20% and preserve tile growth by adding only unique publishable events." },
+    { cause: "repairable image issues delaying visible articles", score: imagePressure, subsystem: "Image Worker", action: "Attach image-repair jobs to otherwise publishable stories and allow post-publication visual upgrades with image-topic guards.", expectedOutcome: "Increase visible article count while reducing CE fallback persistence over the next image cycle." }
+  ].sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+  const selected = candidates.find(item => Number(item.score || 0) > 0) || candidates[0];
+  const report = {
+    version: "20260728-production-intelligence-v1",
+    updatedAt: new Date().toISOString(),
+    reason,
+    purpose: "Answer what caused unnecessary production work today and choose one bounded measurable improvement.",
+    primaryGoal: "Increase First-Pass Publication Rate.",
+    current: {
+      firstPassPublicationRate: productionIntelligenceRate(firstPassApproved, reviewed),
+      finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
+      reviewedCandidates: reviewed,
+      firstPassApproved,
+      finalApproved,
+      finalBlocked,
+      highQualityPublishedArticlesPerHour: Number(hour.highQualityPublishedArticlesPerHour || hour.publishedArticles || 0),
+      averagePublicationLatencyMs: Number(hour.averagePublicationLatencyMs || 0)
+    },
+    unnecessaryWork: {
+      repairFrequency,
+      editorialRejections: finalBlocked,
+      headlineRewritePressure,
+      evidenceOrDossierPressure: evidencePressure,
+      duplicateEffort,
+      imageRepairPressure: imagePressure,
+      repeatedReasoning,
+      unnecessaryFileReads: slowFiles,
+      slowEndpoints
+    },
+    boundedImprovementProposal: {
+      subsystem: selected.subsystem,
+      cause: selected.cause,
+      action: selected.action,
+      expectedOutcome: selected.expectedOutcome,
+      measurement: "Compare firstPassPublicationRate, finalApprovalRate, repairFrequency, repeatedReasoning, and highQualityPublishedArticlesPerHour after the next production window.",
+      risk: "bounded-low-to-medium; changes should affect prevention, routing, or caching before standards are loosened."
+    },
+    failurePreventionMemory: {
+      rules: productionIntelligencePreventionRules(topBlockers),
+      writerInstruction: "Before drafting, read the Story Dossier, Editorial Memory, Headline Pattern Memory, Learner Lexicon, and these prevention rules; then state the verified event, uncertainty, headline direction, and likely editorial risk internally before prose generation."
+    },
+    learningSignal: {
+      upstream: "Collector and Dossier Builder should prevent mixed/thin events before Writer work starts.",
+      downstream: "Publishing Editor and Validator should repair safe issues, resubmit, and write generalized prevention rules instead of exact-string lessons.",
+      behavioralQuestion: "What did the Writer do differently this cycle because of prior failures?"
+    }
+  };
+  writeJsonFile(productionIntelligenceFile, report);
+  return report;
+}
+
+function readProductionIntelligence(reason = "cached") {
+  const cached = readJsonFile(productionIntelligenceFile, null);
+  const updatedAt = cached?.updatedAt ? new Date(cached.updatedAt).getTime() : 0;
+  if (cached && Number.isFinite(updatedAt) && Date.now() - updatedAt < 5 * 60 * 1000) return cached;
+  return productionIntelligenceReport(reason);
+}
 function defaultNewsLabBreakingBriefFollowups() {
   return {
     version: "20260716-breaking-brief-followups-v1",
@@ -3142,6 +3320,11 @@ function recordNewsLabProductivityCycle(cycle = {}) {
   };
   next.lastHour = newsLabProductivitySummary(next).lastHour;
   writeJsonFile(newsLabProductivityFile, next);
+  try {
+    productionIntelligenceReport("productivity-cycle", { productivity: next });
+  } catch (error) {
+    console.log(`[production-intelligence] update failed: ${error.message || String(error)}`);
+  }
   return next;
 }
 
@@ -41859,6 +42042,7 @@ function newsLabThroughputDiagnosticsReport(reason = "manual") {
       repairQueues: approval.repairQueues || {}
     },
     bottlenecks,
+    productionIntelligence: readProductionIntelligence("throughput-diagnostics"),
     nextActions: bottlenecks.length ? bottlenecks.map(item => item.fix) : ["Maintain current cycle and monitor high-quality published articles per hour."],
     brainLearningRule: "Every bottleneck must be assigned to the subsystem that caused it, repaired there, then taught upstream and downstream before the next production cycle."
   };
@@ -42727,6 +42911,12 @@ const server = http.createServer(async (request, response) => {
       runtimeState.newsLabSearchBuildActive = false;
       if (runtimeState.newsLabBackgroundRebuildStage !== "failed") runtimeState.newsLabBackgroundRebuildStage = "idle";
     }
+    return;
+  }
+
+  if (url.pathname === "/api/production-intelligence") {
+    if (!requireOwnerAdmin(request, response)) return;
+    sendPrivateJson(response, 200, productionIntelligenceReport(url.searchParams.get("reason") || "owner-api-request"));
     return;
   }
 
