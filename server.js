@@ -26231,19 +26231,21 @@ function newsLabBuildUsefulnessFastWorkerRepair(story = {}, index = 0) {
     .slice(0, 8);
 
   let repairedBody = cleanedBody.length ? cleanedBody : rawBody.filter(Boolean);
+  const plannerMinimumParagraphs = Math.max(4, Number(story.productionPlanner?.qualityTargets?.minimumParagraphs || story.writerDossierInput?.productionPlanner?.qualityTargets?.minimumParagraphs || 4));
+  const plannerMinimumBodyCharacters = Math.max(650, Number(story.productionPlanner?.qualityTargets?.minimumBodyCharacters || story.writerDossierInput?.productionPlanner?.qualityTargets?.minimumBodyCharacters || 650));
   const bodyTextBefore = repairedBody.join(" ");
-  if (repairedBody.length < 4 || bodyTextBefore.length < 650) {
+  if (repairedBody.length < plannerMinimumParagraphs || bodyTextBefore.length < plannerMinimumBodyCharacters) {
     beforeIssues.add("draft-too-thin-before-editor");
     const addedFacts = facts
       .filter(fact => !repairedBody.some(paragraph => newsLabTextOverlap(paragraph, fact) >= 0.55))
-      .slice(0, Math.max(0, 5 - repairedBody.length));
+      .slice(0, Math.max(0, plannerMinimumParagraphs + 1 - repairedBody.length));
     repairedBody = newsLabDedupeArticleParagraphs([...repairedBody, ...addedFacts], story.summary || "")
       .map(paragraph => newsLabCleanPublicParagraphSentences(newsLabWorkerRepairCompleteSentence(paragraph, 850)))
       .filter(Boolean)
       .slice(0, 8);
     if (addedFacts.length) actions.push("expanded-thin-draft-with-clean-dossier-facts-before-editor");
     const stillThinText = repairedBody.join(" ");
-    if (repairedBody.length < 4 || stillThinText.length < 650) {
+    if (repairedBody.length < plannerMinimumParagraphs || stillThinText.length < plannerMinimumBodyCharacters) {
       const rebuiltFromDossier = newsLabRebuildArticleBodyFromDossierForRepair({ ...story, body: repairedBody });
       if (Array.isArray(rebuiltFromDossier) && rebuiltFromDossier.join(" ").length > stillThinText.length) {
         repairedBody = newsLabDedupeArticleParagraphs(rebuiltFromDossier, story.summary || "")
@@ -26307,7 +26309,7 @@ function newsLabBuildUsefulnessFastWorkerRepair(story = {}, index = 0) {
   if (newsLabScrambledHeadline(repairedTitle, { ...story, title: repairedTitle, body: repairedBody })) afterIssues.add("headline-word-salad");
   if (newsLabHeadlineTruncated(repairedTitle)) afterIssues.add("title-looks-truncated");
   if (!newsLabHeadlineEditor(repairedTitle, { ...story, title: repairedTitle, body: repairedBody }).passed) afterIssues.add("headline-editor-needs-rewrite");
-  if (repairedBody.length < 4 || repairedText.length < 650) afterIssues.add("draft-too-thin-before-editor");
+  if (repairedBody.length < plannerMinimumParagraphs || repairedText.length < plannerMinimumBodyCharacters) afterIssues.add("draft-too-thin-before-editor");
   if (/\b(dossier|confidence level|source signal|reporting trail|document trail includes|current confidence level|full-read signals|unresolved contradiction signals|behind the scenes|internal process)\b/i.test(repairedText)) {
     afterIssues.add("behind-scenes-language-before-editor");
   }
@@ -26325,7 +26327,9 @@ function newsLabBuildUsefulnessFastWorkerRepair(story = {}, index = 0) {
       beforeIssues: [...beforeIssues],
       afterIssues: [...afterIssues],
       correctedIssues,
-      rule: "Autonomous workers must apply current rejection lessons before the editor sees the draft, especially headline quality, thin body, incomplete sentence, and behind-scenes language blockers."
+      productionPlannerApplied: Boolean(story.productionPlanner || story.writerDossierInput?.productionPlanner),
+      qualityTargets: story.productionPlanner?.qualityTargets || story.writerDossierInput?.productionPlanner?.qualityTargets || {},
+      rule: "Autonomous workers must apply the Production Planner and current rejection lessons before the editor sees the draft, especially headline quality, thin body, incomplete sentence, and behind-scenes language blockers."
     },
     qualityGate: {
       ...(story.qualityGate || {}),
@@ -33752,8 +33756,84 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
   };
 }
 
+function newsLabProductionPlanner(storyDossier = {}, context = {}) {
+  const category = newsLabCategory(context.representative || { category: storyDossier.category || storyDossier.primaryCategory || "top" });
+  const facts = Array.isArray(context.facts) ? context.facts : (storyDossier.knownFacts || []);
+  const supporting = Array.isArray(context.supporting) ? context.supporting : [];
+  const sourcesReviewed = storyDossier.sourcesReviewed || storyDossier.sourceRecords || [];
+  const sourceCount = Math.max(Number(context.evidenceEngine?.sourceCount || 0), supporting.length + 1, sourcesReviewed.length, Number(storyDossier.evidence?.sourceCount || 0));
+  const fullReadCount = supporting.filter(story => String(story.articleSummary || story.summary || "").length >= 180).length + (String(context.representative?.articleSummary || "").length >= 180 ? 1 : 0);
+  const confidence = Number(storyDossier.evidence?.confidenceScore || storyDossier.confidence?.score || context.evidenceEngine?.confidenceScore || 0);
+  const topIssues = (context.editorLearningSummary?.topIssues || []).slice(0, 8).map(item => typeof item === "string" ? item : item.reason || item.issue || "").filter(Boolean);
+  const headlineRisk = topIssues.some(issue => /headline|title/i.test(issue)) || sourceCount < 2;
+  const evidenceRisk = facts.length < 3 || confidence < 55;
+  const repetitionRisk = topIssues.some(issue => /repeat|summary|repetitive/i.test(issue));
+  const behindScenesRisk = topIssues.some(issue => /process|dossier|behind|internal/i.test(issue));
+  const riskScore = Math.min(100,
+    (headlineRisk ? 28 : 8)
+    + (evidenceRisk ? 30 : 8)
+    + (repetitionRisk ? 16 : 4)
+    + (behindScenesRisk ? 16 : 4)
+    + (sourceCount < 2 ? 10 : 0)
+  );
+  const storyType = /breaking|live|urgent|developing/i.test(`${storyDossier.whatHappened || ""} ${context.representative?.title || ""}`)
+    ? "breaking"
+    : confidence >= 75 && sourceCount >= 3
+      ? "standard-news"
+      : "developing-brief";
+  const minimumParagraphs = storyType === "developing-brief" ? 4 : 5;
+  const minimumBodyCharacters = storyType === "developing-brief" ? 650 : 900;
+  return {
+    active: true,
+    generatedAt: new Date().toISOString(),
+    subsystem: "Production Planner",
+    storyType,
+    category,
+    sources: {
+      reviewed: sourceCount,
+      fullRead: fullReadCount,
+      requiredMinimum: storyType === "breaking" ? 1 : 2
+    },
+    confidence: {
+      score: confidence,
+      expectedEditorialRisk: riskScore >= 70 ? "high" : riskScore >= 42 ? "moderate" : "low",
+      likelyFirstPassOutcome: riskScore >= 70 ? "needs-pre-editor-repair" : riskScore >= 42 ? "borderline-first-pass" : "strong-first-pass-candidate"
+    },
+    headlinePlan: {
+      requiredPattern: "primary actor + specific action + consequence",
+      generateAfterBody: true,
+      avoidPublisherStructure: true,
+      expectedRisk: headlineRisk ? "needs-headline-dossier-before-editor" : "low"
+    },
+    writingPlan: {
+      lead: facts.length ? "start-with-most-newsworthy-verified-fact" : "hold-for-dossier-evidence-before-analysis",
+      structure: ["verified event", "supporting evidence", "context", "what remains unknown", "next confirmed step"],
+      tone: category === "sports" ? "clear, event-focused sports reporting" : category === "business" ? "plain-language market and company reporting" : "direct neutral news reporting",
+      avoid: ["behind-the-scenes process language", "source-count language in public copy", "summary repeating body", "mixed-topic paragraphs", "publisher headline wording"]
+    },
+    qualityTargets: {
+      minimumParagraphs,
+      minimumBodyCharacters,
+      requiredKnownFacts: storyType === "breaking" ? 2 : 3,
+      requireAttributionByParagraph: 2,
+      imageRequiredBeforePublication: false,
+      imageRepairAllowedAfterPublication: true
+    },
+    preEditorChecklist: [
+      "headline/body primary entity match",
+      "no generic or scrambled headline",
+      "body has complete sentences",
+      "summary does not repeat first paragraph",
+      "category matches source evidence",
+      "public copy does not mention dossier, source signals, confidence signals, or internal process",
+      "image is licensed, generated, or safely queued for post-publication repair"
+    ],
+    rule: "Plan the article before writing so the Writer reduces downstream editor work instead of relying on repeated repair loops."
+  };
+}
 function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
   const behavioralLexiconApplication = newsLabBehavioralLexiconApplication("newsLab", storyDossier, intelligenceInputs.evidenceEngine || storyDossier.evidenceEngine || {}, intelligenceInputs.story || {});
+  const productionPlanner = intelligenceInputs.productionPlanner || storyDossier.writerInput?.productionPlanner || storyDossier.productionPlanner || newsLabProductionPlanner(storyDossier, intelligenceInputs);
   const sourceSummary = storyDossier.sourceReliabilityRegistry || {};
   const editorialMemory = intelligenceInputs.editorialMemory || newsLabEditorLearningSummary();
   const sourceRegistry = intelligenceInputs.sourceRegistry || {
@@ -33763,6 +33843,7 @@ function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
   };
   return {
     storyId: storyDossier.storyId || storyDossier.eventId || "",
+    productionPlanner,
     officialStatements: storyDossier.officialStatements || [],
     independentReports: storyDossier.independentSources || [],
     historicalContext: storyDossier.historicalContext || "",
@@ -33798,7 +33879,7 @@ function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
     leadPriority: (storyDossier.storyIntelligenceDossier && storyDossier.storyIntelligenceDossier.narrativeLayer && storyDossier.storyIntelligenceDossier.narrativeLayer.leadPriority) || (storyDossier.writerInput && storyDossier.writerInput.leadPriority) || "",
     editorialIntelligenceV2: {
       active: true,
-      readBeforeWriting: ["Story Dossier", "Knowledge Graph", "Entity Memory", "Source Registry", "Editorial Memory", "Lexicon Intelligence"],
+      readBeforeWriting: ["Production Planner", "Story Dossier", "Knowledge Graph", "Entity Memory", "Source Registry", "Editorial Memory", "Lexicon Intelligence"],
       storyDossier: {
         knownFactCount: Number((storyDossier.knownFacts || []).length),
         timelineCount: Number((storyDossier.timeline || []).length),
@@ -33808,6 +33889,7 @@ function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
       knowledgeGraph: intelligenceInputs.knowledgeGraph || storyDossier.knowledgeGraph || {},
       entityMemory: intelligenceInputs.entityMemory || storyDossier.entityMemory || {},
       sourceRegistry,
+      productionPlanner,
       editorialMemory: {
         topIssues: (editorialMemory.topIssues || []).slice(0, 10),
         topActions: (editorialMemory.topActions || []).slice(0, 10),
@@ -33824,9 +33906,9 @@ function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
         ].slice(0, 30),
         rule: "The Writer studies patterns, approved/denied headline memory, editor decisions, and technique registry before drafting."
       },
-      rule: "Editorial Intelligence v2 makes the Writer reason from structured memory before writing a sentence."
+      rule: "Editorial Intelligence v2 makes the Writer reason from the Production Planner, structured memory, and the Story Dossier before writing a sentence."
     },
-    writingBoundary: "The Writer must read the Story Dossier, Knowledge Graph, Entity Memory, Source Registry, Editorial Memory, and Lexicon Intelligence before drafting. RSS snippets and publisher headlines are provenance for collection and links, not the writing source."
+    writingBoundary: "The Writer must read the Production Planner, Story Dossier, Knowledge Graph, Entity Memory, Source Registry, Editorial Memory, and Lexicon Intelligence before drafting. RSS snippets and publisher headlines are provenance for collection and links, not the writing source."
   };
 }
 
@@ -39454,7 +39536,26 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     collectorLearning,
     publisherLearning
   });
-  const writerDossierInput = newsLabWriterDossierInput(storyDossier, {
+  const productionPlanner = newsLabProductionPlanner(storyDossier, {
+    representative,
+    supporting,
+    facts,
+    evidenceEngine,
+    editorLearningSummary,
+    preDraftMemoryBrief,
+    category
+  });
+  storyDossier.productionPlanner = productionPlanner;
+  storyDossier.writerInput = {
+    ...(storyDossier.writerInput || {}),
+    productionPlanner
+  };  const writerDossierInput = newsLabWriterDossierInput(storyDossier, {
+    productionPlanner,
+    representative,
+    supporting,
+    facts,
+    evidenceEngine,
+    editorLearningSummary,
     entityMemory,
     sourceRegistry: {
       sourceIntelligence,
@@ -39478,6 +39579,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       ...(storyDossier.contradictions || [])
     ].filter(Boolean).join(" "),
     storyDossier,
+    productionPlanner,
     writerDossierInput,
     writerDossierHandoff: cleanWriterHandoff.diagnostic,
     preDraftMemoryBrief,
@@ -39516,6 +39618,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     contextEngine,
     body,
     writerDossierInput,
+    productionPlanner,
     preDraftMemoryBrief
   }, storyDossier, evidenceEngine, {
     writerLearning,
@@ -39545,7 +39648,9 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     contextEngine,
     evidenceEngine,
     storyDossier,
+    productionPlanner,
     writerDossierInput,
+    productionPlanner,
     preDraftMemoryBrief,
     title,
     body
@@ -39606,7 +39711,9 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       nextAction: eventWorkspace.nextIntelligenceAction || ""
     },
     storyDossier,
+    productionPlanner,
     writerDossierInput,
+    productionPlanner,
     sourceIntelligence,
     contextEngine,
     entityMemory,
@@ -44562,6 +44669,10 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
 
 
 
