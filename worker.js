@@ -70,7 +70,37 @@ adaptiveCollectorLimit = Math.min(maxCollectorWorkers, categories.length || maxC
 runtimePressureState.adaptiveCollectorLimit = adaptiveCollectorLimit;
 
 
+function rawJsonStoryCount(filePath = "") {
+  try {
+    const value = JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
+    if (Array.isArray(value?.ownedStories)) return value.ownedStories.length;
+    if (Array.isArray(value?.responses?.all?.ownedStories)) return value.responses.all.ownedStories.length;
+    if (Array.isArray(value)) return value.length;
+  } catch {}
+  return -1;
+}
+
+function seedWorkerDataFileFromRootIfStronger(targetPath = "") {
+  try {
+    const rootPath = path.join(__dirname, path.basename(targetPath));
+    if (!fs.existsSync(rootPath)) return;
+    const targetCount = fs.existsSync(targetPath) ? rawJsonStoryCount(targetPath) : -1;
+    const rootCount = rawJsonStoryCount(rootPath);
+    if (!fs.existsSync(targetPath) || rootCount > targetCount) {
+      fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+      fs.copyFileSync(rootPath, targetPath);
+    }
+  } catch {}
+}
+
+function seedWorkerDataFilesFromRoot() {
+  syncFileSpecs
+    .filter(spec => ["news-lab-published-payload", "news-lab-api-response-cache", "creator-posts", "newsletters"].includes(spec.key))
+    .forEach(spec => seedWorkerDataFileFromRootIfStronger(spec.file));
+}
+
 function readJson(filePath, fallback) {
+  seedWorkerDataFilesFromRoot();
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
   } catch {
@@ -441,6 +471,22 @@ function collectSyncFiles(options = {}) {
       }
       if (spec.key === "news-lab-published-payload") {
         payload = preservePublishedPayloadBeforeSync(payload);
+        const payloadCount = Array.isArray(payload.ownedStories) ? payload.ownedStories.length : 0;
+        const cache = readJson(path.join(dataDir, "news-lab-api-response-cache.json"), {});
+        const cacheCount = Array.isArray(cache.responses?.all?.ownedStories) ? cache.responses.all.ownedStories.length : 0;
+        const minimumSafeSync = Math.max(2, Number(process.env.CE_WORKER_SYNC_MIN_PUBLIC_STORIES || 2));
+        if (payloadCount < minimumSafeSync && cacheCount < minimumSafeSync) {
+          skipped.push({
+            key: spec.key,
+            reason: "public-payload-too-small-for-safe-sync",
+            payloadCount,
+            cacheCount,
+            bytes: stat.size,
+            mtimeMs,
+            rule: "Fresh worker boot must not sync an empty/tiny public payload before article/cache state is available."
+          });
+          continue;
+        }
       }
       files.push({ key: spec.key, updatedAt: stat.mtime.toISOString(), mtimeMs, bytes: Buffer.byteLength(JSON.stringify(payload), "utf8"), payload });
     } catch (error) {
@@ -748,6 +794,8 @@ setInterval(() => {
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
   console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
+
 
 
 

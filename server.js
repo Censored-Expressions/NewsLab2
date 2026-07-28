@@ -1653,8 +1653,36 @@ function publisherNameFromUrl(url = "") {
   }
 }
 
+function rawJsonStoryCount(filePath = "") {
+  try {
+    const value = JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
+    if (Array.isArray(value?.ownedStories)) return value.ownedStories.length;
+    if (Array.isArray(value?.responses?.all?.ownedStories)) return value.responses.all.ownedStories.length;
+    if (Array.isArray(value)) return value.length;
+  } catch {}
+  return -1;
+}
+
+function seedDataFileFromRootIfStronger(targetPath = "") {
+  try {
+    const rootPath = path.join(__dirname, path.basename(targetPath));
+    if (!fs.existsSync(rootPath)) return;
+    const targetCount = fs.existsSync(targetPath) ? rawJsonStoryCount(targetPath) : -1;
+    const rootCount = rawJsonStoryCount(rootPath);
+    if (!fs.existsSync(targetPath) || rootCount > targetCount) {
+      fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+      fs.copyFileSync(rootPath, targetPath);
+    }
+  } catch {}
+}
 function ensureDataFiles() {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  [
+    newsLabPublishedPayloadFile,
+    newsLabApiResponseCacheFile,
+    creatorPostsFile,
+    newslettersFile
+  ].forEach(seedDataFileFromRootIfStronger);
   if (!fs.existsSync(frameworkPatchBackupDir)) fs.mkdirSync(frameworkPatchBackupDir, { recursive: true });
   if (!fs.existsSync(frameworkPatchApprovedDir)) fs.mkdirSync(frameworkPatchApprovedDir, { recursive: true });
   if (!fs.existsSync(frameworkPatchDeniedDir)) fs.mkdirSync(frameworkPatchDeniedDir, { recursive: true });
@@ -2759,6 +2787,43 @@ async function handleNewsLabWorkerSync(request, response) {
     if (!file || typeof file.payload !== "object" || file.payload === null) {
       rejected.push({ key, reason: "payload-must-be-json-object-or-array" });
       continue;
+    }
+    if (key === "news-lab-published-payload") {
+      const incomingStories = Array.isArray(file.payload?.ownedStories) ? file.payload.ownedStories : [];
+      const existingPayload = readJsonFile(newsLabPublishedPayloadFile, null);
+      const existingStories = Array.isArray(existingPayload?.ownedStories) ? existingPayload.ownedStories : [];
+      const preparedCache = readJsonFile(newsLabApiResponseCacheFile, null);
+      const preparedStories = Array.isArray(preparedCache?.responses?.all?.ownedStories) ? preparedCache.responses.all.ownedStories : [];
+      const activeFloor = Math.max(existingStories.length, preparedStories.length);
+      const minimumSafeSync = Math.max(2, Number(process.env.CE_WORKER_SYNC_MIN_PUBLIC_STORIES || 2));
+      if (incomingStories.length < minimumSafeSync && activeFloor >= minimumSafeSync) {
+        rejected.push({
+          key,
+          reason: "incoming-public-payload-too-small",
+          incomingCount: incomingStories.length,
+          activeFloor,
+          rule: "Worker sync may not replace the visitor shelf with an empty or tiny payload while the web service has active seven-day stories."
+        });
+        continue;
+      }
+      if (activeFloor > incomingStories.length) {
+        file.payload = {
+          ...file.payload,
+          ownedStories: newsLabHardMergePublicStories([
+            ...incomingStories,
+            ...existingStories,
+            ...preparedStories
+          ]),
+          workerSyncServerShelfPreservation: {
+            applied: true,
+            appliedAt: new Date().toISOString(),
+            incomingCount: incomingStories.length,
+            existingCount: existingStories.length,
+            preparedCacheCount: preparedStories.length,
+            rule: "Web sync merged the active server shelf into a smaller worker payload so deploy/startup cycles add or update stories without removing approved active tiles."
+          }
+        };
+      }
     }
     const fileStarted = apiProfilerNow();
     writeJsonFile(targetPath, file.payload);
@@ -44366,6 +44431,8 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
 
 
 
