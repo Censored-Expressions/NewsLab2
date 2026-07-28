@@ -361,6 +361,57 @@ function transientWorkerSyncError(error = {}) {
   const message = `${error.name || ""} ${error.message || ""}`.toLowerCase();
   return /abort|timeout|fetch failed|socket|econnreset|eai_again|network/.test(message);
 }
+
+function workerStoryPreserveKey(story = {}) {
+  return String(story.id || story.storyId || story.eventId || story.topicKey || story.slug || story.title || "").toLowerCase().trim();
+}
+
+function workerMergePublicStories(stories = []) {
+  const merged = new Map();
+  for (const raw of stories) {
+    if (!raw || typeof raw !== "object") continue;
+    const key = workerStoryPreserveKey(raw);
+    if (!key) continue;
+    const existing = merged.get(key) || {};
+    const originalPublishedAt = raw.originalPublishedAt || existing.originalPublishedAt || raw.publishedAt || existing.publishedAt || raw.generatedAt || existing.generatedAt || "";
+    merged.set(key, {
+      ...existing,
+      ...raw,
+      originalPublishedAt,
+      publishedAt: originalPublishedAt || raw.publishedAt || existing.publishedAt || "",
+      boardVisibility: {
+        ...(existing.boardVisibility || {}),
+        ...(raw.boardVisibility || {}),
+        visible: raw.boardVisibility?.visible !== false,
+        reason: raw.boardVisibility?.reason || existing.boardVisibility?.reason || "approved-story-within-seven-day-board-window"
+      }
+    });
+  }
+  return [...merged.values()];
+}
+
+function preservePublishedPayloadBeforeSync(payload = {}) {
+  if (!payload || typeof payload !== "object" || !Array.isArray(payload.ownedStories)) return payload;
+  const cache = readJson(path.join(dataDir, "news-lab-api-response-cache.json"), {});
+  const cacheStories = Array.isArray(cache.responses?.all?.ownedStories) ? cache.responses.all.ownedStories : [];
+  const payloadStories = Array.isArray(payload.ownedStories) ? payload.ownedStories : [];
+  if (cacheStories.length <= payloadStories.length) return payload;
+  const mergedStories = workerMergePublicStories([...cacheStories, ...payloadStories]);
+  if (mergedStories.length <= payloadStories.length) return payload;
+  return {
+    ...payload,
+    ownedStories: mergedStories,
+    workerSyncShelfPreservation: {
+      applied: true,
+      appliedAt: new Date().toISOString(),
+      payloadCount: payloadStories.length,
+      cacheCount: cacheStories.length,
+      mergedCount: mergedStories.length,
+      rule: "Background Worker sync must not send a smaller public payload when its prepared API cache still has active seven-day stories. New cycles add or update; they do not collapse the visitor shelf."
+    }
+  };
+}
+
 function collectSyncFiles(options = {}) {
   const maxBytes = Math.max(1024 * 1024, Number(process.env.CE_WORKER_SYNC_MAX_FILE_BYTES || 8 * 1024 * 1024));
   const fullSync = Boolean(options.fullSync) || !workerSyncDeltaEnabled;
@@ -383,12 +434,15 @@ function collectSyncFiles(options = {}) {
         skipped.push({ key: spec.key, reason: "too-large", bytes: stat.size, mtimeMs });
         continue;
       }
-      const payload = readJson(spec.file, null);
+      let payload = readJson(spec.file, null);
       if (!payload || typeof payload !== "object") {
         skipped.push({ key: spec.key, reason: "not-json-object", bytes: stat.size, mtimeMs });
         continue;
       }
-      files.push({ key: spec.key, updatedAt: stat.mtime.toISOString(), mtimeMs, bytes: stat.size, payload });
+      if (spec.key === "news-lab-published-payload") {
+        payload = preservePublishedPayloadBeforeSync(payload);
+      }
+      files.push({ key: spec.key, updatedAt: stat.mtime.toISOString(), mtimeMs, bytes: Buffer.byteLength(JSON.stringify(payload), "utf8"), payload });
     } catch (error) {
       skipped.push({ key: spec.key, reason: error.message || String(error) });
     }
@@ -694,6 +748,7 @@ setInterval(() => {
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
   console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
 
 
 
