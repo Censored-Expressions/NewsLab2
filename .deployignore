@@ -1,4 +1,4 @@
-node_modules/
+﻿node_modules/
 .env
 .env.*
 !.env.example
@@ -14,3 +14,15 @@ data/creator-desk.log
 data/daily-article-memory.json
 data/daily-article-memory.full-backup-*.json
 memory-backups/
+# Runtime history/backups are not deployment inputs
+data/content-rewrite-backups/
+data/*backup*.json
+data/*.before-*.json
+data/*.full-backup-*.json
+data/*.tmp
+*.tmp
+server-local*.log
+server-worker*.log
+data/patch-directions-for-codex/
+data/patch-structuring-teachings/
+data/patch-decisions/

@@ -1675,7 +1675,9 @@ function seedDataFileFromRootIfStronger(targetPath = "") {
     }
   } catch {}
 }
-function ensureDataFiles() {
+let dataFilesInitialized = false;
+function ensureDataFiles(options = {}) {
+  if (dataFilesInitialized && !options.force) return;
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   [
     newsLabPublishedPayloadFile,
@@ -1726,6 +1728,7 @@ function ensureDataFiles() {
   if (!fs.existsSync(memoryConsolidationActionsFile)) fs.writeFileSync(memoryConsolidationActionsFile, `${JSON.stringify(defaultMemoryConsolidationActions(), null, 2)}\n`);
   if (!fs.existsSync(memoryRetentionLedgerFile)) fs.writeFileSync(memoryRetentionLedgerFile, `${JSON.stringify(defaultMemoryRetentionLedger(), null, 2)}\n`);
   if (!fs.existsSync(workingMemoryCleanupReportFile)) fs.writeFileSync(workingMemoryCleanupReportFile, `${JSON.stringify(defaultWorkingMemoryCleanupReport(), null, 2)}\n`);
+  dataFilesInitialized = true;
 }
 
 function readJsonFile(filePath, fallback) {
@@ -1795,6 +1798,7 @@ function compactNewsLabPublishedPayload(value) {
   let boardReady = value.boardDatePolicy?.active ? value : newsLabApplyCurrentBoardPolicy(value);
   const incomingCount = Number(boardReady.ownedStories?.length || 0);
   try {
+    if (value.workerSyncServerShelfPreservation?.applied || value.skipPublicShelfWriteFloor) throw new Error("shelf-preservation-already-applied");
     const existingPayload = readJsonFile(newsLabPublishedPayloadFile, null);
     const cachedPayload = readJsonFile(newsLabApiResponseCacheFile, null)?.responses?.all || null;
     const existingBoard = existingPayload?.ownedStories?.length ? newsLabApplyCurrentBoardPolicy(existingPayload) : null;
@@ -1834,6 +1838,7 @@ function compactNewsLabPublishedPayload(value) {
       publicShelfWriteFloor: {
         applied: false,
         error: error.message,
+        skippedBecauseAlreadyApplied: error.message === "shelf-preservation-already-applied",
         rule: "Public shelf preservation is best-effort and must not block writing the payload."
       }
     };
@@ -1864,7 +1869,16 @@ function writeJsonFile(filePath, value) {
   ensureDataFiles();
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const valueToWrite = filePath === newsLabPublishedPayloadFile ? compactNewsLabPublishedPayload(value) : value;
-  const finalText = `${JSON.stringify(valueToWrite, null, 2)}\n`;
+  const heavyRuntimeJson = new Set([
+    newsLabPublishedPayloadFile,
+    newsLabApiResponseCacheFile,
+    newsLabStoryObjectsFile,
+    newsLabArticleApprovalIntelligenceFile,
+    newsLabObservabilityFile,
+    newsLabProductivityFile
+  ]);
+  const compactRuntimeJson = process.env.CE_COMPACT_RUNTIME_JSON !== "false" && heavyRuntimeJson.has(filePath);
+  const finalText = `${compactRuntimeJson ? JSON.stringify(valueToWrite) : JSON.stringify(valueToWrite, null, 2)}\n`;
   const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
   fs.writeFileSync(tempPath, finalText);
   fs.renameSync(tempPath, filePath);
@@ -42810,23 +42824,21 @@ const server = http.createServer(async (request, response) => {
       const forceManualRebuild = url.searchParams.has("refresh");
       const category = url.searchParams.get("category");
       if (!forceDeep && !forceManualRebuild) {
-        const cleanPublishedPayload = readJsonFile(newsLabPublishedPayloadFile, null);
-        const cleanPublishedCount = Array.isArray(cleanPublishedPayload?.ownedStories) ? cleanPublishedPayload.ownedStories.length : 0;
+        const requestedCategory = String(category || "all").toLowerCase().trim() || "all";
         const preparedPayloadCandidate = readPreparedNewsLabApiPayload(category);
         const preparedPayloadCount = Array.isArray(preparedPayloadCandidate?.ownedStories) ? preparedPayloadCandidate.ownedStories.length : 0;
-        const durableFallbackCandidate = cleanPublishedPayload && cleanPublishedCount ? newsLabFastPublishedApiPayload(cleanPublishedPayload, category) : null;
-        const durableFallbackCount = Array.isArray(durableFallbackCandidate?.ownedStories) ? durableFallbackCandidate.ownedStories.length : 0;
-        if (!newsLabInlineBuildAllowed && preparedPayloadCandidate && preparedPayloadCount >= Math.max(1, durableFallbackCount)) {
+        const preparedMinimum = requestedCategory === "top" ? Math.min(7, newsLabTopNewsLimit) : 1;
+        if (!newsLabInlineBuildAllowed && preparedPayloadCandidate && preparedPayloadCount >= preparedMinimum) {
           sendNoStoreJson(response, 200, {
             ...preparedPayloadCandidate,
             apiResponseWorker: {
               ...(preparedPayloadCandidate.apiResponseWorker || {}),
               active: true,
-              mode: "prepared-cache-first-active-board",
-              cleanPublishedCount,
+              mode: "prepared-cache-immediate-no-durable-read",
               preparedPayloadCount,
               inlineBuildAllowed: false,
-              rule: "Public News Lab serves the compact prepared active-board cache first. Durable payload remains a fallback and archive/search source, but raw archive size must not block tab clicks."
+              skippedLargePublishedPayloadRead: true,
+              rule: "Public News Lab answers from the compact prepared cache before reading the larger durable payload. Workers refresh and reconcile the durable shelf in the background."
             }
           });
           setTimeout(() => {
@@ -42838,30 +42850,7 @@ const server = http.createServer(async (request, response) => {
           }, 0);
           return;
         }
-        if (!newsLabInlineBuildAllowed && durableFallbackCandidate && durableFallbackCount) {
-          sendNoStoreJson(response, 200, {
-            ...durableFallbackCandidate,
-            apiResponseWorker: {
-              active: true,
-              mode: "clean-published-payload-fallback",
-              cleanPublishedCount,
-              preparedPayloadCount,
-              cacheFresh: true,
-              inlineBuildAllowed: false,
-              rule: "Durable payload is served only when the prepared shelf is missing or weaker."
-            }
-          });
-          setTimeout(() => {
-            try {
-              startNewsLabApiResponseWorkerProcess("public-news-lab-clean-payload-background-refresh");
-            } catch (error) {
-              runtimeState.lastError = "News Lab clean payload background refresh failed: " + (error.message || error);
-            }
-          }, 0);
-          return;
-        }
-      }
-      if (!forceDeep && !forceManualRebuild) {
+      }      if (!forceDeep && !forceManualRebuild) {
         const preparedCacheFresh = false;
         const preparedPayload = readPreparedNewsLabApiPayload(category);
         const durablePayloadForPreparedCheck = readJsonFile(newsLabPublishedPayloadFile, null);
@@ -44669,6 +44658,11 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
 
 
 
