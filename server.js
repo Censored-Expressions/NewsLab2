@@ -4175,6 +4175,31 @@ function saveFrameworkLearningProofEntry(entry = {}) {
   return enriched;
 }
 
+function lightweightJsonFileSummary(filePath = "", label = "json-file") {
+  try {
+    const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
+    return {
+      label,
+      exists: Boolean(stat),
+      bytes: Number(stat?.size || 0),
+      updatedAt: stat?.mtime ? stat.mtime.toISOString() : "",
+      largeFile: Number(stat?.size || 0) >= Number(process.env.CE_OWNER_DASHBOARD_LARGE_FILE_BYTES || 12 * 1024 * 1024),
+      rule: "Owner dashboards use compact file summaries for large audit stores; full parsing belongs to explicit refresh, background workers, or targeted inspection."
+    };
+  } catch (error) {
+    return { label, exists: false, bytes: 0, error: error.message || String(error) };
+  }
+}
+
+function shouldUseLightweightOwnerSummary(filePath = "") {
+  if (process.env.CE_OWNER_DASHBOARD_FULL_AUDIT_LOGS === "true") return false;
+  try {
+    const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
+    return Number(stat?.size || 0) >= Number(process.env.CE_OWNER_DASHBOARD_LARGE_FILE_BYTES || 12 * 1024 * 1024);
+  } catch {
+    return true;
+  }
+}
 function frameworkLearningProofSummary(limit = 20) {
   const log = readFrameworkLearningProofLog(limit);
   const all = readFrameworkLearningProofLog(500);
@@ -4192,7 +4217,26 @@ function frameworkLearningProofSummary(limit = 20) {
   };
 }
 
-function frameworkActionLogSummary(limit = 20) {
+function frameworkActionLogSummary(limit = 20, options = {}) {
+  if (!options.full && shouldUseLightweightOwnerSummary(frameworkActionLogFile)) {
+    const fileSummary = lightweightJsonFileSummary(frameworkActionLogFile, "framework-action-log");
+    return {
+      generatedAt: new Date().toISOString(),
+      purpose: "Compact proof that the Framework is executing bounded, reversible, verified optimization actions without forcing the Owner Desk to parse the full audit log.",
+      requiredProofChain: "Issue detected -> Framework chooses solution -> Framework makes change -> Metric improves -> Framework verifies improvement -> Prevention memory saved.",
+      lightweight: true,
+      fileSummary,
+      totals: {
+        actionCount: null,
+        autonomousActionCount: null,
+        verifiedActionCount: null,
+        metricImprovedActionCount: null,
+        blockedActionCount: null
+      },
+      recentActions: [],
+      optimizationDirective: "Large audit logs must be distilled by background workers into compact semantic/action summaries before dashboard use."
+    };
+  }
   const log = readJsonFile(frameworkActionLogFile, []);
   const all = (Array.isArray(log) ? log : []).map(entry => {
     if (entry.autonomousProofChain && entry.improvementAssessment && entry.preventionMemory) return entry;
@@ -4216,6 +4260,7 @@ function frameworkActionLogSummary(limit = 20) {
     generatedAt: new Date().toISOString(),
     purpose: "Proof that the Framework is executing bounded, reversible, verified optimization actions instead of only monitoring issues.",
     requiredProofChain: "Issue detected -> Framework chooses solution -> Framework makes change -> Metric improves -> Framework verifies improvement -> Prevention memory saved.",
+    lightweight: false,
     totals: {
       actionCount: all.length,
       autonomousActionCount: autonomous.length,
@@ -4226,7 +4271,6 @@ function frameworkActionLogSummary(limit = 20) {
     recentActions: recent
   };
 }
-
 function readPatchProposals(limit = 50) {
   const proposals = readJsonFile(frameworkPatchProposalFile, []);
   return (Array.isArray(proposals) ? proposals : []).slice(-limit).reverse().map(patchProposalWithDirection);
@@ -8413,6 +8457,92 @@ function numericEvidenceValue(evidence = [], key = "") {
   return Number(String(item).split("=").slice(1).join("=")) || 0;
 }
 
+function frameworkContinuousOptimizerSnapshot(memory = learningMemory(), diagnostics = null) {
+  const apiPerformance = readJsonFile(apiEndpointPerformanceFile, defaultApiEndpointPerformance()) || defaultApiEndpointPerformance();
+  const productivity = readJsonFile(newsLabProductivityFile, {}) || {};
+  const imageWorker = readJsonFile(newsLabImageWorkerStatusFile, {}) || {};
+  const publishedPayload = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
+  const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
+  const endpoints = Object.values(apiPerformance.endpoints || {});
+  const worstEndpoint = (apiPerformance.slowestEndpoints || []).slice(0, 1)[0]
+    || endpoints.map(item => ({ endpoint: item.endpoint || "unknown", maxMs: item.maxMs || 0, avgMs: item.avgMs || 0 })).sort((a, b) => Number(b.maxMs || 0) - Number(a.maxMs || 0))[0]
+    || null;
+  const finalApproved = Number(productivity.lastHour?.approvedArticles || 0);
+  const rejected = Number(productivity.lastHour?.rejectedDrafts || 0);
+  const editorialReviews = Number(productivity.lastHour?.editorialReviews || finalApproved + rejected || 0);
+  const firstPassRate = editorialReviews ? Number(((finalApproved / editorialReviews) * 100).toFixed(1)) : 0;
+  const visibleStories = Array.isArray(publishedPayload.ownedStories) ? publishedPayload.ownedStories.length : 0;
+  const imageSummary = imageWorker.summary || {};
+  const imageConfigured = Boolean(imageWorker.config?.liveImageSearch && imageWorker.config?.hasPexelsKey && imageWorker.config?.hasPixabayKey);
+  const imageImprovement = Number(imageSummary.upgraded || 0) + Number(imageSummary.generatedImageAssetsPromoted || 0);
+  const slowEndpointMs = Number(worstEndpoint?.maxMs || worstEndpoint?.avgMs || 0);
+  const performanceScore = clampScore(100 - Math.min(55, slowEndpointMs / 1200) - Number(apiPerformance.totals?.slowRequests || 0) * 2);
+  const editorialScore = clampScore(45 + firstPassRate * 2.4 + Math.min(20, Number(productivity.lastHour?.preEditorRepairedDrafts || 0) / 4));
+  const imageScore = clampScore((imageConfigured ? 72 : 45) + Math.min(20, imageImprovement * 4) - (Number(imageSummary.fallbacks || 0) * 3));
+  const publicationScore = clampScore(visibleStories >= 20 ? 92 : visibleStories >= 7 ? 78 : 45 + visibleStories * 4);
+  const learningApplication = editorialLessonApplicationMetrics(memory);
+  const learningScore = clampScore(88 - Math.max(0, Number(learningApplication.lessonApplicationGap || 0)) * 3);
+  const lanes = [
+    {
+      key: "performance-brain",
+      purpose: "Keep public APIs responsive and prevent worker sync pressure from causing downtime.",
+      score: performanceScore,
+      whyNotBetter: worstEndpoint ? `${worstEndpoint.endpoint || "endpoint"} reached ${slowEndpointMs}ms; large audit stores must stay off request paths.` : "No slow endpoint evidence yet.",
+      nextSafeImprovement: "Serve compact dashboard summaries from cached/precomputed files; reserve full JSON parsing for explicit refresh or background workers."
+    },
+    {
+      key: "editorial-brain",
+      purpose: "Raise first-pass approval while preserving article standards.",
+      score: editorialScore,
+      whyNotBetter: `Last-hour first-pass approval is ${firstPassRate}% (${finalApproved}/${editorialReviews}); rejected drafts still dominate throughput.`,
+      nextSafeImprovement: "Apply editor decision memory and dossier strategy before first draft, then run Publishing Editor repair before validator rejection."
+    },
+    {
+      key: "image-brain",
+      purpose: "Attach story-matching licensed or CE-generated visuals without blocking publication.",
+      score: imageScore,
+      whyNotBetter: `Image worker configured=${imageConfigured}; upgraded=${imageSummary.upgraded || 0}; generated=${imageSummary.generatedImageAssetsPromoted || 0}; queued=${imageSummary.generatedImageBriefsQueued || 0}.`,
+      nextSafeImprovement: "Maintain persistent image work items for published articles until a licensed or CE-generated image passes relevance/provenance checks."
+    },
+    {
+      key: "publication-brain",
+      purpose: "Grow the visible seven-day shelf without replacing active approved articles.",
+      score: publicationScore,
+      whyNotBetter: `Visible public shelf currently has ${visibleStories} articles; target is filled tabs plus 20 top-news cap.`,
+      nextSafeImprovement: "Only remove expired or same-event-replaced tiles; otherwise merge new approvals into the existing active shelf."
+    },
+    {
+      key: "product-brain",
+      purpose: "Make News Lab feel useful, current, fast, and easy to navigate.",
+      score: clampScore((performanceScore + publicationScore + imageScore) / 3),
+      whyNotBetter: "User-facing value is limited when article count, image coverage, or load speed falls below expectation.",
+      nextSafeImprovement: "Track visible article count, image coverage, search latency, and tab fill as product-health metrics."
+    },
+    {
+      key: "framework-brain",
+      purpose: "Continuously identify the weakest capability, apply bounded fixes, measure impact, and promote what works.",
+      score: learningScore,
+      whyNotBetter: learningApplication.lessonApplicationGap ? `Lesson application gap=${learningApplication.lessonApplicationGap}; stored lessons must change future behavior.` : "Learning loop is improving; continue measuring behavior change.",
+      nextSafeImprovement: "Every repeated rejection pattern should become a generalized prevention rule, not an exact-string-only memory."
+    }
+  ];
+  const weakest = lanes.slice().sort((a, b) => Number(a.score || 0) - Number(b.score || 0))[0];
+  return {
+    generatedAt: new Date().toISOString(),
+    purpose: "Turn the Framework into a continuous optimizer: measure each Brain lane, identify why it is not better, choose one safe improvement, and verify measurable impact.",
+    visibleStories,
+    worstEndpoint,
+    firstPassRate,
+    lanes,
+    highestRoiNextChange: weakest ? {
+      target: weakest.key,
+      score: weakest.score,
+      why: weakest.whyNotBetter,
+      action: weakest.nextSafeImprovement
+    } : null,
+    rule: "Every subsystem should answer: What is my purpose? How well am I performing? Why am I not performing better? What safe, measurable improvement should I propose next?"
+  };
+}
 function ownerBrainStateSummary(memory = learningMemory(), diagnostics = null) {
   const analysis = subsystemCapabilityAnalysis(memory, diagnostics);
   const registry = analysis.registry || [];
@@ -8461,6 +8591,7 @@ function ownerBrainStateSummary(memory = learningMemory(), diagnostics = null) {
     contentOrchestration: readJsonFile(path.join(dataDir, "content-orchestration-report.json"), null) || contentOrchestrationAnalysis(memory, diagnostics),
     writingIntelligence: writingPatternLibrarySummary(memory),
     frameworkEvolutionSpiral: readJsonFile(path.join(dataDir, "framework-evolution-spiral-report.json"), null) || frameworkEvolutionSpiralAnalysis(memory, diagnostics),
+    continuousOptimizer: frameworkContinuousOptimizerSnapshot(memory, diagnostics),
     highImpactCapabilityPlan: readJsonFile(path.join(dataDir, "high-impact-capability-plan.json"), null) || highImpactCapabilityPlan(memory, diagnostics),
     brainState: {
       frameworkConfidence: confidence,
@@ -44197,6 +44328,9 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
 
 
 
