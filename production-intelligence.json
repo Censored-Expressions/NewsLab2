@@ -1,0 +1,50 @@
+﻿{
+    "version":  "20260728-production-intelligence-v1",
+    "updatedAt":  "2026-07-28T20:41:43.1006920Z",
+    "reason":  "seeded-from-current-metrics",
+    "purpose":  "Answer what caused unnecessary production work today and choose one bounded measurable improvement.",
+    "primaryGoal":  "Increase First-Pass Publication Rate.",
+    "current":  {
+                    "firstPassPublicationRate":  1,
+                    "finalApprovalRate":  1,
+                    "reviewedCandidates":  1,
+                    "firstPassApproved":  1,
+                    "finalApproved":  1,
+                    "finalBlocked":  19,
+                    "highQualityPublishedArticlesPerHour":  16,
+                    "averagePublicationLatencyMs":  35171
+                },
+    "unnecessaryWork":  {
+                            "repairFrequency":  12,
+                            "editorialRejections":  19,
+                            "headlineRewritePressure":  236,
+                            "evidenceOrDossierPressure":  43,
+                            "duplicateEffort":  0,
+                            "imageRepairPressure":  0,
+                            "repeatedReasoning":  0,
+                            "slowEndpoints":  [
+
+                                              ]
+                        },
+    "boundedImprovementProposal":  {
+                                       "subsystem":  "Headline Generator",
+                                       "action":  "Generate headline candidates from the completed Story Dossier after the article body exists, then pre-score Actor + Action + Consequence and body overlap before editorial review.",
+                                       "expectedOutcome":  "Improve first-pass publication and reduce repair loops during the next production window without lowering editorial standards.",
+                                       "measurement":  "Compare firstPassPublicationRate, finalApprovalRate, repairFrequency, repeatedReasoning, and highQualityPublishedArticlesPerHour after the next production window."
+                                   },
+    "failurePreventionMemory":  {
+                                    "writerInstruction":  "Before drafting, read the Story Dossier, Editorial Memory, Headline Pattern Memory, Learner Lexicon, and prevention rules; then reason internally about verified event, uncertainty, headline direction, and likely editorial risk before prose generation.",
+                                    "rules":  [
+                                                  {
+                                                      "id":  "prevent-headline-failures-before-editor",
+                                                      "appliesTo":  "Headline Generator",
+                                                      "preventBy":  "Use Actor + Action + Consequence from the completed event dossier and score body overlap before editorial review."
+                                                  },
+                                                  {
+                                                      "id":  "prevent-thin-or-unsupported-drafts",
+                                                      "appliesTo":  "Story Dossier Builder",
+                                                      "preventBy":  "Expand thin fragments or mark needs-dossier-evidence before Writer work starts."
+                                                  }
+                                              ]
+                                }
+}
