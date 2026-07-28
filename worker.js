@@ -12,7 +12,9 @@ const workerEvents = [];
 const webSyncBaseUrl = String(process.env.CE_WEB_SYNC_URL || process.env.CE_PUBLIC_SITE_URL || process.env.PUBLIC_SITE_URL || "").replace(/\/+$/, "");
 const workerSyncEnabled = process.env.CE_WORKER_SYNC_ENABLED !== "false" && Boolean(webSyncBaseUrl);
 const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_INTERVAL_MS || 60000));
-const workerSyncTimeoutMs = Math.max(5000, Number(process.env.CE_WORKER_SYNC_TIMEOUT_MS || 20000));
+const workerSyncTimeoutMs = Math.max(15000, Number(process.env.CE_WORKER_SYNC_TIMEOUT_MS || 45000));
+const workerSyncRetryCount = Math.max(1, Number(process.env.CE_WORKER_SYNC_RETRY_COUNT || 3));
+const workerSyncRetryDelayMs = Math.max(1000, Number(process.env.CE_WORKER_SYNC_RETRY_DELAY_MS || 3000));
 const workerCpuGuardEnabled = process.env.CE_WORKER_CPU_GUARD !== "false";
 const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECTORS || (workerCpuGuardEnabled ? 4 : 99)));
 const minCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MIN_COLLECTORS || 1));
@@ -213,9 +215,9 @@ function workerArticlePipelineSummary() {
     imageStatus: {
       status: imageStatus.status || imageStatus.lastStatus || "missing-or-not-run",
       updatedAt: imageStatus.generatedAt || imageStatus.updatedAt || imageStatus.finishedAt || imageStatus.startedAt || "",
-      liveImageSearch: Boolean(imageStatus.config?.liveImageSearch),
-      hasPexelsKey: Boolean(imageStatus.config?.hasPexelsKey),
-      hasPixabayKey: Boolean(imageStatus.config?.hasPixabayKey),
+      liveImageSearch: Boolean(imageStatus.config?.liveImageSearch) || process.env.CE_NEWS_LAB_LIVE_IMAGES === "true",
+      hasPexelsKey: Boolean(imageStatus.config?.hasPexelsKey) || Boolean(process.env.PEXELS_API_KEY),
+      hasPixabayKey: Boolean(imageStatus.config?.hasPixabayKey) || Boolean(process.env.PIXABAY_API_KEY),
       totalStories: Number(imageStatus.summary?.totalStories || imageStatus.totalStories || 0),
       reviewed: Number(imageStatus.summary?.reviewed || imageStatus.reviewed || 0),
       upgraded: Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0),
@@ -338,6 +340,14 @@ function oneShotsDeferred(name = "one-shot") {
   }
   return false;
 }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function transientWorkerSyncError(error = {}) {
+  const message = `${error.name || ""} ${error.message || ""}`.toLowerCase();
+  return /abort|timeout|fetch failed|socket|econnreset|eai_again|network/.test(message);
+}
 function collectSyncFiles() {
   const maxBytes = Math.max(1024 * 1024, Number(process.env.CE_WORKER_SYNC_MAX_FILE_BYTES || 8 * 1024 * 1024));
   const files = [];
@@ -387,51 +397,72 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     return;
   }
   const endpoint = `${webSyncBaseUrl}/api/news-lab/worker-sync`;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), workerSyncTimeoutMs);
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-owner-admin-token": ownerAdminToken
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
+  let lastError = null;
+  for (let attempt = 1; attempt <= workerSyncRetryCount; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), workerSyncTimeoutMs);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-owner-admin-token": ownerAdminToken
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          reason,
+          source: "background-worker-orchestrator",
+          generatedAt: new Date().toISOString(),
+          files
+        })
+      });
+      clearTimeout(timeout);
+      const result = await response.json().catch(() => ({}));
+      const event = {
+        type: response.ok ? "worker-sync-complete" : "worker-sync-failed",
         reason,
-        source: "background-worker-orchestrator",
-        generatedAt: new Date().toISOString(),
-        files
-      })
-    });
-    const result = await response.json().catch(() => ({}));
-    const event = {
-      type: response.ok ? "worker-sync-complete" : "worker-sync-failed",
-      reason,
-      status: response.ok ? "ok" : `http-${response.status}`,
-      at: new Date().toISOString(),
-      acceptedCount: Number(result.acceptedCount || 0),
-      rejectedCount: Number(result.rejectedCount || 0),
-      acceptedKeys: (result.accepted || []).map(item => item.key).filter(Boolean),
-      rejectedKeys: (result.rejected || []).map(item => item.key).filter(Boolean),
-      skipped
-    };
-    recordWorkerEvent(event);
-    writeWorkerSyncLedger(event);
-    tuneRuntimeFromSync(event);
-    writeWorkerObservability("worker-sync-complete");
-    const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
-    console.log(`[worker] sync ${event.status}: accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
-  } catch (error) {
-    const event = { type: "worker-sync-error", reason, status: "error", error: error.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : error.message || String(error), at: new Date().toISOString(), skipped };
-    recordWorkerEvent(event);
-    writeWorkerSyncLedger(event);
-    tuneRuntimeFromSync(event);
-    writeWorkerObservability("worker-sync-error");
-    console.log(`[worker] sync error: ${event.error}`);
-  } finally {
-    clearTimeout(timeout);
+        status: response.ok ? "ok" : `http-${response.status}`,
+        at: new Date().toISOString(),
+        attempt,
+        retryCount: workerSyncRetryCount,
+        acceptedCount: Number(result.acceptedCount || 0),
+        rejectedCount: Number(result.rejectedCount || 0),
+        acceptedKeys: (result.accepted || []).map(item => item.key).filter(Boolean),
+        rejectedKeys: (result.rejected || []).map(item => item.key).filter(Boolean),
+        skipped
+      };
+      recordWorkerEvent(event);
+      writeWorkerSyncLedger(event);
+      tuneRuntimeFromSync(event);
+      writeWorkerObservability("worker-sync-complete");
+      const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
+      console.log(`[worker] sync ${event.status}: attempt=${attempt}/${workerSyncRetryCount} accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
+      return;
+    } catch (error) {
+      clearTimeout(timeout);
+      lastError = error;
+      if (attempt < workerSyncRetryCount && transientWorkerSyncError(error)) {
+        console.log(`[worker] sync retry ${attempt}/${workerSyncRetryCount}: ${error.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : error.message || String(error)}`);
+        await sleep(workerSyncRetryDelayMs * attempt);
+        continue;
+      }
+      break;
+    }
   }
+  const event = {
+    type: "worker-sync-error",
+    reason,
+    status: "error",
+    error: lastError?.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : lastError?.message || String(lastError || "sync failed"),
+    at: new Date().toISOString(),
+    retryCount: workerSyncRetryCount,
+    skipped
+  };
+  recordWorkerEvent(event);
+  writeWorkerSyncLedger(event);
+  tuneRuntimeFromSync(event);
+  writeWorkerObservability("worker-sync-error");
+  console.log(`[worker] sync error: ${event.error}`);
 }
 function spawnRole(name, env = {}, options = {}) {
   if (children.has(name)) return children.get(name);
@@ -620,6 +651,11 @@ setInterval(() => {
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
   console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
+
+
+
+
 
 
 

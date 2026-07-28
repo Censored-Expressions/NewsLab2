@@ -17,6 +17,12 @@
         value: "false"
       - key: WEB_CONCURRENCY
         value: "1"
+      - key: CE_API_ENDPOINT_PROFILING
+        value: "true"
+      - key: CE_API_ENDPOINT_SLOW_MS
+        value: "750"
+      - key: CE_API_ENDPOINT_PROFILE_EVENTS
+        value: "200"
       - key: CE_WORKER_SYNC_BODY_LIMIT_BYTES
         value: "16777216"
       - key: CE_WORKER_SYNC_MAX_FILE_BYTES
@@ -49,7 +55,11 @@
       - key: CE_WORKER_SYNC_ENABLED
         value: "true"
       - key: CE_WORKER_SYNC_TIMEOUT_MS
-        value: "20000"
+        value: "45000"
+      - key: CE_WORKER_SYNC_RETRY_COUNT
+        value: "3"
+      - key: CE_WORKER_SYNC_RETRY_DELAY_MS
+        value: "3000"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
       - key: CE_WORKER_CPU_GUARD
@@ -116,6 +126,10 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
+
+
+
 
 
 

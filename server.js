@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const childProcess = require("node:child_process");
+const { AsyncLocalStorage } = require("node:async_hooks");
 
 function loadLocalEnvFile(filePath = path.join(__dirname, ".env")) {
   if (!fs.existsSync(filePath)) return;
@@ -85,6 +86,7 @@ const newsLabStuckRescueWorkerStatusFile = path.join(dataDir, "news-lab-stuck-re
 const newsLabStuckRescueLearningFile = path.join(dataDir, "news-lab-stuck-rescue-learning.json");
 const newsLabImageImprovementAuditFile = path.join(dataDir, "news-lab-image-improvement-audit.json");
 const newsLabImageWorkerStatusFile = path.join(dataDir, "news-lab-image-worker-status.json");
+const apiEndpointPerformanceFile = path.join(dataDir, "api-endpoint-performance.json");
 const newsLabGeneratedImageQueueFile = path.join(dataDir, "news-lab-generated-image-queue.json");
 const writingTechniqueRegistryFile = path.join(dataDir, "writing-technique-registry.json");
 const lexiconIntelligenceFile = path.join(dataDir, "lexicon-intelligence.json");
@@ -1099,6 +1101,148 @@ let diagnosticsCache = {
   expires: 0,
   payload: null
 };
+
+const apiProfilerStorage = new AsyncLocalStorage();
+const apiProfilerEnabled = process.env.CE_API_ENDPOINT_PROFILING !== "false";
+const apiProfilerSlowThresholdMs = Math.max(50, Number(process.env.CE_API_ENDPOINT_SLOW_MS || 750));
+const apiProfilerMaxEvents = Math.max(25, Number(process.env.CE_API_ENDPOINT_PROFILE_EVENTS || 200));
+
+function apiProfilerNow() {
+  return Number(process.hrtime.bigint() / 1000000n);
+}
+
+function apiProfilerEndpointName(request, url) {
+  return `${request.method || "GET"} ${url.pathname || "/"}`;
+}
+
+function createApiRequestProfiler(request, url) {
+  if (!apiProfilerEnabled || !String(url.pathname || "").startsWith("/api/")) return null;
+  return {
+    id: crypto.randomBytes(6).toString("hex"),
+    endpoint: apiProfilerEndpointName(request, url),
+    method: request.method || "GET",
+    path: url.pathname || "",
+    startedAt: new Date().toISOString(),
+    startMs: apiProfilerNow(),
+    fileReadMs: 0,
+    jsonParseMs: 0,
+    jsonSerializeMs: 0,
+    fileReadCount: 0,
+    jsonParseCount: 0,
+    responseSizeBytes: 0,
+    statusCode: 0,
+    slowFiles: []
+  };
+}
+
+function currentApiProfiler() {
+  return apiProfilerStorage.getStore() || null;
+}
+
+function apiProfilerRecordFile(filePath = "", readMs = 0, parseMs = 0, bytes = 0, ok = true) {
+  const profiler = currentApiProfiler();
+  if (!profiler) return;
+  profiler.fileReadMs += Number(readMs || 0);
+  profiler.jsonParseMs += Number(parseMs || 0);
+  profiler.fileReadCount += 1;
+  profiler.jsonParseCount += ok ? 1 : 0;
+  const totalMs = Number(readMs || 0) + Number(parseMs || 0);
+  if (totalMs >= 15) {
+    profiler.slowFiles.push({
+      file: path.basename(filePath || "unknown"),
+      readMs: Number(readMs || 0),
+      parseMs: Number(parseMs || 0),
+      bytes: Number(bytes || 0),
+      ok
+    });
+    profiler.slowFiles = profiler.slowFiles.sort((a, b) => (b.readMs + b.parseMs) - (a.readMs + a.parseMs)).slice(0, 8);
+  }
+}
+
+function apiProfilerRecordResponse(statusCode = 0, body = "", serializeMs = 0) {
+  const profiler = currentApiProfiler();
+  if (!profiler) return;
+  profiler.statusCode = Number(statusCode || 0);
+  profiler.responseSizeBytes = Buffer.byteLength(String(body || ""), "utf8");
+  profiler.jsonSerializeMs += Number(serializeMs || 0);
+}
+
+function defaultApiEndpointPerformance() {
+  return {
+    version: "20260727-api-endpoint-profiler-v1",
+    updatedAt: new Date().toISOString(),
+    purpose: "Measure endpoint duration, file read time, JSON parse time, response size, and total elapsed time so sync timeouts and 502s can be traced to exact API paths.",
+    totals: { requests: 0, slowRequests: 0 },
+    endpoints: {},
+    recent: []
+  };
+}
+
+function recordApiEndpointPerformance(profiler = null) {
+  if (!profiler) return;
+  const totalElapsedMs = Math.max(0, apiProfilerNow() - profiler.startMs);
+  const event = {
+    id: profiler.id,
+    endpoint: profiler.endpoint,
+    method: profiler.method,
+    path: profiler.path,
+    startedAt: profiler.startedAt,
+    finishedAt: new Date().toISOString(),
+    statusCode: profiler.statusCode || 0,
+    requestStart: profiler.startedAt,
+    processingDurationMs: totalElapsedMs,
+    fileReadMs: Number(profiler.fileReadMs || 0),
+    jsonParseMs: Number(profiler.jsonParseMs || 0),
+    jsonSerializeMs: Number(profiler.jsonSerializeMs || 0),
+    fileReadCount: Number(profiler.fileReadCount || 0),
+    jsonParseCount: Number(profiler.jsonParseCount || 0),
+    responseSizeBytes: Number(profiler.responseSizeBytes || 0),
+    totalElapsedMs,
+    slowFiles: profiler.slowFiles || []
+  };
+  if (totalElapsedMs < apiProfilerSlowThresholdMs && Math.random() > 0.12) return;
+  try {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    let ledger = defaultApiEndpointPerformance();
+    if (fs.existsSync(apiEndpointPerformanceFile)) {
+      try {
+        ledger = JSON.parse(fs.readFileSync(apiEndpointPerformanceFile, "utf8").replace(/^\uFEFF/, ""));
+      } catch {
+        ledger = defaultApiEndpointPerformance();
+      }
+    }
+    const endpoint = ledger.endpoints[event.endpoint] || { requests: 0, slowRequests: 0, totalMs: 0, maxMs: 0, totalFileReadMs: 0, totalJsonParseMs: 0, totalResponseBytes: 0, lastStatusCode: 0, lastSeenAt: "" };
+    endpoint.requests += 1;
+    endpoint.slowRequests += totalElapsedMs >= apiProfilerSlowThresholdMs ? 1 : 0;
+    endpoint.totalMs += totalElapsedMs;
+    endpoint.maxMs = Math.max(Number(endpoint.maxMs || 0), totalElapsedMs);
+    endpoint.totalFileReadMs += event.fileReadMs;
+    endpoint.totalJsonParseMs += event.jsonParseMs;
+    endpoint.totalResponseBytes += event.responseSizeBytes;
+    endpoint.lastStatusCode = event.statusCode;
+    endpoint.lastSeenAt = event.finishedAt;
+    endpoint.avgMs = Number((endpoint.totalMs / Math.max(1, endpoint.requests)).toFixed(1));
+    endpoint.avgFileReadMs = Number((endpoint.totalFileReadMs / Math.max(1, endpoint.requests)).toFixed(1));
+    endpoint.avgJsonParseMs = Number((endpoint.totalJsonParseMs / Math.max(1, endpoint.requests)).toFixed(1));
+    endpoint.avgResponseBytes = Math.round(endpoint.totalResponseBytes / Math.max(1, endpoint.requests));
+    ledger.endpoints[event.endpoint] = endpoint;
+    ledger.totals = ledger.totals || { requests: 0, slowRequests: 0 };
+    ledger.totals.requests += 1;
+    ledger.totals.slowRequests += totalElapsedMs >= apiProfilerSlowThresholdMs ? 1 : 0;
+    ledger.updatedAt = event.finishedAt;
+    ledger.recent = [event, ...(Array.isArray(ledger.recent) ? ledger.recent : [])].slice(0, apiProfilerMaxEvents);
+    ledger.slowestEndpoints = Object.entries(ledger.endpoints)
+      .map(([endpointName, item]) => ({ endpoint: endpointName, avgMs: item.avgMs, maxMs: item.maxMs, requests: item.requests, slowRequests: item.slowRequests, avgFileReadMs: item.avgFileReadMs, avgJsonParseMs: item.avgJsonParseMs, avgResponseBytes: item.avgResponseBytes, lastSeenAt: item.lastSeenAt }))
+      .sort((a, b) => b.maxMs - a.maxMs)
+      .slice(0, 12);
+    fs.writeFileSync(apiEndpointPerformanceFile, `${JSON.stringify(ledger, null, 2)}\n`);
+    if (totalElapsedMs >= apiProfilerSlowThresholdMs) {
+      console.log(`[api-profiler] ${event.endpoint} status=${event.statusCode} total=${event.totalElapsedMs}ms read=${event.fileReadMs}ms parse=${event.jsonParseMs}ms serialize=${event.jsonSerializeMs}ms bytes=${event.responseSizeBytes}`);
+    }
+  } catch (error) {
+    console.log(`[api-profiler] record failed: ${error.message || String(error)}`);
+  }
+}
 let runtimeState = {
   lastRefreshAt: "",
   lastRefreshMs: 0,
@@ -1521,9 +1665,18 @@ function ensureDataFiles() {
 
 function readJsonFile(filePath, fallback) {
   ensureDataFiles();
+  const readStarted = apiProfilerNow();
+  let raw = "";
   try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
+    raw = fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, "");
+    const readMs = apiProfilerNow() - readStarted;
+    const parseStarted = apiProfilerNow();
+    const parsed = JSON.parse(raw);
+    const parseMs = apiProfilerNow() - parseStarted;
+    apiProfilerRecordFile(filePath, readMs, parseMs, Buffer.byteLength(raw, "utf8"), true);
+    return parsed;
   } catch {
+    apiProfilerRecordFile(filePath, apiProfilerNow() - readStarted, 0, raw ? Buffer.byteLength(raw, "utf8") : 0, false);
     return fallback;
   }
 }
@@ -21411,11 +21564,18 @@ function newsLabRunApprovalRepairQueue(options = {}) {
       stage: "approval-queue-before-validation",
       repairAttempt: Number(record.repairAttempt || 0) + 1
     });
+    const normalizedRepairedImage = newsLabNormalizeStoryImage(repaired, repaired.image);
+    repaired = {
+      ...repaired,
+      image: normalizedRepairedImage,
+      imageProvenance: normalizedRepairedImage?.provenance || repaired.imageProvenance || null,
+      title: newsLabPublicHeadline(repaired, 0)
+    };
     const afterIssues = [...new Set([
       ...newsLabBlockingFinalIssues(repaired),
       ...newsLabBlockingEditorFinalIssues(repaired)
     ])];
-    const passed = afterIssues.length === 0 && newsLabCompleteArticleStory(repaired);
+    const passed = afterIssues.length === 0 && newsLabCompleteArticleStory(repaired) && newsLabShelfDisplayReadyStory(repaired);
     secondPassMetrics.resubmitted += 1;
     if (passed) secondPassMetrics.finalApproved += 1;
     else secondPassMetrics.stillFailed += 1;
@@ -23717,6 +23877,15 @@ function newsLabPublicHeadline(story = {}, index = 0) {
   }) || newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(newsLabReadableFallbackHeadline(story, index) || current || story.title || "CE Media Story"));
 }
 
+function newsLabPublicImageReady(story = {}) {
+  const image = story.image || story.imageProvenance || {};
+  const imageText = `${image.primary || ""} ${image.url || ""} ${image.src || ""} ${image.source || ""} ${image.license || ""} ${image.credit || ""} ${image.photographer || ""}`;
+  const hasAsset = Boolean(image.primary || image.url || image.src || image.fallback);
+  const isApprovedSource = /pexels|pixabay|ce-generated|generated editorial image|local pexels/i.test(imageText);
+  const isFallback = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|temporary local image|ce fallback/i.test(imageText);
+  const findings = newsLabImageEditorFindings({ ...story, image }, "news-lab").map(finding => finding.code || finding.message || "image-finding");
+  return hasAsset && isApprovedSource && !isFallback && !findings.includes("image-missing-credit") && !findings.includes("image-topic-mismatch");
+}
 function newsLabBoardDisplayReadyStory(story = {}) {
   if (story.publicArticle === true) {
     const body = Array.isArray(story.body) ? story.body : [];
@@ -23725,6 +23894,7 @@ function newsLabBoardDisplayReadyStory(story = {}) {
     return Boolean(title)
       && body.length >= 3
       && bodyText.length >= 420
+      && newsLabPublicImageReady(story)
       && !story.fallbackCoverage
       && !((story.qualityGate?.issues || []).includes("instant-fallback"))
       && !((story.qualityGate?.issues || []).includes("fast-fallback"));
@@ -25178,6 +25348,7 @@ function newsLabShelfDisplayReadyStory(story = {}) {
     && body.length >= minimumParagraphs
     && bodyText.length >= minimumLength
     && shelfTierPublishable
+    && newsLabPublicImageReady(story)
     && !newsLabPublicDisplayHeadlineUnsafe(story.title || "", story)
     && !shelfLeakDetected
     && !shelfTitleCutOff
@@ -28118,9 +28289,9 @@ function startNewsLabImageWorkerProcess(reason = "scheduled-image-improvement") 
     stdio: ["ignore", "ignore", "ignore", "ipc"]
   });
   runtimeState.newsLabImageWorkerProcess = child;
-  writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "worker-started", lastReason: reason, workerPid: child.pid || 0, startedAt: new Date().toISOString() });
+  writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "worker-started", lastReason: reason, workerPid: child.pid || 0, startedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
   child.on("exit", (code, signal) => {
-    writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "worker-exited", lastReason: reason, workerPid: child.pid || 0, exitCode: code === null || code === undefined ? "" : String(code), exitSignal: signal || "", finishedAt: new Date().toISOString() });
+    writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "worker-exited", lastReason: reason, workerPid: child.pid || 0, exitCode: code === null || code === undefined ? "" : String(code), exitSignal: signal || "", finishedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
   });
   return true;
 }
@@ -30540,11 +30711,22 @@ function enforceNewsLabEditorCategory(record = {}) {
     : "";
   const genericFallbackTitle = /^(Business|Political|Politics|Culture|Sports|World|Local|Technology|Entertainment) Report Adds New Confirmed Details$/i.test(String(record.title || ""));
   const categorySummary = genericFallbackTitle ? "" : record.summary || "";
+  const bodyText = Array.isArray(record.body) ? record.body.join(" ") : "";
+  const dossierText = [
+    record.storyDossier?.whatHappened || "",
+    record.storyDossier?.whyItMatters || "",
+    ...(record.storyDossier?.knownFacts || []),
+    ...(record.storyDossier?.people || []),
+    ...(record.storyDossier?.organizations || []),
+    ...(record.storyDossier?.locations || [])
+  ].join(" ");
   const evidenceText = [
-    record.originalHeadline || "",
-    sourceText,
+    bodyText,
+    dossierText,
     record.articleSummary || "",
-    categorySummary
+    categorySummary,
+    record.originalHeadline || "",
+    sourceText
   ].join(" ");
   const inferredCategory = newsLabEditorCategoryFromEvidence(evidenceText) || newsLabCategory({
     ...record,
@@ -39689,6 +39871,12 @@ async function buildNewsLabPayload(payload = {}) {
     const previousPublishedForWorker = readNewsLabPublishedPayload();
     const finalWorkerStories = mergeNewsLabApprovedStories(workerPublishableStories, previousPublishedForWorker)
       .map(newsLabEnsureWriterDossierHandoff)
+      .map(enforceNewsLabEditorCategory)
+      .map(newsLabSanitizePublicNewsCopy)
+      .map(story => ({ ...story, image: newsLabNormalizeStoryImage(story, story.image) }))
+      .map(story => ({ ...story, imageProvenance: story.image?.provenance || story.imageProvenance || null }))
+      .map(story => ({ ...story, title: newsLabPublicHeadline(story, 0) }))
+      .filter(newsLabShelfDisplayReadyStory)
       .map(story => ({ ...story, brainPipeline: story.brainPipeline || newsLabBrainPipelineIntelligence(story) }))
       .slice(0, newsLabOwnedStoryLimit);
     try {
@@ -40086,16 +40274,29 @@ async function buildNewsLabPayload(payload = {}) {
   const finalApprovalRecoveryStillHeld = finalReviewedStories.filter(story => story.approvalRecoveryReview?.applied && !story.approvalRecoveryReview?.passed).length;
   const finalPublishDiagnostics = (() => {
     const blocked = finalReviewedStories
-      .map(story => ({
-        id: story.id,
-        title: story.title,
-        issues: newsLabFullRejectPackage(story, "final-publisher-gate").issueCodes,
-        complete: newsLabCompleteArticleStory(story),
-        score: Number(story.qualityGate?.score || 0),
-        bodyLength: Array.isArray(story.body) ? story.body.join(" ").length : 0,
-        paragraphs: Array.isArray(story.body) ? story.body.length : 0
-      }))
-      .filter(item => !item.complete);
+      .map(story => {
+        const fullRejectPackage = newsLabFullRejectPackage(story, "final-publisher-gate");
+        const finalIssues = [...new Set([
+          ...(fullRejectPackage.issueCodes || []),
+          ...newsLabBlockingFinalIssues(story),
+          ...newsLabBlockingEditorFinalIssues(story)
+        ])];
+        const complete = newsLabCompleteArticleStory(story);
+        const publishable = newsLabPublishableAfterFullReview(story);
+        return {
+          id: story.id,
+          title: story.title,
+          issues: finalIssues,
+          primaryReason: finalIssues[0] || (complete ? "validator-held-without-issue" : "incomplete-story"),
+          repairable: !finalIssues.some(issue => /fabricated|copyright|mixed-source-topic|article-body-topic-drift|paragraph-topic-contamination/.test(issue)),
+          complete,
+          publishable,
+          score: Number(story.qualityGate?.score || 0),
+          bodyLength: Array.isArray(story.body) ? story.body.join(" ").length : 0,
+          paragraphs: Array.isArray(story.body) ? story.body.length : 0
+        };
+      })
+      .filter(item => !item.publishable || !item.complete || item.issues.length);
     const blockedLearning = blocked.map(item => newsLabRejectionLearningRecord({
       id: item.id,
       title: item.title,
@@ -40151,7 +40352,10 @@ async function buildNewsLabPayload(payload = {}) {
   });
   const finalPublishedIds = new Set();
   const publishableStories = finalReviewedStories
-    .filter(newsLabPublishableAfterFullReview);
+    .map(story => ({ ...story, image: newsLabNormalizeStoryImage(story, story.image) }))
+    .map(story => ({ ...story, imageProvenance: story.image?.provenance || story.imageProvenance || null }))
+    .filter(newsLabPublishableAfterFullReview)
+    .filter(newsLabShelfDisplayReadyStory);
   const categoryOrder = newsLabBalancedCategoryOrder.filter(category => category !== "top");
   const balanced = [];
   categoryOrder.forEach(category => {
@@ -40194,6 +40398,12 @@ async function buildNewsLabPayload(payload = {}) {
     ? shelfMergedStories
     : approvedShelfInputs)
     .map(newsLabEnsureWriterDossierHandoff)
+    .map(enforceNewsLabEditorCategory)
+    .map(newsLabSanitizePublicNewsCopy)
+    .map(story => ({ ...story, image: newsLabNormalizeStoryImage(story, story.image) }))
+    .map(story => ({ ...story, imageProvenance: story.image?.provenance || story.imageProvenance || null }))
+    .map(story => ({ ...story, title: newsLabPublicHeadline(story, 0) }))
+    .filter(newsLabShelfDisplayReadyStory)
     .map(story => ({ ...story, brainPipeline: story.brainPipeline || newsLabBrainPipelineIntelligence(story) }));
   const publicationOutcomeAudit = newsLabPublicationOutcomeAudit(ownedStories, previousPublishedForShelf, finalOwnedStories);
   try {
@@ -40351,27 +40561,39 @@ async function buildNewsLabPayload(payload = {}) {
 }
 
 function sendJson(response, statusCode, payload) {
+  const serializeStarted = apiProfilerNow();
+  const body = JSON.stringify(payload);
+  const serializeMs = apiProfilerNow() - serializeStarted;
+  apiProfilerRecordResponse(statusCode, body, serializeMs);
   response.writeHead(statusCode, securityHeaders({
     "content-type": "application/json; charset=utf-8",
     "cache-control": "public, max-age=300"
   }));
-  response.end(JSON.stringify(payload));
+  response.end(body);
 }
 
 function sendNoStoreJson(response, statusCode, payload) {
+  const serializeStarted = apiProfilerNow();
+  const body = JSON.stringify(payload);
+  const serializeMs = apiProfilerNow() - serializeStarted;
+  apiProfilerRecordResponse(statusCode, body, serializeMs);
   response.writeHead(statusCode, securityHeaders({
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store"
   }));
-  response.end(JSON.stringify(payload));
+  response.end(body);
 }
 
 function sendPrivateJson(response, statusCode, payload) {
+  const serializeStarted = apiProfilerNow();
+  const body = JSON.stringify(payload);
+  const serializeMs = apiProfilerNow() - serializeStarted;
+  apiProfilerRecordResponse(statusCode, body, serializeMs);
   response.writeHead(statusCode, securityHeaders({
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store"
   }));
-  response.end(JSON.stringify(payload));
+  response.end(body);
 }
 
 function sendPrivateNotFound(response) {
@@ -41279,7 +41501,28 @@ function sendFile(response, filePath) {
 
 const server = http.createServer(async (request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
+  const apiProfiler = createApiRequestProfiler(request, url);
+  if (apiProfiler) {
+    apiProfilerStorage.enterWith(apiProfiler);
+    const originalEnd = response.end.bind(response);
+    response.end = (chunk, encoding, callback) => {
+      if (apiProfiler.responseSizeBytes <= 0 && chunk !== undefined && chunk !== null) {
+        apiProfiler.responseSizeBytes = Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(String(chunk), typeof encoding === "string" ? encoding : "utf8");
+      }
+      return originalEnd(chunk, encoding, callback);
+    };
+    response.on("finish", () => recordApiEndpointPerformance(apiProfiler));
+  }
   runtimeState.requestCount += 1;
+
+  if (url.pathname === "/api/owner/api-performance") {
+    if (!isAdminRequest(request)) {
+      sendPrivateNotFound(response);
+      return;
+    }
+    sendPrivateJson(response, 200, readJsonFile(apiEndpointPerformanceFile, defaultApiEndpointPerformance()));
+    return;
+  }
 
   if (url.pathname === "/api/search") {
     try {
@@ -43329,7 +43572,7 @@ if (isSiteScheduledContentWorkerProcess) {
       process.exit(0);
     })
     .catch(error => {
-      writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "failed", lastReason: reason, lastError: error.message || String(error), finishedAt: new Date().toISOString() });
+      writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "failed", lastReason: reason, lastError: error.message || String(error), finishedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
       console.error(error.stack || error.message || String(error));
       process.exit(1);
     });
@@ -43493,6 +43736,24 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
