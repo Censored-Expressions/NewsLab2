@@ -23911,7 +23911,8 @@ function newsLabPublicImageReady(story = {}) {
   const isApprovedSource = /pexels|pixabay|ce-generated|generated editorial image|local pexels/i.test(imageText);
   const isFallback = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|temporary local image|ce fallback/i.test(imageText);
   const findings = newsLabImageEditorFindings({ ...story, image }, "news-lab").map(finding => finding.code || finding.message || "image-finding");
-  return hasAsset && isApprovedSource && !isFallback && !findings.includes("image-missing-credit") && !findings.includes("image-topic-mismatch");
+  const hasRequiredCredit = !findings.includes("image-missing-credit");
+  return hasAsset && isApprovedSource && !isFallback && hasRequiredCredit;
 }
 function newsLabBoardDisplayReadyStory(story = {}) {
   if (story.publicArticle === true) {
@@ -24140,7 +24141,7 @@ function applyNewsLabStoryContinuity(payload = null) {
           summary: story.summary || "",
           body: Array.isArray(story.body) ? story.body : [story.summary].filter(Boolean),
           generatedAt: story.generatedAt || now,
-          originalPublishedAt: story.originalPublishedAt || story.generatedAt || now,
+          originalPublishedAt: newsLabStoryOriginalPublishedAt(story) || story.originalPublishedAt || story.generatedAt || now,
           category: story.category || "top",
           image: currentImage || null,
           imageProvenance: currentImageProvenance || null
@@ -24175,6 +24176,16 @@ function applyNewsLabStoryContinuity(payload = null) {
       changed = true;
     }
     existing.originalArticle = newsLabSanitizePublicAuditLanguage(existing.originalArticle || {});
+    const earliestOriginalPublishedAt = newsLabStoryOriginalPublishedAt({
+      ...story,
+      originalPublishedAt: existing.originalArticle?.originalPublishedAt || story.originalPublishedAt,
+      publishedAt: existing.originalArticle?.publishedAt || story.publishedAt,
+      generatedAt: existing.originalArticle?.generatedAt || story.generatedAt
+    });
+    if (earliestOriginalPublishedAt && earliestOriginalPublishedAt !== existing.originalArticle?.originalPublishedAt) {
+      existing.originalArticle = { ...(existing.originalArticle || {}), originalPublishedAt: earliestOriginalPublishedAt };
+      changed = true;
+    }
     existing.updates = newsLabSanitizePublicAuditLanguage(updates.slice(-20));
     existing.lastSeenAt = now;
     const existingOriginalImageText = `${existing.originalArticle?.image?.primary || ""} ${existing.originalArticle?.image?.fallback || ""} ${existing.originalArticle?.image?.source || ""} ${existing.originalArticle?.image?.license || ""}`;
@@ -41943,7 +41954,9 @@ const server = http.createServer(async (request, response) => {
         const cleanPublishedCount = Array.isArray(cleanPublishedPayload?.ownedStories) ? cleanPublishedPayload.ownedStories.length : 0;
         const preparedPayloadCandidate = readPreparedNewsLabApiPayload(category);
         const preparedPayloadCount = Array.isArray(preparedPayloadCandidate?.ownedStories) ? preparedPayloadCandidate.ownedStories.length : 0;
-        if (!newsLabInlineBuildAllowed && preparedPayloadCandidate && preparedPayloadCount >= 1) {
+        const durableFallbackCandidate = cleanPublishedPayload && cleanPublishedCount ? newsLabFastPublishedApiPayload(cleanPublishedPayload, category) : null;
+        const durableFallbackCount = Array.isArray(durableFallbackCandidate?.ownedStories) ? durableFallbackCandidate.ownedStories.length : 0;
+        if (!newsLabInlineBuildAllowed && preparedPayloadCandidate && preparedPayloadCount >= Math.max(1, durableFallbackCount)) {
           sendNoStoreJson(response, 200, {
             ...preparedPayloadCandidate,
             apiResponseWorker: {
@@ -41965,9 +41978,9 @@ const server = http.createServer(async (request, response) => {
           }, 0);
           return;
         }
-        if (!newsLabInlineBuildAllowed && cleanPublishedPayload && cleanPublishedCount) {
-          sendNoStoreJson(response, 200, newsLabFastPublishedApiPayload({
-            ...cleanPublishedPayload,
+        if (!newsLabInlineBuildAllowed && durableFallbackCandidate && durableFallbackCount) {
+          sendNoStoreJson(response, 200, {
+            ...durableFallbackCandidate,
             apiResponseWorker: {
               active: true,
               mode: "clean-published-payload-fallback",
@@ -41977,7 +41990,7 @@ const server = http.createServer(async (request, response) => {
               inlineBuildAllowed: false,
               rule: "Durable payload is served only when the prepared shelf is missing or weaker."
             }
-          }, category));
+          });
           setTimeout(() => {
             try {
               startNewsLabApiResponseWorkerProcess("public-news-lab-clean-payload-background-refresh");
@@ -41991,7 +42004,11 @@ const server = http.createServer(async (request, response) => {
       if (!forceDeep && !forceManualRebuild) {
         const preparedCacheFresh = false;
         const preparedPayload = readPreparedNewsLabApiPayload(category);
-        if (preparedPayload && Number(preparedPayload.ownedStories?.length || 0) >= (String(category || "").toLowerCase() === "top" ? Math.min(7, newsLabTopNewsLimit) : 1)) {
+        const durablePayloadForPreparedCheck = readJsonFile(newsLabPublishedPayloadFile, null);
+        const durablePayloadForPreparedApi = durablePayloadForPreparedCheck && Array.isArray(durablePayloadForPreparedCheck.ownedStories) ? newsLabFastPublishedApiPayload(durablePayloadForPreparedCheck, category) : null;
+        const durablePreparedFloor = Number(durablePayloadForPreparedApi?.ownedStories?.length || 0);
+        const preparedMinimum = String(category || "").toLowerCase() === "top" ? Math.min(7, newsLabTopNewsLimit) : 1;
+        if (preparedPayload && Number(preparedPayload.ownedStories?.length || 0) >= Math.max(preparedMinimum, durablePreparedFloor)) {
           setTimeout(() => {
             try {
               if (!preparedCacheFresh) startNewsLabApiResponseWorkerProcess("public-news-lab-request-stale-prepared-cache-refresh");
@@ -42045,7 +42062,8 @@ const server = http.createServer(async (request, response) => {
             return;
           }
         }
-      }      if (!forceDeep && !forceManualRebuild && !newsLabInlineBuildAllowed) {
+      }
+      if (!forceDeep && !forceManualRebuild && !newsLabInlineBuildAllowed) {
         const fastPublishedPayload = readJsonFile(newsLabPublishedPayloadFile, null);
         if (fastPublishedPayload && Array.isArray(fastPublishedPayload.ownedStories) && fastPublishedPayload.ownedStories.length) {
           setTimeout(() => {
@@ -43763,6 +43781,15 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
+
 
 
 

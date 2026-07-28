@@ -453,7 +453,7 @@ function localNewsLabSearchResults(query = "") {
         type: "CE generated article",
         url: storyArticleUrl(story),
         summary: story.summary || (story.body || [])[0] || "Open the CE Media article.",
-        published: story.generatedAt,
+        published: story.originalPublishedAt || story.generatedAt,
         matchCoverage: Number((matched.length / terms.length).toFixed(2)),
         intentCoverage: Number((matched.length / terms.length).toFixed(2)),
         score: 1000 + matched.length
