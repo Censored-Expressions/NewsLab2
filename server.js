@@ -1702,11 +1702,11 @@ function compactNewsLabPublicImage(image = null) {
 function compactNewsLabPublicStory(story = {}) {
   const keep = [
     "id", "topicKey", "eventId", "slug", "url", "title", "originalHeadline", "category", "tab", "source",
-    "publishedAt", "originalPublishedAt", "updatedAt", "generatedAt", "savedAt", "summary", "dek", "lead",
+    "publishedAt", "originalPublishedAt", "updatedAt", "lastUpdatedAt", "generatedAt", "savedAt", "summary", "dek", "lead",
     "body", "paragraphs", "updates", "storyUpdates", "sources", "reportingTrail", "relatedArticles",
     "storyDossier", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence",
     "confidence", "popularity", "publicationTier", "qualityGate", "editorEnforcement", "contentLaneQuality",
-    "headlineAudit", "publicArticle", "publicHeadlineRepaired", "fallbackCoverage", "isBreaking", "status"
+    "headlineAudit", "boardVisibility", "imagePublicationStatus", "publicArticle", "publicHeadlineRepaired", "fallbackCoverage", "isBreaking", "status"
   ];
   const compacted = {};
   keep.forEach(key => {
@@ -1719,23 +1719,28 @@ function compactNewsLabPublicStory(story = {}) {
 
 function compactNewsLabPublishedPayload(value) {
   if (!value || typeof value !== "object" || !Array.isArray(value.ownedStories)) return value;
+  const boardReady = value.boardDatePolicy?.active ? value : newsLabApplyCurrentBoardPolicy(value);
   return {
-    generatedAt: value.generatedAt || new Date().toISOString(),
-    status: value.status || "published",
-    purpose: value.purpose || "Publish original Censored Expressions news tiles.",
-    policy: value.policy || undefined,
-    sourceStoryCount: value.sourceStoryCount || 0,
-    dossierSourceStoryCount: value.dossierSourceStoryCount || 0,
-    clusteredStoryCount: value.clusteredStoryCount || 0,
-    writingClusterCount: value.writingClusterCount || 0,
-    tabSubsystems: value.tabSubsystems || undefined,
-    brainInfrastructure: value.brainInfrastructure || undefined,
-    durablePublication: value.durablePublication || undefined,
-    savedAt: value.savedAt || new Date().toISOString(),
-    ownedStories: value.ownedStories.map(compactNewsLabPublicStory)
+    generatedAt: boardReady.generatedAt || new Date().toISOString(),
+    status: boardReady.status || "published",
+    purpose: boardReady.purpose || "Publish original Censored Expressions news tiles.",
+    policy: boardReady.policy || undefined,
+    sourceStoryCount: boardReady.sourceStoryCount || 0,
+    dossierSourceStoryCount: boardReady.dossierSourceStoryCount || 0,
+    clusteredStoryCount: boardReady.clusteredStoryCount || 0,
+    writingClusterCount: boardReady.writingClusterCount || 0,
+    tabSubsystems: boardReady.tabSubsystems || undefined,
+    brainInfrastructure: boardReady.brainInfrastructure || undefined,
+    durablePublication: boardReady.durablePublication || undefined,
+    boardDatePolicy: boardReady.boardDatePolicy || undefined,
+    workerFinishShelfMerge: boardReady.workerFinishShelfMerge || undefined,
+    boardPolicyPreservedShelf: boardReady.boardPolicyPreservedShelf || undefined,
+    workerFinishModePersisted: boardReady.workerFinishModePersisted || undefined,
+    savedAt: boardReady.savedAt || new Date().toISOString(),
+    ownedStories: (boardReady.ownedStories || []).map(compactNewsLabPublicStory),
+    searchableArchiveStories: (boardReady.searchableArchiveStories || []).map(compactNewsLabPublicStory)
   };
 }
-
 function writeJsonFile(filePath, value) {
   ensureDataFiles();
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -13709,14 +13714,36 @@ function enforceContentEditor(record = {}, lane = "general") {
   }
   const initialIssues = firstPass.contentLaneQuality?.issues || [];
   const initialFindings = firstPass.contentLaneQuality?.technicalEditor?.findings || [];
-  const rewrittenDraft = editorRewriteDraftForCompliance(firstPass, lane, initialIssues);
-  const secondPass = applyContentLaneQualityGate(rewrittenDraft, lane);
-  const finalFindings = secondPass.contentLaneQuality?.technicalEditor?.findings || [];
+  const attempts = [];
+  let currentDraft = firstPass;
+  let currentIssues = initialIssues;
+  let finalFindings = [];
+  const maxAttempts = Math.max(2, Number(process.env.CE_CONTENT_LANE_EDITOR_ATTEMPTS || 4));
+  for (let attempt = 2; attempt <= maxAttempts; attempt += 1) {
+    const rewrittenDraft = editorRewriteDraftForCompliance(currentDraft, lane, currentIssues);
+    const reviewedDraft = applyContentLaneQualityGate(rewrittenDraft, lane);
+    const reviewedIssues = reviewedDraft.contentLaneQuality?.issues || [];
+    finalFindings = reviewedDraft.contentLaneQuality?.technicalEditor?.findings || [];
+    attempts.push({
+      attempt,
+      beforeIssues: currentIssues,
+      afterIssues: reviewedIssues,
+      correctedIssues: currentIssues.filter(issue => !reviewedIssues.includes(issue)),
+      passed: Boolean(reviewedDraft.contentLaneQuality?.passed),
+      action: reviewedDraft.contentLaneQuality?.passed ? "repair-pass-approved" : "repair-pass-needs-followup"
+    });
+    currentDraft = reviewedDraft;
+    currentIssues = reviewedIssues;
+    if (!reviewedIssues.length) break;
+    const previousKey = (attempts[attempts.length - 2]?.afterIssues || []).slice().sort().join("|");
+    const currentKey = reviewedIssues.slice().sort().join("|");
+    if (attempt > 2 && previousKey === currentKey) break;
+  }
   recordContentLaneWritingIntelligenceLearning({
     lane,
-    title: secondPass.title || secondPass.subject || secondPass.feature?.headline || firstPass.title || "",
+    title: currentDraft.title || currentDraft.subject || currentDraft.feature?.headline || firstPass.title || "",
     initialIssues,
-    finalIssues: secondPass.contentLaneQuality?.issues || []
+    finalIssues: currentIssues
   });
   saveEditorLearningFromEnforcement({
     lane,
@@ -13726,23 +13753,23 @@ function enforceContentEditor(record = {}, lane = "general") {
     ],
     finalFindings: [
       ...finalFindings,
-      ...((secondPass.contentLaneQuality?.laneIssues || []).map(code => editorFinding(code, lane, "lane-rule", "", "Apply lane-specific public writing rule before save.", "high")))
+      ...((currentDraft.contentLaneQuality?.laneIssues || []).map(code => editorFinding(code, lane, "lane-rule", "", "Apply lane-specific public writing rule before save.", "high")))
     ]
   });
   return {
-    ...secondPass,
+    ...currentDraft,
     editorEnforcement: {
       lane,
       checkedAt: new Date().toISOString(),
-      action: secondPass.contentLaneQuality?.passed ? "forced-rewrite-and-approved" : "forced-rewrite-needs-owner-review",
-      attempts: 2,
+      action: currentDraft.contentLaneQuality?.passed ? "bounded-repair-and-approved" : "bounded-repair-needs-owner-review",
+      attempts: Math.max(1, attempts.length + 1),
+      repairAttempts: attempts,
       initialIssues,
-      finalIssues: secondPass.contentLaneQuality?.issues || [],
-      rule: "Drafts that fail the newspaper-style technical editor or lane rules must be rewritten before save/publish."
+      finalIssues: currentIssues,
+      rule: "Drafts that fail the newspaper-style technical editor or lane rules must receive bounded repair/review attempts before save/publish; unresolved patterns teach future first drafts."
     }
   };
 }
-
 function polishNewsletterIssue(newsletter = {}) {
   const paragraphSeen = new Set();
   const cleanParagraphs = paragraphs => (paragraphs || [])
@@ -20287,7 +20314,7 @@ function newsLabAnnotateBoardVisibility(story = {}) {
   const originalDateKey = newsLabLocalDateKey(originalPublishedAt);
   const update = newsLabLatestSignificantUpdate(story);
   const significantUpdateAt = update?.updatedAt || update?.latestUpdateAt || "";
-  const significantUpdateDateKey = newsLabLocalDateKey(significantUpdateAt);
+  const significantUpdateDateKey = significantUpdateAt ? newsLabLocalDateKey(significantUpdateAt) : "";
   const ageDays = newsLabVisibleShelfAgeDays({ ...story, originalPublishedAt });
   const boardRetentionDays = Math.max(1, Number(process.env.CE_NEWS_LAB_BOARD_RETENTION_DAYS || 7));
   const currentOriginal = originalDateKey === todayKey;
@@ -23805,17 +23832,17 @@ function newsLabReadableFallbackHeadline(story = {}, index = 0) {
   if (/taylor swift|travis kelce/.test(lower) && /wed|wedding|married|madison square garden/.test(lower)) return "Taylor Swift And Travis Kelce Wedding Takes Spotlight";
   if (/google|android|european union|eu/.test(lower) && /antitrust|fine|appeal|court/.test(lower)) return "Google Loses Final Appeal Over EU Android Fine";
   if (/heat wave|extreme heat|heat warning|heat advisory/.test(lower)) return `${entity && /new york|chicago|philadelphia|wake county/i.test(entity) ? entity : "Heat Wave"} Brings Extreme Temperature Warning`;
-  if (/world cup|fifa|tournament|playoff|championship|match|game/.test(lower) || category === "sports") return `${entity || "Tournament"} Shifts Competitive Picture`;
-  if (/ukraine|russia|iran|israel|china|war|strike|military|ceasefire/.test(lower) || category === "world") return `${entity || "Security Development"} Changes International Response`;
-  if (/storm|severe weather|evacuation|outage|cleanup|fire|smoke/.test(lower)) return `${entity || "Severe Weather"} Brings Local Response`;
-  if ((category === "local" || /local|city|county|police|sheriff/.test(lower)) && /shooting|shot|killed|wounded|police|sheriff|arrest/.test(lower)) return `${entity || "Police Investigation"} Brings New Public Safety Details`;
-  if (/supreme court|court|judge|lawsuit|legal|ruling/.test(lower)) return `${entity || "Legal Fight"} Moves Through Court`;
-  if (/election|campaign|voters|congress|white house|trump|biden|president/.test(lower)) return `${entity || "Political Fight"} Moves Toward Public Decision`;
-  if (/stock|market|shares|earnings|company|business|economy|workers|consumers/.test(lower)) return `${entity || "Business Story"} Changes Market Outlook`;
-  if (/technology|ai|artificial intelligence|cyber|software|app|data|privacy|google|apple|microsoft|spacex|nasa/.test(lower)) return `${entity || "Technology Story"} Changes Technology Policy`;
-  if (/movie|music|celebrity|streaming|artist|festival|wedding|culture/.test(lower)) return `${entity || "Culture Story"} Changes Public Release Plans`;
+  if (/world cup|fifa|tournament|playoff|championship|match|game/.test(lower) || category === "sports") return `${entity || "Tournament"} Alters The Playoff Race`;
+  if (/ukraine|russia|iran|israel|china|war|strike|military|ceasefire/.test(lower) || category === "world") return `${entity || "Security Development"} Alters Diplomatic Stakes`;
+  if (/storm|severe weather|evacuation|outage|cleanup|fire|smoke/.test(lower)) return `${entity || "Severe Weather"} Forces Emergency Response`;
+  if ((category === "local" || /local|city|county|police|sheriff/.test(lower)) && /shooting|shot|killed|wounded|police|sheriff|arrest/.test(lower)) return `${entity || "Police Investigation"} Adds Public Safety Details`;
+  if (/supreme court|court|judge|lawsuit|legal|ruling/.test(lower)) return `${entity || "Legal Fight"} Draws Court Ruling`;
+  if (/election|campaign|voters|congress|white house|trump|biden|president/.test(lower)) return `${entity || "Political Fight"} Sets Up Next Vote`;
+  if (/stock|market|shares|earnings|company|business|economy|workers|consumers/.test(lower)) return `${entity || "Business Story"} Moves Markets`;
+  if (/technology|ai|artificial intelligence|cyber|software|app|data|privacy|google|apple|microsoft|spacex|nasa/.test(lower)) return `${entity || "Technology Story"} Draws Industry Review`;
+  if (/movie|music|celebrity|streaming|artist|festival|wedding|culture/.test(lower)) return `${entity || "Culture Story"} Reshapes Release Plans`;
   const label = newsLabCategoryLabel(category);
-  return `${entity || label} Adds Confirmed Details`;
+  return `${entity || label} Adds New Verified Details`;
 }
 
 function newsLabNormalizeHeadlineAcronyms(headline = "") {
@@ -23922,7 +23949,6 @@ function newsLabBoardDisplayReadyStory(story = {}) {
     return Boolean(title)
       && body.length >= 3
       && bodyText.length >= 420
-      && newsLabPublicImageReady(story)
       && !story.fallbackCoverage
       && !((story.qualityGate?.issues || []).includes("instant-fallback"))
       && !((story.qualityGate?.issues || []).includes("fast-fallback"));
@@ -23932,11 +23958,20 @@ function newsLabBoardDisplayReadyStory(story = {}) {
 
 function newsLabApplyCurrentBoardPolicy(payload = {}) {
   const stories = (payload.ownedStories || [])
+    .map(story => newsLabSanitizePublicNewsCopy(newsLabSanitizePublicAuditLanguage(story)))
     .filter(newsLabBoardDisplayReadyStory)
     .map((story, index) => {
       const annotated = newsLabAnnotateBoardVisibility(story);
+      const imageReady = newsLabPublicImageReady(annotated);
       return {
         ...annotated,
+        imagePublicationStatus: {
+          ...(annotated.imagePublicationStatus || {}),
+          ready: imageReady,
+          needsRepair: !imageReady,
+          queuedForRepair: !imageReady,
+          rule: "Image readiness is repaired by the image pipeline; it must not remove an otherwise approved article from the public shelf."
+        },
         title: newsLabPublicHeadline(annotated, index),
         headlineAudit: {
           ...(annotated.headlineAudit || {}),
@@ -25386,7 +25421,6 @@ function newsLabShelfDisplayReadyStory(story = {}) {
     && body.length >= minimumParagraphs
     && bodyText.length >= minimumLength
     && shelfTierPublishable
-    && newsLabPublicImageReady(story)
     && !newsLabPublicDisplayHeadlineUnsafe(story.title || "", story)
     && !shelfLeakDetected
     && !shelfTitleCutOff
@@ -26645,7 +26679,7 @@ function newsLabLowValueSourceTopic(story = {}) {
 
 function newsLabPublicCandidateInternalLeak(story = {}) {
   const text = `${story.title || ""} ${(Array.isArray(story.body) ? story.body.join(" ") : "")} ${story.summary || ""}`.toLowerCase();
-  return /\b(source signals?|full-read signals?|confidence level|current confidence level|reporting trail|document trail includes|our reporting process|behind the scenes|internal process|story dossier|dossier keeps|base story|outlet-only claim|details common across those reports|narrower outlet-specific details|the article should stay|the available record is still developing)\b/.test(text)
+  return /\b(source signals?|full-read signals?|confidence level|current confidence level|reporting trail|document trail includes|our reporting process|behind the scenes|internal process|story dossier|dossier keeps|base story|outlet-only claim|details common across those reports|narrower outlet-specific details|the article should stay|the available record is still developing|filings,? statements,? votes,? orders,? or agency action should show)\b/.test(text)
     || /^latest .*headlines$/i.test(String(story.title || story.originalHeadline || "").trim());
 }
 
@@ -31080,17 +31114,18 @@ function newsLabActionPhraseFromText(text = "", category = "news") {
   if (/\b(google|android|european union|eu|antitrust|competition|fine|appeal)\b/.test(lower)
     && /\b(antitrust|competition|fine|appeal|court|regulator|commission)\b/.test(lower)) return "Faces EU Antitrust Ruling";
   if (/\b(agrees to hear|will hear|takes up|rules|ruling|blocks|allows|lawsuit|charges?|indictment|settlement|verdict)\b/.test(lower)) return "Faces New Legal Test";
-  if (/\b(approves|passes|signs|votes|budget|bill|funding|package|policy|order)\b/.test(lower)) return "Moves Into Policy Fight";
-  if (/\b(strikes?|attack|missile|drone|war|ceasefire|negotiation|sanctions|military|troops)\b/.test(lower)) return "Changes Security Situation";
-  if (/\b(storm|flood|fire|outage|cleanup|evacuation|warning|watch|severe)\b/.test(lower)) return "Triggers Emergency Response";
-  if (/\b(wins?|beats?|advances?|playoff|final|scores?|goal|trade|draft|injury|match|tournament)\b/.test(lower)) return "Changes The Competitive Picture";
-  if (/\b(stock|shares|market|earnings|tariff|inflation|housing|jobs|workers|consumers)\b/.test(lower)) return "Adds Economic Pressure";
-  if (/\b(ai|privacy|security|data|chip|software|platform|technology|cyber)\b/.test(lower)) return "Sharpens Technology Debate";
+  if (/\b(tariff|tariffs|canada|trade|import|exports?)\b/.test(lower)) return "Raises Trade Stakes";
+  if (/\b(approves|passes|signs|votes|budget|bill|funding|package|policy|order)\b/.test(lower)) return "Advances Policy Measure";
+  if (/\b(strikes?|attack|missile|drone|war|ceasefire|negotiation|sanctions|military|troops)\b/.test(lower)) return "Alters Security Timeline";
+  if (/\b(storm|flood|fire|outage|cleanup|evacuation|warning|watch|severe)\b/.test(lower)) return "Forces Emergency Response";
+  if (/\b(wins?|beats?|advances?|playoff|final|scores?|goal|trade|draft|injury|match|tournament)\b/.test(lower)) return "Alters The Playoff Race";
+  if (/\b(stock|shares|market|earnings|inflation|housing|jobs|workers|consumers)\b/.test(lower)) return "Moves Markets";
+  if (/\b(ai|privacy|security|data|chip|software|platform|technology|cyber)\b/.test(lower)) return "Draws Industry Review";
   if (/\b(film|music|streaming|celebrity|artist|festival|studio|tour)\b/.test(lower)) return "Draws Culture Spotlight";
-  if (category === "local") return "Prompts Local Response";
-  if (category === "world") return "Raises International Pressure";
-  if (category === "politics") return "Moves Into Political Fight";
-  return "Draws New Public Attention";
+  if (category === "local") return "Forces Local Response";
+  if (category === "world") return "Alters Diplomatic Stakes";
+  if (category === "politics") return "Sets Up Public Vote";
+  return "Adds New Verified Details";
 }
 
 function newsLabCleanHeadlineSubject(value = "", fallback = "") {
@@ -39573,7 +39608,22 @@ async function buildNewsLabPayload(payload = {}) {
   }
   let viableStories = generatedStoriesWithSourceFallback
     .filter(story => story.title && Array.isArray(story.sources) && story.sources.length)
-    .filter(story => !newsLabPublicCandidateInternalLeak(story))
+    .map((story, index) => {
+      if (!newsLabPublicCandidateInternalLeak(story)) return story;
+      const repaired = newsLabBuildUsefulnessPreEditorRepair(story, index);
+      const cleaned = newsLabPublishingEditorSafeRepair(repaired, ["internal-public-candidate-language", "behind-scenes-language-before-editor"]);
+      return {
+        ...cleaned,
+        candidateRescue: {
+          ...(cleaned.candidateRescue || {}),
+          applied: true,
+          stage: "viable-story-selection",
+          reason: "internal-language-was-repairable-not-terminal",
+          stillLeaking: newsLabPublicCandidateInternalLeak(cleaned),
+          rule: "A candidate with process/internal language must be repaired and sent into editor review or recovery, not silently dropped before approval."
+        }
+      };
+    })
     .filter((story, index, all) => all.findIndex(match =>
       match.title === story.title || (match.topicKey && story.topicKey && match.topicKey === story.topicKey)
     ) === index);
@@ -39671,7 +39721,23 @@ async function buildNewsLabPayload(payload = {}) {
     }))
     .filter(item => item.reasons.length);
   allOwnedStories = preEditorReviewedStories
-    .filter(story => !newsLabPublicCandidateInternalLeak(story));
+    .map((story, index) => {
+      if (!newsLabPublicCandidateInternalLeak(story)) return story;
+      const rescued = newsLabPublishingEditorPass(
+        newsLabBuildUsefulnessPreEditorRepair(story, index),
+        { stage: "pre-editor-internal-language-rescue", attempt: 1 }
+      );
+      return {
+        ...rescued,
+        preEditorCandidateRescue: {
+          applied: true,
+          reason: "internal-language-candidate-resubmitted-instead-of-dropped",
+          stillLeaking: newsLabPublicCandidateInternalLeak(rescued),
+          validatorIssues: rescued.validator?.blockingIssues || rescued.qualityGate?.remainingIssues || [],
+          rule: "Pre-editor findings must become repair/resubmission states. Only the Validator may hold unresolved public-language issues after repair."
+        }
+      };
+    });
   if (workerFinishMode && preEditorFilteredStories.length) {
     writeJsonFile(path.join(dataDir, "news-lab-pre-editor-filtered-candidates.json"), {
       generatedAt: new Date().toISOString(),
@@ -40009,6 +40075,8 @@ async function buildNewsLabPayload(payload = {}) {
           skippedHeavyGate: true,
           rule: "The timed worker writes a bounded, dossier-backed story slice and exits; the full editorial gate can enrich it during a longer background cycle."
         },
+        buildUsefulnessPreEditor: buildUsefulnessPreEditorPass.diagnostics || null,
+        draftOptimizationEngine: buildUsefulnessPreEditorPass.diagnostics?.draftOptimizationEngine || null,
         buildHandoffDiagnostics,
         approvedArticleShelf: {
           currentBatchApproved: workerPublishableStories.length,
@@ -40130,14 +40198,20 @@ async function buildNewsLabPayload(payload = {}) {
         dossierBuilder: story.storyDossier.dossierBuilder || null
       } : undefined
     }));
-    const previousWorkerShelf = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] });
-    const previousWorkerStories = Array.isArray(previousWorkerShelf.ownedStories) ? previousWorkerShelf.ownedStories : [];
+    const previousWorkerShelf = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [], searchableArchiveStories: [] });
+    const previousWorkerBoard = newsLabApplyCurrentBoardPolicy(previousWorkerShelf || { ownedStories: [], searchableArchiveStories: [] });
+    const previousWorkerStories = Array.isArray(previousWorkerBoard.ownedStories) ? previousWorkerBoard.ownedStories : [];
+    const previousWorkerArchiveStories = newsLabDedupePublicStoriesPreferFull([
+      ...(Array.isArray(previousWorkerShelf.searchableArchiveStories) ? previousWorkerShelf.searchableArchiveStories : []),
+      ...(Array.isArray(previousWorkerBoard.searchableArchiveStories) ? previousWorkerBoard.searchableArchiveStories : [])
+    ]);
     const workerMergeMap = new Map();
-    [...previousWorkerStories, ...compactWorkerStories].forEach(story => {
+    [...previousWorkerStories, ...compactWorkerStories].forEach(rawStory => {
+      const story = newsLabSanitizePublicNewsCopy(newsLabSanitizePublicAuditLanguage(rawStory));
       const key = String(newsLabHardDuplicateEventKey(story) || newsLabApprovedStoryMergeKey(story) || story.storyId || story.id || story.eventId || story.topicKey || story.title || "").toLowerCase();
       if (!key) return;
       const existing = workerMergeMap.get(key);
-      workerMergeMap.set(key, existing ? { ...existing, ...story, body: Array.isArray(story.body) && story.body.length ? story.body : existing.body } : story);
+      workerMergeMap.set(key, existing ? newsLabMergeDurableStoryMetadata({ ...existing, ...story, body: Array.isArray(story.body) && story.body.length ? story.body : existing.body }, existing) : story);
     });
     const mergedWorkerStories = newsLabHardMergePublicStories([...workerMergeMap.values()]);
     const workerPreservedShelf = mergedWorkerStories.length >= previousWorkerStories.length;
@@ -40154,14 +40228,16 @@ async function buildNewsLabPayload(payload = {}) {
         }
       },
       ownedStories: workerPreservedShelf ? mergedWorkerStories : previousWorkerStories,
+      searchableArchiveStories: previousWorkerArchiveStories,
       savedAt: new Date().toISOString(),
       workerFinishModePersisted: true,
       workerFinishShelfMerge: {
-        previousShelfCount: previousWorkerStories.length,
+        previousActiveShelfCount: previousWorkerStories.length,
+        previousSearchArchiveCount: previousWorkerArchiveStories.length,
         currentBatchCount: compactWorkerStories.length,
         mergedShelfCount: mergedWorkerStories.length,
         preservedShelf: workerPreservedShelf,
-        rule: "Fast worker cycles append or update the public shelf; they must never replace the visible board with a smaller current batch."
+        rule: "Fast worker cycles append or update active approved stories, preserve original publish dates, and let the 7-day board policy move expired stories to search instead of resurrecting them as tiles."
       },
       stuckArticleRescueBridge: {
         attempted: Number(stuckArticleRescueBridge.attempted || 0),
@@ -40172,17 +40248,20 @@ async function buildNewsLabPayload(payload = {}) {
       }
     });
     if (Array.isArray(persistedWorkerResult.ownedStories) && persistedWorkerResult.ownedStories.length < previousWorkerStories.length && mergedWorkerStories.length >= previousWorkerStories.length) {
-      persistedWorkerResult = {
+      const visibleKeys = new Set((persistedWorkerResult.ownedStories || []).map(newsLabStoryMergeAuditKey).filter(Boolean));
+      const activePreservedStories = previousWorkerStories.filter(story => !visibleKeys.has(newsLabStoryMergeAuditKey(story)));
+      persistedWorkerResult = newsLabApplyCurrentBoardPolicy({
         ...persistedWorkerResult,
-        ownedStories: mergedWorkerStories,
+        ownedStories: newsLabHardMergePublicStories([...(persistedWorkerResult.ownedStories || []), ...activePreservedStories]),
+        searchableArchiveStories: persistedWorkerResult.searchableArchiveStories || previousWorkerArchiveStories,
         boardPolicyPreservedShelf: {
           applied: true,
-          previousShelfCount: previousWorkerStories.length,
+          previousActiveShelfCount: previousWorkerStories.length,
           boardPolicyCount: persistedWorkerResult.ownedStories.length,
-          restoredCount: mergedWorkerStories.length,
-          rule: "Board/date policy may rank or cap Top News, but it must not shrink the all-category public shelf while tab capacity is not full."
+          restoredActiveCount: activePreservedStories.length,
+          rule: "Board/date policy may expire old stories to search, but it must not remove still-active approved stories just because the current worker batch is smaller."
         }
-      };
+      });
     }
     runtimeState.newsLabSearchPayload = persistedWorkerResult;
     persistedWorkerResult = newsLabPreserveLockedPublicPayload(persistedWorkerResult, "worker-finish-payload-persisted");
@@ -43781,6 +43860,17 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

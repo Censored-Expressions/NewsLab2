@@ -51,6 +51,7 @@ CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
 CE_WORKER_SYNC_DELTA_ENABLED=true
 CE_WORKER_SYNC_SLOW_MS=5000
+CE_CONTENT_LANE_EDITOR_ATTEMPTS=4
 NEWSLETTER_WEBHOOK_URL=https://your-cloudflare-newsletter-worker.workers.dev
 NEWSLETTER_WEBHOOK_SECRET=use-the-same-secret-configured-in-cloudflare
 STRIPE_SECRET_KEY=your-stripe-secret-key
@@ -138,6 +139,7 @@ CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
 CE_WORKER_SYNC_DELTA_ENABLED=true
 CE_WORKER_SYNC_SLOW_MS=5000
+CE_CONTENT_LANE_EDITOR_ATTEMPTS=4
 ```
 
 After deployment, check the Owner observability page. The worker sync row should show recent accepted keys such as `news-lab-published-payload` and `news-lab-api-response-cache`.
@@ -228,6 +230,7 @@ Expected worker log after deploy:
 ```text
 [worker] cpu guard enabled=true maxCollectors=4 startupStaggerMs=4500 maxOneShots=1
 ```
+
 
 
 

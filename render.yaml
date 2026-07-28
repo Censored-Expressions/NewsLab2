@@ -33,6 +33,8 @@
         value: "5000"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
+      - key: CE_CONTENT_LANE_EDITOR_ATTEMPTS
+        value: "4"
       - key: OPENAI_API_KEY
         sync: false
       - key: PEXELS_API_KEY
@@ -68,6 +70,8 @@
         value: "true"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
+      - key: CE_CONTENT_LANE_EDITOR_ATTEMPTS
+        value: "4"
       - key: CE_WORKER_CPU_GUARD
         value: "true"
       - key: CE_WORKER_MAX_COLLECTORS
@@ -132,6 +136,7 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
 
 
 
