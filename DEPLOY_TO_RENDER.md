@@ -1,4 +1,4 @@
-﻿# Censored Expressions Render Deployment
+# Censored Expressions Render Deployment
 
 This package mirrors the current local `localhost:3000` build.
 
@@ -196,6 +196,21 @@ After the Background Worker deploys, its logs should show one of these sync line
 If you do not see a sync line, the deployed `worker.js` is stale or the worker has not stayed alive long enough to reach the sync timer.
 
 
+
+
+## Runtime JSON cache
+
+The Web Service should serve Owner Desk and public API reads from cached runtime objects instead of reparsing large JSON files on every dashboard refresh.
+
+Recommended Web Service environment values:
+
+```text
+CE_JSON_OBJECT_CACHE=true
+CE_JSON_OBJECT_CACHE_MAX_ENTRIES=180
+CE_OWNER_API_RESPONSE_CACHE_MS=30000
+```
+
+`/api/learning` is summary-first by default. Use `/api/learning?full=1` only when the complete learning memory is explicitly needed. `/api/owner-brain-state` uses a short cache unless `?refresh=1` is requested. This keeps admin polling from blocking the Node event loop while preserving the audit files and worker-written JSON stores.
 
 ## Worker CPU guard
 

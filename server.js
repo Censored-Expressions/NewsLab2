@@ -1101,6 +1101,42 @@ let diagnosticsCache = {
   expires: 0,
   payload: null
 };
+const jsonObjectCacheEnabled = process.env.CE_JSON_OBJECT_CACHE !== "false";
+const jsonObjectCacheMaxEntries = Math.max(25, Number(process.env.CE_JSON_OBJECT_CACHE_MAX_ENTRIES || 180));
+const jsonObjectCache = new Map();
+const ownerApiResponseCacheMs = Math.max(5000, Number(process.env.CE_OWNER_API_RESPONSE_CACHE_MS || 30000));
+let ownerBrainStateResponseCache = { key: "", expires: 0, payload: null };
+let learningSummaryResponseCache = { key: "", expires: 0, payload: null };
+
+function pruneJsonObjectCache() {
+  if (jsonObjectCache.size <= jsonObjectCacheMaxEntries) return;
+  const removable = [...jsonObjectCache.entries()]
+    .sort((a, b) => Number(a[1].lastAccessed || 0) - Number(b[1].lastAccessed || 0))
+    .slice(0, Math.max(1, jsonObjectCache.size - jsonObjectCacheMaxEntries));
+  removable.forEach(([key]) => jsonObjectCache.delete(key));
+}
+
+function updateJsonObjectCache(filePath = "", value = null, rawText = "") {
+  if (!jsonObjectCacheEnabled || !filePath) return;
+  try {
+    const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
+    jsonObjectCache.set(filePath, {
+      value,
+      mtimeMs: stat ? Number(stat.mtimeMs || 0) : 0,
+      size: stat ? Number(stat.size || Buffer.byteLength(rawText || "", "utf8")) : Buffer.byteLength(rawText || "", "utf8"),
+      loadedAt: Date.now(),
+      lastAccessed: Date.now()
+    });
+    pruneJsonObjectCache();
+  } catch {
+    jsonObjectCache.delete(filePath);
+  }
+}
+
+function clearOwnerRuntimeResponseCaches(reason = "json-write") {
+  ownerBrainStateResponseCache = { key: "", expires: 0, payload: null, reason };
+  learningSummaryResponseCache = { key: "", expires: 0, payload: null, reason };
+}
 
 const apiProfilerStorage = new AsyncLocalStorage();
 const apiProfilerEnabled = process.env.CE_API_ENDPOINT_PROFILING !== "false";
@@ -1668,12 +1704,20 @@ function readJsonFile(filePath, fallback) {
   const readStarted = apiProfilerNow();
   let raw = "";
   try {
+    const stat = jsonObjectCacheEnabled && fs.existsSync(filePath) ? fs.statSync(filePath) : null;
+    const cached = jsonObjectCacheEnabled ? jsonObjectCache.get(filePath) : null;
+    if (cached && stat && Number(cached.mtimeMs || 0) === Number(stat.mtimeMs || 0) && Number(cached.size || 0) === Number(stat.size || 0)) {
+      cached.lastAccessed = Date.now();
+      apiProfilerRecordFile(filePath, apiProfilerNow() - readStarted, 0, Number(stat.size || 0), true);
+      return cached.value;
+    }
     raw = fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, "");
     const readMs = apiProfilerNow() - readStarted;
     const parseStarted = apiProfilerNow();
     const parsed = JSON.parse(raw);
     const parseMs = apiProfilerNow() - parseStarted;
     apiProfilerRecordFile(filePath, readMs, parseMs, Buffer.byteLength(raw, "utf8"), true);
+    updateJsonObjectCache(filePath, parsed, raw);
     return parsed;
   } catch {
     apiProfilerRecordFile(filePath, apiProfilerNow() - readStarted, 0, raw ? Buffer.byteLength(raw, "utf8") : 0, false);
@@ -1749,6 +1793,8 @@ function writeJsonFile(filePath, value) {
   const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
   fs.writeFileSync(tempPath, finalText);
   fs.renameSync(tempPath, filePath);
+  updateJsonObjectCache(filePath, valueToWrite, finalText);
+  clearOwnerRuntimeResponseCaches(`write:${path.basename(filePath)}`);
 }
 
 function defaultKnowledgeDistillationPolicy() {
@@ -42590,17 +42636,32 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  if (url.pathname === "/api/learning" && request.method === "GET") {
+  if ((url.pathname === "/api/learning" || url.pathname === "/api/learning/summary") && request.method === "GET") {
     if (!isAdminRequest(request)) {
       sendPrivateNotFound(response);
       return;
     }
+    const includeFullMemory = url.pathname === "/api/learning" && (url.searchParams.has("full") || url.searchParams.get("mode") === "full");
+    const cacheKey = `${url.pathname}:${includeFullMemory ? "full" : "summary"}`;
+    if (!includeFullMemory && learningSummaryResponseCache.key === cacheKey && learningSummaryResponseCache.expires > Date.now() && learningSummaryResponseCache.payload) {
+      sendPrivateJson(response, 200, {
+        ...learningSummaryResponseCache.payload,
+        runtimeCache: { hit: true, ttlMs: Math.max(0, learningSummaryResponseCache.expires - Date.now()), rule: "Owner learning summary is cached briefly so dashboard polling does not reparse full memory on every request." }
+      });
+      return;
+    }
     const memory = learningMemory();
-    sendPrivateJson(response, 200, {
+    const payload = {
       generatedAt: new Date().toISOString(),
       learning: learningSummary(memory),
-      memory
-    });
+      ...(includeFullMemory ? { memory } : {
+        memorySummaryOnly: true,
+        fullMemoryEndpoint: "/api/learning?full=1",
+        rule: "Default learning endpoint returns summary-first data. Request ?full=1 only when the owner explicitly opens the complete memory view."
+      })
+    };
+    if (!includeFullMemory) learningSummaryResponseCache = { key: cacheKey, expires: Date.now() + ownerApiResponseCacheMs, payload };
+    sendPrivateJson(response, 200, payload);
     return;
   }
 
@@ -42876,12 +42937,23 @@ const server = http.createServer(async (request, response) => {
       return;
     }
     try {
+      const forceRefresh = url.searchParams.has("refresh");
+      const cacheKey = `owner-brain-state:${forceRefresh ? "refresh" : "cached"}`;
+      if (!forceRefresh && ownerBrainStateResponseCache.key === cacheKey && ownerBrainStateResponseCache.expires > Date.now() && ownerBrainStateResponseCache.payload) {
+        sendPrivateJson(response, 200, {
+          ...ownerBrainStateResponseCache.payload,
+          runtimeCache: { hit: true, ttlMs: Math.max(0, ownerBrainStateResponseCache.expires - Date.now()), rule: "Owner Brain State is cached briefly so dashboard refreshes do not recompute diagnostics and learning memory on every poll." }
+        });
+        return;
+      }
       const memory = learningMemory();
-      const diagnostics = await siteDiagnostics(url.searchParams.has("refresh"));
-      sendPrivateJson(response, 200, {
+      const diagnostics = await siteDiagnostics(forceRefresh);
+      const payload = {
         ok: true,
         ...ownerBrainStateSummary(memory, diagnostics)
-      });
+      };
+      if (!forceRefresh) ownerBrainStateResponseCache = { key: cacheKey, expires: Date.now() + ownerApiResponseCacheMs, payload };
+      sendPrivateJson(response, 200, payload);
     } catch (error) {
       sendPrivateJson(response, 500, { ok: false, error: error.message || "Owner Brain State unavailable." });
     }
