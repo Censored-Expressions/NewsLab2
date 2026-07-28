@@ -205,10 +205,16 @@ Recommended worker environment values:
 
 ```text
 CE_WORKER_CPU_GUARD=true
-CE_WORKER_MAX_COLLECTORS=4
+CE_WORKER_MAX_COLLECTORS=6
 CE_WORKER_MIN_COLLECTORS=1
 CE_WORKER_ROLE_STARTUP_STAGGER_MS=4500
-CE_WORKER_MAX_ONESHOT_CONCURRENCY=1
+CE_WORKER_MAX_ONESHOT_CONCURRENCY=2
+CE_WORKER_PRODUCTION_SOURCE_LIMIT=60
+CE_WORKER_PRODUCTION_CLUSTER_LIMIT=12
+CE_WORKER_PRODUCTION_BUILD_CONCURRENCY=3
+CE_WORKER_PRODUCTION_EDITOR_WORKERS=3
+CE_WORKER_PRODUCTION_READ_CONCURRENCY=2
+CE_WORKER_PRODUCTION_BUDGET_MS=75000
 CE_WORKER_PRESSURE_FAILURE_THRESHOLD=2
 CE_WORKER_PRESSURE_RECOVERY_THRESHOLD=3
 CE_WORKER_PRESSURE_DEFER_MS=900000
@@ -221,7 +227,7 @@ CE_IMAGE_WORKER_STARTUP_DELAY_MS=900000
 CE_IMAGE_WORKER_INTERVAL_MS=3600000
 ```
 
-If CPU remains high, lower `CE_WORKER_MAX_COLLECTORS` to `2`. If CPU is stable and article coverage needs more throughput, raise it gradually to `6` or `8`.
+If CPU remains high, lower `CE_WORKER_MAX_COLLECTORS` to `3` and keep `CE_WORKER_PRODUCTION_SOURCE_LIMIT` near `30`. If CPU is stable and article coverage needs more throughput, raise collectors gradually to `6` or `8` and raise `CE_WORKER_PRODUCTION_SOURCE_LIMIT`/`CE_WORKER_PRODUCTION_CLUSTER_LIMIT` with it. Extra collectors alone only gather more material; these production handoff limits determine how much of that material reaches the Writer, Editor, and Publisher.
 
 The worker also reacts to repeated sync pressure automatically. After repeated `http-502`, `http-503`, `http-504`, `http-429`, or sync errors, it lowers active collector workers, defers heavy one-shot jobs, and then restores collectors after stable syncs. This is the Framework control loop for protecting public API responsiveness while preserving article production.
 
@@ -230,6 +236,7 @@ Expected worker log after deploy:
 ```text
 [worker] cpu guard enabled=true maxCollectors=4 startupStaggerMs=4500 maxOneShots=1
 ```
+
 
 
 

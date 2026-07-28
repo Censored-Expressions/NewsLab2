@@ -75,17 +75,29 @@
       - key: CE_WORKER_CPU_GUARD
         value: "true"
       - key: CE_WORKER_MAX_COLLECTORS
-        value: "4"
+        value: "6"
       - key: CE_WORKER_COLLECTOR_ROTATION_MS
         value: "120000"
+      - key: CE_WORKER_PRODUCTION_SOURCE_LIMIT
+        value: "60"
+      - key: CE_WORKER_PRODUCTION_CLUSTER_LIMIT
+        value: "12"
+      - key: CE_WORKER_PRODUCTION_BUILD_CONCURRENCY
+        value: "3"
+      - key: CE_WORKER_PRODUCTION_EDITOR_WORKERS
+        value: "3"
+      - key: CE_WORKER_PRODUCTION_READ_CONCURRENCY
+        value: "2"
+      - key: CE_WORKER_PRODUCTION_BUDGET_MS
+        value: "75000"
       - key: CE_NEWS_LAB_MICRO_SOURCE_LIMIT
-        value: "48"
+        value: "60"
       - key: CE_NEWS_LAB_MICRO_CLUSTER_LIMIT
-        value: "10"
+        value: "12"
       - key: CE_NEWS_LAB_CATCHUP_SOURCE_LIMIT
-        value: "180"
+        value: "160"
       - key: CE_NEWS_LAB_CATCHUP_CLUSTER_LIMIT
-        value: "32"
+        value: "24"
       - key: CE_NEWS_LAB_PRODUCTION_BUDGET_MS
         value: "75000"
       - key: CE_NEWS_LAB_WORKER_FULL_READS
@@ -103,7 +115,7 @@
       - key: CE_WORKER_ROLE_STARTUP_STAGGER_MS
         value: "4500"
       - key: CE_WORKER_MAX_ONESHOT_CONCURRENCY
-        value: "1"
+        value: "2"
       - key: CE_WORKER_PRESSURE_FAILURE_THRESHOLD
         value: "2"
       - key: CE_WORKER_PRESSURE_RECOVERY_THRESHOLD
@@ -136,6 +148,7 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
+
 
 
 

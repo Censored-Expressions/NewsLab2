@@ -21,6 +21,12 @@ const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECT
 const minCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MIN_COLLECTORS || 1));
 const roleStartupStaggerMs = Math.max(0, Number(process.env.CE_WORKER_ROLE_STARTUP_STAGGER_MS || (workerCpuGuardEnabled ? 4500 : 0)));
 const maxOneShotConcurrency = Math.max(1, Number(process.env.CE_WORKER_MAX_ONESHOT_CONCURRENCY || 1));
+const productionSourceLimit = Math.max(12, Number(process.env.CE_WORKER_PRODUCTION_SOURCE_LIMIT || process.env.CE_NEWS_LAB_MICRO_SOURCE_LIMIT || Math.min(72, maxCollectorWorkers * 10)));
+const productionClusterLimit = Math.max(3, Number(process.env.CE_WORKER_PRODUCTION_CLUSTER_LIMIT || process.env.CE_NEWS_LAB_MICRO_CLUSTER_LIMIT || Math.min(14, maxCollectorWorkers * 2)));
+const productionBuildConcurrency = Math.max(1, Number(process.env.CE_WORKER_PRODUCTION_BUILD_CONCURRENCY || process.env.CE_NEWS_LAB_BUILD_CONCURRENCY || Math.min(3, Math.ceil(maxCollectorWorkers / 2))));
+const productionEditorWorkers = Math.max(1, Number(process.env.CE_WORKER_PRODUCTION_EDITOR_WORKERS || process.env.CE_NEWS_LAB_EDITOR_WORKERS || Math.min(3, Math.ceil(maxCollectorWorkers / 2))));
+const productionReadConcurrency = Math.max(1, Number(process.env.CE_WORKER_PRODUCTION_READ_CONCURRENCY || process.env.CE_ARTICLE_READ_CONCURRENCY || Math.min(3, Math.ceil(maxCollectorWorkers / 3))));
+const productionBudgetMs = Math.max(30000, Number(process.env.CE_WORKER_PRODUCTION_BUDGET_MS || process.env.CE_NEWS_LAB_PRODUCTION_BUDGET_MS || Math.min(90000, 30000 + maxCollectorWorkers * 7500)));
 const pressureFailureThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_FAILURE_THRESHOLD || 2));
 const pressureRecoveryThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_RECOVERY_THRESHOLD || 3));
 const pressureDeferMs = Math.max(5 * 60 * 1000, Number(process.env.CE_WORKER_PRESSURE_DEFER_MS || 15 * 60 * 1000));
@@ -585,7 +591,7 @@ console.log("Censored Expressions background worker orchestrator starting");
 recordWorkerEvent({ type: "orchestrator-started", pid: process.pid });
 writeWorkerObservability("orchestrator-started");
 console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
-console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency}`);
+console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency} productionSourceLimit=${productionSourceLimit} productionClusterLimit=${productionClusterLimit} productionBudgetMs=${productionBudgetMs}`);
 
 const enabledCollectorCategories = collectorWindowCategories();
 const parkedCollectorCategories = categories.filter(category => !enabledCollectorCategories.includes(category));
@@ -612,7 +618,17 @@ scheduleSpawnRole("scheduled-site-content", {
 }, { restartDelayMs: 30000 });
 scheduleSpawnRole("news-lab-production", {
   CE_NEWS_LAB_WORKER: "1",
-  CE_NEWS_LAB_WORKER_REASON: "worker-orchestrator-production"
+  CE_NEWS_LAB_WORKER_REASON: "worker-orchestrator-production",
+  CE_NEWS_LAB_MICRO_SOURCE_LIMIT: String(productionSourceLimit),
+  CE_NEWS_LAB_MICRO_CLUSTER_LIMIT: String(productionClusterLimit),
+  CE_NEWS_LAB_CATCHUP_SOURCE_LIMIT: String(Math.max(productionSourceLimit, Math.min(160, productionSourceLimit * 2))),
+  CE_NEWS_LAB_CATCHUP_CLUSTER_LIMIT: String(Math.max(productionClusterLimit, Math.min(28, productionClusterLimit * 2))),
+  CE_NEWS_LAB_BUILD_CONCURRENCY: String(productionBuildConcurrency),
+  CE_NEWS_LAB_EDITOR_WORKERS: String(productionEditorWorkers),
+  CE_ARTICLE_READ_CONCURRENCY: String(productionReadConcurrency),
+  CE_NEWS_LAB_PRODUCTION_BUDGET_MS: String(productionBudgetMs),
+  CE_NEWS_LAB_PRODUCTION_CATCHUP_MAX: process.env.CE_NEWS_LAB_PRODUCTION_CATCHUP_MAX || "2",
+  CE_NEWS_LAB_WORKER_ONCE_LIVE_IMAGES: process.env.CE_NEWS_LAB_WORKER_ONCE_LIVE_IMAGES || "false"
 }, { restartDelayMs: 20000 });
 
 scheduleSpawnRole("news-lab-api-response", {
@@ -678,6 +694,7 @@ setInterval(() => {
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
   console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
+
 
 
 

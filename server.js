@@ -1,4 +1,4 @@
-﻿const http = require("node:http");
+const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
@@ -16222,12 +16222,14 @@ function newsLabStrictSameNewsEvent(representative = {}, candidate = {}) {
   const representativeEntities = new Set(storyNamedEntities(representative));
   const candidateEntities = storyNamedEntities(candidate);
   const foreignEntities = candidateEntities.filter(entity => !representativeEntities.has(entity));
-  const hasEntityBridge = identity.entityOverlap >= 1 && termOverlap >= 4;
-  const hasStrongTermBridge = termOverlap >= 9 && titleOverlap >= 2;
+  const hasSingleEntityOnlyBridge = identity.entityOverlap === 1 && titleOverlap < 2;
+  const hasEntityBridge = identity.entityOverlap >= 2 && termOverlap >= 4;
+  const hasSingleEntityStrongBridge = identity.entityOverlap === 1 && titleOverlap >= 2 && termOverlap >= 7;
+  const hasStrongTermBridge = termOverlap >= 10 && titleOverlap >= 2;
   const hasStrongTitleBridge = titleOverlap >= 4 && termOverlap >= 6;
   const hasSameOutletContinuation = samePublisherDomain(representative, candidate) && titleOverlap >= 5 && termOverlap >= 5;
   const foreignEntityBurst = foreignEntities.length >= 2 && identity.entityOverlap === 0 && termOverlap < 9;
-  return !foreignEntityBurst && (hasEntityBridge || hasStrongTermBridge || hasStrongTitleBridge || hasSameOutletContinuation || identity.entityOverlap >= 2);
+  return !foreignEntityBurst && !hasSingleEntityOnlyBridge && (hasEntityBridge || hasSingleEntityStrongBridge || hasStrongTermBridge || hasStrongTitleBridge || hasSameOutletContinuation || (identity.entityOverlap >= 2 && titleOverlap >= 1));
 }
 
 function newsLabTopicIsolatedStories(representative = {}, candidates = []) {
@@ -25430,13 +25432,32 @@ function newsLabShelfDisplayReadyStory(story = {}) {
     && !issues.includes("fallback-coverage-needs-deeper-owned-article");
 }
 
+function newsLabCompletionBlockerIssues(story = {}) {
+  const issues = [];
+  const body = Array.isArray(story.body) ? story.body.filter(Boolean) : [];
+  const bodyText = body.join(" ");
+  const title = String(story.title || story.originalHeadline || "").trim();
+  const publicationTier = typeof newsLabCandidatePublicationTier === "function" ? newsLabCandidatePublicationTier(story) : {};
+  const tier = Number(story.publicationTier?.tier || publicationTier.tier || 1);
+  if (!title) issues.push("headline-missing");
+  if (body.length < (tier === 1 ? 4 : tier === 2 ? 2 : 1) || bodyText.length < (tier === 1 ? 520 : tier === 2 ? 320 : 220)) issues.push("body-too-short");
+  if (newsLabPublicDisplayHeadlineUnsafe(title, story)) issues.push("headline-display-unsafe");
+  if (newsLabGenericUpdateHeadline(title)) issues.push("generic-weak-headline");
+  if (newsLabHeadlineTruncated(title) || /\b(against|with|from|to|for|and|or|the|a|an|of|off|after|before|prime)\s*$/i.test(title)) issues.push("title-looks-truncated");
+  if (/\b(available reporting used for this article|details common across those reports|current confidence level|source signals?|full-read signals?|dossier includes|reporting trail|base story|outlet-only claim)\b/i.test(bodyText)) issues.push("news-lab-process-language");
+  if (story.fallbackCoverage || story.fastFallback || story.instantFallback) issues.push("fallback-coverage-needs-deeper-owned-article");
+  if (tier <= 1 && !story.publicHeadlineRepaired && publicationTier.publishable !== true && bodyText.length < 900) issues.push("insufficient-full-article-facts");
+  return [...new Set(issues)];
+}
+
 function newsLabBlockingFinalIssues(story = {}) {
   return [...new Set([
     ...(story.qualityGate?.issues || []),
     ...(story.qualityGate?.remainingIssues || []),
     ...(story.editorEnforcement?.finalIssues || []),
     ...(story.contentLaneQuality?.issues || []),
-    ...newsLabPublicArticleIssues(story)
+    ...newsLabPublicArticleIssues(story),
+    ...newsLabCompletionBlockerIssues(story)
   ])];
 }
 
@@ -30702,7 +30723,7 @@ function newsLabCategory(story = {}) {
   if (/\bgoogle\b/.test(text) && /\b(android|antitrust|eu|european union|fine|appeal|court)\b/.test(text)) return "technology";
   if (/b-52s|music festival|festival set|concert|violent storm forces evacuation/.test(text)) return "entertainment";
   if (/fatal|killed|injured|charged|warrant|highway patrol|police|sheriff|mph|slammed into|hit tree|crash|collision|homicide|shooting|arrested|weather|forecast|storm|flood|outage|fire|warehouse|smoke|shelter-in-place|beach hazard|rip current|sneaker wave|heat advisory|heat dome|rain chances|tropical development|saharan dust/.test(text)) return "local";
-  if (/movie|music|celebrity|actor|actress|artist|hollywood|streaming|culture|film|television|photographer|photography|concert|festival|tribute|father's day|late husband|late wife|katy perry|justin trudeau|famous exes|van der beek|clive davis|diane warren|rolling stones|album|singer|song|label mogul|billboard/.test(text)) return "entertainment";
+  if (/movie|music|celebrity|actor|actress|artist|hollywood|streaming|culture|film|television|tv show|series|baywatch|pamela anderson|photographer|photography|concert|festival|tribute|father's day|late husband|late wife|katy perry|justin trudeau|famous exes|van der beek|clive davis|diane warren|rolling stones|album|singer|song|label mogul|billboard/.test(text)) return "entertainment";
   if (/\b(sports|world cup|college world series|world series|fifa|soccer|team|coach|playoff|game|match|season|nfl|nba|mlb|nhl|wimbledon|tennis|odds|picks|u\.s\. open|golf|sam burns|wyndham clark|giannis|senior night|players|trade|trading|score|defeated|championship|shootout|goalkeeper|standings|tournament|grizzlies|blazers|morant|desmond bane|jaren jackson|memphis|portland)\b/.test(text)) return "sports";
   if (/\b(iran|israel|gaza|ukraine|russia|china|military|war|diplomacy|peace talks|airstrikes|missile|nato|united nations|middle east|ceasefire|sanctions|embassy|haiti|south africa|switzerland|lebanon|strait of hormuz|nuclear sites|u\.n\. inspectors|prime minister|foreign ministry|global affairs|international conflict)\b/.test(text)) return "world";
   if (/mayor|city|county|local|school board|neighborhood|killeen|texas|chicago|maryland|louisville|philadelphia|atlanta|plane crash|crashes into|kickstarter|toy store/.test(text)) return "local";
@@ -31525,7 +31546,7 @@ function newsLabWeakGenericHeadline(title = "") {
   const cleaned = String(title || "").trim();
   if (!cleaned) return true;
   const words = cleaned.split(/\s+/).filter(Boolean);
-  return /\b(Several Reports Describe|Same Core Development|Core Development|Brings New Local Questions|Draws New Industry Attention|Draws New Culture Attention|Faces New International Pressure|Raises New Market Questions|Develops With New Confirmed Details|Changes The Competitive Picture|Changes The Competitive Picture|Moves Into Focus|Draws New Scrutiny|Draws New Political Scrutiny|Faces New Market Pressure|Faces Technology Review|Brings New Scrutiny|Draws Local Response|Prompts Local Response|Triggers Local Response|Triggers Emergency Response|Raises Technology Stakes|Sharpens Technology Debate|Changes Technology Policy|Changes Culture Conversation|Changes Public Release Plans|Advances In Tournament Test|Shifts The Result|Shifts Competitive Stakes|Shifts Competitive Picture|Becomes International Flashpoint|Brings Emergency Response|Faces New Legal Test|Puts Legal Fight in Motion|Moves Through Court|Moves Into Policy Fight|Moves Into Political Fight|Moves Into Government Fight|Draws New Fight|Changes Security Situation|Changes International Response|Moves Toward Public Decision|Raises Security Questions|Adds Economic Pressure|Raises After|Changes EU Android Fine|Live View Changes|Filings Statements Votes Orders|Agency Action Should Show|Should Clarify The Timeline|Remains The Center Of The Story|Details Common Across Those Reports|Narrower Outlet Specific Details|Model Distillation Is A Common AI Training Technique|Public Decision|Given Faces|Competition Whether|Moves EU Android Fine|Changes EU Android Fine)\b/i.test(cleaned)
+  return /\b(Several Reports Describe|Same Core Development|Core Development|Brings New Local Questions|Draws New Industry Attention|Draws New Culture Attention|Faces New International Pressure|Raises New Market Questions|Develops With New Confirmed Details|Changes The Competitive Picture|Changes The Competitive Picture|Moves Into Focus|Draws New Scrutiny|Draws New Political Scrutiny|Faces New Market Pressure|Faces Technology Review|Brings New Scrutiny|Draws Local Response|Prompts Local Response|Triggers Local Response|Triggers Emergency Response|Raises Technology Stakes|Sharpens Technology Debate|Changes Technology Policy|Changes Culture Conversation|Changes Public Release Plans|Advances In Tournament Test|Shifts The Result|Shifts Competitive Stakes|Shifts Competitive Picture|Becomes International Flashpoint|Brings Emergency Response|Faces New Legal Test|Puts Legal Fight in Motion|Moves Through Court|Moves Into Policy Fight|Moves Into Political Fight|Moves Into Government Fight|Draws New Fight|Changes Security Situation|Changes International Response|Moves Toward Public Decision|Raises Security Questions|Adds Economic Pressure|Raises After|Changes EU Android Fine|Live View Changes|Filings Statements Votes Orders|Agency Action Should Show|Should Clarify The Timeline|Remains The Center Of The Story|Details Common Across Those Reports|Narrower Outlet Specific Details|Model Distillation Is A Common AI Training Technique|Public Decision|Given Faces|Competition Whether|Moves EU Android Fine|Changes EU Android Fine|Advances Policy Measure|Moves Markets|Adds New Verified Details)\b/i.test(cleaned)
     || /\b(Number Labels|Issue Changes|Changes Public Release Plans|Changes International Response)\b/i.test(cleaned)
     || (words.length <= 7 && /\b(Questions|Scrutiny|Attention|Pressure|Picture|Details|Focus|Response|Stakes|Debate|Flashpoint)\b/i.test(cleaned));
 }
@@ -34997,12 +35018,13 @@ function newsLabCompletionParagraphs(story = {}, supporting = [], facts = []) {
     .filter((detail, index, all) => all.findIndex(item => newsLabTextOverlap(item, detail) >= 0.68) === index);
   const leadFact = factDetails[0] || cleanArticleText(story.articleSummary || story.summary || story.title, 260);
   const secondFact = factDetails.find(detail => newsLabTextOverlap(detail, leadFact) < 0.55) || "";
+  const reportingContext = sourceNames.length
+    ? `Several outlets, including ${sourceNames.join(", ")}, have reported overlapping details on this story. The confirmed public record is strongest where those accounts describe the same event, timing, people involved, and direct consequence.`
+    : "The available public record identifies the core development, while later updates should add named officials, documents, timing, locations, and direct consequences.";
   return [
     leadFact && `${leadFact}`,
     secondFact && `${secondFact}`,
-    sourceNames.length
-      ? `Available reporting used for this article includes ${sourceNames.join(", ")}. Details common across those reports are treated as the core account, while narrower claims remain tied to the source that reported them.`
-      : "Available reporting identifies the core development, while later updates should add named officials, documents, timing, locations, and direct consequences.",
+    reportingContext,
   ].filter(Boolean);
 }
 
