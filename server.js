@@ -3121,6 +3121,100 @@ function productionIntelligenceSlowFiles(apiPerformance = {}) {
     .slice(0, 8);
 }
 
+function productionIntelligenceFailureCode(reason = "") {
+  const value = String(reason || "").toLowerCase();
+  if (/dossier|thin|body-too-short|needs-intro|missing-reporting-context|source|evidence/.test(value)) return "DOSSIER_INCOMPLETE";
+  if (/conflict|contradiction|unresolved/.test(value)) return "SOURCE_CONFLICT_UNRESOLVED";
+  if (/headline.*(topic|body|lead|source).*mismatch|title.*source.*mismatch|semantic-title-source-mismatch/.test(value)) return "HEADLINE_TOPIC_MISMATCH";
+  if (/headline.*overstate|title.*overstate|unsupported.*headline/.test(value)) return "HEADLINE_OVERSTATEMENT";
+  if (/headline|title|word-salad|generic-weak-headline|scrambled/.test(value)) return "HEADLINE_QUALITY_FAILURE";
+  if (/attribution|attribute|sourcing/.test(value)) return "WEAK_ATTRIBUTION";
+  if (/unsupported|inference|claim/.test(value)) return "UNSUPPORTED_INFERENCE";
+  if (/topic-drift|topic.*contamination|paragraph.*contamination|mixed-topic/.test(value)) return "TOPIC_DRIFT";
+  if (/repeat|repetitive|summary-repeats-body|duplicate phrasing/.test(value)) return "REPETITIVE_LANGUAGE";
+  if (/structure|transition|abrupt|section/.test(value)) return "STRUCTURE_FAILURE";
+  if (/image|photo|visual/.test(value)) return "IMAGE_MISMATCH";
+  if (/duplicate|same-event|already-published/.test(value)) return "DUPLICATE_STORY";
+  return "GENERAL_EDITORIAL_FAILURE";
+}
+
+function productionIntelligenceRepairScope(code = "") {
+  switch (code) {
+    case "HEADLINE_TOPIC_MISMATCH":
+    case "HEADLINE_OVERSTATEMENT":
+    case "HEADLINE_QUALITY_FAILURE":
+      return "headline-only";
+    case "WEAK_ATTRIBUTION":
+      return "affected-paragraph";
+    case "UNSUPPORTED_INFERENCE":
+      return "sentence-removal-or-source-check";
+    case "DOSSIER_INCOMPLETE":
+    case "SOURCE_CONFLICT_UNRESOLVED":
+    case "TOPIC_DRIFT":
+      return "dossier-rebuild-before-writing";
+    case "REPETITIVE_LANGUAGE":
+      return "affected-passage";
+    case "STRUCTURE_FAILURE":
+      return "section-reorder";
+    case "IMAGE_MISMATCH":
+      return "image-only-post-publication-safe";
+    case "DUPLICATE_STORY":
+      return "same-event-merge";
+    default:
+      return "targeted-editor-repair";
+  }
+}
+
+function productionIntelligenceTaxonomy(blockers = []) {
+  const map = new Map();
+  (Array.isArray(blockers) ? blockers : []).forEach(blocker => {
+    const reason = blocker.reason || blocker.issue || "unknown";
+    const code = productionIntelligenceFailureCode(reason);
+    const count = Number(blocker.count || blocker.total || blocker.frequency || 1);
+    const current = map.get(code) || { code, count: 0, repairScope: productionIntelligenceRepairScope(code), examples: [] };
+    current.count += count;
+    if (current.examples.length < 4) current.examples.push(String(reason));
+    map.set(code, current);
+  });
+  return [...map.values()].sort((a, b) => b.count - a.count);
+}
+
+function productionIntelligenceDossierPolicy() {
+  return {
+    mandatoryBeforeDraft: true,
+    minimumRequirements: [
+      "clearly identified primary event",
+      "sufficient source attribution",
+      "verified facts list",
+      "known editorial lane and target category",
+      "no unresolved high-risk contradiction",
+      "dossier completeness above threshold unless labeled developing"
+    ],
+    breakingNewsException: "Developing briefs may use a lower completeness threshold only when clearly labeled developing and kept in the follow-up queue.",
+    writerBlockRule: "Do not let the Writer draft directly from RSS titles, feed summaries, or isolated source excerpts. Expand or hold as needs-dossier-evidence instead."
+  };
+}
+
+function productionIntelligenceWriterReasoningTemplate() {
+  return {
+    requiredBeforeProse: true,
+    fields: [
+      "whatHappened",
+      "whatIsVerified",
+      "whatIsUncertain",
+      "whyItMatters",
+      "requiredContext",
+      "prohibitedInferences",
+      "recommendedLead",
+      "recommendedStructure",
+      "attributionPlan",
+      "headlineInputs.actor",
+      "headlineInputs.action",
+      "headlineInputs.consequence"
+    ],
+    rule: "The Writer drafts from Story Dossier + Writer Reasoning + active prevention rules, not raw feed text."
+  };
+}
 function productionIntelligencePreventionRules(blockers = []) {
   const rules = [];
   const addRule = (id, appliesTo, preventBy, detection) => {
@@ -3129,15 +3223,15 @@ function productionIntelligencePreventionRules(blockers = []) {
   (Array.isArray(blockers) ? blockers : []).slice(0, 12).forEach(blocker => {
     const reason = String(blocker.reason || blocker.issue || "unknown");
     if (/headline|title/i.test(reason)) {
-      addRule("prevent-headline-failures-before-editor", "Headline Generator", "Build headline only from the completed event dossier using Actor + Action + Consequence, then score body overlap before editorial review.", "Reject headline candidates with missing actor/action, copied source structure, word salad, or weak body overlap.");
+      addRule("prevent-headline-failures-before-editor", "Headline Generator", "Build headline only from the completed event dossier using Actor + Action + Consequence, then score body overlap before editorial review.", "Reject headline candidates with missing actor/action, copied source structure, word salad, or weak body overlap.", stableCode, repairScope);
     } else if (/body|context|evidence|reporting|source|dossier/i.test(reason)) {
-      addRule("prevent-thin-or-unsupported-drafts", "Story Dossier Builder", "Require verified facts, primary actors, timeline, source attribution, and known unknowns before prose generation.", "Mark candidate needs-dossier-evidence instead of letting thin source fragments reach the Writer.");
+      addRule("prevent-thin-or-unsupported-drafts", "Story Dossier Builder", "Require verified facts, primary actors, timeline, source attribution, and known unknowns before prose generation.", "Mark candidate needs-dossier-evidence instead of letting thin source fragments reach the Writer.", stableCode, repairScope);
     } else if (/duplicate|same-event|repeat/i.test(reason)) {
-      addRule("prevent-duplicate-publication-work", "Story Curator", "Merge same-event candidates before drafting and route added facts into the existing story update path.", "Compare canonical event keys, primary entities, location, date, and action before a new article is created.");
+      addRule("prevent-duplicate-publication-work", "Story Curator", "Merge same-event candidates before drafting and route added facts into the existing story update path.", "Compare canonical event keys, primary entities, location, date, and action before a new article is created.", stableCode, repairScope);
     } else if (/image|photo|visual/i.test(reason)) {
-      addRule("prevent-image-blocking-publication", "Image Worker", "Treat image mismatch as post-publication repairable when article text is otherwise publishable, while keeping an image-repair attachment on the story object.", "Require image-topic overlap but do not remove a clean article from public view for a fixable visual mismatch.");
+      addRule("prevent-image-blocking-publication", "Image Worker", "Treat image mismatch as post-publication repairable when article text is otherwise publishable, while keeping an image-repair attachment on the story object.", "Require image-topic overlap but do not remove a clean article from public view for a fixable visual mismatch.", stableCode, repairScope);
     } else {
-      addRule(`prevent-${reason.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "unknown"}`, "Publishing Editor", "Convert this rejection into a repair instruction and resubmit through validation before abandoning the draft.", `Detect ${reason} and route to the responsible subsystem with the full story snapshot.`);
+      addRule(`prevent-${reason.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "unknown"}`, "Publishing Editor", "Convert this rejection into a repair instruction and resubmit through validation before abandoning the draft.", `Detect ${reason} and route to the responsible subsystem with the full story snapshot.`, stableCode, repairScope);
     }
   });
   return rules.slice(0, 8);
@@ -3162,6 +3256,12 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const imagePressure = productionIntelligenceBlockerCount(topBlockers, /image|photo|visual/i);
   const repairFrequency = Number(hour.preEditorRepairedDrafts || 0) + Number(currentCycle.approvalRecoveryAttempted || 0) + Number(recovery.repairAttempted || 0);
   const repeatedReasoning = Number(recovery.resubmitted || 0) + Math.max(0, Number(repairFrequency || 0) - Number(recovery.repairSuccessful || currentCycle.approvalRecoveryResolved || 0));
+  const failureTaxonomy = productionIntelligenceTaxonomy(topBlockers);
+  const publishedAfterRepair = Number(currentCycle.approvalRecoveryResolved || recovery.approved || recovery.published || 0);
+  const draftsCompleted = reviewed;
+  const averageRepairPasses = productionIntelligenceRate(repairFrequency, Math.max(1, finalApproved + finalBlocked));
+  const headlineRewriteRate = productionIntelligenceRate(headlineRewritePressure, Math.max(1, reviewed));
+  const dossierFailureRate = productionIntelligenceRate(evidencePressure, Math.max(1, reviewed));
   const slowFiles = productionIntelligenceSlowFiles(apiPerformance);
   const slowEndpoints = (Array.isArray(apiPerformance.slowestEndpoints) ? apiPerformance.slowestEndpoints : [])
     .slice(0, 8)
@@ -3189,7 +3289,10 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       finalApproved,
       finalBlocked,
       highQualityPublishedArticlesPerHour: Number(hour.highQualityPublishedArticlesPerHour || hour.publishedArticles || 0),
-      averagePublicationLatencyMs: Number(hour.averagePublicationLatencyMs || 0)
+      averagePublicationLatencyMs: Number(hour.averagePublicationLatencyMs || 0),
+      averageRepairPasses,
+      headlineRewriteRate,
+      dossierFailureRate
     },
     unnecessaryWork: {
       repairFrequency,
@@ -3200,7 +3303,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       imageRepairPressure: imagePressure,
       repeatedReasoning,
       unnecessaryFileReads: slowFiles,
-      slowEndpoints
+      slowEndpoints,
+      failureTaxonomy
     },
     boundedImprovementProposal: {
       subsystem: selected.subsystem,
@@ -42015,6 +42119,9 @@ function newsLabThroughputDiagnosticsReport(reason = "manual") {
       lastHourApproved: Number(hour.approvedArticles || 0),
       lastHourPublished: Number(hour.publishedArticles || 0),
       averagePublicationLatencyMs: Number(hour.averagePublicationLatencyMs || 0),
+      averageRepairPasses,
+      headlineRewriteRate,
+      dossierFailureRate,
       coverageComparisonGap: Number(coverageComparison?.summary?.averageGap || 0)
     },
     worker: {

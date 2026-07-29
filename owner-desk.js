@@ -1,4 +1,4 @@
-﻿const ownerLogin = document.querySelector("[data-owner-login]");
+const ownerLogin = document.querySelector("[data-owner-login]");
 const ownerConsole = document.querySelector("[data-owner-console]");
 const ownerLoginForm = document.querySelector("[data-owner-login-form]");
 const ownerLoginStatus = document.querySelector("[data-owner-login-status]");
@@ -16,6 +16,9 @@ const ownerSubsystemTabs = document.querySelector("[data-owner-subsystem-tabs]")
 const ownerSubsystemDetail = document.querySelector("[data-owner-subsystem-detail]");
 const ownerSubsystemTitle = document.querySelector("[data-owner-subsystem-title]");
 const ownerSubsystemOverall = document.querySelector("[data-owner-subsystem-overall]");
+const ownerProductionRate = document.querySelector("[data-owner-production-rate]");
+const ownerProductionSummary = document.querySelector("[data-owner-production-summary]");
+const ownerProductionGrid = document.querySelector("[data-owner-production-grid]");
 const ownerRoadmap = document.querySelector("[data-owner-roadmap]");
 const ownerMaturityOverall = document.querySelector("[data-owner-maturity-overall]");
 const ownerMaturitySummary = document.querySelector("[data-owner-maturity-summary]");
@@ -231,6 +234,43 @@ function renderBrainState(payload = {}) {
   renderRoadmap(payload.roadmap || {});
 }
 
+function renderProductionIntelligence(payload = {}) {
+  if (!ownerProductionRate || !ownerProductionSummary || !ownerProductionGrid) return;
+  const current = payload.current || {};
+  const waste = payload.unnecessaryWork || {};
+  const proposal = payload.boundedImprovementProposal || {};
+  const routing = Array.isArray(payload.targetedRepairRouting) ? payload.targetedRepairRouting : [];
+  const firstPassRate = Math.round(Number(current.firstPassPublicationRate || 0) * 100);
+  const finalRate = Math.round(Number(current.finalApprovalRate || 0) * 100);
+  ownerProductionRate.textContent = `${firstPassRate}%`;
+  ownerProductionSummary.innerHTML = `
+    <p>${escapeHtml(payload.primaryGoal || "Increase First-Pass Publication Rate.")}</p>
+    <p><strong>${escapeHtml(proposal.subsystem || proposal.target || "Production Intelligence")}</strong>: ${escapeHtml(proposal.action || "No bounded improvement selected yet.")}</p>
+    <p>${escapeHtml(proposal.expectedOutcome || proposal.measurement || "Measure the next production window before promoting changes.")}</p>
+  `;
+  const cards = [
+    ["First-Pass", `${firstPassRate}%`, `${escapeHtml(current.publishedFirstPass ?? current.firstPassApproved ?? 0)} first-pass approvals`],
+    ["Final Approval", `${finalRate}%`, `${escapeHtml(current.finalApproved ?? 0)} final approvals`],
+    ["Repairs", escapeHtml(waste.repairFrequency ?? 0), "repair attempts this window"],
+    ["Headline Pressure", escapeHtml(waste.headlineRewritePressure ?? 0), "headline/title blockers"],
+    ["Dossier Pressure", escapeHtml(waste.evidenceOrDossierPressure ?? 0), "evidence/body/context blockers"],
+    ["Avg Repair Passes", escapeHtml(current.averageRepairPasses ?? 0), "target below 1.5"]
+  ];
+  const routeHtml = routing.slice(0, 4).map(item => `
+    <article>
+      <span>${escapeHtml(item.code || "REPAIR")}</span>
+      <strong>${escapeHtml(item.repairScope || "targeted")}</strong>
+      <p>${escapeHtml(item.count ?? 0)} recent blockers</p>
+    </article>
+  `).join("");
+  ownerProductionGrid.innerHTML = cards.map(([label, value, detail]) => `
+    <article>
+      <span>${escapeHtml(label)}</span>
+      <strong>${value}</strong>
+      <p>${detail}</p>
+    </article>
+  `).join("") + routeHtml;
+}
 function renderHighImpactCapabilities(payload = {}) {
   const plan = payload.highImpactCapabilityPlan || {};
   const lanes = Array.isArray(plan.lanes) ? plan.lanes : [];
@@ -803,7 +843,7 @@ async function loadPatchRequests() {
 }
 
 async function loadOwnerDashboard() {
-  const [learning, health, revenue, metrics, brainState, patches] = await Promise.all([
+  const [learning, health, revenue, metrics, brainState, productionIntelligence, patches] = await Promise.all([
     ownerApi("/api/learning"),
     ownerApi("/api/health"),
     ownerApi("/api/revenue-growth"),
