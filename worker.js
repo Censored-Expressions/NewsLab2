@@ -1,4 +1,4 @@
-﻿const childProcess = require("node:child_process");
+const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -27,6 +27,9 @@ const productionBuildConcurrency = Math.max(1, Number(process.env.CE_WORKER_PROD
 const productionEditorWorkers = Math.max(1, Number(process.env.CE_WORKER_PRODUCTION_EDITOR_WORKERS || process.env.CE_NEWS_LAB_EDITOR_WORKERS || Math.min(3, Math.ceil(maxCollectorWorkers / 2))));
 const productionReadConcurrency = Math.max(1, Number(process.env.CE_WORKER_PRODUCTION_READ_CONCURRENCY || process.env.CE_ARTICLE_READ_CONCURRENCY || Math.min(3, Math.ceil(maxCollectorWorkers / 3))));
 const productionBudgetMs = Math.max(30000, Number(process.env.CE_WORKER_PRODUCTION_BUDGET_MS || process.env.CE_NEWS_LAB_PRODUCTION_BUDGET_MS || Math.min(90000, 30000 + maxCollectorWorkers * 7500)));
+const productionCycleMs = Math.max(30000, Number(process.env.CE_WORKER_PRODUCTION_CYCLE_MS || process.env.CE_NEWS_LAB_PRODUCTION_CYCLE_MS || (workerCpuGuardEnabled ? 75000 : 30000)));
+const syncPressureElapsedMs = Math.max(10000, Number(process.env.CE_WORKER_SYNC_PRESSURE_ELAPSED_MS || 20000));
+const syncPressurePayloadBytes = Math.max(512 * 1024, Number(process.env.CE_WORKER_SYNC_PRESSURE_PAYLOAD_BYTES || 2500000));
 const pressureFailureThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_FAILURE_THRESHOLD || 2));
 const pressureRecoveryThreshold = Math.max(1, Number(process.env.CE_WORKER_PRESSURE_RECOVERY_THRESHOLD || 3));
 const pressureDeferMs = Math.max(5 * 60 * 1000, Number(process.env.CE_WORKER_PRESSURE_DEFER_MS || 15 * 60 * 1000));
@@ -36,6 +39,7 @@ const oneShotChildren = new Map();
 const parkedRoles = new Set();
 let adaptiveCollectorLimit = maxCollectorWorkers;
 let collectorRotationIndex = 0;
+let syncInProgress = false;
 const runtimePressureState = {
   consecutiveSyncFailures: 0,
   consecutiveSyncOk: 0,
@@ -378,8 +382,13 @@ function tuneRuntimeFromSync(event = {}) {
   if (!workerCpuGuardEnabled) return;
   const status = String(event.status || "");
   const isOk = status === "ok";
-  const isPressure = status === "error" || /^http-(429|500|502|503|504)$/.test(status);
-  if (isOk) {
+  const slowOkPressure = isOk && (
+    Number(event.elapsedMs || 0) >= syncPressureElapsedMs
+    || Number(event.payloadBytes || 0) >= syncPressurePayloadBytes
+    || Number(event.serverSyncDiagnostics?.totalMs || 0) >= syncPressureElapsedMs
+  );
+  const isPressure = slowOkPressure || status === "error" || /^http-(429|500|502|503|504)$/.test(status);
+  if (isOk && !slowOkPressure) {
     runtimePressureState.consecutiveSyncFailures = 0;
     runtimePressureState.consecutiveSyncOk += 1;
     if (runtimePressureState.consecutiveSyncOk >= pressureRecoveryThreshold && adaptiveCollectorLimit < Math.min(maxCollectorWorkers, categories.length)) {
@@ -393,6 +402,9 @@ function tuneRuntimeFromSync(event = {}) {
     return;
   }
   if (!isPressure) return;
+  if (slowOkPressure) {
+    runtimePressureState.lastPressureReason = `slow-sync elapsed=${Number(event.elapsedMs || 0)}ms payload=${Number(event.payloadBytes || 0)} bytes server=${Number(event.serverSyncDiagnostics?.totalMs || 0)}ms`;
+  }
   runtimePressureState.consecutiveSyncFailures += 1;
   runtimePressureState.consecutiveSyncOk = 0;
   const hardPressure = runtimePressureState.consecutiveSyncFailures >= pressureFailureThreshold * 2;
@@ -534,6 +546,12 @@ function collectSyncFiles(options = {}) {
 }
 
 async function syncWorkerOutputs(reason = "scheduled-sync") {
+  if (syncInProgress) {
+    const event = { type: "worker-sync-skipped", reason, status: "skipped", at: new Date().toISOString(), skipReason: "sync-already-in-progress" };
+    recordWorkerEvent(event);
+    console.log(`[worker] sync skipped: already in progress reason=${reason}`);
+    return;
+  }
   if (!workerSyncEnabled) {
     console.log("[worker] sync disabled: set CE_WEB_SYNC_URL and CE_WORKER_SYNC_ENABLED=true to push generated payloads to the web service");
     return;
@@ -555,6 +573,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     return;
   }
   const endpoint = `${webSyncBaseUrl}/api/news-lab/worker-sync`;
+  syncInProgress = true;
   const syncFileMtimes = Object.fromEntries(files.map(file => [file.key, file.mtimeMs || 0]));
   let lastError = null;
   for (let attempt = 1; attempt <= workerSyncRetryCount; attempt += 1) {
@@ -600,6 +619,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
       recordWorkerEvent(event);
       writeWorkerSyncLedger(event);
       tuneRuntimeFromSync(event);
+      syncInProgress = false;
       writeWorkerObservability("worker-sync-complete");
       const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
       const serverMs = Number(event.serverSyncDiagnostics?.totalMs || 0);
@@ -628,6 +648,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     payloadBytes: 0,
     fileMtimes: readJson(syncLedgerFile, {}).fileMtimes || {}
   };
+  syncInProgress = false;
   recordWorkerEvent(event);
   writeWorkerSyncLedger(event);
   tuneRuntimeFromSync(event);
@@ -728,7 +749,7 @@ console.log("Censored Expressions background worker orchestrator starting");
 recordWorkerEvent({ type: "orchestrator-started", pid: process.pid });
 writeWorkerObservability("orchestrator-started");
 console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
-console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency} productionSourceLimit=${productionSourceLimit} productionClusterLimit=${productionClusterLimit} productionBudgetMs=${productionBudgetMs}`);
+console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency} productionSourceLimit=${productionSourceLimit} productionClusterLimit=${productionClusterLimit} productionBudgetMs=${productionBudgetMs} productionCycleMs=${productionCycleMs} syncPressureElapsedMs=${syncPressureElapsedMs} syncPressurePayloadBytes=${syncPressurePayloadBytes}`);
 
 const enabledCollectorCategories = collectorWindowCategories();
 const parkedCollectorCategories = categories.filter(category => !enabledCollectorCategories.includes(category));
@@ -764,6 +785,7 @@ scheduleSpawnRole("news-lab-production", {
   CE_NEWS_LAB_EDITOR_WORKERS: String(productionEditorWorkers),
   CE_ARTICLE_READ_CONCURRENCY: String(productionReadConcurrency),
   CE_NEWS_LAB_PRODUCTION_BUDGET_MS: String(productionBudgetMs),
+  CE_NEWS_LAB_PRODUCTION_CYCLE_MS: String(productionCycleMs),
   CE_NEWS_LAB_PRODUCTION_CATCHUP_MAX: process.env.CE_NEWS_LAB_PRODUCTION_CATCHUP_MAX || "2",
   CE_NEWS_LAB_WORKER_ONCE_LIVE_IMAGES: process.env.CE_NEWS_LAB_WORKER_ONCE_LIVE_IMAGES || "false"
 }, { restartDelayMs: 20000 });
