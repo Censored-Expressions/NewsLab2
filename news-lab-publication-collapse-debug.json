@@ -1,19 +1,97 @@
 {
-  "generatedAt": "2026-07-28T10:59:00.578Z",
+  "generatedAt": "2026-07-30T16:36:00.897Z",
   "stage": "worker-finish-after-merge",
-  "workerPublishableCount": 1,
-  "previousPublishedCount": 3,
-  "finalWorkerStoryCount": 4,
+  "workerPublishableCount": 7,
+  "previousPublishedCount": 23,
+  "finalWorkerStoryCount": 7,
   "workerPublishable": [
     {
-      "id": "news_lab_worker_slice_politics_3_housing-bill-raises-questions-about-wall-street-home",
-      "title": "Housing Bill Raises Questions About Wall Street Home Buying",
+      "id": "news_lab_worker_slice_world_28_iran-hits-us-in-jordan-us-saudi-strikes-on-iraq-is-w",
+      "title": "Iran Hits US in Jordan, U.S.-saudi Strikes on Iraq: Is War Spreading",
+      "category": "world",
+      "complete": true,
+      "mergeKey": "event:us-iran-hormuz-strikes",
+      "meaningfulEventKey": "world:event:iran-jordan-iranian-economy-iraq-intercepted-missiles|worker_slice_world:event:iran-jordan-iranian-economy-iraq-intercepted-missiles",
+      "entityKey": "world:iran hits|jordan|u.s.-saudi strikes",
+      "bodyLength": 902,
+      "score": 100,
+      "issues": [],
+      "kept": true
+    },
+    {
+      "id": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "title": "Google Deepmind Brings Gemini Robotics Into Physical Tasks",
+      "category": "technology",
+      "complete": true,
+      "mergeKey": "title:google deepmind brings gemini robotics into physical tasks",
+      "meaningfulEventKey": "technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model|worker_slice_technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model",
+      "entityKey": "technology:google deepmind brings gemini robotics|into physical tasks",
+      "bodyLength": 1230,
+      "score": 100,
+      "issues": [],
+      "kept": true
+    },
+    {
+      "id": "news_lab_worker_slice_politics_74_lindsay-clancy-is-facing-three-first-degree-murder-c",
+      "title": "Lindsay Clancy Is Facing Three First-degree Murder Charges, Accused of Killing Her Children",
+      "category": "politics",
+      "complete": true,
+      "mergeKey": "title:lindsay clancy is facing three first-degree murder charges accused of killing her",
+      "meaningfulEventKey": "politics:event:lindsay-clancy-duxbury-massachusetts-jury-hears-responders-kids|worker_slice_politics:event:lindsay-clancy-duxbury-massachusetts-jury-hears-responders-kids",
+      "entityKey": "politics:lindsay clancy|facing three first-degree murder charges|accused",
+      "bodyLength": 372,
+      "score": 100,
+      "issues": [],
+      "kept": true
+    },
+    {
+      "id": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "title": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
       "category": "business",
       "complete": true,
-      "mergeKey": "title:housing bill raises questions about wall street home buying",
-      "meaningfulEventKey": "politics:event:housing-bill-trump-spurned-became-law-despite-congress-partisan-differences|worker_slice_politics:event:housing-bill-trump-spurned-became-law-despite-congress-partisan-differences",
-      "entityKey": "business:housing bill raises questions about|wall street home buying how|housing bill trump spurned became",
-      "bodyLength": 497,
+      "mergeKey": "title:there are fresh signs that fusion power startup commonwealth fusion systems will",
+      "meaningfulEventKey": "technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh|worker_slice_technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh",
+      "entityKey": "business:there are fresh signs that|fusion power startup commonwealth fusion|systems will list",
+      "bodyLength": 1074,
+      "score": 100,
+      "issues": [],
+      "kept": true
+    },
+    {
+      "id": "news_lab_worker_slice_world_9_ukraine-strike-reports-put-russian-military-targets-",
+      "title": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+      "category": "world",
+      "complete": true,
+      "mergeKey": "event:ukraine-russia-war-military-developments",
+      "meaningfulEventKey": "world:event:missile-poland-russian-left-crater-deep-inside|worker_slice_world:event:missile-poland-russian-left-crater-deep-inside",
+      "entityKey": "world:ukraine strike reports put russian|military targets|focus",
+      "bodyLength": 1345,
+      "score": 100,
+      "issues": [],
+      "kept": true
+    },
+    {
+      "id": "news_lab_worker_slice_world_1_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "title": "U.S. Strikes Iran as Hormuz Tensions Rise",
+      "category": "world",
+      "complete": true,
+      "mergeKey": "event:us-iran-hormuz-strikes",
+      "meaningfulEventKey": "world:event:navy-the-navy-s-iran-torpedo-overhaul-plans-major|worker_slice_world:event:navy-the-navy-s-iran-torpedo-overhaul-plans-major",
+      "entityKey": "world:u.s. strikes iran|hormuz tensions rise",
+      "bodyLength": 1206,
+      "score": 100,
+      "issues": [],
+      "kept": false
+    },
+    {
+      "id": "news_lab_worker_slice_local_54_new-york-heat-wave-brings-extreme-temperature-warnin",
+      "title": "New York Heat Wave Brings Extreme Temperature Warning",
+      "category": "local",
+      "complete": true,
+      "mergeKey": "title:new york heat wave brings extreme temperature warning",
+      "meaningfulEventKey": "local:event:sierra-vista-mall-clovis-longer-designated-cooling-center|worker_slice_local:event:sierra-vista-mall-clovis-longer-designated-cooling-center",
+      "entityKey": "local:new york heat wave brings|extreme temperature warning new york|heat wave brings extreme temperature",
+      "bodyLength": 521,
       "score": 100,
       "issues": [],
       "kept": true
@@ -21,28 +99,28 @@
   ],
   "workerRejected": [
     {
-      "id": "news_lab_worker_slice_politics_1_politics-update-centers-on-trump-house-brandon-gill-",
-      "title": "Trump Correspondents Dinner Advances Policy Measure",
+      "id": "news_lab_worker_slice_local_6_google-loses-final-appeal-over-eu-android-fine",
+      "title": "Google Loses Final Appeal Over EU Android Fine",
       "category": "politics",
       "complete": false,
-      "bodyLength": 717,
-      "paragraphCount": 4,
-      "score": 64,
+      "bodyLength": 926,
+      "paragraphCount": 5,
+      "score": 80,
       "qualityGateIssues": [
-        "insufficient-full-article-facts",
-        "mixed-source-topic"
+        "semantic-title-source-mismatch",
+        "missing-reporting-context"
       ],
       "publicIssues": [
-        "insufficient-full-article-facts",
-        "mixed-source-topic"
+        "semantic-title-source-mismatch",
+        "missing-reporting-context"
       ],
       "blockingFinalIssues": [
-        "insufficient-full-article-facts",
-        "mixed-source-topic"
+        "semantic-title-source-mismatch",
+        "missing-reporting-context"
       ],
       "buildUsefulnessPreEditor": {
         "applied": false,
-        "reviewedAt": "2026-07-28T10:58:58.961Z",
+        "reviewedAt": "2026-07-30T16:35:46.785Z",
         "beforeIssues": [],
         "afterIssues": [],
         "correctedIssues": [],
@@ -56,10 +134,24 @@
       "knownBlockerPrevention": {
         "stage": "worker-finish-final-repair-before-complete-filter",
         "beforeIssues": [
-          "insufficient-full-article-facts",
-          "mixed-source-topic"
+          "semantic-title-source-mismatch",
+          "headline-lead-topic-mismatch",
+          "missing-reporting-context"
         ],
         "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "semantic-title-source-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 2
+          },
           {
             "classId": "evidence-depth",
             "label": "Evidence depth failure",
@@ -68,28 +160,30 @@
             "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
             "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
             "issueCodes": [
-              "insufficient-full-article-facts"
-            ],
-            "count": 1
-          },
-          {
-            "classId": "story-identity-integrity",
-            "label": "Story identity failure",
-            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
-            "repairOwner": "Story Dossier Builder",
-            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
-            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
-            "issueCodes": [
-              "mixed-source-topic"
+              "missing-reporting-context"
             ],
             "count": 1
           }
         ],
         "afterIssues": [
-          "insufficient-full-article-facts",
-          "mixed-source-topic"
+          "semantic-title-source-mismatch",
+          "headline-lead-topic-mismatch",
+          "missing-reporting-context"
         ],
         "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "semantic-title-source-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 2
+          },
           {
             "classId": "evidence-depth",
             "label": "Evidence depth failure",
@@ -98,19 +192,7 @@
             "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
             "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
             "issueCodes": [
-              "insufficient-full-article-facts"
-            ],
-            "count": 1
-          },
-          {
-            "classId": "story-identity-integrity",
-            "label": "Story identity failure",
-            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
-            "repairOwner": "Story Dossier Builder",
-            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
-            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
-            "issueCodes": [
-              "mixed-source-topic"
+              "missing-reporting-context"
             ],
             "count": 1
           }
@@ -123,42 +205,397 @@
       "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
     },
     {
-      "id": "news_lab_worker_slice_politics_0_politics-update-centers-on-trump-graham-tariffs-alle",
-      "title": "Trump Graham Canadian Raises Trade Stakes",
-      "category": "business",
+      "id": "news_lab_worker_slice_technology_0_technology-update-centers-on-razer-effect-hall-switc",
+      "title": "Razer Effect Hall",
+      "category": "technology",
       "complete": false,
-      "bodyLength": 765,
+      "bodyLength": 886,
       "paragraphCount": 5,
-      "score": 62,
+      "score": 54,
       "qualityGateIssues": [
-        "generic-weak-headline",
-        "headline-word-salad",
-        "insufficient-full-article-facts",
-        "article-body-topic-drift"
+        "title-too-short",
+        "headline-editor-needs-rewrite",
+        "headline-display-unsafe",
+        "title-looks-truncated"
       ],
       "publicIssues": [
-        "generic-weak-headline",
-        "headline-word-salad",
-        "insufficient-full-article-facts",
-        "article-body-topic-drift"
+        "title-too-short",
+        "headline-editor-needs-rewrite"
       ],
       "blockingFinalIssues": [
-        "generic-weak-headline",
-        "headline-word-salad",
-        "insufficient-full-article-facts",
-        "article-body-topic-drift"
+        "title-too-short",
+        "headline-editor-needs-rewrite",
+        "headline-display-unsafe",
+        "title-looks-truncated"
       ],
       "buildUsefulnessPreEditor": {
         "applied": true,
-        "reviewedAt": "2026-07-28T10:58:58.995Z",
+        "reviewedAt": "2026-07-30T16:35:46.833Z",
         "beforeIssues": [
           "generic-weak-headline",
-          "headline-word-salad",
-          "draft-too-thin-before-editor"
+          "headline-word-salad"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "title-too-short",
+          "headline-editor-needs-rewrite",
+          "missing-reporting-context"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "title-too-short",
+              "headline-editor-needs-rewrite"
+            ],
+            "count": 2
+          },
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "missing-reporting-context"
+            ],
+            "count": 1
+          }
         ],
         "afterIssues": [
           "generic-weak-headline",
           "headline-word-salad",
+          "missing-reporting-context"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad"
+            ],
+            "count": 2
+          },
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "missing-reporting-context"
+            ],
+            "count": 1
+          }
+        ],
+        "correctedIssues": [
+          "title-too-short",
+          "headline-editor-needs-rewrite"
+        ],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_technology_49_technology-update-centers-on-technology-beach-demons",
+      "title": "Technology Beach Demonstrates",
+      "category": "technology",
+      "complete": false,
+      "bodyLength": 422,
+      "paragraphCount": 3,
+      "score": 54,
+      "qualityGateIssues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close",
+        "headline-display-unsafe"
+      ],
+      "publicIssues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close"
+      ],
+      "blockingFinalIssues": [
+        "headline-editor-needs-rewrite",
+        "publisher-headline-too-close",
+        "headline-display-unsafe"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.859Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "title-too-short",
+          "headline-editor-needs-rewrite",
+          "lead-topic-mismatch",
+          "headline-lead-topic-mismatch"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "title-too-short",
+              "headline-editor-needs-rewrite",
+              "lead-topic-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 4
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "lead-topic-mismatch",
+          "headline-lead-topic-mismatch"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad",
+              "lead-topic-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 4
+          }
+        ],
+        "correctedIssues": [
+          "title-too-short",
+          "headline-editor-needs-rewrite"
+        ],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_entertainment_24_after-a-dayslong-pause-in-direct-strikes-between-the",
+      "title": "U.S. Strikes Iran as Hormuz Tensions Rise",
+      "category": "entertainment",
+      "complete": false,
+      "bodyLength": 378,
+      "paragraphCount": 3,
+      "score": 10,
+      "qualityGateIssues": [
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "missing-reporting-context",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs"
+      ],
+      "publicIssues": [
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "missing-reporting-context",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs"
+      ],
+      "blockingFinalIssues": [
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "missing-reporting-context",
+        "repetitive-sentence-leak",
+        "repetitive-paragraphs"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.865Z",
+        "beforeIssues": [
+          "draft-too-thin-before-editor"
+        ],
+        "afterIssues": [
+          "draft-too-thin-before-editor"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "expanded-thin-draft-with-clean-dossier-facts-before-editor",
+          "rebuilt-still-thin-draft-from-story-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "body-needs-intro-body-ending",
+          "body-too-short",
+          "missing-reporting-context"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "body-needs-intro-body-ending",
+              "body-too-short",
+              "missing-reporting-context"
+            ],
+            "count": 3
+          }
+        ],
+        "afterIssues": [
+          "article-body-topic-drift",
+          "repetitive-paragraphs"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "story-identity-integrity",
+            "label": "Story identity failure",
+            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
+            "repairOwner": "Story Dossier Builder",
+            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
+            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
+            "issueCodes": [
+              "article-body-topic-drift"
+            ],
+            "count": 1
+          },
+          {
+            "classId": "originality-and-public-copy",
+            "label": "Originality/public-copy failure",
+            "detect": "Detect any repeated sentence pattern, summary/body duplication, generic template language, or behind-the-scenes process language.",
+            "repairOwner": "Draft Optimization Engine",
+            "repairBehavior": "Rewrite summary and transitions in public-facing language, remove backend/process phrasing, vary sentence structure, then resubmit.",
+            "preventionBehavior": "Before Editor review, compare summary/body/transition phrasing against recent CE output and forbidden process-language classes.",
+            "issueCodes": [
+              "repetitive-paragraphs"
+            ],
+            "count": 1
+          }
+        ],
+        "correctedIssues": [
+          "body-needs-intro-body-ending",
+          "body-too-short",
+          "missing-reporting-context"
+        ],
+        "correctedFailureClasses": [
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "body-needs-intro-body-ending",
+              "body-too-short",
+              "missing-reporting-context"
+            ],
+            "count": 3
+          }
+        ],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_world_38_world-update-centers-on-assessment-cautioned-investi",
+      "title": "The Most Important Facts Are the Official Statements",
+      "category": "world",
+      "complete": false,
+      "bodyLength": 350,
+      "paragraphCount": 3,
+      "score": 0,
+      "qualityGateIssues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "headline-display-unsafe",
+        "needs-dossier-evidence"
+      ],
+      "publicIssues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "body-needs-intro-body-ending",
+        "body-too-short"
+      ],
+      "blockingFinalIssues": [
+        "headline-word-salad",
+        "headline-editor-needs-rewrite",
+        "semantic-title-source-mismatch",
+        "headline-source-no-overlap",
+        "body-needs-intro-body-ending",
+        "body-too-short",
+        "headline-display-unsafe",
+        "needs-dossier-evidence"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.886Z",
+        "beforeIssues": [
+          "headline-editor-needs-rewrite",
+          "draft-too-thin-before-editor"
+        ],
+        "afterIssues": [
+          "headline-editor-needs-rewrite",
           "draft-too-thin-before-editor"
         ],
         "correctedIssues": [],
@@ -175,11 +612,11 @@
       "knownBlockerPrevention": {
         "stage": "worker-finish-final-repair-before-complete-filter",
         "beforeIssues": [
-          "generic-weak-headline",
-          "headline-word-salad",
+          "headline-editor-needs-rewrite",
+          "body-needs-intro-body-ending",
           "body-too-short",
           "insufficient-full-article-facts",
-          "missing-reporting-context"
+          "article-body-topic-drift"
         ],
         "beforeFailureClasses": [
           {
@@ -190,10 +627,9 @@
             "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
             "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
             "issueCodes": [
-              "generic-weak-headline",
-              "headline-word-salad"
+              "headline-editor-needs-rewrite"
             ],
-            "count": 2
+            "count": 1
           },
           {
             "classId": "evidence-depth",
@@ -203,16 +639,27 @@
             "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
             "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
             "issueCodes": [
+              "body-needs-intro-body-ending",
               "body-too-short",
-              "insufficient-full-article-facts",
-              "missing-reporting-context"
+              "insufficient-full-article-facts"
             ],
             "count": 3
+          },
+          {
+            "classId": "story-identity-integrity",
+            "label": "Story identity failure",
+            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
+            "repairOwner": "Story Dossier Builder",
+            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
+            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
+            "issueCodes": [
+              "article-body-topic-drift"
+            ],
+            "count": 1
           }
         ],
         "afterIssues": [
-          "generic-weak-headline",
-          "headline-word-salad",
+          "headline-editor-needs-rewrite",
           "insufficient-full-article-facts",
           "article-body-topic-drift"
         ],
@@ -225,10 +672,9 @@
             "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
             "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
             "issueCodes": [
-              "generic-weak-headline",
-              "headline-word-salad"
+              "headline-editor-needs-rewrite"
             ],
-            "count": 2
+            "count": 1
           },
           {
             "classId": "evidence-depth",
@@ -256,9 +702,724 @@
           }
         ],
         "correctedIssues": [
-          "body-too-short",
+          "body-needs-intro-body-ending",
+          "body-too-short"
+        ],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_entertainment_65_entertainment-update-centers-on-dead-netflix-walking",
+      "title": "Netflix Just Signed a Massive New Licensing Faces New Market Pressure",
+      "category": "business",
+      "complete": false,
+      "bodyLength": 332,
+      "paragraphCount": 3,
+      "score": 82,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "headline-display-unsafe",
+        "needs-dossier-evidence"
+      ],
+      "publicIssues": [
+        "generic-weak-headline"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "headline-display-unsafe",
+        "needs-dossier-evidence"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.902Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "draft-too-thin-before-editor"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "draft-too-thin-before-editor"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "expanded-thin-draft-with-clean-dossier-facts-before-editor",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "semantic-title-source-mismatch",
           "missing-reporting-context"
         ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad",
+              "semantic-title-source-mismatch"
+            ],
+            "count": 3
+          },
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "missing-reporting-context"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "semantic-title-source-mismatch"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "semantic-title-source-mismatch"
+            ],
+            "count": 2
+          }
+        ],
+        "correctedIssues": [
+          "headline-word-salad",
+          "missing-reporting-context"
+        ],
+        "correctedFailureClasses": [
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "missing-reporting-context"
+            ],
+            "count": 1
+          }
+        ],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_entertainment_66_entertainment-update-centers-on-business-percent-rev",
+      "title": "World Cup Knockout Picture Takes Shape",
+      "category": "sports",
+      "complete": false,
+      "bodyLength": 504,
+      "paragraphCount": 3,
+      "score": 51,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "semantic-title-source-mismatch",
+        "headline-display-unsafe"
+      ],
+      "publicIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "semantic-title-source-mismatch"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "semantic-title-source-mismatch",
+        "headline-display-unsafe"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.919Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "semantic-title-source-mismatch",
+          "headline-lead-topic-mismatch"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad",
+              "semantic-title-source-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 4
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "semantic-title-source-mismatch",
+          "headline-lead-topic-mismatch"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad",
+              "semantic-title-source-mismatch",
+              "headline-lead-topic-mismatch"
+            ],
+            "count": 4
+          }
+        ],
+        "correctedIssues": [],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_entertainment_67_entertainment-update-centers-on-xumo-ad-supported-co",
+      "title": "Xumo Ad-supported Colin",
+      "category": "entertainment",
+      "complete": false,
+      "bodyLength": 389,
+      "paragraphCount": 3,
+      "score": 54,
+      "qualityGateIssues": [
+        "title-too-short",
+        "headline-editor-needs-rewrite",
+        "headline-display-unsafe",
+        "title-looks-truncated"
+      ],
+      "publicIssues": [
+        "title-too-short",
+        "headline-editor-needs-rewrite"
+      ],
+      "blockingFinalIssues": [
+        "title-too-short",
+        "headline-editor-needs-rewrite",
+        "headline-display-unsafe",
+        "title-looks-truncated"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.938Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "draft-too-thin-before-editor"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "draft-too-thin-before-editor"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "headline-editor-needs-rewrite"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "headline-editor-needs-rewrite"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad"
+            ],
+            "count": 2
+          }
+        ],
+        "correctedIssues": [
+          "headline-editor-needs-rewrite"
+        ],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_politics_3_politics-update-centers-on-trump-blanche-nomination-",
+      "title": "Blanche Trump Nomination Faces New Legal Test",
+      "category": "politics",
+      "complete": false,
+      "bodyLength": 770,
+      "paragraphCount": 5,
+      "score": 59,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context",
+        "headline-display-unsafe"
+      ],
+      "publicIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "missing-reporting-context",
+        "headline-display-unsafe"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:46.975Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad"
+            ],
+            "count": 2
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad"
+            ],
+            "count": 2
+          }
+        ],
+        "correctedIssues": [],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_local_21_politics-update-centers-on-trump-pounding-rescued-bi",
+      "title": "Anthony Fauci's Journal Entries, Published Brings Emergency Response",
+      "category": "world",
+      "complete": false,
+      "bodyLength": 1369,
+      "paragraphCount": 5,
+      "score": 83,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-display-unsafe"
+      ],
+      "publicIssues": [
+        "generic-weak-headline",
+        "headline-word-salad"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "headline-word-salad",
+        "headline-display-unsafe"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:47.010Z",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "insufficient-full-article-facts",
+          "paragraph-topic-contamination"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad"
+            ],
+            "count": 2
+          },
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "insufficient-full-article-facts"
+            ],
+            "count": 1
+          },
+          {
+            "classId": "story-identity-integrity",
+            "label": "Story identity failure",
+            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
+            "repairOwner": "Story Dossier Builder",
+            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
+            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
+            "issueCodes": [
+              "paragraph-topic-contamination"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline",
+          "headline-word-salad",
+          "insufficient-full-article-facts",
+          "missing-reporting-context"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline",
+              "headline-word-salad"
+            ],
+            "count": 2
+          },
+          {
+            "classId": "evidence-depth",
+            "label": "Evidence depth failure",
+            "detect": "Detect any draft that lacks enough verified facts, context, source diversity, or intro/body/ending structure for its publication tier.",
+            "repairOwner": "Evidence Engine",
+            "repairBehavior": "Return to source evidence and dossier facts, add verified context, and regenerate only the weak sections.",
+            "preventionBehavior": "Writer must prove it used a complete Story Dossier before first sentence generation.",
+            "issueCodes": [
+              "insufficient-full-article-facts",
+              "missing-reporting-context"
+            ],
+            "count": 2
+          }
+        ],
+        "correctedIssues": [
+          "paragraph-topic-contamination"
+        ],
+        "correctedFailureClasses": [
+          {
+            "classId": "story-identity-integrity",
+            "label": "Story identity failure",
+            "detect": "Detect any paragraph, headline, source, or summary whose primary actor/event differs from the Story Dossier event.",
+            "repairOwner": "Story Dossier Builder",
+            "repairBehavior": "Split mixed clusters, remove off-event source fragments, rebuild the dossier around one canonical event, then rewrite affected sections.",
+            "preventionBehavior": "Require every draft paragraph to map to the same event id or an explicit dossier relationship before the Writer proceeds.",
+            "issueCodes": [
+              "paragraph-topic-contamination"
+            ],
+            "count": 1
+          }
+        ],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_politics_12_politics-update-centers-on-federal-trump-hiring-dire",
+      "title": "Federal Director Trump Advances Policy Measure",
+      "category": "politics",
+      "complete": false,
+      "bodyLength": 724,
+      "paragraphCount": 4,
+      "score": 87,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "headline-display-unsafe"
+      ],
+      "publicIssues": [
+        "generic-weak-headline"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "headline-display-unsafe"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:47.033Z",
+        "beforeIssues": [
+          "generic-weak-headline"
+        ],
+        "afterIssues": [
+          "generic-weak-headline"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline"
+            ],
+            "count": 1
+          }
+        ],
+        "correctedIssues": [],
+        "correctedFailureClasses": [],
+        "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
+        "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
+      },
+      "rule": "Rejected worker candidates must expose every final blocker so the next worker cycle repairs the exact cause instead of preserving the old shelf."
+    },
+    {
+      "id": "news_lab_worker_slice_politics_13_politics-update-centers-on-vote-committee-senate-rep",
+      "title": "Vote Committee Senate Advances Policy Measure",
+      "category": "politics",
+      "complete": false,
+      "bodyLength": 1280,
+      "paragraphCount": 5,
+      "score": 83,
+      "qualityGateIssues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "headline-display-unsafe"
+      ],
+      "publicIssues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak"
+      ],
+      "blockingFinalIssues": [
+        "generic-weak-headline",
+        "repetitive-sentence-leak",
+        "headline-display-unsafe"
+      ],
+      "buildUsefulnessPreEditor": {
+        "applied": true,
+        "reviewedAt": "2026-07-30T16:35:47.057Z",
+        "beforeIssues": [
+          "generic-weak-headline"
+        ],
+        "afterIssues": [
+          "generic-weak-headline"
+        ],
+        "correctedIssues": [],
+        "readyForEditor": false,
+        "workerFastPath": true,
+        "actions": [
+          "bounded-worker-pre-editor-learning-pass",
+          "rewrote-headline-from-clean-body-and-dossier-before-editor"
+        ],
+        "rule": "Worker processes run a bounded learning-aware pre-editor pass. The pass applies the current rejection ranking before editorial review without triggering the heavy recursive optimizer."
+      },
+      "knownBlockerPrevention": {
+        "stage": "worker-finish-final-repair-before-complete-filter",
+        "beforeIssues": [
+          "generic-weak-headline"
+        ],
+        "beforeFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline"
+            ],
+            "count": 1
+          }
+        ],
+        "afterIssues": [
+          "generic-weak-headline"
+        ],
+        "afterFailureClasses": [
+          {
+            "classId": "headline-integrity",
+            "label": "Headline integrity failure",
+            "detect": "Detect any headline that is scrambled, clipped, generic, too close to a publisher title, missing a clear actor/action, or disconnected from the article body.",
+            "repairOwner": "Headline Editor",
+            "repairBehavior": "Rebuild the headline from the Story Dossier and completed article body; repair only the headline unless body evidence is missing.",
+            "preventionBehavior": "Before the first draft reaches the Editor, require a Headline Dossier with actor, action, consequence, forbidden copied phrases, and body overlap.",
+            "issueCodes": [
+              "generic-weak-headline"
+            ],
+            "count": 1
+          }
+        ],
+        "correctedIssues": [],
         "correctedFailureClasses": [],
         "upstreamTeaching": "Dossier and Writer must prevent the generalized failure class before first draft, not merely the exact issue code seen this time.",
         "downstreamTeaching": "Publishing Editor repairs these blockers before Validator is allowed to hold the article."
@@ -275,25 +1436,46 @@
       "meaningfulEventKey": "politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south"
     },
     {
-      "id": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
-      "title": "Ukraine Gains U.S. Support for Patriot Missile Production",
-      "category": "world",
-      "mergeKey": "event:ukraine-russia-war-military-developments",
-      "meaningfulEventKey": "world:event:trump-patriot-ukraine-signals-support-production-president"
-    },
-    {
-      "id": "news_lab_world:news-lab-world-event-iran-iranian-blasts-attacks-sixth-mounts-reported-0__candidate_2",
-      "title": "U.S.-iran Tensions Rise After New Strike Reports Near Hormuz",
+      "id": "news_lab_worker_slice_world_28_iran-hits-us-in-jordan-us-saudi-strikes-on-iraq-is-w",
+      "title": "Iran Hits US in Jordan, U.S.-saudi Strikes on Iraq: Is War Spreading",
       "category": "business",
       "mergeKey": "event:us-iran-hormuz-strikes",
-      "meaningfulEventKey": "world:event:iran-iranian-blasts-attacks-sixth-mounts-reported"
+      "meaningfulEventKey": "world:event:iran-jordan-iranian-economy-iraq-intercepted-missiles|worker_slice_world:event:iran-jordan-iranian-economy-iraq-intercepted-missiles"
     },
     {
-      "id": "news_lab_worker_slice_politics_3_housing-bill-raises-questions-about-wall-street-home",
-      "title": "Housing Bill Raises Questions About Wall Street Home Buying",
-      "category": "business",
-      "mergeKey": "title:housing bill raises questions about wall street home buying",
-      "meaningfulEventKey": "politics:event:housing-bill-trump-spurned-became-law-despite-congress-partisan-differences|worker_slice_politics:event:housing-bill-trump-spurned-became-law-despite-congress-partisan-differences"
+      "id": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "title": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
+      "category": "technology",
+      "mergeKey": "title:there are fresh signs that fusion power startup commonwealth fusion systems will",
+      "meaningfulEventKey": "technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh|worker_slice_technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh"
+    },
+    {
+      "id": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "title": "Google Deepmind Brings Gemini Robotics Into Physical Tasks",
+      "category": "technology",
+      "mergeKey": "title:google deepmind brings gemini robotics into physical tasks",
+      "meaningfulEventKey": "technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model|worker_slice_technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model"
+    },
+    {
+      "id": "news_lab_worker_slice_local_54_new-york-heat-wave-brings-extreme-temperature-warnin",
+      "title": "New York Heat Wave Brings Extreme Temperature Warning",
+      "category": "local",
+      "mergeKey": "title:new york heat wave brings extreme temperature warning",
+      "meaningfulEventKey": "local:event:sierra-vista-mall-clovis-longer-designated-cooling-center|worker_slice_local:event:sierra-vista-mall-clovis-longer-designated-cooling-center"
+    },
+    {
+      "id": "news_lab_worker_slice_world_9_ukraine-strike-reports-put-russian-military-targets-",
+      "title": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+      "category": "world",
+      "mergeKey": "event:ukraine-russia-war-military-developments",
+      "meaningfulEventKey": "world:event:missile-poland-russian-left-crater-deep-inside|worker_slice_world:event:missile-poland-russian-left-crater-deep-inside"
+    },
+    {
+      "id": "news_lab_worker_slice_politics_74_lindsay-clancy-is-facing-three-first-degree-murder-c",
+      "title": "Lindsay Clancy Is Facing Three First-degree Murder Charges, Accused of Killing Her Children",
+      "category": "politics",
+      "mergeKey": "title:lindsay clancy is facing three first-degree murder charges accused of killing her",
+      "meaningfulEventKey": "politics:event:lindsay-clancy-duxbury-massachusetts-jury-hears-responders-kids|worker_slice_politics:event:lindsay-clancy-duxbury-massachusetts-jury-hears-responders-kids"
     }
   ],
   "rule": "If approved articles do not reach the public shelf, compare workerPublishable to finalWorkerStories and teach the Publisher which merge/filter removed them."

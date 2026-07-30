@@ -1,14 +1,16 @@
 {
-  "generatedAt": "2026-07-23T19:13:54.586Z",
+  "generatedAt": "2026-07-30T17:05:02.807Z",
   "mode": "api-response-worker",
-  "pid": 17028,
-  "cacheFresh": false,
+  "pid": 28608,
+  "cacheFresh": true,
   "cacheFile": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-api-response-cache.json",
   "workerPid": 0,
-  "lastStatus": "failed",
-  "lastReason": "scheduled-api-response-cache",
-  "lastError": "EPERM: operation not permitted, rename 'D:\\CensoredExpressions\\News-Lab\\data\\news-lab-source-reliability-registry.json.17028.1784834034575.tmp' -> 'D:\\CensoredExpressions\\News-Lab\\data\\news-lab-source-reliability-registry.json'",
+  "lastStatus": "cache-refreshed",
+  "lastReason": "startup-api-response-cache",
+  "lastFinishedAt": "2026-07-30T17:05:02.807Z",
   "lastMetrics": {
-    "buildMs": 8723
+    "storyCount": 24,
+    "responseCount": 9,
+    "buildMs": 22241
   }
 }
