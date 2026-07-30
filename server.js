@@ -86,6 +86,7 @@ const newsLabArticleApprovalIntelligenceFile = path.join(dataDir, "article-appro
 const newsLabArticleApprovalActionPlanFile = path.join(dataDir, "article-approval-action-plan.json");
 const newsLabPublicationIntelligenceActionQueueFile = path.join(dataDir, "publication-intelligence-action-queue.json");
 const newsLabArticleLifecycleTraceFile = path.join(dataDir, "news-lab-article-lifecycle-trace.json");
+const newsLabEventLifecycleRegistryFile = path.join(dataDir, "news-lab-event-lifecycle-registry.json");
 const newsLabStuckRescueWorkerStatusFile = path.join(dataDir, "news-lab-stuck-rescue-worker-status.json");
 const newsLabStuckRescueLearningFile = path.join(dataDir, "news-lab-stuck-rescue-learning.json");
 const newsLabImageImprovementAuditFile = path.join(dataDir, "news-lab-image-improvement-audit.json");
@@ -171,8 +172,8 @@ const newsLabProductionCatchupMax = Math.max(1, Number(process.env.CE_NEWS_LAB_P
 const newsLabCollectorCycleMs = Math.max(10000, Number(process.env.CE_NEWS_LAB_COLLECTOR_CYCLE_MS || 30000));
 const newsLabCollectorSourceLimit = Math.max(10, Number(process.env.CE_NEWS_LAB_COLLECTOR_SOURCE_LIMIT || 80));
 const newsLabCollectorStoryLimit = Math.max(25, Number(process.env.CE_NEWS_LAB_COLLECTOR_STORY_LIMIT || 180));
-const newsLabMicroCycleSourceLimit = Math.max(4, Number(process.env.CE_NEWS_LAB_MICRO_SOURCE_LIMIT || 6));
-const newsLabMicroCycleClusterLimit = Math.max(1, Number(process.env.CE_NEWS_LAB_MICRO_CLUSTER_LIMIT || 1));
+const newsLabMicroCycleSourceLimit = Math.max(42, Number(process.env.CE_NEWS_LAB_MICRO_SOURCE_LIMIT || 42));
+const newsLabMicroCycleClusterLimit = Math.max(8, Number(process.env.CE_NEWS_LAB_MICRO_CLUSTER_LIMIT || 8));
 const newsLabCatchupCycleSourceLimit = Math.max(newsLabMicroCycleSourceLimit, Number(process.env.CE_NEWS_LAB_CATCHUP_SOURCE_LIMIT || 72));
 const newsLabCatchupCycleClusterLimit = Math.max(newsLabMicroCycleClusterLimit, Number(process.env.CE_NEWS_LAB_CATCHUP_CLUSTER_LIMIT || 14));
 const newsLabMicroFullReadLimit = Math.max(2, Number(process.env.CE_NEWS_LAB_MICRO_FULL_READ_LIMIT || 6));
@@ -2937,6 +2938,7 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
   const publicationActionQueue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
   const lifecycleTrace = readJsonFile(newsLabArticleLifecycleTraceFile, { latest: null, reports: [] }) || { latest: null, reports: [] };
+  const eventLifecycle = readJsonFile(newsLabEventLifecycleRegistryFile, defaultNewsLabEventLifecycleRegistry()) || defaultNewsLabEventLifecycleRegistry();
   const worker = readNewsLabWorkerStatus();
   const apiWorker = readNewsLabApiWorkerStatus();
   const stuckWorker = readNewsLabStuckRescueWorkerStatus();
@@ -2986,6 +2988,8 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   if (!workers.orchestrator.freshness.fresh) findings.push("background worker orchestrator heartbeat is stale or missing");
   if (collectorSummary.underfilledCategories?.length) findings.push(`underfilled tabs: ${collectorSummary.underfilledCategories.join(", ")}`);
   if (publicCacheFreshness.ageMs !== null && publicCacheFreshness.ageMs > 12 * 60 * 60 * 1000) findings.push(`public News Lab cache is stale: ${publicCacheFreshness.label}`);
+  if (Number(eventLifecycle.summary?.pendingVisibility || 0) > 0) findings.push(`${eventLifecycle.summary.pendingVisibility} event(s) are persisted but not verified visible`);
+  if (Number(eventLifecycle.summary?.staleEvents || 0) > 0) findings.push(`${eventLifecycle.summary.staleEvents} event lifecycle record(s) are stale or overdue for refresh`);
   if (approvalRate && approvalRate < 20) findings.push(`low editorial approval rate: ${approvalRate}%`);
   if (Number(approvalQueue.active?.length || 0) > 0) findings.push(`${approvalQueue.active.length} approval recovery items are active`);
   if (Number(headlineQueue.active?.length || 0) > 0) findings.push(`${headlineQueue.active.length} headline repair items are active`);
@@ -3025,7 +3029,27 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
       articleDeathCertificates: (approval.articleDeathCertificates || approvalActionPlan.articleDeathCertificates || []).slice(0, 20),
       passFailLastHour: { approved: Number(lastHour.approvedArticles || 0), rejected: Number(lastHour.finalBlocked || lastHour.rejected || 0) }
     },
-    lifecycleTrace: {
+    eventLifecycle: {
+      updatedAt: eventLifecycle.updatedAt || "",
+      eventCount: Number(eventLifecycle.eventCount || 0),
+      summary: eventLifecycle.summary || {},
+      recentMaterialChanges: (eventLifecycle.recentMaterialChanges || []).slice(0, 12),
+      freshnessWatch: Object.values(eventLifecycle.events || {})
+        .sort((a, b) => Date.parse(a.nextRefreshAt || "") - Date.parse(b.nextRefreshAt || ""))
+        .slice(0, 12)
+        .map(event => ({
+          eventId: event.eventId,
+          title: event.title,
+          category: event.category,
+          status: event.status,
+          freshnessClass: event.freshnessClass,
+          nextRefreshAt: event.nextRefreshAt,
+          verifiedVisible: Boolean(event.publicVisibility?.verifiedVisible),
+          currentDossierRevision: event.currentDossierRevision,
+          currentArticleRevision: event.currentArticleRevision
+        })),
+      rule: eventLifecycle.rule || "Event lifecycle registry not initialized."
+    },    lifecycleTrace: {
       updatedAt: lifecycleTrace.updatedAt || lifecycleTrace.latest?.generatedAt || "",
       latestStatus: lifecycleTrace.latest?.status || "not-recorded",
       storyCount: lifecycleTrace.latest?.storyRows?.length || 0,
@@ -9567,6 +9591,7 @@ function frameworkContinuousOptimizerSnapshot(memory = learningMemory(), diagnos
   const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
   const publicationActionQueue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
   const lifecycleTrace = readJsonFile(newsLabArticleLifecycleTraceFile, { latest: null, reports: [] }) || { latest: null, reports: [] };
+  const eventLifecycle = readJsonFile(newsLabEventLifecycleRegistryFile, defaultNewsLabEventLifecycleRegistry()) || defaultNewsLabEventLifecycleRegistry();
   const endpoints = Object.values(apiPerformance.endpoints || {});
   const worstEndpoint = (apiPerformance.slowestEndpoints || []).slice(0, 1)[0]
     || endpoints.map(item => ({ endpoint: item.endpoint || "unknown", maxMs: item.maxMs || 0, avgMs: item.avgMs || 0 })).sort((a, b) => Number(b.maxMs || 0) - Number(a.maxMs || 0))[0]
@@ -21281,14 +21306,22 @@ function readNewsLabCollectorCache(category = "") {
   return record;
 }
 
-function readNewsLabCollectorCaches(maxAgeMs = cacheMs * 2) {
+function newsLabCollectorCacheMaxAgeMs(options = {}) {
+  const configured = Number(process.env.CE_NEWS_LAB_COLLECTOR_CACHE_MAX_AGE_MS || 0);
+  const requested = Number(options.maxAgeMs || 0);
+  const minimumUsefulWindow = Math.max(cacheMs * 4, 4 * 60 * 60 * 1000);
+  return Math.max(requested, configured || 0, minimumUsefulWindow);
+}
+
+function readNewsLabCollectorCaches(maxAgeMs = null) {
   const now = Date.now();
+  const activeMaxAgeMs = newsLabCollectorCacheMaxAgeMs({ maxAgeMs });
   return newsLabCollectorCategories()
     .map(category => readNewsLabCollectorCache(category))
     .filter(Boolean)
     .filter(record => {
       const generated = new Date(record.generatedAt || 0).getTime();
-      return generated && now - generated <= maxAgeMs;
+      return generated && now - generated <= activeMaxAgeMs;
     });
 }
 
@@ -21303,8 +21336,50 @@ function newsLabCollectorCacheSubDossier(record = {}) {
   };
 }
 
+function newsLabStoryMergeKey(story = {}) {
+  return String(story.url || story.id || story.topicKey || `${story.source || ""}:${story.title || ""}`).toLowerCase();
+}
+
+function newsLabPrioritizeCollectorMergedStories(stories = []) {
+  const input = Array.isArray(stories) ? stories.filter(Boolean) : [];
+  const categories = Array.isArray(newsLabSectionCategories) && newsLabSectionCategories.length
+    ? newsLabSectionCategories
+    : ["world", "politics", "business", "technology", "sports", "entertainment", "local"];
+  const seen = new Set();
+  const output = [];
+  const pushStory = story => {
+    const key = newsLabStoryMergeKey(story);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    output.push(story);
+    return true;
+  };
+  const takeCategoryPass = (role, passLimit = 1) => {
+    for (let pass = 0; pass < passLimit; pass += 1) {
+      categories.forEach(category => {
+        const found = input.find(story => {
+          const subDossier = story.collectorSubDossier || {};
+          return String(subDossier.category || story.collectorCategory || "").toLowerCase() === category
+            && String(subDossier.role || "") === role
+            && !seen.has(newsLabStoryMergeKey(story));
+        });
+        if (found) pushStory(found);
+      });
+    }
+  };
+  takeCategoryPass("tab-writing-source", 3);
+  takeCategoryPass("tab-context-source", 1);
+  input.forEach(pushStory);
+  return output;
+}
+
 function mergeNewsLabCollectorStories(stories = [], options = {}) {
-  const collectorCaches = readNewsLabCollectorCaches(options.maxAgeMs || cacheMs * 2);
+  const activeMaxAgeMs = newsLabCollectorCacheMaxAgeMs(options);
+  const now = Date.now();
+  const collectorCaches = readNewsLabCollectorCaches(activeMaxAgeMs);
+  const cacheAges = collectorCaches
+    .map(record => now - new Date(record.generatedAt || 0).getTime())
+    .filter(age => Number.isFinite(age) && age >= 0);
   const subDossiers = collectorCaches
     .map(newsLabCollectorCacheSubDossier)
     .filter(Boolean);
@@ -21327,12 +21402,17 @@ function mergeNewsLabCollectorStories(stories = [], options = {}) {
       } : null;
     })()
   })));
+  const mergedStories = newsLabPrioritizeCollectorMergedStories(newsLabDedupeCollectorStories([...collectorStories, ...stories]));
   return {
-    stories: newsLabDedupeCollectorStories([...stories, ...collectorStories]),
+    stories: mergedStories,
     collectorSummary: {
       activeCategories: collectorCaches.map(record => record.category),
       cacheCount: collectorCaches.length,
+      cacheMaxAgeMs: activeMaxAgeMs,
+      newestCacheAgeMs: cacheAges.length ? Math.min(...cacheAges) : null,
+      oldestCacheAgeMs: cacheAges.length ? Math.max(...cacheAges) : null,
       collectedStoryCount: collectorStories.length,
+      prioritizedStoryCount: mergedStories.filter(story => story.collectorSubDossier?.role === "tab-writing-source").length,
       subDossierCount: subDossiers.length,
       subDossiers: subDossiers.map(subDossier => ({
         category: subDossier.category,
@@ -26174,8 +26254,17 @@ function newsLabNormalizeCategoryBeforeEditor(story = {}) {
   const assignedSportsStillValid = assignedCategory === "sports"
     && /\b(world cup|nba|nfl|mlb|nhl|ncaa|fifa|soccer|football|basketball|baseball|hockey|match|game|team|coach|player|tournament|playoff|semifinal|championship|open championship|birkdale|score|shootout)\b/i.test(categoryEvidenceText)
     && !/\b(stock options|options stock|shares|market cap|earnings|sec filing)\b/i.test(categoryEvidenceText);
-  const inferredCategory = (assignedEntertainmentStillValid || assignedSportsStillValid) ? assignedCategory : (sourceCategory || newsLabCategory(story));
-  const finalCategory = newsLabSectionCategories.includes(inferredCategory) ? inferredCategory : (newsLabSectionCategories.includes(assignedCategory) ? assignedCategory : "politics");
+  const storyCategory = newsLabCategory(story);
+  const collectorCategory = String(story.collectorSubDossier?.category || story.collectorCategory || "").toLowerCase();
+  const strongCollectorCategory = newsLabSectionCategories.includes(collectorCategory)
+    && story.collectorSubDossier?.role === "tab-writing-source"
+    ? collectorCategory
+    : "";
+  const validAssignedCategory = newsLabSectionCategories.includes(assignedCategory) ? assignedCategory : "";
+  const inferredCategory = (assignedEntertainmentStillValid || assignedSportsStillValid)
+    ? assignedCategory
+    : strongCollectorCategory || (newsLabSectionCategories.includes(storyCategory) ? storyCategory : "") || validAssignedCategory || sourceCategory;
+  const finalCategory = newsLabSectionCategories.includes(inferredCategory) ? inferredCategory : (validAssignedCategory || "politics");
   return {
     ...story,
     category: finalCategory,
@@ -30237,7 +30326,8 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
       });
       allCount = Number(responses.all?.ownedStories?.length || 0);
     }
-  }  const record = {
+  }
+  const record = {
     generatedAt: new Date().toISOString(),
     reason,
     sourcePayloadSavedAt: published.savedAt || published.generatedAt || "",
@@ -30248,6 +30338,16 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
     responses
   };
   writeJsonFile(newsLabApiResponseCacheFile, record);
+  newsLabMarkLatestLifecyclePublicReady(record.responses?.all || {}, {
+    cache: record,
+    cacheStories: record.responses?.all?.ownedStories || [],
+    reason
+  });
+  newsLabUpdateEventLifecycleRegistry(record.responses?.all?.ownedStories || [], {
+    cacheStories: record.responses?.all?.ownedStories || [],
+    cacheGeneratedAt: record.generatedAt,
+    reason
+  });
   return record;
 }
 
@@ -30978,8 +31078,9 @@ async function runNewsLabProductionCycle(reason = "scheduled-news-lab-production
           }
         }
       : sourcePayload;
-    const collectorSourceMerge = mergeNewsLabCollectorStories(expandedSourcePayload.stories || [], { maxAgeMs: cacheMs * 4 });
-    const collectorDossierMerge = mergeNewsLabCollectorStories(expandedSourcePayload.dossierStories || expandedSourcePayload.stories || [], { maxAgeMs: cacheMs * 4 });
+    const collectorMaxAgeMs = newsLabCollectorCacheMaxAgeMs({ reason, catchupProduction, deepProduction });
+    const collectorSourceMerge = mergeNewsLabCollectorStories(expandedSourcePayload.stories || [], { maxAgeMs: collectorMaxAgeMs });
+    const collectorDossierMerge = mergeNewsLabCollectorStories(expandedSourcePayload.dossierStories || expandedSourcePayload.stories || [], { maxAgeMs: collectorMaxAgeMs });
     const activeMicroSourceLimit = newsLabMicroCycleSourceLimit;
     const activeCatchupSourceLimit = newsLabCatchupCycleSourceLimit;
     const activeMicroClusterLimit = newsLabMicroCycleClusterLimit;
@@ -36721,6 +36822,175 @@ function newsLabGraphNodeId(type = "entity", label = "") {
   return `${type}:${safeFileSlug(label).slice(0, 80)}`;
 }
 
+function defaultNewsLabEventLifecycleRegistry() {
+  return {
+    version: "20260730-event-lifecycle-v1",
+    updatedAt: "",
+    eventCount: 0,
+    events: {},
+    recentMaterialChanges: [],
+    summary: {
+      verifiedVisible: 0,
+      pendingVisibility: 0,
+      staleEvents: 0,
+      overdueRefreshes: 0
+    },
+    rule: "Track canonical events, frozen dossier/article revisions, meaningful updates, freshness policy, and verified public visibility. Publishing is one lifecycle stage, not the end of the story."
+  };
+}
+
+function newsLabEventLifecycleId(story = {}) {
+  return String(story.eventId || story.topicKey || story.storyDossier?.eventId || story.storyDossier?.storyId || story.id || safeFileSlug(story.title || story.headline || "event")).trim();
+}
+
+function newsLabStoryFreshnessPolicy(story = {}) {
+  const category = String(story.category || "").toLowerCase();
+  const text = `${story.title || ""} ${story.summary || ""} ${(Array.isArray(story.body) ? story.body.join(" ") : "")}`.toLowerCase();
+  const breaking = Boolean(story.isBreaking || story.publicationTier?.tier === 3 || /breaking|developing|live|urgent|alert|shooting|earthquake|storm|tornado|wildfire|evacuation|score|final|overtime|vote|ruling|arrest|filed|charged|resigned|launched|acquisition/.test(text));
+  let freshnessClass = "stable";
+  let staleAfterMs = 6 * 60 * 60 * 1000;
+  if (category === "sports" || /score|final|game|match|overtime|tournament|playoff/.test(text)) {
+    freshnessClass = breaking ? "sports-live" : "sports-current";
+    staleAfterMs = breaking ? 3 * 60 * 1000 : 20 * 60 * 1000;
+  } else if (/weather|storm|earthquake|fire|emergency|evacuation|flood/.test(text)) {
+    freshnessClass = "emergency";
+    staleAfterMs = 5 * 60 * 1000;
+  } else if (/market|stock|federal reserve|earnings|oil|gold|nasdaq|dow|s&p/.test(text) || category === "business") {
+    freshnessClass = breaking ? "market-developing" : "market-current";
+    staleAfterMs = breaking ? 10 * 60 * 1000 : 30 * 60 * 1000;
+  } else if (breaking) {
+    freshnessClass = "breaking";
+    staleAfterMs = 5 * 60 * 1000;
+  }
+  const nowMs = Date.now();
+  return {
+    freshnessClass,
+    staleAfterMs,
+    nextCheckAt: new Date(nowMs + staleAfterMs).toISOString(),
+    rule: "Refresh cadence follows story type so breaking, sports, emergency, market, and stable stories do not compete for the same worker budget."
+  };
+}
+
+function newsLabEventMaterialChange(previous = {}, story = {}) {
+  const facts = [...new Set([
+    ...(story.storyDossier?.knownFacts || []),
+    ...(story.storyDossier?.agreement?.sharedClaims || []),
+    ...(story.writerDossierInput?.knownFacts || [])
+  ].map(fact => newsLabCompactMemoryText(fact, 240)).filter(Boolean))];
+  const previousFacts = previous.knownFacts || [];
+  const newFacts = facts.filter(fact => !previousFacts.some(old => newsLabTextOverlap(old, fact) >= 0.76)).slice(0, 8);
+  const sourceCount = Number(story.storyDossier?.evidence?.sourceCount || story.storyDossier?.sourcePool?.length || story.sources?.length || 0);
+  const previousSourceCount = Number(previous.sourceCount || 0);
+  const statusText = `${story.title || ""} ${facts.join(" ")}`.toLowerCase();
+  const majorPattern = /\b(confirmed|official|court ruled|ruling|charged|arrested|convicted|acquitted|resigned|died|death|killed|vote|passed|signed|launched|recall|acquisition|merger|bankruptcy|final score|wins|loses|appeal|settlement)\b/i;
+  const contradictionCount = Number((story.storyDossier?.contradictions || story.storyDossier?.disagreement?.contradictions || []).length || 0);
+  let changeClass = "no-material-change";
+  let action = "keep-existing-article";
+  if (contradictionCount > Number(previous.contradictionCount || 0)) {
+    changeClass = "source-contradiction";
+    action = "hold-update-or-qualify-conflict";
+  } else if (newFacts.some(fact => majorPattern.test(fact)) || majorPattern.test(statusText)) {
+    changeClass = "major-verified-development";
+    action = "create-or-update-article-revision";
+  } else if (newFacts.length || sourceCount > previousSourceCount) {
+    changeClass = "minor-factual-addition";
+    action = "update-context-or-metadata";
+  }
+  return {
+    changeClass,
+    action,
+    newFacts,
+    sourceDelta: sourceCount - previousSourceCount,
+    contradictionCount,
+    rule: "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+  };
+}
+
+function newsLabUpdateEventLifecycleRegistry(stories = [], context = {}) {
+  const registry = readJsonFile(newsLabEventLifecycleRegistryFile, defaultNewsLabEventLifecycleRegistry()) || defaultNewsLabEventLifecycleRegistry();
+  const now = new Date().toISOString();
+  const events = registry.events && typeof registry.events === "object" ? registry.events : {};
+  const visibleKeys = newsLabVisibilityKeySet(context.cacheStories || stories || []);
+  const materialChanges = [];
+  (Array.isArray(stories) ? stories : []).forEach(story => {
+    const eventId = newsLabEventLifecycleId(story);
+    if (!eventId) return;
+    const previous = events[eventId] || {};
+    const material = newsLabEventMaterialChange(previous, story);
+    const freshness = newsLabStoryFreshnessPolicy(story);
+    const storyKeys = newsLabVisibilityKeyList(story);
+    const verifiedVisible = storyKeys.some(key => visibleKeys.has(key));
+    const facts = [...new Set([
+      ...(story.storyDossier?.knownFacts || []),
+      ...(story.storyDossier?.agreement?.sharedClaims || []),
+      ...(story.writerDossierInput?.knownFacts || [])
+    ].map(fact => newsLabCompactMemoryText(fact, 240)).filter(Boolean))].slice(-24);
+    const dossierRevision = Number(previous.currentDossierRevision || 0) + (material.changeClass === "no-material-change" ? 0 : 1);
+    const articleRevision = Number(previous.currentArticleRevision || 0) + (verifiedVisible && material.changeClass !== "no-material-change" ? 1 : 0);
+    const title = story.title || story.headline || previous.title || "";
+    const eventRecord = {
+      ...previous,
+      eventId,
+      title,
+      category: story.category || previous.category || "",
+      canonicalIdentity: {
+        actor: (story.storyDossier?.whoIsInvolved || story.entityMemory?.profiles?.map(profile => profile.entity) || [])[0] || previous.canonicalIdentity?.actor || "",
+        action: newsLabCompactMemoryText(story.storyDossier?.whatHappened || story.summary || title, 220),
+        location: story.storyDossier?.where || story.location || previous.canonicalIdentity?.location || "",
+        eventTime: story.originalPublishedAt || story.publishedAt || story.generatedAt || previous.canonicalIdentity?.eventTime || now
+      },
+      status: material.changeClass === "source-contradiction" ? "needs-conflict-review" : verifiedVisible ? "published-monitoring" : "publication-pending",
+      firstSeenAt: previous.firstSeenAt || story.firstSeenAt || story.originalPublishedAt || story.publishedAt || story.generatedAt || now,
+      lastEvidenceAt: story.updatedAt || story.lastUpdatedAt || story.generatedAt || now,
+      lastPublishedAt: verifiedVisible ? (story.publishedAt || now) : (previous.lastPublishedAt || ""),
+      currentDossierRevision: Math.max(1, dossierRevision || 1),
+      currentArticleRevision: Math.max(verifiedVisible ? 1 : 0, articleRevision || Number(previous.currentArticleRevision || 0)),
+      dossierLock: story.storyDossier?.dossierLock || story.dossierLock || previous.dossierLock || null,
+      articleIds: [...new Set([...(previous.articleIds || []), story.id].filter(Boolean))].slice(-20),
+      sourceIds: [...new Set([...(previous.sourceIds || []), ...(story.sources || []).map(source => source.url || source.title || source.source).filter(Boolean)])].slice(-80),
+      sourceCount: Number(story.storyDossier?.evidence?.sourceCount || story.storyDossier?.sourcePool?.length || story.sources?.length || previous.sourceCount || 0),
+      knownFacts: facts.length ? facts : (previous.knownFacts || []),
+      unknownFacts: [...new Set([...(story.storyDossier?.unknownFacts || story.storyDossier?.stillUnknown || []), ...(previous.unknownFacts || [])].map(item => newsLabCompactMemoryText(item, 200)).filter(Boolean))].slice(-16),
+      contradictionCount: material.contradictionCount,
+      materialChanges: [
+        ...(previous.materialChanges || []),
+        ...(material.changeClass === "no-material-change" ? [] : [{ at: now, ...material }])
+      ].slice(-30),
+      latestMaterialChange: material,
+      freshnessClass: freshness.freshnessClass,
+      nextRefreshAt: freshness.nextCheckAt,
+      staleAfterMs: freshness.staleAfterMs,
+      publicVisibility: {
+        verifiedVisible,
+        checkedAt: now,
+        cacheGeneratedAt: context.cacheGeneratedAt || "",
+        rule: "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      lifecycleRule: "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    };
+    events[eventId] = eventRecord;
+    if (material.changeClass !== "no-material-change") materialChanges.push({ eventId, title, ...material, at: now });
+  });
+  const compactEvents = Object.fromEntries(Object.entries(events).slice(-1000));
+  const eventValues = Object.values(compactEvents);
+  const next = {
+    version: "20260730-event-lifecycle-v1",
+    updatedAt: now,
+    eventCount: eventValues.length,
+    events: compactEvents,
+    recentMaterialChanges: [...materialChanges, ...(registry.recentMaterialChanges || [])].slice(0, 120),
+    summary: {
+      verifiedVisible: eventValues.filter(event => event.publicVisibility?.verifiedVisible).length,
+      pendingVisibility: eventValues.filter(event => event.status === "publication-pending").length,
+      staleEvents: eventValues.filter(event => event.nextRefreshAt && Date.parse(event.nextRefreshAt) < Date.now()).length,
+      overdueRefreshes: eventValues.filter(event => event.status !== "published-monitoring" && event.nextRefreshAt && Date.parse(event.nextRefreshAt) < Date.now()).length,
+      materialChangesThisRun: materialChanges.length
+    },
+    rule: defaultNewsLabEventLifecycleRegistry().rule
+  };
+  writeJsonFile(newsLabEventLifecycleRegistryFile, next);
+  return next;
+}
 function newsLabUpdateKnowledgeGraph(stories = []) {
   const graph = readJsonFile(newsLabKnowledgeGraphFile, defaultNewsLabKnowledgeGraph());
   const now = new Date().toISOString();
@@ -42572,30 +42842,100 @@ function newsLabLifecycleRepairStory(story = {}, context = {}) {
 }
 
 
-function newsLabMarkLatestLifecyclePublicReady(payload = {}) {
+function newsLabVisibilityKeyList(story = {}) {
+  const keys = [
+    story.id,
+    story.storyId,
+    story.articleId,
+    story.eventId,
+    story.topicKey,
+    story.slug,
+    newsLabPublicStoryVisibleKey(story),
+    newsLabStoryMergeAuditKey(story),
+    cleanArticleText(story.title || story.headline || "", 220).toLowerCase()
+  ];
+  return [...new Set(keys.map(key => String(key || "").trim()).filter(Boolean))];
+}
+
+function newsLabVisibilityKeySet(stories = []) {
+  const set = new Set();
+  (Array.isArray(stories) ? stories : []).forEach(story => {
+    newsLabVisibilityKeyList(story).forEach(key => set.add(key));
+  });
+  return set;
+}
+
+function newsLabMarkLatestLifecyclePublicReady(payload = {}, context = {}) {
   const trace = readJsonFile(newsLabArticleLifecycleTraceFile, null);
   if (!trace?.latest?.storyRows?.length) return null;
-  const ownedKeys = new Set((payload.ownedStories || []).map(story => story.id || story.topicKey || story.title).filter(Boolean));
+  const cache = context.cache || readJsonFile(newsLabApiResponseCacheFile, null) || null;
+  const payloadStories = Array.isArray(payload.ownedStories)
+    ? payload.ownedStories
+    : Array.isArray(payload.responses?.all?.ownedStories)
+      ? payload.responses.all.ownedStories
+      : [];
+  const cacheStories = Array.isArray(context.cacheStories)
+    ? context.cacheStories
+    : Array.isArray(cache?.responses?.all?.ownedStories)
+      ? cache.responses.all.ownedStories
+      : [];
+  const visibleKeys = newsLabVisibilityKeySet(cacheStories);
+  const payloadKeys = newsLabVisibilityKeySet(payloadStories);
+  let verifiedVisibleCount = 0;
+  let pendingVisibleCount = 0;
+  const latestRows = trace.latest.storyRows.map(row => {
+    const rowKeys = newsLabVisibilityKeyList(row);
+    const verifiedVisible = rowKeys.some(key => visibleKeys.has(key));
+    const payloadPersisted = rowKeys.some(key => payloadKeys.has(key));
+    if (verifiedVisible) verifiedVisibleCount += 1;
+    else if (payloadPersisted) pendingVisibleCount += 1;
+    const stages = (row.stages || []).map(stage => stage.name === "Public API"
+      ? {
+          ...stage,
+          status: verifiedVisible ? "passed" : payloadPersisted ? "attention" : "pending-runtime-check",
+          reason: verifiedVisible ? "verified-visible-in-public-api-cache" : payloadPersisted ? "persisted-but-not-visible-in-public-api-cache" : "public-visibility-not-confirmed",
+          nextAction: verifiedVisible
+            ? "Use this article as an accepted public pattern."
+            : "Do not count as published; repair the cache/publisher handoff until this article ID appears in the public API response.",
+          evidence: {
+            ...(stage.evidence || {}),
+            payloadPersisted,
+            verifiedVisible,
+            visibleArticleCount: cacheStories.length,
+            payloadStoryCount: payloadStories.length,
+            cacheGeneratedAt: cache?.generatedAt || "",
+            payloadStatus: payload.status || "",
+            verifiedBy: "prepared-public-api-cache"
+          }
+        }
+      : stage);
+    return {
+      ...row,
+      stages,
+      readyForPublicShelf: verifiedVisible,
+      publicationStatus: verifiedVisible ? "verified-visible" : payloadPersisted ? "publication-pending-api-visibility" : "not-visible",
+      publicVisibilityVerification: {
+        checkedAt: new Date().toISOString(),
+        payloadPersisted,
+        verifiedVisible,
+        rule: "Publication is complete only after the article is present in the prepared public API cache visitors read. Durable payload persistence alone is not enough."
+      }
+    };
+  });
   const latest = {
     ...trace.latest,
-    status: "article-published-on-site",
-    storyRows: trace.latest.storyRows.map(row => ({
-      ...row,
-      stages: (row.stages || []).map(stage => stage.name === "Public API"
-        ? {
-            ...stage,
-            status: ownedKeys.has(row.id) || ownedKeys.has(row.title) ? "passed" : "ready",
-            evidence: {
-              ...(stage.evidence || {}),
-              payloadPersisted: true,
-              visibleArticleCount: Number((payload.ownedStories || []).length),
-              payloadStatus: payload.status || "",
-              verifiedBy: "worker-persisted-public-payload"
-            }
-          }
-        : stage),
-      readyForPublicShelf: true
-    }))
+    status: verifiedVisibleCount ? "article-published-on-site" : pendingVisibleCount ? "article-pending-public-visibility" : "article-not-visible",
+    publicationVisibilityVerification: {
+      active: true,
+      checkedAt: new Date().toISOString(),
+      verifiedVisibleCount,
+      pendingVisibleCount,
+      payloadStoryCount: payloadStories.length,
+      cacheStoryCount: cacheStories.length,
+      cacheGeneratedAt: cache?.generatedAt || "",
+      rule: "The Story Lifecycle Engine treats public API visibility as the final publication gate. Approved or persisted articles remain pending until verified visible."
+    },
+    storyRows: latestRows
   };
   const next = {
     ...trace,
@@ -44414,6 +44754,7 @@ function newsLabThroughputDiagnosticsReport(reason = "manual") {
   const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
   const publicationActionQueue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
   const lifecycleTrace = readJsonFile(newsLabArticleLifecycleTraceFile, { latest: null, reports: [] }) || { latest: null, reports: [] };
+  const eventLifecycle = readJsonFile(newsLabEventLifecycleRegistryFile, defaultNewsLabEventLifecycleRegistry()) || defaultNewsLabEventLifecycleRegistry();
   const worker = readJsonFile(newsLabWorkerStatusFile, {}) || {};
   const payload = readNewsLabPublishedPayload() || {};
   const storyObjects = readJsonFile(newsLabStoryObjectsFile, { stories: {} }) || { stories: {} };
@@ -45219,6 +45560,13 @@ const server = http.createServer(async (request, response) => {
     }
     sendPrivateJson(response, 200, readJsonFile(newsLabArticleLifecycleTraceFile, { version: "20260730-news-lab-lifecycle-v2", reports: [] }));
     return;
+  }  if (url.pathname === "/api/news-lab-event-lifecycle") {
+    if (!isAdminRequest(request)) {
+      sendPrivateNotFound(response);
+      return;
+    }
+    sendPrivateJson(response, 200, readJsonFile(newsLabEventLifecycleRegistryFile, defaultNewsLabEventLifecycleRegistry()));
+    return;
   }
   if (url.pathname === "/api/news-lab-productivity") {
     if (!isAdminRequest(request)) {
@@ -45318,8 +45666,9 @@ const server = http.createServer(async (request, response) => {
       const manualMicro = url.searchParams.has("micro") || !url.searchParams.has("deep");
       const manualSourceLimit = manualMicro ? newsLabMicroCycleSourceLimit : newsLabCatchupCycleSourceLimit;
       const manualClusterLimit = manualMicro ? newsLabMicroCycleClusterLimit : newsLabCatchupCycleClusterLimit;
-      const collectorSourceMerge = mergeNewsLabCollectorStories(payload.stories || [], { maxAgeMs: cacheMs * 4 });
-      const collectorDossierMerge = mergeNewsLabCollectorStories(payload.dossierStories || payload.stories || [], { maxAgeMs: cacheMs * 4 });
+      const collectorMaxAgeMs = newsLabCollectorCacheMaxAgeMs({ reason: "manual-build-now", manualMicro });
+      const collectorSourceMerge = mergeNewsLabCollectorStories(payload.stories || [], { maxAgeMs: collectorMaxAgeMs });
+      const collectorDossierMerge = mergeNewsLabCollectorStories(payload.dossierStories || payload.stories || [], { maxAgeMs: collectorMaxAgeMs });
       const boundedPayload = {
         ...payload,
         stories: collectorSourceMerge.stories.slice(0, manualSourceLimit),
@@ -47322,6 +47671,18 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
