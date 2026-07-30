@@ -3757,6 +3757,113 @@ function newsLabApprovalSprintStageReport({
   };
 }
 
+function newsLabApprovalLifecycleIssueList(story = {}, extraIssues = []) {
+  return [...new Set([
+    ...(extraIssues || []),
+    ...(story.qualityGate?.remainingIssues || []),
+    ...(story.qualityGate?.issues || []),
+    ...(story.editorialCoach?.issues || []),
+    ...newsLabBlockingFinalIssues(story),
+    ...newsLabBlockingEditorFinalIssues(story),
+    ...newsLabPublicArticleIssues(story)
+  ].filter(Boolean))];
+}
+
+function newsLabApprovalLifecycleRows(context = {}) {
+  const reviewedStories = Array.isArray(context.reviewedStories) ? context.reviewedStories : [];
+  const qualityGateResult = context.qualityGateResult || {};
+  const finalPublishDiagnostics = context.finalPublishDiagnostics || {};
+  const finalPublishedIds = new Set((context.finalOwnedStories || context.publishedStories || []).map(story => story.id || story.topicKey || story.title).filter(Boolean));
+  const blockedById = new Map((finalPublishDiagnostics.blockedStories || []).map(item => [item.id || item.title, item]));
+  const flaggedById = new Map((qualityGateResult.flaggedStories || []).map(item => [item.id || item.title, item]));
+  const sourceRows = reviewedStories.length
+    ? reviewedStories
+    : [
+        ...(qualityGateResult.flaggedStories || []),
+        ...(finalPublishDiagnostics.blockedStories || [])
+      ];
+  const seen = new Set();
+  const rows = sourceRows.map(story => {
+    const key = story.id || story.topicKey || story.title || "unknown-story";
+    if (seen.has(key)) return null;
+    seen.add(key);
+    const blocked = blockedById.get(story.id || story.title) || null;
+    const flagged = flaggedById.get(story.id || story.title) || null;
+    const issues = newsLabApprovalLifecycleIssueList(story, blocked?.issues || flagged?.issues || []);
+    const failureClasses = newsLabFailureClassesForIssues(issues);
+    const visible = finalPublishedIds.has(story.id || story.topicKey || story.title);
+    const qualityPassed = Boolean(story.qualityGate?.passed || (issues.length === 0 && (story.publishable || blocked?.publishable)));
+    const correctedIssues = [...new Set([
+      ...(story.qualityGate?.correctedIssues || []),
+      ...(story.approvalRecoveryReview?.correctedIssues || []),
+      ...(story.lifecycleRepair?.correctedIssues || [])
+    ].filter(Boolean))];
+    const repairAttempted = Boolean(
+      correctedIssues.length
+      || story.approvalRecoveryReview?.applied
+      || story.lifecycleRepair?.repaired
+      || story.editorRepairReview?.attempts?.length
+    );
+    const repairPassed = Boolean(
+      story.approvalRecoveryReview?.passed
+      || story.lifecycleRepair?.passedAfterRepair
+      || (repairAttempted && issues.length === 0)
+    );
+    const primaryClass = failureClasses[0] || newsLabFailureClassForIssue(issues[0] || "approved");
+    return {
+      id: story.id || story.topicKey || story.title || "",
+      title: story.title || "",
+      category: story.category || "",
+      outcome: visible ? "published-visible" : qualityPassed && issues.length === 0 ? "approved-not-yet-visible" : repairAttempted && !repairPassed ? "repair-still-held" : issues.length ? "rejected-needs-repair" : "reviewed",
+      stages: {
+        collected: "passed",
+        dossier: story.storyDossier ? "passed" : "attention",
+        writer: Array.isArray(story.body) && story.body.join(" ").length >= 360 ? "passed" : "attention",
+        selfReview: story.editorialCoach ? (story.editorialCoach.passed ? "passed" : "attention") : "not-recorded",
+        editor: issues.length ? "rejected" : "passed",
+        repair: repairAttempted ? (repairPassed ? "passed" : "still-held") : issues.length ? "needed" : "not-needed",
+        publisher: visible ? "visible" : qualityPassed ? "waiting-visible-merge" : "held"
+      },
+      issueCount: issues.length,
+      issues,
+      primaryReason: issues[0] || "approved",
+      failureClasses,
+      responsibleSubsystem: primaryClass.repairOwner || "Publishing Editor",
+      repairable: !issues.some(issue => /fabricated|legal-fatal|copyright-fatal/i.test(issue)),
+      repairAttempted,
+      repairPassed,
+      correctedIssues,
+      score: Number(story.qualityGate?.score || blocked?.score || newsLabPublicArticleScore(story) || 0),
+      bodyLength: Array.isArray(story.body) ? story.body.join(" ").length : Number(blocked?.bodyLength || 0),
+      sourceCount: Number(story.sources?.length || story.storyDossier?.sourcePool?.length || 0),
+      preventionRule: primaryClass.preventionBehavior || articleApprovalRepairAction(issues[0] || ""),
+      repairAction: primaryClass.repairBehavior || articleApprovalRepairAction(issues[0] || ""),
+      nextAction: visible
+        ? "Use as an accepted pattern for future first drafts."
+        : issues.length
+          ? "Route to the responsible subsystem, repair all listed issues together, resubmit through Editor and Publisher, then measure second-pass approval."
+          : "Trace publisher merge/shelf visibility because the article appears approved but not visible."
+    };
+  }).filter(Boolean).slice(0, 120);
+  const classCounts = {};
+  rows.forEach(row => {
+    (row.failureClasses || []).forEach(item => {
+      classCounts[item.classId] = Number(classCounts[item.classId] || 0) + 1;
+    });
+  });
+  return {
+    updatedAt: new Date().toISOString(),
+    mode: context.mode || "article-approval-lifecycle",
+    rowCount: rows.length,
+    publishedVisible: rows.filter(row => row.outcome === "published-visible").length,
+    rejectedNeedsRepair: rows.filter(row => row.outcome === "rejected-needs-repair").length,
+    repairStillHeld: rows.filter(row => row.outcome === "repair-still-held").length,
+    approvedNotVisible: rows.filter(row => row.outcome === "approved-not-yet-visible").length,
+    topFailureClasses: Object.entries(classCounts).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([failureClass, count]) => ({ failureClass, count })),
+    rows,
+    rule: "Every article receives an approval lifecycle row: collected, dossier, writer, self-review, editor, repair, publisher, public visibility. Rejections must record all reasons, responsible subsystem, repair action, and prevention rule."
+  };
+}
 function newsLabArticleApprovalIntelligence(context = {}) {
   const existing = readJsonFile(newsLabArticleApprovalIntelligenceFile, null) || defaultNewsLabArticleApprovalIntelligence();
   const hasMeasuredContext = Object.keys(context || {}).length > 0;
@@ -3812,6 +3919,7 @@ function newsLabArticleApprovalIntelligence(context = {}) {
       currentCycle,
       topBlockers,
       approvalSprint,
+      articleLifecycle: existing.articleLifecycle || newsLabApprovalLifecycleRows({ mode: "read-only-existing" }),
       bottleneck: newsLabArticleApprovalBottleneck({ currentCycle, topBlockers }),
       rule: existing.rule || defaultNewsLabArticleApprovalIntelligence().rule
     };
@@ -3857,6 +3965,13 @@ function newsLabArticleApprovalIntelligence(context = {}) {
     publishedAfterRepair: Number(approvalQueue.totals?.published || 0),
     rule: "Track the full recovery funnel: generated -> rejected -> repair attempted -> repair passed -> resubmitted -> approved -> published after repair."
   };
+  const articleLifecycle = newsLabApprovalLifecycleRows({
+    mode: "measured-approval-cycle",
+    reviewedStories: context.reviewedStories || [],
+    finalOwnedStories: context.finalOwnedStories || [],
+    finalPublishDiagnostics,
+    qualityGateResult
+  });
 
   const report = {
     ...existing,
@@ -3884,6 +3999,7 @@ function newsLabArticleApprovalIntelligence(context = {}) {
       }
     },
     bottleneck: newsLabArticleApprovalBottleneck({ currentCycle, topBlockers }),
+    articleLifecycle,
     lastCycleEvidence: {
       qualityGate: qualityGateResult,
       finalPublishDiagnostics,
@@ -41353,6 +41469,13 @@ async function buildNewsLabPayload(payload = {}) {
             error: stuckArticleRescueBridge.error || ""
           }
         },
+        articleApprovalLifecycle: newsLabApprovalLifecycleRows({
+          mode: "worker-finish-compact",
+          reviewedStories: finalWorkerStories,
+          finalOwnedStories: finalWorkerStories,
+          qualityGateResult: { reviewedCount: finalWorkerStories.length, passedCount: finalWorkerStories.length, flaggedCount: 0 },
+          finalPublishDiagnostics: { finalReviewedCount: finalWorkerStories.length, finalCompleteCount: finalWorkerStories.length, finalBlockedCount: 0, issueCounts: {}, blockedStories: [] }
+        }),
         pipelineWorkers: {
           feeds: feedSources.length,
           collectors: newsLabCollectorWorkers,
@@ -41824,6 +41947,8 @@ async function buildNewsLabPayload(payload = {}) {
     firstPassApproved: qualityGate.stories.filter(story => story.qualityGate?.passed).length,
     finalPublishDiagnostics,
     qualityGateResult: qualityGate.result,
+    reviewedStories: finalReviewedStories,
+    finalOwnedStories,
     publishedShelfCount: finalOwnedStories.length
   });
   const tabMetrics = newsLabTabMetrics(finalOwnedStories, Date.now() - started);
@@ -45145,6 +45270,10 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
 
 
 
