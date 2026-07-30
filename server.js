@@ -4010,7 +4010,22 @@ function newsLabWriterReadinessProof(story = {}) {
   const dossier = story.storyDossier || {};
   const writerInput = story.writerDossierInput || dossier.writerInput || {};
   const knownFactCount = Number((writerInput.knownFacts || dossier.knownFacts || []).length || 0);
-  const sourceCount = Number((writerInput.independentReports || dossier.independentSources || dossier.sourcePool || story.sources || []).length || 0);
+  const writerSourceCandidates = [
+    ...(Array.isArray(writerInput.independentReports) ? writerInput.independentReports : []),
+    ...(Array.isArray(writerInput.officialStatements) ? writerInput.officialStatements : []),
+    ...(Array.isArray(writerInput.sourceContext) ? writerInput.sourceContext : []),
+    ...(Array.isArray(writerInput.sourceRegistry?.sourceRecords) ? writerInput.sourceRegistry.sourceRecords : []),
+    ...(Array.isArray(dossier.independentSources) ? dossier.independentSources : []),
+    ...(Array.isArray(dossier.officialSources) ? dossier.officialSources : []),
+    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
+    ...(Array.isArray(dossier.evidence?.sourcesReviewed) ? dossier.evidence.sourcesReviewed.map(source => ({ source })) : []),
+    ...(Array.isArray(story.sources) ? story.sources : [])
+  ].filter(Boolean);
+  const uniqueWriterSources = new Set(writerSourceCandidates.map(source => {
+    if (typeof source === "string") return source.toLowerCase();
+    return String(source.url || source.sourceUrl || source.source || source.name || source.title || JSON.stringify(source)).toLowerCase();
+  }).filter(Boolean));
+  const sourceCount = Math.max(Number(dossier.evidence?.sourceCount || 0), uniqueWriterSources.size);
   const timelineCount = Number((writerInput.timeline || dossier.timeline || story.storyEvolution?.timeline || []).length || 0);
   const unknownCount = Number((writerInput.unknownFacts || dossier.unknownFacts || []).length || 0);
   const contradictionCount = Number((writerInput.contradictions || dossier.contradictions || story.contradictionDetection?.possibleContradictions || []).length || 0);
@@ -35427,6 +35442,120 @@ function newsLabLockDossierForWriting(storyDossier = {}, readiness = {}, context
     }
   };
 }
+function newsLabDossierSourceContextRecords(storyDossier = {}, context = {}) {
+  const rawSources = [
+    ...(Array.isArray(storyDossier.sourcePool) ? storyDossier.sourcePool : []),
+    ...(Array.isArray(storyDossier.officialSources) ? storyDossier.officialSources : []),
+    ...(Array.isArray(storyDossier.independentSources) ? storyDossier.independentSources : []),
+    ...(Array.isArray(storyDossier.writerInput?.directWritingSources) ? storyDossier.writerInput.directWritingSources : []),
+    ...(Array.isArray(storyDossier.evidence?.sourcesReviewed) ? storyDossier.evidence.sourcesReviewed.map(source => ({ source })) : []),
+    ...(Array.isArray(context.sources) ? context.sources : []),
+    ...(Array.isArray(context.supporting) ? context.supporting : []),
+    context.representative || null
+  ].filter(Boolean);
+  const seen = new Set();
+  return rawSources.map(source => {
+    if (typeof source === "string") return { source, title: source, url: "" };
+    return {
+      source: source.source || source.name || source.provider || "",
+      title: source.title || source.headline || source.source || "",
+      url: source.url || source.sourceUrl || "",
+      summary: source.summary || source.articleSummary || source.description || source.statement || "",
+      articleSummary: source.articleSummary || source.summary || "",
+      role: source.role || source.dossierRole || source.sourceType || "source-context"
+    };
+  }).filter(source => {
+    const key = String(source.url || `${source.source}:${source.title}`).toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return Boolean(source.source || source.title || source.url || source.summary || source.articleSummary);
+  }).slice(0, 24);
+}
+
+function newsLabExpandDossierBeforeWriting(storyDossier = {}, context = {}) {
+  if (!storyDossier || typeof storyDossier !== "object") return storyDossier;
+  const sourceContext = newsLabDossierSourceContextRecords(storyDossier, context);
+  const sourceFactSeeds = sourceContext.flatMap(source => [
+    source.articleSummary,
+    source.summary,
+    source.title
+  ].filter(Boolean));
+  const promotedSourceFacts = newsLabAcceptedFacts({
+    representative: context.representative || { title: storyDossier.whatHappened || storyDossier.storyId || "" },
+    supporting: sourceContext,
+    facts: sourceFactSeeds
+  }).map(fact => newsLabTrimSentence(fact, 260)).filter(Boolean);
+  const expandedKnownFacts = [...new Set([
+    ...(Array.isArray(storyDossier.writerInput?.directWritingFacts) ? storyDossier.writerInput.directWritingFacts : []),
+    ...(Array.isArray(storyDossier.knownFacts) ? storyDossier.knownFacts : []),
+    ...(Array.isArray(storyDossier.agreement?.sharedClaims) ? storyDossier.agreement.sharedClaims : []),
+    ...(Array.isArray(storyDossier.supportingEvidence?.sharedClaims) ? storyDossier.supportingEvidence.sharedClaims : []),
+    ...promotedSourceFacts
+  ].map(fact => newsLabTrimSentence(fact, 260)).filter(Boolean)
+    .filter(fact => newsLabDossierFactQuality(fact, context.representative || {}).usable))]
+    .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.72) === index)
+    .slice(0, 10);
+  const timeline = Array.isArray(storyDossier.timeline) && storyDossier.timeline.length
+    ? storyDossier.timeline
+    : sourceContext.slice(0, 4).map((source, index) => ({
+        id: `dossier-expansion-timeline-${index + 1}`,
+        at: source.publishedAt || source.published || storyDossier.when?.firstSeenAt || new Date().toISOString(),
+        source: source.source || "",
+        title: newsLabTrimSentence(source.title || expandedKnownFacts[0] || storyDossier.whatHappened || "", 180),
+        url: source.url || ""
+      })).filter(item => item.title || item.source);
+  const sourceCount = Math.max(
+    Number(storyDossier.evidence?.sourceCount || 0),
+    Number(sourceContext.length || 0),
+    Number(storyDossier.sourcePool?.length || 0)
+  );
+  const directWritingFacts = expandedKnownFacts.length
+    ? expandedKnownFacts
+    : (Array.isArray(storyDossier.writerInput?.directWritingFacts) ? storyDossier.writerInput.directWritingFacts : []);
+  const expanded = {
+    ...storyDossier,
+    knownFacts: expandedKnownFacts.length ? expandedKnownFacts : (storyDossier.knownFacts || []),
+    sourceContext,
+    timeline,
+    evidence: {
+      ...(storyDossier.evidence || {}),
+      sourceCount,
+      sourcesReviewed: sourceContext.map(source => source.source || source.title || source.url).filter(Boolean).slice(0, 24)
+    },
+    writerInput: {
+      ...(storyDossier.writerInput || {}),
+      directWritingFacts,
+      sourceContext,
+      directWritingSources: sourceContext.slice(0, 12),
+      readiness: {
+        ...(storyDossier.writerInput?.readiness || {}),
+        readyForWriter: directWritingFacts.length >= 2 && sourceCount >= 1,
+        writingFactCount: directWritingFacts.length,
+        sourceCount,
+        expandedBeforeWriting: true,
+        rule: "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments."
+      }
+    },
+    dossierExpansion: {
+      active: true,
+      expandedAt: new Date().toISOString(),
+      sourceContextCount: sourceContext.length,
+      promotedFactCount: promotedSourceFacts.length,
+      knownFactCount: expandedKnownFacts.length,
+      timelineCount: timeline.length,
+      sourceCount,
+      reason: "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+      preventionRule: "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+    }
+  };
+  expanded.dossierBuilder = {
+    ...(storyDossier.dossierBuilder || {}),
+    expandedBeforeWriting: true,
+    readyForWriter: Boolean((storyDossier.dossierBuilder?.readyForWriter) || (directWritingFacts.length >= 2 && sourceCount >= 1 && timeline.length >= 1)),
+    expansionMetrics: expanded.dossierExpansion
+  };
+  return expanded;
+}
 function newsLabProductionPlanner(storyDossier = {}, context = {}) {
   const category = newsLabCategory(context.representative || { category: storyDossier.category || storyDossier.primaryCategory || "top" });
   const facts = Array.isArray(context.facts) ? context.facts : (storyDossier.knownFacts || []);
@@ -35516,7 +35645,8 @@ function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
     storyId: storyDossier.storyId || storyDossier.eventId || "",
     productionPlanner,
     officialStatements: storyDossier.officialStatements || [],
-    independentReports: storyDossier.independentSources || [],
+    independentReports: (storyDossier.independentSources && storyDossier.independentSources.length) ? storyDossier.independentSources : (storyDossier.sourceContext || storyDossier.sourcePool || storyDossier.sourceRecords || []),
+    sourceContext: storyDossier.sourceContext || storyDossier.sourcePool || storyDossier.sourceRecords || [],
     historicalContext: storyDossier.historicalContext || "",
     historicalContextEngine: storyDossier.historicalContextEngine || storyDossier.writerInput?.historicalContextEngine || null,
     timeline: storyDossier.timeline || [],
@@ -41591,6 +41721,14 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     readerQuestions: (storyDossier.storyIntelligenceDossier.narrativeLayer && storyDossier.storyIntelligenceDossier.narrativeLayer.readerQuestions) || {},
     leadPriority: (storyDossier.storyIntelligenceDossier.narrativeLayer && storyDossier.storyIntelligenceDossier.narrativeLayer.leadPriority) || ""
   };
+  storyDossier = newsLabExpandDossierBeforeWriting(storyDossier, {
+    representative,
+    supporting,
+    sources: dossierSourcePool,
+    facts,
+    eventWorkspace,
+    cleanWriterHandoff
+  });
   const sourceIntelligence = newsLabSourceIntelligence(allStories);
   const contextEngine = newsLabContextEngineProfile(representative, supporting, facts);
   const entityMemory = newsLabEntityMemoryProfile(representative, supporting, facts);
@@ -42055,6 +42193,13 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       ]
     }
   };
+  dossier = newsLabExpandDossierBeforeWriting(dossier, {
+    representative,
+    supporting,
+    sources: sourceCandidates,
+    facts,
+    cleanWriterHandoff
+  });
   const workerSliceDossierReadiness = newsLabDossierReadinessContract(dossier, { cleanWriterHandoff, sources: sourceCandidates, eventId: dossier.eventId || dossier.storyId });
   if (!workerSliceDossierReadiness.readyForWriter) {
     saveFrameworkActionLogEntry({
@@ -47032,6 +47177,10 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
 
 
 
