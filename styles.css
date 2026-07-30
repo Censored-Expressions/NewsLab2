@@ -6339,3 +6339,129 @@ h3 {
     font-size: 0.66rem;
   }
 }
+.owner-performance-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.owner-performance-head {
+  align-items: start;
+}
+
+.owner-performance-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(160px, 220px);
+  gap: 10px;
+  width: min(560px, 100%);
+}
+
+.owner-performance-controls label {
+  display: grid;
+  gap: 7px;
+  color: #f2f2f2;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.owner-performance-controls input,
+.owner-performance-controls select {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: #050505;
+  color: white;
+  padding: 10px 12px;
+  font: inherit;
+  text-transform: none;
+}
+
+.owner-area-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.owner-area-tabs button,
+.owner-performance-metric {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #101010;
+  color: white;
+  cursor: pointer;
+  text-align: left;
+}
+
+.owner-area-tabs button {
+  flex: 1 1 130px;
+  padding: 10px;
+}
+
+.owner-area-tabs button.is-active,
+.owner-area-tabs button:hover,
+.owner-performance-metric.is-active,
+.owner-performance-metric:hover {
+  border-color: rgba(215, 25, 32, 0.85);
+  background: #151111;
+}
+
+.owner-area-tabs span,
+.owner-performance-summary span,
+.owner-performance-metric span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.owner-area-tabs strong,
+.owner-performance-summary strong,
+.owner-performance-metric strong {
+  display: block;
+  margin-top: 6px;
+  color: white;
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.owner-performance-summary,
+.owner-performance-grid {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.owner-performance-summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.owner-performance-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.owner-performance-summary article,
+.owner-performance-metric {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #080808;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+
+.owner-performance-summary p,
+.owner-performance-metric p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .owner-performance-controls,
+  .owner-performance-summary,
+  .owner-performance-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -12017,26 +12017,42 @@ function learningSummary(memory = learningMemory()) {
 }
 
 const ownerMetricDefinitions = [
-  { key: "health", label: "Health", valueLabel: "active findings" },
-  { key: "functionality", label: "Functionality", valueLabel: "functionality findings" },
-  { key: "revenueGrowth", label: "Revenue Growth", valueLabel: "revenue findings" },
-  { key: "searchLearning", label: "Search Learning", valueLabel: "visitor searches" },
-  { key: "articleMemory", label: "Article Memory", valueLabel: "articles absorbed" },
-  { key: "impactEngine", label: "Impact Engine", valueLabel: "cross-role decisions" },
-  { key: "selfImprovement", label: "Self Improvement", valueLabel: "framework cycles" },
-  { key: "proactiveChecks", label: "Proactive Checks", valueLabel: "timed cycles" },
-  { key: "proofLog", label: "Proof Log", valueLabel: "learning proof entries" },
-  { key: "lessons", label: "Lessons", valueLabel: "Codex-taught changes" }
+  { key: "health", label: "Health", area: "Site Health", valueLabel: "active findings", direction: "down" },
+  { key: "functionality", label: "Functionality", area: "Site Health", valueLabel: "functionality findings", direction: "down" },
+  { key: "publicStories", label: "Public Stories", area: "News Lab", valueLabel: "visible stories", direction: "up" },
+  { key: "storyObjects", label: "Story Objects", area: "News Lab", valueLabel: "durable story objects", direction: "up" },
+  { key: "editorialReviews", label: "Editorial Reviews", area: "Approval", valueLabel: "reviews", direction: "up" },
+  { key: "approvedArticles", label: "Approved Articles", area: "Approval", valueLabel: "approvals", direction: "up" },
+  { key: "rejectedDrafts", label: "Rejected Drafts", area: "Approval", valueLabel: "rejections", direction: "down" },
+  { key: "firstPassApprovals", label: "First-Pass Approvals", area: "Approval", valueLabel: "first-pass approvals", direction: "up" },
+  { key: "repairPassed", label: "Repair Passed", area: "Approval", valueLabel: "repairs passed", direction: "up" },
+  { key: "collectorSubDossiers", label: "Collector Sub-Dossiers", area: "Dossier", valueLabel: "active sub-dossiers", direction: "up" },
+  { key: "sourceStoriesCollected", label: "Source Stories", area: "Dossier", valueLabel: "source stories", direction: "up" },
+  { key: "dossiersCompleted", label: "Dossiers Completed", area: "Dossier", valueLabel: "dossiers", direction: "up" },
+  { key: "workerBuildMs", label: "Worker Build Time", area: "Runtime", valueLabel: "milliseconds", direction: "down" },
+  { key: "workerAttempts", label: "Worker Attempts", area: "Runtime", valueLabel: "attempted drafts", direction: "up" },
+  { key: "creatorPosts", label: "Creator Desk Posts", area: "Creator Desk", valueLabel: "posts", direction: "up" },
+  { key: "newsletters", label: "Newsletters", area: "Newsletter", valueLabel: "issues", direction: "up" },
+  { key: "revenueGrowth", label: "Revenue Growth", area: "Business", valueLabel: "revenue findings", direction: "down" },
+  { key: "searchLearning", label: "Search Learning", area: "Learning", valueLabel: "visitor searches", direction: "up" },
+  { key: "articleMemory", label: "Article Memory", area: "Learning", valueLabel: "articles absorbed", direction: "up" },
+  { key: "impactEngine", label: "Impact Engine", area: "Learning", valueLabel: "cross-role decisions", direction: "up" },
+  { key: "selfImprovement", label: "Self Improvement", area: "Learning", valueLabel: "framework cycles", direction: "up" },
+  { key: "proactiveChecks", label: "Proactive Checks", area: "Learning", valueLabel: "timed cycles", direction: "up" },
+  { key: "proofLog", label: "Proof Log", area: "Learning", valueLabel: "learning proof entries", direction: "up" },
+  { key: "lessons", label: "Lessons", area: "Learning", valueLabel: "Codex-taught changes", direction: "up" }
 ];
 
 const ownerMetricTimeframes = {
-  today: { label: "Today", days: 1, mode: "today" },
-  yesterday: { label: "Yesterday", days: 1, mode: "yesterday" },
-  "7d": { label: "Past 7 days", days: 7 },
-  "14w": { label: "Past 14 weeks", days: 98 },
-  "1m": { label: "Past month", days: 31 },
-  "1y": { label: "Past year", days: 365 },
-  all: { label: "All-time", days: null }
+  current: { label: "Current", days: 1, mode: "today" },
+  currentWeek: { label: "Current week", days: 7, mode: "current-week" },
+  "7d": { label: "Last 7 days", days: 7 },
+  "14d": { label: "Past two weeks", days: 14 },
+  month: { label: "Month", days: 31 },
+  quarter: { label: "Quarter", days: 92 },
+  year: { label: "Year", days: 365 },
+  "5y": { label: "5 years", days: 1825 },
+  lifetime: { label: "Lifetime", days: null }
 };
 
 function localDateId(date = new Date()) {
@@ -12052,9 +12068,34 @@ function dateIdDaysAgo(days = 0) {
 
 function ownerMetricCurrentValues({ learning, health, revenue }) {
   const learningData = learning || {};
+  const productivity = readJsonFile(newsLabProductivityFile, {}) || {};
+  const productivityTotals = productivity.totals || {};
+  const productivityHour = productivity.lastHour || {};
+  const publishedPayload = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
+  const storyObjects = readJsonFile(newsLabStoryObjectsFile, {}) || {};
+  const workerStatus = readJsonFile(newsLabWorkerStatusFile, {}) || {};
+  const workerMetrics = workerStatus.lastMetrics || {};
+  const creatorPosts = readJsonFile(creatorPostsFile, []) || [];
+  const newsletters = readJsonFile(newslettersFile, []) || [];
+  const visibleStories = Number(publishedPayload.publicStoryCount || publishedPayload.visibleStoryCount || publishedPayload.ownedStories?.length || 0);
+  const storyObjectCount = Number(storyObjects.storyCount || Object.keys(storyObjects.stories || {}).length || 0);
   return {
     health: Number(health?.activeFindings || 0),
     functionality: Number(health?.functionality?.findingCount || 0),
+    publicStories: visibleStories,
+    storyObjects: storyObjectCount,
+    editorialReviews: Number(productivityHour.editorialReviews ?? productivityTotals.editorialReviews ?? 0),
+    approvedArticles: Number(productivityHour.approvedArticles ?? productivityTotals.approvedArticles ?? 0),
+    rejectedDrafts: Number(productivityHour.rejectedDrafts ?? productivityTotals.rejectedDrafts ?? 0),
+    firstPassApprovals: Number(productivityHour.firstPassEditorialApprovals ?? productivityTotals.firstPassEditorialApprovals ?? 0),
+    repairPassed: Number(workerMetrics.repairPassed || productivityHour.preEditorRepairedDrafts || 0),
+    collectorSubDossiers: Number(workerMetrics.collectorSubDossierCount || 0),
+    sourceStoriesCollected: Number(workerMetrics.sourceStoryCount || productivityHour.sourceStoriesCollected || productivityTotals.sourceStoriesCollected || 0),
+    dossiersCompleted: Number(productivityHour.dossiersCompleted ?? productivityTotals.dossiersCompleted ?? 0),
+    workerBuildMs: Number(workerMetrics.buildMs || 0),
+    workerAttempts: Number(workerMetrics.attemptedCount || 0),
+    creatorPosts: Array.isArray(creatorPosts) ? creatorPosts.length : 0,
+    newsletters: Array.isArray(newsletters) ? newsletters.length : 0,
     revenueGrowth: Number(revenue?.revenueGrowth?.findingCount || 0),
     searchLearning: Number(learningData.searchLearning?.queryCount || 0),
     articleMemory: Number(learningData.dailyArticleMemory?.articleCount || 0),
@@ -12067,18 +12108,14 @@ function ownerMetricCurrentValues({ learning, health, revenue }) {
 }
 
 function ownerMetricStatuses({ learning, health, revenue }) {
-  return {
-    health: String(health?.health || "unknown"),
-    functionality: health?.functionality?.ok ? "healthy" : "check",
-    revenueGrowth: revenue?.revenueGrowth?.ok ? "ready" : "needs-review",
-    searchLearning: Number(learning?.searchLearning?.queryCount || 0) ? "active" : "quiet",
-    articleMemory: Number(learning?.dailyArticleMemory?.articleCount || 0) ? "active" : "quiet",
-    impactEngine: Number(learning?.impactDecisionCount || 0) ? "active" : "quiet",
-    selfImprovement: Number(learning?.selfImprovementCycleCount || 0) ? "active" : "quiet",
-    proactiveChecks: Number(learning?.proactiveCycleCount || 0) ? "active" : "quiet",
-    proofLog: Number(learning?.frameworkLearningProof?.recentEntries?.length || 0) ? "active" : "quiet",
-    lessons: Number(learning?.changeLessonCount || 0) ? "active" : "quiet"
-  };
+  const values = ownerMetricCurrentValues({ learning, health, revenue });
+  return Object.fromEntries(ownerMetricDefinitions.map(definition => {
+    let status = values[definition.key] ? "active" : "quiet";
+    if (definition.key === "health") status = String(health?.health || "unknown");
+    if (definition.key === "functionality") status = health?.functionality?.ok ? "healthy" : "check";
+    if (definition.key === "revenueGrowth") status = revenue?.revenueGrowth?.ok ? "ready" : "needs-review";
+    return [definition.key, status];
+  }));
 }
 
 function recordOwnerMetricSnapshot({ learning, health, revenue }) {
@@ -12105,51 +12142,132 @@ function recordOwnerMetricSnapshot({ learning, health, revenue }) {
   const ordered = safeHistory
     .filter(item => item && item.dayId)
     .sort((a, b) => String(a.dayId).localeCompare(String(b.dayId)))
-    .slice(-730);
+    .slice(-1825);
   writeJsonFile(ownerMetricsFile, ordered);
   return snapshot;
 }
 
+function ownerMetricDateFromDayId(dayId = "") {
+  const date = new Date(`${dayId}T00:00:00`);
+  return Number.isFinite(date.getTime()) ? date : new Date();
+}
+
+function ownerMetricDayIdFromOffset(baseDate, offsetDays = 0) {
+  const date = new Date(baseDate.getTime());
+  date.setDate(date.getDate() + offsetDays);
+  return localDateId(date);
+}
+
+function ownerMetricWeekStartDayId(date = new Date()) {
+  const start = new Date(date.getTime());
+  const day = start.getDay();
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  start.setDate(start.getDate() + mondayOffset);
+  return localDateId(start);
+}
+
+function ownerMetricSummarizePoints(points = []) {
+  const values = points.map(point => Number(point.value || 0));
+  const total = values.reduce((sum, value) => sum + value, 0);
+  return {
+    pointCount: points.length,
+    latest: values.length ? values[values.length - 1] : 0,
+    high: values.length ? Math.max(...values) : 0,
+    low: values.length ? Math.min(...values) : 0,
+    average: values.length ? Number((total / values.length).toFixed(2)) : 0,
+    total: Number(total.toFixed(2))
+  };
+}
+
+function ownerMetricComparisonFor(definition = {}, summary = {}, comparisonSummary = {}) {
+  const selectedValue = Number(summary.latest ?? summary.total ?? 0);
+  const comparisonValue = Number(comparisonSummary.latest ?? comparisonSummary.total ?? 0);
+  const delta = Number((selectedValue - comparisonValue).toFixed(2));
+  const percent = comparisonValue ? Number(((delta / Math.abs(comparisonValue)) * 100).toFixed(2)) : (selectedValue ? 100 : 0);
+  const improves = definition.direction === "down" ? delta < 0 : delta > 0;
+  const worsens = definition.direction === "down" ? delta > 0 : delta < 0;
+  return {
+    selectedValue,
+    comparisonValue,
+    delta,
+    percent,
+    direction: definition.direction || "up",
+    trend: improves ? "improving" : worsens ? "declining" : "flat"
+  };
+}
+
+function ownerMetricAreas(definitions = ownerMetricDefinitions) {
+  return Object.values(definitions.reduce((areas, definition) => {
+    const key = definition.area || "General";
+    if (!areas[key]) areas[key] = { key: key.toLowerCase().replace(/[^a-z0-9]+/g, "-"), label: key, metrics: [] };
+    areas[key].metrics.push(definition);
+    return areas;
+  }, {}));
+}
 function ownerMetricHistoryForTimeframe(metricKey = "health", timeframe = "7d") {
   const history = readJsonFile(ownerMetricsFile, []);
   const safeHistory = (Array.isArray(history) ? history : [])
     .filter(item => item && item.dayId)
     .sort((a, b) => String(a.dayId).localeCompare(String(b.dayId)));
-  const config = ownerMetricTimeframes[timeframe] || ownerMetricTimeframes["7d"];
-  let filtered = safeHistory;
-  if (config.mode === "today") {
-    const today = dateIdDaysAgo(0);
-    filtered = safeHistory.filter(item => item.dayId === today);
-  } else if (config.mode === "yesterday") {
-    const yesterday = dateIdDaysAgo(1);
-    filtered = safeHistory.filter(item => item.dayId === yesterday);
-  } else if (config.days) {
-    const start = dateIdDaysAgo(config.days - 1);
-    filtered = safeHistory.filter(item => String(item.dayId) >= start);
-  }
   const definition = ownerMetricDefinitions.find(item => item.key === metricKey) || ownerMetricDefinitions[0];
-  const points = filtered.map(item => ({
+  const config = ownerMetricTimeframes[timeframe] || ownerMetricTimeframes["7d"];
+  const todayId = dateIdDaysAgo(0);
+  const today = ownerMetricDateFromDayId(todayId);
+  let start = "";
+  let end = todayId;
+  let comparisonStart = "";
+  let comparisonEnd = "";
+
+  if (config.mode === "today") {
+    start = todayId;
+    comparisonStart = ownerMetricDayIdFromOffset(today, -1);
+    comparisonEnd = comparisonStart;
+  } else if (config.mode === "current-week") {
+    start = ownerMetricWeekStartDayId(today);
+    const startDate = ownerMetricDateFromDayId(start);
+    comparisonStart = ownerMetricDayIdFromOffset(startDate, -7);
+    comparisonEnd = ownerMetricDayIdFromOffset(startDate, -1);
+  } else if (config.days) {
+    start = dateIdDaysAgo(config.days - 1);
+    const startDate = ownerMetricDateFromDayId(start);
+    comparisonStart = ownerMetricDayIdFromOffset(startDate, -config.days);
+    comparisonEnd = ownerMetricDayIdFromOffset(startDate, -1);
+  }
+
+  const inRange = (item, rangeStart, rangeEnd) => {
+    if (!rangeStart && !rangeEnd) return true;
+    return String(item.dayId) >= rangeStart && String(item.dayId) <= rangeEnd;
+  };
+  const filtered = safeHistory.filter(item => inRange(item, start, end));
+  const comparisonFiltered = (comparisonStart && comparisonEnd)
+    ? safeHistory.filter(item => inRange(item, comparisonStart, comparisonEnd))
+    : [];
+  const toPoints = items => items.map(item => ({
     dayId: item.dayId,
     label: item.dayId,
     value: Number(item.values?.[definition.key] || 0),
     status: item.statuses?.[definition.key] || "",
     updatedAt: item.updatedAt || ""
   }));
-  const values = points.map(point => point.value);
+  const points = toPoints(filtered);
+  const comparisonPoints = toPoints(comparisonFiltered);
+  const summary = ownerMetricSummarizePoints(points);
+  const comparisonSummary = ownerMetricSummarizePoints(comparisonPoints);
   return {
     metric: definition,
     timeframe: {
       key: Object.prototype.hasOwnProperty.call(ownerMetricTimeframes, timeframe) ? timeframe : "7d",
-      label: config.label
+      label: config.label,
+      start,
+      end,
+      comparisonStart,
+      comparisonEnd
     },
     points,
-    summary: {
-      pointCount: points.length,
-      latest: values.length ? values[values.length - 1] : 0,
-      high: values.length ? Math.max(...values) : 0,
-      low: values.length ? Math.min(...values) : 0,
-      average: values.length ? Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2)) : 0
-    }
+    comparisonPoints,
+    summary,
+    comparisonSummary,
+    comparison: ownerMetricComparisonFor(definition, summary, comparisonSummary)
   };
 }
 
@@ -47671,6 +47789,9 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
 
 
 

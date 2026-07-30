@@ -11,6 +11,12 @@ const ownerMetricTitle = document.querySelector("[data-owner-metric-title]");
 const ownerMetricTimeframe = document.querySelector("[data-owner-metric-timeframe]");
 const ownerMetricStats = document.querySelector("[data-owner-metric-stats]");
 const ownerMetricChart = document.querySelector("[data-owner-metric-chart]");
+const ownerPerformancePanel = document.querySelector("[data-owner-performance-panel]");
+const ownerPerformanceSearch = document.querySelector("[data-owner-performance-search]");
+const ownerPerformanceTimeframe = document.querySelector("[data-owner-performance-timeframe]");
+const ownerAreaTabs = document.querySelector("[data-owner-area-tabs]");
+const ownerPerformanceSummary = document.querySelector("[data-owner-performance-summary]");
+const ownerPerformanceGrid = document.querySelector("[data-owner-performance-grid]");
 const ownerBrainState = document.querySelector("[data-owner-brain-state]");
 const ownerSubsystemTabs = document.querySelector("[data-owner-subsystem-tabs]");
 const ownerSubsystemDetail = document.querySelector("[data-owner-subsystem-detail]");
@@ -62,6 +68,8 @@ const tokenKey = "ceOwnerAdminToken";
 let ownerToken = localStorage.getItem(tokenKey) || "";
 let selectedOwnerMetric = "health";
 let selectedOwnerTimeframe = "7d";
+let selectedOwnerArea = "News Lab";
+let ownerPerformancePayload = null;
 let ownerMetricOptionsLoaded = false;
 let ownerBrainStatePayload = null;
 let selectedSubsystemKey = "";
@@ -137,16 +145,109 @@ function renderSummary({ learning, health, revenue, metrics }) {
   ].join("");
 }
 
+function formatOwnerMetricValue(value) {
+  const number = Number(value || 0);
+  if (!Number.isFinite(number)) return "0";
+  if (Math.abs(number) >= 1000000) return `${(number / 1000000).toFixed(1)}M`;
+  if (Math.abs(number) >= 1000) return number.toLocaleString();
+  return String(number);
+}
+
+function ownerMetricTrendLabel(comparison = {}) {
+  const delta = Number(comparison.delta || 0);
+  if (!delta) return "Flat";
+  const direction = comparison.trend === "improving" ? "Improving" : comparison.trend === "declining" ? "Declining" : "Changed";
+  const sign = delta > 0 ? "+" : "";
+  return `${direction} ${sign}${formatOwnerMetricValue(delta)} (${comparison.percent || 0}%)`;
+}
+
+function renderOwnerPerformanceExplorer(metrics = ownerPerformancePayload) {
+  ownerPerformancePayload = metrics || ownerPerformancePayload;
+  if (!ownerPerformancePanel || !ownerPerformancePayload) return;
+  const definitions = Array.isArray(ownerPerformancePayload.definitions) ? ownerPerformancePayload.definitions : [];
+  const areas = Array.isArray(ownerPerformancePayload.areas) && ownerPerformancePayload.areas.length
+    ? ownerPerformancePayload.areas
+    : Object.values(definitions.reduce((groups, definition) => {
+      const label = definition.area || "General";
+      groups[label] ||= { key: label, label, metrics: [] };
+      groups[label].metrics.push(definition);
+      return groups;
+    }, {}));
+  if (!areas.find(area => area.label === selectedOwnerArea)) selectedOwnerArea = areas[0]?.label || "General";
+  if (ownerPerformanceTimeframe && !ownerPerformanceTimeframe.dataset.loaded) {
+    ownerPerformanceTimeframe.innerHTML = (ownerPerformancePayload.timeframes || [])
+      .map(option => `<option value="${escapeHtml(option.key)}">${escapeHtml(option.label)}</option>`)
+      .join("");
+    ownerPerformanceTimeframe.value = selectedOwnerTimeframe;
+    ownerPerformanceTimeframe.dataset.loaded = "true";
+  }
+  if (ownerAreaTabs) {
+    ownerAreaTabs.innerHTML = areas.map(area => {
+      const active = area.label === selectedOwnerArea ? " is-active" : "";
+      return `<button class="${active.trim()}" type="button" data-owner-area="${escapeHtml(area.label)}"><span>${escapeHtml(area.label)}</span><strong>${escapeHtml(area.metrics?.length || 0)}</strong></button>`;
+    }).join("");
+  }
+  const query = String(ownerPerformanceSearch?.value || "").trim().toLowerCase();
+  const activeArea = areas.find(area => area.label === selectedOwnerArea) || areas[0] || { metrics: [] };
+  const activeDefinitions = (activeArea.metrics || []).filter(definition => {
+    const haystack = `${definition.label || ""} ${definition.key || ""} ${definition.valueLabel || ""} ${definition.area || ""}`.toLowerCase();
+    return !query || haystack.includes(query);
+  });
+  const selectedMetric = ownerPerformancePayload.selected || {};
+  const currentValues = ownerPerformancePayload.currentDay?.values || {};
+  const activeCards = activeDefinitions.map(definition => {
+    const current = currentValues[definition.key] ?? 0;
+    const isSelected = selectedMetric.metric?.key === definition.key;
+    return `
+      <button class="owner-performance-metric${isSelected ? " is-active" : ""}" type="button" data-owner-performance-metric="${escapeHtml(definition.key)}">
+        <span>${escapeHtml(definition.label || definition.key)}</span>
+        <strong>${escapeHtml(formatOwnerMetricValue(current))}</strong>
+        <p>${escapeHtml(definition.valueLabel || "current value")}</p>
+      </button>
+    `;
+  }).join("");
+  if (ownerPerformanceGrid) {
+    ownerPerformanceGrid.innerHTML = activeCards || '<p class="empty-state">No metrics match this area and search.</p>';
+  }
+  const comparison = selectedMetric.comparison || {};
+  const timeframe = selectedMetric.timeframe || {};
+  if (ownerPerformanceSummary) {
+    ownerPerformanceSummary.innerHTML = `
+      <article>
+        <span>Selected Metric</span>
+        <strong>${escapeHtml(selectedMetric.metric?.label || "Choose a metric")}</strong>
+        <p>${escapeHtml(selectedMetric.metric?.area || selectedOwnerArea)} | ${escapeHtml(selectedMetric.metric?.valueLabel || "value")}</p>
+      </article>
+      <article>
+        <span>${escapeHtml(timeframe.label || "Timeframe")}</span>
+        <strong>${escapeHtml(formatOwnerMetricValue(selectedMetric.summary?.latest ?? 0))}</strong>
+        <p>${escapeHtml(`${timeframe.start || "start"} to ${timeframe.end || "current"}`)}</p>
+      </article>
+      <article>
+        <span>Vs. Prior Period</span>
+        <strong>${escapeHtml(ownerMetricTrendLabel(comparison))}</strong>
+        <p>${escapeHtml(`${timeframe.comparisonStart || "no prior"} to ${timeframe.comparisonEnd || "comparison unavailable"}`)}</p>
+      </article>
+      <article>
+        <span>Average / High</span>
+        <strong>${escapeHtml(formatOwnerMetricValue(selectedMetric.summary?.average ?? 0))} / ${escapeHtml(formatOwnerMetricValue(selectedMetric.summary?.high ?? 0))}</strong>
+        <p>${escapeHtml(`${selectedMetric.summary?.pointCount || 0} recorded point${selectedMetric.summary?.pointCount === 1 ? "" : "s"}`)}</p>
+      </article>
+    `;
+  }
+}
 function renderOwnerMetricOptions(metrics = {}) {
   if (!ownerMetricTimeframe || ownerMetricOptionsLoaded) return;
   const options = metrics.timeframes || [
-    { key: "today", label: "Today" },
-    { key: "yesterday", label: "Yesterday" },
-    { key: "7d", label: "Past 7 days" },
-    { key: "14w", label: "Past 14 weeks" },
-    { key: "1m", label: "Past month" },
-    { key: "1y", label: "Past year" },
-    { key: "all", label: "All-time" }
+    { key: "current", label: "Current" },
+    { key: "currentWeek", label: "Current week" },
+    { key: "7d", label: "Last 7 days" },
+    { key: "14d", label: "Past two weeks" },
+    { key: "month", label: "Month" },
+    { key: "quarter", label: "Quarter" },
+    { key: "year", label: "Year" },
+    { key: "5y", label: "5 years" },
+    { key: "lifetime", label: "Lifetime" }
   ];
   ownerMetricTimeframe.innerHTML = options
     .map(option => `<option value="${escapeHtml(option.key)}">${escapeHtml(option.label)}</option>`)
@@ -196,7 +297,10 @@ async function loadOwnerMetric(metricKey = selectedOwnerMetric, timeframe = sele
   const payload = await ownerApi(`/api/owner-metrics?metric=${encodeURIComponent(metricKey)}&timeframe=${encodeURIComponent(timeframe)}`);
   renderOwnerMetricOptions(payload);
   if (ownerMetricTimeframe) ownerMetricTimeframe.value = selectedOwnerTimeframe;
+  if (ownerPerformanceTimeframe) ownerPerformanceTimeframe.value = selectedOwnerTimeframe;
+  if (payload.selected?.metric?.area) selectedOwnerArea = payload.selected.metric.area;
   renderOwnerMetricGraph(payload);
+  renderOwnerPerformanceExplorer(payload);
   return payload;
 }
 
@@ -883,6 +987,7 @@ async function loadOwnerDashboard() {
   renderSummary({ learning, health, revenue, metrics });
   renderOwnerMetricOptions(metrics);
   renderOwnerMetricGraph(metrics);
+  renderOwnerPerformanceExplorer(metrics);
   renderBrainState(brainState);
   renderProductionIntelligence({ ...(productionIntelligence || {}), observability });
   if (patches) renderPatchRequests(patches.proposals || {});
@@ -1191,6 +1296,7 @@ ownerSummary?.addEventListener("click", async event => {
 
 ownerMetricTimeframe?.addEventListener("change", async event => {
   selectedOwnerTimeframe = event.target.value || "7d";
+  if (ownerPerformanceTimeframe) ownerPerformanceTimeframe.value = selectedOwnerTimeframe;
   try {
     await loadOwnerMetric(selectedOwnerMetric, selectedOwnerTimeframe);
   } catch (error) {
@@ -1410,7 +1516,35 @@ merchSaleForm?.addEventListener("submit", async event => {
   }
 });
 
+ownerAreaTabs?.addEventListener("click", event => {
+  const button = event.target.closest("[data-owner-area]");
+  if (!button) return;
+  selectedOwnerArea = button.dataset.ownerArea || selectedOwnerArea;
+  renderOwnerPerformanceExplorer();
+});
+
+ownerPerformanceGrid?.addEventListener("click", event => {
+  const button = event.target.closest("[data-owner-performance-metric]");
+  if (!button) return;
+  const metric = button.dataset.ownerPerformanceMetric;
+  if (!metric) return;
+  selectedOwnerMetric = metric;
+  loadOwnerMetric(selectedOwnerMetric, selectedOwnerTimeframe).catch(error => showJson({ error: error.message || "Metric load failed." }));
+});
+
+ownerPerformanceSearch?.addEventListener("input", () => {
+  renderOwnerPerformanceExplorer();
+});
+
+ownerPerformanceTimeframe?.addEventListener("change", () => {
+  selectedOwnerTimeframe = ownerPerformanceTimeframe.value || selectedOwnerTimeframe;
+  if (ownerMetricTimeframe) ownerMetricTimeframe.value = selectedOwnerTimeframe;
+  loadOwnerMetric(selectedOwnerMetric, selectedOwnerTimeframe).catch(error => showJson({ error: error.message || "Metric load failed." }));
+});
 if (ownerToken) unlockOwnerDesk(ownerToken).catch(() => {});
+
+
+
 
 
 

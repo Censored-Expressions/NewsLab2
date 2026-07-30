@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -9,7 +9,7 @@
       name="description"
       content="Private owner console for Censored Expressions Framework learning, diagnostics, and optimization controls."
     />
-    <link rel="stylesheet" href="./styles.css?v=20260706-high-impact-capabilities-v1" />
+    <link rel="stylesheet" href="./styles.css?v=20260730-owner-performance-explorer-v1" />
   </head>
   <body class="owner-body">
     <main class="owner-shell" data-owner-app>
@@ -47,6 +47,28 @@
 
         <section class="owner-grid" data-owner-summary></section>
 
+
+        <section class="owner-panel owner-performance-panel" data-owner-performance-panel>
+          <div class="section-head owner-performance-head">
+            <div>
+              <p class="eyebrow">Performance Explorer</p>
+              <h2>Area Progress And Comparison</h2>
+            </div>
+            <div class="owner-performance-controls">
+              <label>
+                Search metric
+                <input type="search" data-owner-performance-search placeholder="Search articles, approvals, runtime..." />
+              </label>
+              <label>
+                Timeframe
+                <select data-owner-performance-timeframe></select>
+              </label>
+            </div>
+          </div>
+          <div class="owner-area-tabs" data-owner-area-tabs></div>
+          <div class="owner-performance-summary" data-owner-performance-summary></div>
+          <div class="owner-performance-grid" data-owner-performance-grid></div>
+        </section>
         <section class="owner-panel owner-metric-panel" data-owner-metric-panel hidden>
           <div class="section-head">
             <div>
@@ -440,9 +462,11 @@
         </section>
       </section>
     </main>
-    <script src="./owner-desk.js?v=20260706-high-impact-capabilities-v1"></script>
+    <script src="./owner-desk.js?v=20260730-owner-performance-explorer-v1"></script>
   </body>
 </html>
+
+
 
 
 
