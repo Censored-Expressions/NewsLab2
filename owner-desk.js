@@ -243,7 +243,7 @@ function renderProductionIntelligence(payload = {}) {
   const observability = payload.observability || {};
   const publishing = observability.publishing || {};
   const editorial = observability.editorial || {};
-  const actionQueue = observability.queues?.approvalActionPlan || {};
+  const actionQueue = observability.queues?.publicationIntelligenceAction || observability.queues?.approvalActionPlan || {};
   const funnel = publishing.publicationFunnelDashboard || payload.publicationFunnelDashboard || {};
   const stageRows = Array.isArray(funnel.stageRows) ? funnel.stageRows : [];
   const topRejections = Array.isArray(editorial.topRejectionReasons) ? editorial.topRejectionReasons : (Array.isArray(funnel.topRejectionReasons) ? funnel.topRejectionReasons : []);
@@ -1409,6 +1409,7 @@ merchSaleForm?.addEventListener("submit", async event => {
 });
 
 if (ownerToken) unlockOwnerDesk(ownerToken).catch(() => {});
+
 
 
 

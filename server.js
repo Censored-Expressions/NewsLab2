@@ -84,6 +84,7 @@ const newsLabHeadlineRepairQueueFile = path.join(dataDir, "headline-repair-queue
 const newsLabApprovalRecoveryQueueFile = path.join(dataDir, "approval-recovery-queue.json");
 const newsLabArticleApprovalIntelligenceFile = path.join(dataDir, "article-approval-intelligence.json");
 const newsLabArticleApprovalActionPlanFile = path.join(dataDir, "article-approval-action-plan.json");
+const newsLabPublicationIntelligenceActionQueueFile = path.join(dataDir, "publication-intelligence-action-queue.json");
 const newsLabArticleLifecycleTraceFile = path.join(dataDir, "news-lab-article-lifecycle-trace.json");
 const newsLabStuckRescueWorkerStatusFile = path.join(dataDir, "news-lab-stuck-rescue-worker-status.json");
 const newsLabStuckRescueLearningFile = path.join(dataDir, "news-lab-stuck-rescue-learning.json");
@@ -1724,6 +1725,7 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(newsLabApprovalRecoveryQueueFile)) fs.writeFileSync(newsLabApprovalRecoveryQueueFile, `${JSON.stringify(defaultNewsLabApprovalRecoveryQueue(), null, 2)}\n`);
   if (!fs.existsSync(newsLabArticleApprovalIntelligenceFile)) fs.writeFileSync(newsLabArticleApprovalIntelligenceFile, `${JSON.stringify(defaultNewsLabArticleApprovalIntelligence(), null, 2)}\n`);
   if (!fs.existsSync(newsLabArticleApprovalActionPlanFile)) fs.writeFileSync(newsLabArticleApprovalActionPlanFile, `${JSON.stringify(defaultNewsLabArticleApprovalActionPlan(), null, 2)}\n`);
+  if (!fs.existsSync(newsLabPublicationIntelligenceActionQueueFile)) fs.writeFileSync(newsLabPublicationIntelligenceActionQueueFile, `${JSON.stringify(defaultNewsLabPublicationIntelligenceActionQueue(), null, 2)}\n`);
   if (!fs.existsSync(knowledgeDistillationPolicyFile)) fs.writeFileSync(knowledgeDistillationPolicyFile, `${JSON.stringify(defaultKnowledgeDistillationPolicy(), null, 2)}\n`);
   if (!fs.existsSync(semanticMemoryFile)) fs.writeFileSync(semanticMemoryFile, `${JSON.stringify(defaultSemanticMemory(), null, 2)}\n`);
   if (!fs.existsSync(skillMemoryFile)) fs.writeFileSync(skillMemoryFile, `${JSON.stringify(defaultSkillMemory(), null, 2)}\n`);
@@ -2749,6 +2751,7 @@ function newsLabWorkerSyncAllowlist() {
     "news-lab-throughput-diagnostics": newsLabThroughputDiagnosticsFile,
     "article-approval-intelligence": newsLabArticleApprovalIntelligenceFile,
     "article-approval-action-plan": newsLabArticleApprovalActionPlanFile,
+    "publication-intelligence-action-queue": newsLabPublicationIntelligenceActionQueueFile,
     "news-lab-image-worker-status": newsLabImageWorkerStatusFile,
     "news-lab-stuck-rescue-worker-status": newsLabStuckRescueWorkerStatusFile,
     "creator-posts": creatorPostsFile,
@@ -2919,6 +2922,7 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   const productivityRaw = readJsonFile(newsLabProductivityFile, {}) || {};
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
   const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
+  const publicationActionQueue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
   const worker = readNewsLabWorkerStatus();
   const apiWorker = readNewsLabApiWorkerStatus();
   const stuckWorker = readNewsLabStuckRescueWorkerStatus();
@@ -2978,7 +2982,8 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
     queues: {
       headlineRepair: { active: headlineQueue.active?.length || 0, totals: headlineQueue.totals || {}, topReasons: (headlineQueue.reasonRanking || []).slice(0, 6), recoveryRates: headlineQueue.recoveryRates || {}, fileAgeMs: safeFileAgeMs(newsLabHeadlineRepairQueueFile) },
       approvalRecovery: { active: approvalQueue.active?.length || 0, totals: approvalQueue.totals || {}, topReasons: (approvalQueue.reasonRanking || []).slice(0, 6), stageRanking: (approvalQueue.stageRanking || []).slice(0, 6), recoveryRates: approvalQueue.recoveryRates || {}, fileAgeMs: safeFileAgeMs(newsLabApprovalRecoveryQueueFile) },
-      approvalActionPlan: { active: approvalActionPlan.tasks?.length || 0, summary: approvalActionPlan.summary || {}, systemIssues: (approvalActionPlan.systemIssues || []).slice(0, 6), fileAgeMs: safeFileAgeMs(newsLabArticleApprovalActionPlanFile) }
+      approvalActionPlan: { active: approvalActionPlan.tasks?.length || 0, summary: approvalActionPlan.summary || {}, systemIssues: (approvalActionPlan.systemIssues || []).slice(0, 6), fileAgeMs: safeFileAgeMs(newsLabArticleApprovalActionPlanFile) },
+      publicationIntelligenceAction: { active: publicationActionQueue.active?.length || 0, completed: publicationActionQueue.completed?.length || 0, readyToRedeploy: publicationActionQueue.summary?.readyToRedeploy || 0, summary: publicationActionQueue.summary || {}, topFailureCodes: (publicationActionQueue.topFailureCodes || []).slice(0, 8), fileAgeMs: safeFileAgeMs(newsLabPublicationIntelligenceActionQueueFile) }
     },
     workers,
     collectors: {
@@ -3521,6 +3526,165 @@ function defaultNewsLabArticleApprovalActionPlan() {
     rule: "Every failed or stuck article must identify the responsible subsystem, targeted repair scope, resubmission destination, and generalized prevention lesson before it can be abandoned."
   };
 }
+
+function defaultNewsLabPublicationIntelligenceActionQueue() {
+  return {
+    version: "20260730-publication-intelligence-action-queue-v1",
+    updatedAt: "",
+    purpose: "Turn publication intelligence failures into subsystem-owned work orders that repair, validate, resubmit, and redeploy articles.",
+    summary: {
+      active: 0,
+      completed: 0,
+      readyToRedeploy: 0,
+      repairNeeded: 0,
+      publishableWithImageWorkItem: 0,
+      bySubsystem: {},
+      byStatus: {}
+    },
+    active: [],
+    completed: [],
+    topFailureCodes: [],
+    preventionRules: [],
+    rule: "Failures must become subsystem work orders with repair commands, validation checks, redeploy targets, and learning signals."
+  };
+}
+
+function newsLabPublicationActionTypeForRootCause(rootCause = "") {
+  const value = String(rootCause || "").toLowerCase();
+  if (value.includes("story-identity") || value.includes("dossier")) return "rebuild-story-dossier-identity";
+  if (value.includes("headline")) return "headline-only-repair";
+  if (value.includes("writer") || value.includes("language") || value.includes("sentence")) return "body-language-repair";
+  if (value.includes("image")) return "post-publication-image-match";
+  if (value.includes("publisher") || value.includes("cache")) return "publisher-cache-redeploy";
+  return "targeted-editorial-repair";
+}
+
+function newsLabPublicationActionWorkOrderFromStory(story = {}, context = {}) {
+  const intel = story.publicationIntelligence || {};
+  const issueSet = newsLabPublicationIdentityIssueSet(story);
+  const repairPlan = Array.isArray(intel.repairPlan) && intel.repairPlan.length
+    ? intel.repairPlan
+    : newsLabPublicationIntelligenceRepairPlan(issueSet);
+  const issues = [...new Set([
+    ...(Array.isArray(intel.afterIssues) ? intel.afterIssues : []),
+    ...(Array.isArray(story.qualityGate?.remainingIssues) ? story.qualityGate.remainingIssues : []),
+    ...(Array.isArray(story.qualityGate?.issues) ? story.qualityGate.issues : []),
+    ...(Array.isArray(issueSet.allIssues) ? issueSet.allIssues : [])
+  ].filter(Boolean).map(issue => String(issue)))];
+  const failureCodes = [...new Set(issues.map(newsLabStandardFailureCode).filter(Boolean))];
+  const route = intel.route || repairPlan[0]?.owner || (issues.some(issue => /image|photo|visual|placeholder/i.test(issue)) ? "Image Worker" : "Publishing Editor");
+  const idBase = story.id || story.topicKey || story.storyObject?.storyId || story.title || "unknown-story";
+  const readyForEditor = Boolean(story.qualityGate?.passed || intel.readyForEditor) && !issueSet.identityIssues.length && !issueSet.headlineIssues.length && !issueSet.languageIssues.length;
+  const imageOnly = issues.length > 0 && issues.every(issue => /image|photo|visual|placeholder/i.test(issue));
+  const published = Boolean(context.published || story.__publishedByNewsLab || story.publicationStatus === "published-visible");
+  const status = published
+    ? "published-visible"
+    : readyForEditor
+      ? "ready-to-redeploy"
+      : imageOnly
+        ? "publishable-with-image-work-item"
+        : "repair-needed";
+  const rootCauses = [...new Set((repairPlan.length ? repairPlan.map(item => item.rootCause) : failureCodes).filter(Boolean))];
+  return {
+    workOrderId: `${String(idBase).replace(/[^a-z0-9_-]+/gi, "-").slice(0, 90)}:${String(context.stage || "publication-intelligence").replace(/[^a-z0-9_-]+/gi, "-").slice(0, 36)}`,
+    articleId: String(idBase || ""),
+    title: story.title || story.headline || "",
+    category: story.category || "top",
+    status,
+    stage: context.stage || "publication-intelligence",
+    responsibleSubsystem: route,
+    rootCauses,
+    failureCodes,
+    remainingIssues: issues.slice(0, 20),
+    repairCommands: repairPlan.map(item => ({
+      owner: item.owner || route,
+      actionType: newsLabPublicationActionTypeForRootCause(item.rootCause || item.action || ""),
+      rootCause: item.rootCause || "publication-intelligence-failure",
+      action: item.action || "Repair the failed component, preserve the article snapshot, and resubmit for validation.",
+      validation: item.validation || "Re-run the failed validation and confirm the corrected article can return to the publisher."
+    })),
+    validationTargets: [
+      "Story Dossier, headline, lead, body, category, and image must describe the same event.",
+      "No process language, incomplete sentences, word salad, or placeholder copy may remain.",
+      "Headline must be generated from the final Story Dossier/article identity, not publisher headline structure.",
+      "If image is the only blocker, keep or publish the article with an attached image work item and patch the image later.",
+      "Do not count publication until the public payload visibly includes the story."
+    ],
+    redeployAction: published
+      ? "record-visible-publication-and-close-work-order"
+      : readyForEditor
+        ? "resubmit-to-publisher-and-public-cache"
+        : imageOnly
+          ? "publish-or-keep-visible-with-image-work-item-then-patch-image"
+          : "repair-targeted-component-and-resubmit-to-editor",
+    learningSignal: {
+      upstream: "Teach the producing subsystem the generalized failure type, not only the exact article wording.",
+      downstream: "Teach Editor, Validator, Publisher, and Image Worker how the corrected output should be recognized and moved forward.",
+      preventionRule: intel.preventionRule || "Convert recurring failure classes into first-draft prevention checks before editor review."
+    },
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function recordNewsLabPublicationIntelligenceActionQueue(stories = [], context = {}) {
+  const queue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
+  const existing = [...(Array.isArray(queue.active) ? queue.active : []), ...(Array.isArray(queue.completed) ? queue.completed : [])];
+  const byId = new Map(existing.map(item => [item.workOrderId, item]));
+  (Array.isArray(stories) ? stories : []).filter(Boolean).forEach(story => {
+    const order = newsLabPublicationActionWorkOrderFromStory(story, context);
+    if (!order.articleId && !order.title) return;
+    const previous = byId.get(order.workOrderId) || {};
+    byId.set(order.workOrderId, {
+      ...previous,
+      ...order,
+      attempts: Number(previous.attempts || 0) + (order.status === "repair-needed" ? 1 : 0),
+      history: [...(Array.isArray(previous.history) ? previous.history : []), {
+        at: order.updatedAt,
+        stage: order.stage,
+        status: order.status,
+        remainingIssues: order.remainingIssues.slice(0, 8),
+        redeployAction: order.redeployAction
+      }].slice(-8)
+    });
+  });
+  const all = [...byId.values()].sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
+  const completed = all.filter(item => item.status === "published-visible").slice(0, 200);
+  const active = all.filter(item => item.status !== "published-visible").slice(0, 250);
+  const bySubsystem = {};
+  const byStatus = {};
+  const failureCounts = {};
+  active.forEach(item => {
+    bySubsystem[item.responsibleSubsystem || "Publishing Editor"] = Number(bySubsystem[item.responsibleSubsystem || "Publishing Editor"] || 0) + 1;
+    byStatus[item.status || "repair-needed"] = Number(byStatus[item.status || "repair-needed"] || 0) + 1;
+    (item.failureCodes || []).forEach(code => {
+      failureCounts[code] = Number(failureCounts[code] || 0) + 1;
+    });
+  });
+  const next = {
+    ...defaultNewsLabPublicationIntelligenceActionQueue(),
+    updatedAt: new Date().toISOString(),
+    summary: {
+      active: active.length,
+      completed: completed.length,
+      readyToRedeploy: active.filter(item => item.status === "ready-to-redeploy").length,
+      repairNeeded: active.filter(item => item.status === "repair-needed").length,
+      publishableWithImageWorkItem: active.filter(item => item.status === "publishable-with-image-work-item").length,
+      bySubsystem,
+      byStatus
+    },
+    active,
+    completed,
+    topFailureCodes: Object.entries(failureCounts).map(([failureCode, count]) => ({ failureCode, count })).sort((a, b) => b.count - a.count).slice(0, 20),
+    preventionRules: [...new Map(active.flatMap(item => (item.repairCommands || []).map(command => [command.rootCause, {
+      rootCause: command.rootCause,
+      owner: command.owner,
+      actionType: command.actionType,
+      preventionRule: item.learningSignal?.preventionRule || "Prevent the generalized failure before first draft approval."
+    }]))).values()].slice(0, 80)
+  };
+  writeJsonFile(newsLabPublicationIntelligenceActionQueueFile, next);
+  return next;
+}
 function approvalRate(part, total) {
   return Number((Number(part || 0) / Math.max(1, Number(total || 0))).toFixed(2));
 }
@@ -3854,6 +4018,7 @@ function newsLabApprovalLifecycleIssueList(story = {}, extraIssues = []) {
     ...(story.qualityGate?.remainingIssues || []),
     ...(story.qualityGate?.issues || []),
     ...(story.editorialCoach?.issues || []),
+    ...(story.publicationIntelligence?.afterIssues || []),
     ...newsLabBlockingFinalIssues(story),
     ...newsLabBlockingEditorFinalIssues(story),
     ...newsLabPublicArticleIssues(story)
@@ -3923,8 +4088,9 @@ function newsLabApprovalLifecycleRows(context = {}) {
       failureCode: newsLabStandardFailureCode(primaryIssue),
       standardizedFailureCodes: issues.map(newsLabStandardFailureCode),
       failureClasses,
-      responsibleSubsystem: primaryClass.repairOwner || "Publishing Editor",
+      responsibleSubsystem: story.publicationIntelligence?.route || primaryClass.repairOwner || "Publishing Editor",
       writerReadiness,
+      publicationIntelligence: story.publicationIntelligence || null,
       repairable: !issues.some(issue => /fabricated|legal-fatal|copyright-fatal/i.test(issue)),
       repairAttempted,
       repairPassed,
@@ -9348,6 +9514,7 @@ function frameworkContinuousOptimizerSnapshot(memory = learningMemory(), diagnos
   const publishedPayload = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
   const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
+  const publicationActionQueue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
   const endpoints = Object.values(apiPerformance.endpoints || {});
   const worstEndpoint = (apiPerformance.slowestEndpoints || []).slice(0, 1)[0]
     || endpoints.map(item => ({ endpoint: item.endpoint || "unknown", maxMs: item.maxMs || 0, avgMs: item.avgMs || 0 })).sort((a, b) => Number(b.maxMs || 0) - Number(a.maxMs || 0))[0]
@@ -27949,7 +28116,7 @@ function newsLabPublishingEditorSafeRepair(story = {}, triggerIssues = []) {
 }
 
 function newsLabPublishingEditorPass(story = {}, context = {}) {
-  let edited = newsLabPrepareStoryForEditorialHandoff(story);
+  let edited = newsLabPrepareStoryForEditorialHandoff(newsLabPublicationIntelligencePreflight(story, { stage: context.stage || "publishing-editor-publication-intelligence", index: 0 }));
   const beforeIssues = [...new Set([
     ...(edited.qualityGate?.remainingIssues || []),
     ...(edited.qualityGate?.issues || []),
@@ -38249,6 +38416,129 @@ function newsLabSelectPassingHeadline(story = {}, seed = "") {
   return evidenceBacked || candidates[0] || seed || story.title || "";
 }
 
+function newsLabPublicationIdentityIssueSet(story = {}) {
+  const publicIssues = typeof newsLabPublicArticleIssues === "function" ? newsLabPublicArticleIssues(story) : [];
+  const editorIssues = typeof newsLabBlockingEditorFinalIssues === "function" ? newsLabBlockingEditorFinalIssues(story) : [];
+  const allIssues = [...new Set([...publicIssues, ...editorIssues].filter(Boolean))];
+  return {
+    allIssues,
+    identityIssues: allIssues.filter(issue => /story-identity-mismatch|semantic-title-source-mismatch|headline-lead-topic-mismatch|lead-topic-mismatch|headline-body-primary-entity-mismatch|mixed-source-topic|article-body-topic-drift|paragraph-topic-contamination/i.test(issue)),
+    headlineIssues: allIssues.filter(issue => /headline|title|word-salad|display-unsafe|semantic-title|source-no-overlap|generic-weak/i.test(issue)),
+    writerReasoningIssues: allIssues.filter(issue => /body-too-short|insufficient|evidence|missing-reporting-context|intro-body-ending|dossier/i.test(issue)),
+    languageIssues: allIssues.filter(issue => /incomplete|partial|mojibake|grammar|sentence|copied-or-noisy|template|process-language|summary-repeats-body/i.test(issue)),
+    imageIssues: allIssues.filter(issue => /image|photo|visual|placeholder/i.test(issue))
+  };
+}
+
+function newsLabPublicationIntelligenceRepairPlan(issueSet = {}) {
+  const tasks = [];
+  if (issueSet.identityIssues.length) {
+    tasks.push({
+      rootCause: "story-identity-break",
+      owner: "Story Dossier Builder",
+      repair: "Rebuild from one canonical event dossier, split mixed clusters, remove off-event paragraphs, then regenerate affected lead/body/headline sections.",
+      prevention: "Writer, Headline Builder, Lead Generator, category classifier, and image matcher must consume the same story identity before editor review."
+    });
+  }
+  if (issueSet.headlineIssues.length) {
+    tasks.push({
+      rootCause: "headline-generation",
+      owner: "Headline Editor",
+      repair: "Generate the headline only after the article body and Story Dossier are complete, using actor + action + consequence from the headline dossier.",
+      prevention: "Do not rewrite from publisher headline structure; validate headline/body/source overlap before editor review."
+    });
+  }
+  if (issueSet.writerReasoningIssues.length) {
+    tasks.push({
+      rootCause: "writer-reasoning",
+      owner: "Writer / Evidence Engine",
+      repair: "Require the Writer reasoning record: what happened, verified facts, uncertainty, why it matters, and what must not be inferred.",
+      prevention: "No first draft should start from thin feed fragments; return to Dossier Builder as needs-dossier-evidence."
+    });
+  }
+  if (issueSet.languageIssues.length) {
+    tasks.push({
+      rootCause: "language-integrity",
+      owner: "Publishing Editor",
+      repair: "Clean incomplete sentences, mojibake, process language, repeated summaries, and template phrases in place before validation.",
+      prevention: "Detect the class of issue, not exact strings, so new misspellings/fragments are prevented before publication."
+    });
+  }
+  if (issueSet.imageIssues.length) {
+    tasks.push({
+      rootCause: "image-pipeline",
+      owner: "Image Intelligence Worker",
+      repair: "Attach a licensed or generated article-specific image; if missing at publish time, keep a post-publication image work item tied to the story id.",
+      prevention: "Image matching must compare article entities/category/source context before replacing fallback CE art."
+    });
+  }
+  return tasks;
+}
+
+function newsLabPublicationIdentityProof(story = {}, issueSet = {}) {
+  const dossier = story.storyDossier || {};
+  const body = Array.isArray(story.body) ? story.body : [];
+  const lead = body[0] || "";
+  const bodyText = body.join(" ");
+  const headlineText = story.title || "";
+  const dossierText = [dossier.whatHappened, ...(dossier.knownFacts || []), story.summary, story.articleSummary].filter(Boolean).join(" ");
+  const headlineLeadOverlap = Number(newsLabTextOverlap(headlineText, lead).toFixed(2));
+  const headlineDossierOverlap = Number(newsLabTextOverlap(headlineText, dossierText).toFixed(2));
+  const bodyDossierOverlap = Number(newsLabTextOverlap(bodyText, dossierText).toFixed(2));
+  const imageReady = typeof newsLabPublicImageReady === "function" ? newsLabPublicImageReady(story) : false;
+  return {
+    storyId: story.id || story.topicKey || story.eventId || "",
+    title: headlineText,
+    category: newsLabCategory(story),
+    headlineLeadOverlap,
+    headlineDossierOverlap,
+    bodyDossierOverlap,
+    imageReady,
+    sameEventReady: issueSet.identityIssues.length === 0 && headlineLeadOverlap >= 0.04 && bodyDossierOverlap >= 0.04,
+    writerReasoningReady: Boolean(story.writerDossierInput?.knownFacts?.length || dossier.knownFacts?.length || story.learningApplicationProof?.preDraftMemoryApplied),
+    checkedLanes: ["Story Dossier", "Headline", "Lead", "Body", "Category", "Image"],
+    rule: "Publication Intelligence verifies every public-facing lane describes the same event before the Editor receives the draft."
+  };
+}
+
+function newsLabPublicationIntelligencePreflight(story = {}, context = {}) {
+  const startedIssues = newsLabPublicationIdentityIssueSet(story);
+  let prepared = newsLabEnsureWriterDossierHandoff(story);
+  prepared = newsLabNormalizeCategoryBeforeEditor(prepared);
+  prepared = newsLabApplyHeadlinePreEditor(prepared, Number(context.index || 0));
+  prepared = newsLabPreventKnownApprovalFailures(prepared, { stage: context.stage || "publication-intelligence-preflight" });
+  prepared = newsLabSanitizePublicNewsCopy(prepared);
+  const afterIssues = newsLabPublicationIdentityIssueSet(prepared);
+  const repairPlan = newsLabPublicationIntelligenceRepairPlan(afterIssues);
+  const proof = newsLabPublicationIdentityProof(prepared, afterIssues);
+  const correctedIssues = startedIssues.allIssues.filter(issue => !afterIssues.allIssues.includes(issue));
+  return {
+    ...prepared,
+    publicationIntelligence: {
+      applied: true,
+      stage: context.stage || "publication-intelligence-preflight",
+      checkedAt: new Date().toISOString(),
+      beforeIssues: startedIssues.allIssues,
+      afterIssues: afterIssues.allIssues,
+      correctedIssues,
+      rootCauses: repairPlan.map(item => item.rootCause),
+      repairPlan,
+      identityProof: proof,
+      readyForEditor: afterIssues.identityIssues.length === 0 && afterIssues.headlineIssues.length === 0 && afterIssues.languageIssues.length === 0,
+      route: afterIssues.identityIssues.length ? "Story Dossier Builder" : afterIssues.headlineIssues.length ? "Headline Editor" : afterIssues.writerReasoningIssues.length ? "Evidence Engine" : afterIssues.imageIssues.length ? "Image Intelligence Worker" : afterIssues.languageIssues.length ? "Publishing Editor" : "Editor",
+      preventionRule: "Repeated failures must become generalized root-cause prevention rules before the next first draft, not exact-string checks."
+    },
+    qualityGate: {
+      ...(prepared.qualityGate || {}),
+      publicationIntelligenceBeforeEditor: true,
+      publicationIntelligenceReady: afterIssues.identityIssues.length === 0,
+      issues: afterIssues.allIssues,
+      remainingIssues: afterIssues.allIssues,
+      correctedIssues: [...new Set([...(prepared.qualityGate?.correctedIssues || []), ...correctedIssues])],
+      action: afterIssues.allIssues.length ? "publication-intelligence-routed-for-targeted-repair" : "publication-intelligence-ready-for-editor"
+    }
+  };
+}
 function newsLabPreventKnownApprovalFailures(story = {}, context = {}) {
   let repaired = newsLabSanitizePublicNewsCopy(story);
   let issues = newsLabPublicArticleIssues(repaired);
@@ -39113,9 +39403,10 @@ async function runNewsLabPrepublishQualityGate(stories = []) {
   const reviewedCandidateStories = (await newsLabConcurrentMap(
     candidateStoriesWithStoryObjects,
     newsLabEditorWorkers,
-    async story => newsLabEditorRepairReviewCycle(newsLabPreventKnownApprovalFailures(newsLabNormalizeCategoryBeforeEditor(newsLabApplyHeadlinePreEditor(story, 0)), { stage: "pre-editor-known-blocker-prevention" }), 3)
+    async story => newsLabEditorRepairReviewCycle(newsLabPublicationIntelligencePreflight(story, { stage: "pre-editor-publication-intelligence", index: 0 }), 3)
   )).filter(Boolean);
   const reviewedStories = newsLabSelectBestReviewedCandidates(reviewedCandidateStories);
+  const publicationIntelligenceActionQueue = recordNewsLabPublicationIntelligenceActionQueue(reviewedCandidateStories, { stage: "editor-reviewed-candidates" });
   const failed = reviewedStories.filter(story => story.qualityGate?.remainingIssues?.length || story.qualityGate?.issues?.length);
   const repaired = reviewedStories.filter(story => (story.qualityGate?.correctedIssues || []).length);
   const passed = reviewedStories.filter(story => story.qualityGate?.passed);
@@ -42276,6 +42567,8 @@ async function buildNewsLabPayload(payload = {}) {
   const publishedHeadlineRepairQueue = recordNewsLabHeadlineRepairQueue(finalOwnedStories, { stage: "published-shelf", published: true });
   const finalApprovalRecoveryQueue = recordNewsLabApprovalRecoveryQueue(finalReviewedStories, { stage: "final-publisher-gate", repairMethod: "final-approval-retry" });
   const publishedApprovalRecoveryQueue = recordNewsLabApprovalRecoveryQueue(finalOwnedStories, { stage: "published-shelf", published: true, approved: true });
+  const finalPublicationIntelligenceActionQueue = recordNewsLabPublicationIntelligenceActionQueue(finalReviewedStories, { stage: "final-publisher-gate" });
+  const publishedPublicationIntelligenceActionQueue = recordNewsLabPublicationIntelligenceActionQueue(finalOwnedStories, { stage: "published-shelf", published: true });
   const shelfDiagnostics = {
     currentBatchApproved: ownedStories.length,
     previousPublishedApproved: Number(previousPublishedForShelf?.ownedStories?.length || 0),
@@ -42355,6 +42648,11 @@ async function buildNewsLabPayload(payload = {}) {
       editorDecisionLearning: newsLabEditorLearningSummary(),
       headlineRepairQueue: newsLabHeadlineRepairQueueSummary(publishedHeadlineRepairQueue || finalHeadlineRepairQueue),
       approvalRecoveryQueue: newsLabApprovalRecoveryQueueSummary(publishedApprovalRecoveryQueue || finalApprovalRecoveryQueue),
+      publicationIntelligenceActionQueue: {
+        summary: (publishedPublicationIntelligenceActionQueue || finalPublicationIntelligenceActionQueue || publicationIntelligenceActionQueue || {}).summary || {},
+        topFailureCodes: (publishedPublicationIntelligenceActionQueue || finalPublicationIntelligenceActionQueue || publicationIntelligenceActionQueue || {}).topFailureCodes || [],
+        rule: "Publication Intelligence converts editor and publisher failures into subsystem-owned repair, validation, and redeploy work orders."
+      },
       finalEditorDecisionLearning: {
         updatedAt: finalEditorDecisionMemory?.lastUpdatedAt || "",
         reviewedStories: finalReviewedStories.length,
@@ -42733,6 +43031,7 @@ function newsLabThroughputDiagnosticsReport(reason = "manual") {
   const productivity = readJsonFile(newsLabProductivityFile, {}) || {};
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
   const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
+  const publicationActionQueue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
   const worker = readJsonFile(newsLabWorkerStatusFile, {}) || {};
   const payload = readNewsLabPublishedPayload() || {};
   const storyObjects = readJsonFile(newsLabStoryObjectsFile, { stories: {} }) || { stories: {} };
@@ -42759,6 +43058,7 @@ function newsLabThroughputDiagnosticsReport(reason = "manual") {
   if (buildSkipRate > 25) bottlenecks.push({ stage: "worker", severity: "medium", issue: "cycles-skipped-or-lock-contention", fix: "Use separated worker processes and avoid overlapping production locks." });
   if (Number(hour.builds || 0) && Number(hour.publishedArticles || 0) === 0) bottlenecks.push({ stage: "build-usefulness", severity: "high", issue: "recent-builds-without-new-publications", fix: "Inspect current cycle drop reasons and force every valid story object into candidate expansion." });
   if (topBlockers.length) bottlenecks.push({ stage: "quality", severity: "medium", issue: `top-blocker:${topBlockers[0].reason || "unknown"}`, fix: topBlockers[0].requiredAction || "Route blocker to responsible repair subsystem and resubmit." });
+  if (Number(publicationActionQueue.summary?.active || 0) > 0) bottlenecks.push({ stage: "publication-intelligence", severity: "high", issue: "active-subsystem-repair-work-orders", fix: "Run subsystem-owned repair work orders, validate only the failed component, then resubmit ready items to publisher/public cache." });
   const report = {
     version: "20260717-news-lab-throughput-diagnostics-v1",
     generatedAt: new Date().toISOString(),
@@ -42808,7 +43108,13 @@ function newsLabThroughputDiagnosticsReport(reason = "manual") {
       currentCycle: cycle,
       recoveryOutput: recovery,
       topBlockers: topBlockers.slice(0, 10),
-      repairQueues: approval.repairQueues || {}
+      repairQueues: approval.repairQueues || {},
+      publicationIntelligenceActionQueue: {
+        summary: publicationActionQueue.summary || {},
+        topFailureCodes: (publicationActionQueue.topFailureCodes || []).slice(0, 10),
+        active: (publicationActionQueue.active || []).slice(0, 20),
+        rule: publicationActionQueue.rule || "Failures must become subsystem work orders."
+      }
     },
     bottlenecks,
     productionIntelligence: readProductionIntelligence("throughput-diagnostics"),
@@ -45626,6 +45932,14 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
 
 
 
