@@ -21833,9 +21833,13 @@ function newsLabStorySourceDateCandidates(story = {}) {
 }
 
 function newsLabStoryOriginalPublishedAt(story = {}) {
+  const explicitOriginal = newsLabValidStoryDateValue(story.originalPublishedAt || story.firstReportedAt || story.firstSeenAt || "");
+  if (explicitOriginal) return explicitOriginal;
   const sourceFirstDate = newsLabEarliestValidDate(newsLabStorySourceDateCandidates(story));
   if (sourceFirstDate) return sourceFirstDate;
   return newsLabEarliestValidDate([
+    story.publishedAt,
+    story.published,
     story.generatedAt,
     story.createdAt,
     story.savedAt,
@@ -27037,7 +27041,16 @@ function newsLabDurablyPersistPublicPayload(payload = {}, context = {}) {
   const batchVisibleStories = reviewedStories.filter(newsLabCompleteArticleStory);
   const existingLockedPayload = readJsonFile(newsLabPublishedPayloadFile, null);
   const existingLockedStories = Array.isArray(existingLockedPayload?.ownedStories) ? existingLockedPayload.ownedStories : [];
-  const visibleStories = mergeNewsLabApprovedStories(batchVisibleStories, existingLockedPayload);
+  const preparedApiPayload = readJsonFile(newsLabApiResponseCacheFile, null)?.responses?.all || null;
+  const preparedApiStories = Array.isArray(preparedApiPayload?.ownedStories) ? preparedApiPayload.ownedStories : [];
+  const previousActivePayload = newsLabApplyCurrentBoardPolicy({
+    ...(existingLockedPayload || {}),
+    ownedStories: newsLabHardMergePublicStories([
+      ...existingLockedStories,
+      ...preparedApiStories
+    ])
+  });
+  const visibleStories = mergeNewsLabApprovedStories(batchVisibleStories, previousActivePayload);
   const tabFillLockExpiresAt = existingLockedPayload?.tabFillLock?.expiresAt ? new Date(existingLockedPayload.tabFillLock.expiresAt).getTime() : 0;
   const tabFillLockActive = existingLockedPayload?.tabFillLock?.active === true && tabFillLockExpiresAt > Date.now();
   if (tabFillLockActive && existingLockedStories.length && visibleStories.length < existingLockedStories.length) {
@@ -27071,7 +27084,13 @@ function newsLabDurablyPersistPublicPayload(payload = {}, context = {}) {
       hiddenIssueCounts: newsLabApprovalRepairIssueCounts(reviewedStories
         .filter(story => !newsLabCompleteArticleStory(story))
         .map(story => ({ reasons: newsLabBlockingFinalIssues(story) }))),
-      storyObjectRequirement: "An article only counts as durably published after it passes the final gate, is saved to the public payload, and is saved to the story-object store."
+      storyObjectRequirement: "An article only counts as durably published after it passes the final gate, is saved to the public payload, and is saved to the story-object store.",
+      activeShelfPreservation: {
+        payloadStoryCount: existingLockedStories.length,
+        preparedApiStoryCount: preparedApiStories.length,
+        mergedPreviousStoryCount: previousActivePayload.ownedStories?.length || 0,
+        rule: "Durable publication merges the approved batch with both the public payload and prepared API cache so failed or small worker cycles cannot shrink active seven-day tiles."
+      }
     },
     savedAt: new Date().toISOString()
   };
@@ -29526,8 +29545,9 @@ function slimNewsLabStoryForApi(story = {}) {
       originalQuery: image.originalQuery || image.provenance?.originalQuery || ""
     },
     generatedAt: story.generatedAt || "",
+    publishedAt: annotated.originalPublishedAt || story.publishedAt || "",
     originalPublishedAt: annotated.originalPublishedAt || "",
-    lastUpdatedAt: annotated.lastUpdatedAt || story.generatedAt || "",
+    lastUpdatedAt: annotated.lastUpdatedAt || story.lastUpdatedAt || story.updatedAt || "",
     boardVisibility: annotated.boardVisibility || null,
     storyUpdates: Array.isArray(story.storyUpdates)
       ? story.storyUpdates.slice(-8).map(update => ({
@@ -30048,7 +30068,7 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
     };
   }
   const breakingBriefFollowups = recordNewsLabBreakingBriefFollowups(published.ownedStories, reason);
-  const responses = {};
+  let responses = {};
   ["all", ...newsLabPublicCategories].forEach(category => {
     const fullFiltered = filterCleanNewsLabPayloadForCategory(published, category);
     const responsePayload = {
@@ -30065,8 +30085,69 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
       : newsLabDedupePublicStoriesPreferFull(responsePayload.ownedStories || []);
     responses[category] = responsePayload;
   });
-  const allCount = Number(responses.all?.ownedStories?.length || 0);
-  const record = {
+  let allCount = Number(responses.all?.ownedStories?.length || 0);
+  const durableFallbackSourceStories = [
+    ...(Array.isArray(published.ownedStories) ? published.ownedStories : []),
+    ...(Array.isArray(durableRawStories) ? durableRawStories : []),
+    ...(Array.isArray(rawPublishedStories) ? rawPublishedStories : [])
+  ].filter((story, storyIndex, all) => {
+    const key = cleanArticleText(story.title || story.headline || story.id || story.topicKey || "", 220).toLowerCase();
+    if (!key) return false;
+    return all.findIndex(match => cleanArticleText(match.title || match.headline || match.id || match.topicKey || "", 220).toLowerCase() === key) === storyIndex;
+  });
+  if (!allCount && durableFallbackSourceStories.length) {
+    const durableVisibleStories = durableFallbackSourceStories
+      .map(story => ({
+        ...story,
+        publicArticle: true,
+        durableApprovedBeforeBoard: true,
+        qualityGate: {
+          ...(story.qualityGate || {}),
+          passed: story.qualityGate?.passed !== false,
+          action: story.qualityGate?.action || "prepared-cache-durable-visible-fallback"
+        }
+      }))
+      .filter(story => Boolean(story.title || story.headline) && Array.isArray(story.body) && story.body.length >= 1 && story.body.join(" ").length >= 220 && story.qualityGate?.passed !== false && !story.fallbackCoverage)
+      .map(story => newsLabAnnotateBoardVisibility(story))
+      .filter(story => story.boardVisibility?.visible);
+    if (durableVisibleStories.length) {
+      responses = {};
+      ["all", ...newsLabPublicCategories].forEach(category => {
+        const filteredStories = category === "all"
+          ? durableVisibleStories
+          : category === "top"
+            ? newsLabSortTopNews(durableVisibleStories).slice(0, newsLabTopNewsLimit)
+            : newsLabSortByCoveragePopularity(durableVisibleStories.filter(story => String(story.category || "").toLowerCase() === category));
+        const boardDatePolicy = {
+          active: true,
+          currentDateKey: newsLabTodayDateKey(),
+          visibleCount: durableVisibleStories.length,
+          currentVisibleCount: durableVisibleStories.filter(story => story.boardVisibility?.reason === "original-published-today" || story.boardVisibility?.reason === "current-significant-factual-update").length,
+          retainedSevenDayCount: durableVisibleStories.filter(story => story.boardVisibility?.reason === "approved-story-within-seven-day-board-window").length,
+          retentionDays: Math.max(1, Number(process.env.CE_NEWS_LAB_BOARD_RETENTION_DAYS || 7)),
+          rule: "Durable public shelf fallback preserves already approved articles when a stricter cleaner returns zero."
+        };
+        responses[category] = {
+          ...slimNewsLabPayloadForApi({ ...published, ownedStories: category === "top" ? filteredStories.slice(0, newsLabTopNewsLimit) : filteredStories, boardDatePolicy }),
+          categoryFilter: category,
+          boardDatePolicy,
+          fallbackCoverage: null,
+          backgroundWriting: filteredStories.length < (category === "top" ? newsLabTopNewsLimit : 7) ? {
+            active: true,
+            reason: "The Brain is building additional ready dossiers for this tab; existing approved articles remain visible while new drafts wait for dossier readiness.",
+            currentCompleteCount: filteredStories.length,
+            targetCount: category === "top" ? newsLabTopNewsLimit : 7
+          } : null,
+          preparedCacheFallback: {
+            applied: true,
+            reason: "normal-cleaner-returned-zero-from-nonempty-durable-shelf",
+            rule: "Cache refreshes may not hide already approved public articles. New dossier readiness gates affect future drafts, not existing public shelf visibility."
+          }
+        };
+      });
+      allCount = Number(responses.all?.ownedStories?.length || 0);
+    }
+  }  const record = {
     generatedAt: new Date().toISOString(),
     reason,
     sourcePayloadSavedAt: published.savedAt || published.generatedAt || "",
@@ -35260,6 +35341,92 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
   };
 }
 
+function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
+  const handoff = context.cleanWriterHandoff?.diagnostic || storyDossier.writerDossierHandoff || {};
+  const knownFacts = (storyDossier.knownFacts || []).filter(Boolean);
+  const directWritingFacts = (storyDossier.writerInput?.directWritingFacts || []).filter(Boolean);
+  const sourcePool = storyDossier.sourcePool || [];
+  const timeline = storyDossier.timeline || [];
+  const contradictions = storyDossier.contradictions || storyDossier.disagreement?.contradictions || [];
+  const whatHappened = cleanArticleText(storyDossier.whatHappened || "", 260);
+  const confidenceScore = Number(storyDossier.confidence?.score || storyDossier.evidence?.confidenceScore || 0);
+  const sourceCount = Number(storyDossier.evidence?.sourceCount || sourcePool.length || context.sources?.length || 0);
+  const writerPackReady = Boolean(storyDossier.writerInput?.readiness?.readyForWriter || storyDossier.dossierBuilder?.readyForWriter);
+  const mixedOrGeneric = Boolean(handoff.genericRepresentative || handoff.mixedEvent || handoff.topicContamination || handoff.minimumDossierFallback);
+  const missing = [
+    whatHappened ? "" : "needs-primary-event",
+    knownFacts.length >= 2 || directWritingFacts.length >= 2 ? "" : "needs-two-direct-writing-facts",
+    sourceCount >= 1 ? "" : "needs-source-context",
+    timeline.length >= 1 ? "" : "needs-timeline-anchor",
+    mixedOrGeneric ? "needs-clean-single-event-identity" : "",
+    writerPackReady || directWritingFacts.length >= 1 ? "" : "needs-writer-evidence-pack"
+  ].filter(Boolean);
+  const warning = [
+    confidenceScore && confidenceScore < 45 ? "low-confidence-dossier" : "",
+    contradictions.length > 0 ? "contradictions-must-be-qualified" : "",
+    sourceCount < 2 ? "single-source-developing-dossier" : ""
+  ].filter(Boolean);
+  const readyForWriter = missing.length === 0;
+  const score = clampScore(35
+    + Math.min(20, Math.max(knownFacts.length, directWritingFacts.length) * 7)
+    + Math.min(18, sourceCount * 8)
+    + Math.min(12, timeline.length * 6)
+    + Math.min(15, confidenceScore * 0.15)
+    + (writerPackReady ? 10 : 0)
+    - (mixedOrGeneric ? 30 : 0));
+  return {
+    version: "20260730-dossier-readiness-contract-v1",
+    readyForWriter,
+    score,
+    missing,
+    warning,
+    metrics: {
+      knownFactCount: knownFacts.length,
+      directWritingFactCount: directWritingFacts.length,
+      sourceCount,
+      timelineCount: timeline.length,
+      contradictionCount: contradictions.length,
+      confidenceScore,
+      writerPackReady,
+      mixedOrGeneric
+    },
+    decision: readyForWriter ? "lock-dossier-and-write" : "hold-for-dossier-evidence",
+    rule: "The Writer may not draft from raw RSS, mixed fragments, or a changing investigation. Dossier Builder must identify one primary event, direct writing facts, source context, timeline, and writer evidence pack before prose generation."
+  };
+}
+
+function newsLabLockDossierForWriting(storyDossier = {}, readiness = {}, context = {}) {
+  const now = new Date().toISOString();
+  const eventId = storyDossier.eventId || storyDossier.storyId || context.eventId || safeFileSlug(storyDossier.whatHappened || "story");
+  const revisionSeed = [eventId, storyDossier.createdAt || now, readiness.score || 0, (storyDossier.knownFacts || []).join("|").slice(0, 240)].join(":");
+  return {
+    ...JSON.parse(JSON.stringify(storyDossier || {})),
+    dossierLock: {
+      active: true,
+      lockedAt: now,
+      eventId,
+      revisionId: `dossier_${safeFileSlug(revisionSeed).slice(0, 96)}`,
+      readiness,
+      updateRule: "New evidence after this lock creates a dossier revision and article update. It must not mutate the active draft or reset the original publish date.",
+      publishDateRule: "Article publishedAt/originalPublishedAt remains the earliest credible event/source time; cache refreshes and dossier revisions may update updatedAt only."
+    },
+    dossierBuilder: {
+      ...(storyDossier.dossierBuilder || {}),
+      readinessContract: readiness,
+      readyForWriter: readiness.readyForWriter === true,
+      lockRequiredBeforeWriting: true
+    },
+    writerInput: {
+      ...(storyDossier.writerInput || {}),
+      dossierLock: {
+        active: true,
+        lockedAt: now,
+        revisionId: `dossier_${safeFileSlug(revisionSeed).slice(0, 96)}`
+      },
+      readinessContract: readiness
+    }
+  };
+}
 function newsLabProductionPlanner(storyDossier = {}, context = {}) {
   const category = newsLabCategory(context.representative || { category: storyDossier.category || storyDossier.primaryCategory || "top" });
   const facts = Array.isArray(context.facts) ? context.facts : (storyDossier.knownFacts || []);
@@ -41395,7 +41562,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     intelligence.angleTags || []
   );
   const sourceSpecifics = newsLabSourceSpecifics(intelligence, intelligence.sourceAngles || []);
-  const storyDossier = newsLabBuildStoryDossier({
+  let storyDossier = newsLabBuildStoryDossier({
     cluster,
     representative,
     supporting,
@@ -41448,7 +41615,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
   storyDossier.writerInput = {
     ...(storyDossier.writerInput || {}),
     productionPlanner
-  };  const writerDossierInput = newsLabWriterDossierInput(storyDossier, {
+  };  let writerDossierInput = newsLabWriterDossierInput(storyDossier, {
     productionPlanner,
     representative,
     supporting,
@@ -41466,6 +41633,49 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       preDraftMemoryBrief
     }
   });
+  const dossierReadiness = newsLabDossierReadinessContract({
+    ...storyDossier,
+    writerInput: {
+      ...(storyDossier.writerInput || {}),
+      ...(writerDossierInput || {})
+    }
+  }, { cleanWriterHandoff, sources, eventId: storyDossier.eventId || storyDossier.storyId });
+  if (!dossierReadiness.readyForWriter) {
+    saveFrameworkActionLogEntry({
+      type: "news-lab-dossier-readiness-held-before-writing",
+      actionKey: "story-dossier-readiness-gate",
+      reason: "The Story Dossier was not ready to lock for writing, so the Writer did not draft from incomplete or moving evidence.",
+      trigger: dossierReadiness,
+      bounded: true,
+      reversible: true,
+      safeExecution: true,
+      autonomous: true,
+      status: "needs-dossier-evidence",
+      verified: true,
+      message: "Dossier Builder must collect, verify, classify, and stabilize the event before Writer starts.",
+      beforeMetric: dossierReadiness.metrics,
+      afterMetric: { draftCreated: false, heldReason: dossierReadiness.missing.join(", ") },
+      result: {
+        responsibleSystem: "Story Dossier Builder",
+        signalTo: ["Collector", "Cluster", "Evidence Engine", "Story Dossier Builder", "Article Writer"],
+        fix: "Collect or promote enough same-event facts, source context, timeline, and writer evidence pack before drafting.",
+        prevent: "Future cycles must run the dossier readiness contract before the Writer receives a prompt."
+      }
+    });
+    return null;
+  }
+  storyDossier = newsLabLockDossierForWriting({
+    ...storyDossier,
+    writerInput: {
+      ...(storyDossier.writerInput || {}),
+      ...(writerDossierInput || {})
+    }
+  }, dossierReadiness, { eventId: storyDossier.eventId || storyDossier.storyId });
+  writerDossierInput = {
+    ...(writerDossierInput || {}),
+    dossierLock: storyDossier.dossierLock,
+    readinessContract: dossierReadiness
+  };
   const imageStoryContext = {
     ...representative,
     category,
@@ -41731,6 +41941,7 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       afterMetric: { acceptedSameEventCount: cleanWriterHandoff.diagnostic.acceptedSameEventCount || 0, factCount: cleanWriterHandoff.diagnostic.factCount || 0 },
       result: cleanWriterHandoff
     });
+    return null;
     const fallbackFacts = [
       ...newsLabRelevantFactSentences(representative),
       ...supporting.flatMap(source => newsLabRelevantFactSentences(source))
@@ -41800,10 +42011,10 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
         signalTo: ["Collector", "Story Dossier Builder", "Article Writer", "Publishing Editor"]
       }
     });
-    // Preserve a thin but verifiable same-event slice as a Tier 3 candidate for Editor review.
+    return null;
   }
   const thinEvidenceSlice = !evidenceRichEnough;
-  const dossier = {
+  let dossier = {
     storyId: `worker_slice_${cluster.eventId || cluster.key || reportClusterKey(representative)}_${index}`,
     whatHappened: facts[0] || representative.articleSummary || representative.summary || representative.title || "",
     knownFacts: facts,
@@ -41816,17 +42027,60 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       category: source.category || representativeCategory,
       role: source.url === representative.url ? "primary-slice-source" : "supporting-slice-source"
     })),
+    timeline: sourceCandidates.slice(0, 4).map((source, sourceIndex) => ({
+      id: `worker-slice-timeline-${sourceIndex + 1}`,
+      at: source.published || source.publishedAt || representative.published || representative.publishedAt || new Date().toISOString(),
+      source: source.source || source.name || "",
+      title: source.title || facts[0] || "",
+      url: source.url || ""
+    })),
+    writerInput: {
+      directWritingFacts: facts,
+      readiness: {
+        readyForWriter: facts.length >= 2 && sourceCandidates.length >= 1,
+        writingFactCount: facts.length,
+        sourceCount: sourceCandidates.length,
+        rule: "Worker slices may draft only from direct facts that survived dossier cleaning."
+      }
+    },
     dossierBuilder: {
-      readyForWriter: true,
+      readyForWriter: facts.length >= 2 && sourceCandidates.length >= 1,
       workerFinishMode: true,
       stages: [
         { name: "Collect", status: "complete" },
         { name: "Verify", status: facts.length >= 2 ? "complete" : "thin-source-slice" },
         { name: "Classify", status: "complete" },
-        { name: "Deliver Dossier To Writer", status: "ready" }
+        { name: "Timeline", status: sourceCandidates.length ? "complete" : "needs-timeline" },
+        { name: "Deliver Dossier To Writer", status: facts.length >= 2 && sourceCandidates.length >= 1 ? "ready" : "needs-more-dossier-work" }
       ]
     }
   };
+  const workerSliceDossierReadiness = newsLabDossierReadinessContract(dossier, { cleanWriterHandoff, sources: sourceCandidates, eventId: dossier.eventId || dossier.storyId });
+  if (!workerSliceDossierReadiness.readyForWriter) {
+    saveFrameworkActionLogEntry({
+      type: "news-lab-worker-slice-dossier-held-before-writing",
+      actionKey: "worker-slice-dossier-readiness-gate",
+      reason: "Worker slice was held because the dossier was not ready to lock before writing.",
+      trigger: workerSliceDossierReadiness,
+      bounded: true,
+      reversible: true,
+      safeExecution: true,
+      autonomous: true,
+      status: "needs-dossier-evidence",
+      verified: true,
+      message: "Timed worker did not write from a thin or unstable dossier.",
+      beforeMetric: workerSliceDossierReadiness.metrics,
+      afterMetric: { draftCreated: false, heldReason: workerSliceDossierReadiness.missing.join(", ") },
+      result: {
+        responsibleSystem: "Story Dossier Builder",
+        signalTo: ["Collector", "Cluster", "Story Dossier Builder", "Article Writer"],
+        fix: "Add same-event facts, source context, and a timeline anchor before the worker-slice writer runs.",
+        prevent: "Minimum dossier fallback is no longer allowed to write unless it satisfies the readiness contract."
+      }
+    });
+    return null;
+  }
+  dossier = newsLabLockDossierForWriting(dossier, workerSliceDossierReadiness, { eventId: dossier.eventId || dossier.storyId });
   let body = newsLabStraightBody({ representative, supporting, facts, dossier });
   if (!Array.isArray(body) || body.join(" ").length < 520) {
     const detailFacts = newsLabDetailList(facts, 0, 8, 260);
@@ -46778,6 +47032,17 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

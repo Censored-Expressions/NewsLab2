@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-30T17:05:02.807Z",
+  "generatedAt": "2026-07-30T17:42:09.393Z",
   "mode": "api-response-worker",
-  "pid": 28608,
+  "pid": 26604,
   "cacheFresh": true,
   "cacheFile": "D:\\CensoredExpressions\\News-Lab\\data\\news-lab-api-response-cache.json",
   "workerPid": 0,
   "lastStatus": "cache-refreshed",
   "lastReason": "startup-api-response-cache",
-  "lastFinishedAt": "2026-07-30T17:05:02.807Z",
+  "lastFinishedAt": "2026-07-30T17:42:09.393Z",
   "lastMetrics": {
-    "storyCount": 24,
+    "storyCount": 3,
     "responseCount": 9,
-    "buildMs": 22241
+    "buildMs": 11357
   }
 }
