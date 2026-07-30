@@ -1800,7 +1800,7 @@ function compactNewsLabPublicStory(story = {}) {
     "id", "topicKey", "eventId", "slug", "url", "title", "originalHeadline", "category", "tab", "source",
     "publishedAt", "originalPublishedAt", "updatedAt", "lastUpdatedAt", "generatedAt", "savedAt", "summary", "dek", "lead",
     "body", "paragraphs", "updates", "storyUpdates", "sources", "reportingTrail", "relatedArticles",
-    "storyDossier", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence", "articleReadDepth",
+    "storyDossier", "eventSubDossier", "subDossierPreSeparation", "dossierExpansion", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence", "articleReadDepth",
     "confidence", "popularity", "publicationTier", "qualityGate", "editorEnforcement", "contentLaneQuality",
     "headlineAudit", "boardVisibility", "imagePublicationStatus", "publicArticle", "publicHeadlineRepaired", "fallbackCoverage", "isBreaking", "status"
   ];
@@ -17951,6 +17951,66 @@ function newsLabCleanSameEventSource(representative = {}, candidate = {}) {
     || (identity.entityOverlap >= 2 && anchorOverlap >= 1 && termOverlap >= 9);
 }
 
+function newsLabBuildEventSubDossier(cleanRepresentative = {}, sourcePool = [], topicIsolation = {}, facts = [], supporting = [], options = {}) {
+  const writingSources = sourcePool.filter(source => source.dossierRole === "strict-writing-source");
+  const verificationSources = sourcePool.filter(source => source.dossierRole === "verification-context-source");
+  const backgroundSources = sourcePool.filter(source => source.dossierRole === "background-context-source");
+  const reviewOnlySources = sourcePool.filter(source => source.dossierRole === "dossier-review-source");
+  const rejectedSources = sourcePool.filter(source => source.dossierRole === "rejected");
+  const keywordOnlyRejected = rejectedSources.filter(source => {
+    const relevance = source.dossierRelevance || {};
+    return Number(relevance.titleOverlap || 0) > 0 || Number(relevance.termOverlap || 0) > 0 || Number(relevance.relevantFactCount || 0) > 0;
+  });
+  const sameEventSources = [...writingSources, ...verificationSources];
+  const entitySet = new Set();
+  sameEventSources.forEach(source => {
+    storyNamedEntities(source).forEach(entity => entitySet.add(entity));
+  });
+  return {
+    version: "20260730-event-sub-dossier-v1",
+    generatedAt: new Date().toISOString(),
+    mode: "pre-dossier-event-separation",
+    storyId: options.cluster?.eventId || options.cluster?.key || reportClusterKey(cleanRepresentative),
+    category: newsLabCategory(cleanRepresentative),
+    primaryEvent: newsLabTrimSentence(cleanRepresentative.articleSummary || cleanRepresentative.summary || cleanRepresentative.title || "", 260),
+    sourceSeparation: {
+      writingSourceCount: writingSources.length,
+      verificationSourceCount: verificationSources.length,
+      backgroundSourceCount: backgroundSources.length,
+      reviewOnlySourceCount: reviewOnlySources.length,
+      keywordOnlyRejectedCount: keywordOnlyRejected.length,
+      mixedTopicRejectedCount: Number(topicIsolation.rejected?.length || 0),
+      rule: "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+    },
+    sources: {
+      writing: writingSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
+      verification: verificationSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
+      background: backgroundSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
+      reviewOnly: reviewOnlySources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
+      rejectedKeywordOnly: keywordOnlyRejected.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "", relevance: source.dossierRelevance || {} })).slice(0, 12)
+    },
+    knownFacts: (facts || []).map(fact => newsLabTrimSentence(fact, 260)).filter(Boolean).slice(0, 14),
+    entities: Array.from(entitySet).slice(0, 24),
+    timeline: sameEventSources.slice(0, 8).map((source, index) => ({
+      id: `event-sub-dossier-timeline-${index + 1}`,
+      at: source.published || source.publishedAt || "",
+      source: source.source || "",
+      title: newsLabTrimSentence(source.title || "", 180),
+      url: source.url || ""
+    })).filter(item => item.title || item.source),
+    readiness: {
+      readyForMainDossier: sameEventSources.length >= 1 && (facts || []).length >= 1,
+      readyForWriterCandidate: writingSources.length >= 1 && (facts || []).length >= 2,
+      blocker: sameEventSources.length < 1 ? "needs-same-event-source" : (facts || []).length < 1 ? "needs-same-event-facts" : "",
+      rule: "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+    },
+    handoff: {
+      to: "Story Dossier Builder",
+      mainDossierMustVerify: ["same-event evidence", "direct writing facts", "timeline anchor", "keyword-only rejects", "mixed-topic rejects"],
+      writerReceivesOnlyAfterMainDossier: true
+    }
+  };
+}
 function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates = [], options = {}) {
   const cleanRepresentative = cleanNewsLabSourceStory(representative || {});
   const allCandidates = newsLabUniqueSourceStories([cleanRepresentative, ...(candidates || [])]);
@@ -18004,6 +18064,7 @@ function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates =
     .filter(fact => !newsLabGenericDossierFragment({ title: "", summary: fact, articleSummary: fact }))
     .slice(0, 14);
   const draftEligibility = newsLabClusterDraftEligible(cleanRepresentative, supporting);
+  const eventSubDossier = newsLabBuildEventSubDossier(cleanRepresentative, sourcePool, topicIsolation, facts, supporting, options);
   const readyForWriter = draftEligibility.eligible
     && facts.length >= (options.workerFinishMode ? 1 : 2)
     && !facts.some(fact => /\b(local|political|international|sports|technology|business) record turns on\b/i.test(fact));
@@ -18015,6 +18076,7 @@ function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates =
     facts,
     sourcePool,
     topicIsolation,
+    eventSubDossier,
     draftEligibility,
     diagnostic: {
       workerFinishMode: !!options.workerFinishMode,
@@ -18024,6 +18086,10 @@ function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates =
       rejectedMixedTopicCount: topicIsolation.rejected.length + Math.max(0, sourcePool.length - supporting.length),
       acceptedSameEventCount: supporting.length,
       sourcePoolCount: sourcePool.length,
+      eventSubDossierReady: Boolean(eventSubDossier.readiness?.readyForMainDossier),
+      eventSubDossierWritingSources: Number(eventSubDossier.sourceSeparation?.writingSourceCount || 0),
+      eventSubDossierVerificationSources: Number(eventSubDossier.sourceSeparation?.verificationSourceCount || 0),
+      eventSubDossierKeywordOnlyRejected: Number(eventSubDossier.sourceSeparation?.keywordOnlyRejectedCount || 0),
       factCount: facts.length,
       eventAnchorRule: "Holiday/date/common-context overlap is not enough. Support sources must share strong actor/action/place/outcome anchors with the representative event.",
       rule: "One clean event dossier must be built before the first draft. Mixed-topic, generic, search-page, or process-language fragments are excluded before Writer sees the story."
@@ -25693,27 +25759,36 @@ function newsLabRepairPublishedStoryBeforeBoard(story = {}, index = 0) {
   }
   const remainingIssues = newsLabBlockingFinalIssues(repaired);
   const fatalAfterRepair = remainingIssues.filter(issue => /story-identity|mixed-source-topic|article-body-topic-drift|paragraph-topic-contamination|placeholder-guidance-leak|copied-or-noisy-source-fragment|internal-or-editorial-language/.test(issue));
+  const keepPublishedAfterMinorRepair = fatalAfterRepair.length === 0;
+  const durableAfterRepair = keepPublishedAfterMinorRepair
+    && Boolean(repaired.title || repaired.headline)
+    && Array.isArray(repaired.body)
+    && repaired.body.length >= 1
+    && repaired.body.join(" ").length >= 220
+    && !repaired.fallbackCoverage;
   return {
     ...repaired,
     originalPublishedAt,
     publishedAt: originalPublishedAt || repaired.publishedAt || repaired.generatedAt || "",
     generatedAt: repaired.generatedAt || originalPublishedAt || repaired.publishedAt || "",
+    durableApprovedBeforeBoard: Boolean(repaired.durableApprovedBeforeBoard || durableAfterRepair),
     publicShelfRepair: {
       ...(repaired.publicShelfRepair || {}),
       checkedAt: new Date().toISOString(),
       beforeBoardPolicy: true,
       remainingIssues,
       fatalAfterRepair,
-      action: fatalAfterRepair.length ? "hold-from-board-after-repair" : "keep-published-after-minor-repair",
-      rule: "Already-published articles with minor fixable issues are repaired in place and stay public; fatal identity, contamination, placeholder, copied-text, or internal-language leaks are held before display."
+      repairedToPublishable: keepPublishedAfterMinorRepair,
+      action: keepPublishedAfterMinorRepair ? "keep-published-after-minor-repair" : "hold-from-board-after-repair",
+      rule: "Already-published articles with minor fixable issues are repaired in place and stay public; fatal identity, contamination, placeholder, copied-text, or internal-language leaks are held before display. Minor repair must update the active publishable state so the API cache does not drop the article after repair."
     },
     qualityGate: {
       ...(repaired.qualityGate || {}),
-      passed: fatalAfterRepair.length ? false : Boolean(repaired.qualityGate?.passed !== false),
+      passed: keepPublishedAfterMinorRepair,
       issues: fatalAfterRepair,
       remainingIssues: fatalAfterRepair,
       correctedIssues: [...new Set([...(repaired.qualityGate?.correctedIssues || []), ...remainingIssues.filter(issue => !fatalAfterRepair.includes(issue))])],
-      action: fatalAfterRepair.length ? "published-shelf-repair-held-fatal" : "published-shelf-minor-repair-kept-live"
+      action: keepPublishedAfterMinorRepair ? "published-shelf-minor-repair-kept-live" : "published-shelf-repair-held-fatal"
     }
   };
 }
@@ -35365,7 +35440,7 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   const contradictions = storyDossier.contradictions || storyDossier.disagreement?.contradictions || [];
   const whatHappened = cleanArticleText(storyDossier.whatHappened || "", 260);
   const confidenceScore = Number(storyDossier.confidence?.score || storyDossier.evidence?.confidenceScore || 0);
-  const sourceCount = Number(storyDossier.evidence?.sourceCount || sourcePool.length || context.sources?.length || 0);
+  const sourceCount = Number(storyDossier.evidence?.sourceCount || sourcePool.length || storyDossier.eventSubDossier?.sourceSeparation?.writingSourceCount || storyDossier.eventSubDossier?.sourceSeparation?.verificationSourceCount || context.sources?.length || 0);
   const writerPackReady = Boolean(storyDossier.writerInput?.readiness?.readyForWriter || storyDossier.dossierBuilder?.readyForWriter);
   const mixedOrGeneric = Boolean(handoff.genericRepresentative || handoff.mixedEvent || handoff.topicContamination || handoff.minimumDossierFallback);
   const missing = [
@@ -35399,6 +35474,10 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
       knownFactCount: knownFacts.length,
       directWritingFactCount: directWritingFacts.length,
       sourceCount,
+      eventSubDossierReady: Boolean(storyDossier.eventSubDossier?.readiness?.readyForMainDossier),
+      eventSubDossierWritingSources: Number(storyDossier.eventSubDossier?.sourceSeparation?.writingSourceCount || 0),
+      eventSubDossierVerificationSources: Number(storyDossier.eventSubDossier?.sourceSeparation?.verificationSourceCount || 0),
+      eventSubDossierKeywordOnlyRejected: Number(storyDossier.eventSubDossier?.sourceSeparation?.keywordOnlyRejectedCount || 0),
       timelineCount: timeline.length,
       contradictionCount: contradictions.length,
       confidenceScore,
@@ -35443,7 +35522,13 @@ function newsLabLockDossierForWriting(storyDossier = {}, readiness = {}, context
   };
 }
 function newsLabDossierSourceContextRecords(storyDossier = {}, context = {}) {
+  const eventSubDossierSources = [
+    ...(Array.isArray(storyDossier.eventSubDossier?.sources?.writing) ? storyDossier.eventSubDossier.sources.writing : []),
+    ...(Array.isArray(storyDossier.eventSubDossier?.sources?.verification) ? storyDossier.eventSubDossier.sources.verification : []),
+    ...(Array.isArray(storyDossier.eventSubDossier?.sources?.background) ? storyDossier.eventSubDossier.sources.background : [])
+  ];
   const rawSources = [
+    ...eventSubDossierSources,
     ...(Array.isArray(storyDossier.sourcePool) ? storyDossier.sourcePool : []),
     ...(Array.isArray(storyDossier.officialSources) ? storyDossier.officialSources : []),
     ...(Array.isArray(storyDossier.independentSources) ? storyDossier.independentSources : []),
@@ -41069,6 +41154,48 @@ function filterCleanNewsLabPayloadForCategory(payload = {}, category = "") {
   };
   let cleanPayload = newsLabApplyCurrentBoardPolicy(cleanPayloadBeforeBoardPolicy);
   let activeCleanStories = Array.isArray(cleanPayload.ownedStories) ? cleanPayload.ownedStories : [];
+  if (cleanStories.length && activeCleanStories.length < cleanStories.length) {
+    const activeKeys = new Set(activeCleanStories.map(story => story.id || story.storyId || cleanArticleText(story.title || story.headline || "", 180).toLowerCase()).filter(Boolean));
+    const recoveredDurableStories = cleanStories
+      .filter(story => {
+        const key = story.id || story.storyId || cleanArticleText(story.title || story.headline || "", 180).toLowerCase();
+        return key && !activeKeys.has(key);
+      })
+      .map((story, index) => newsLabRepairPublishedStoryBeforeBoard({
+        ...story,
+        publicArticle: true,
+        durableApprovedBeforeBoard: true,
+        qualityGate: {
+          ...(story.qualityGate || {}),
+          action: story.qualityGate?.action || "partial-public-shelf-durable-recovery"
+        }
+      }, index))
+      .filter(story => newsLabDurablePublishedStoryShouldStayVisible(story))
+      .map(story => newsLabAnnotateBoardVisibility(story))
+      .filter(story => story.boardVisibility?.visible);
+    if (recoveredDurableStories.length) {
+      const mergedStoriesByKey = new Map();
+      [...activeCleanStories, ...recoveredDurableStories].forEach(story => {
+        const key = story.id || story.storyId || cleanArticleText(story.title || story.headline || "", 180).toLowerCase();
+        if (!key) return;
+        const existing = mergedStoriesByKey.get(key);
+        mergedStoriesByKey.set(key, existing && newsLabStoryReplacementRank(existing) >= newsLabStoryReplacementRank(story) ? existing : story);
+      });
+      activeCleanStories = newsLabSortByCoveragePopularity([...mergedStoriesByKey.values()]);
+      cleanPayload = {
+        ...cleanPayload,
+        ownedStories: activeCleanStories,
+        cleanShelfPolicy: {
+          ...(cleanPayload.cleanShelfPolicy || cleanPayloadBeforeBoardPolicy.cleanShelfPolicy || {}),
+          partialRecoveryApplied: true,
+          recoveredCount: recoveredDurableStories.length,
+          beforePartialRecoveryCount: Array.isArray(cleanPayload.ownedStories) ? cleanPayload.ownedStories.length : 0,
+          afterPartialRecoveryCount: activeCleanStories.length,
+          rule: "Prepared API cache must not silently shrink durable public stories. If board policy drops a non-fatal repaired story, the cache rechecks durable visibility and restores it inside the 7-day public board window."
+        }
+      };
+    }
+  }
   if (!activeCleanStories.length && cleanStories.length) {
     const durableFallbackPayload = newsLabApplyCurrentBoardPolicy({
       ...cleanPayloadBeforeBoardPolicy,
@@ -41702,6 +41829,15 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     intelligence
   });
   storyDossier.writerDossierHandoff = cleanWriterHandoff.diagnostic;
+  storyDossier.eventSubDossier = cleanWriterHandoff.eventSubDossier || null;
+  storyDossier.subDossierPreSeparation = {
+    active: Boolean(cleanWriterHandoff.eventSubDossier),
+    verifiedByMainDossier: true,
+    writingSourceCount: Number(cleanWriterHandoff.eventSubDossier?.sourceSeparation?.writingSourceCount || 0),
+    verificationSourceCount: Number(cleanWriterHandoff.eventSubDossier?.sourceSeparation?.verificationSourceCount || 0),
+    keywordOnlyRejectedCount: Number(cleanWriterHandoff.eventSubDossier?.sourceSeparation?.keywordOnlyRejectedCount || 0),
+    rule: "Event sub-dossier pre-separates source material before the main dossier. Main Dossier verifies same-event evidence and keeps keyword-only material out of Writer facts."
+  };
   storyDossier.categorySubDossierHandoff = {
     active: true,
     representativeCategory,
@@ -42172,6 +42308,15 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       title: source.title || facts[0] || "",
       url: source.url || ""
     })),
+    eventSubDossier: cleanWriterHandoff.eventSubDossier || null,
+    subDossierPreSeparation: {
+      active: Boolean(cleanWriterHandoff.eventSubDossier),
+      verifiedByMainDossier: true,
+      writingSourceCount: Number(cleanWriterHandoff.eventSubDossier?.sourceSeparation?.writingSourceCount || 0),
+      verificationSourceCount: Number(cleanWriterHandoff.eventSubDossier?.sourceSeparation?.verificationSourceCount || 0),
+      keywordOnlyRejectedCount: Number(cleanWriterHandoff.eventSubDossier?.sourceSeparation?.keywordOnlyRejectedCount || 0),
+      rule: "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+    },
     writerInput: {
       directWritingFacts: facts,
       readiness: {
@@ -47177,6 +47322,14 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
 
 
 
