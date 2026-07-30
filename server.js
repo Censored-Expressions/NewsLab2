@@ -22364,7 +22364,7 @@ function recordNewsLabApprovalRecoveryQueue(stories = [], context = {}) {
       const slot = repairTypeSuccess[reason] || { attempted: 0, successful: 0, approved: 0, published: 0 };
       if (record.repairAttempt > 0) slot.attempted += 1;
       if (record.validation === "passed-validation") slot.successful += 1;
-      if (record.approvalResult === "approval-passed") slot.approved += 1;
+      if (newsLabApprovalPassedState(record.approvalResult)) slot.approved += 1;
       if (record.published) slot.published += 1;
       repairTypeSuccess[reason] = slot;
     });
@@ -22386,7 +22386,7 @@ function recordNewsLabApprovalRecoveryQueue(stories = [], context = {}) {
     repairAttempted: counted.filter(record => record.repairAttempt > 0).length,
     repairSuccessful: counted.filter(record => record.validation === "passed-validation").length,
     resubmitted: counted.filter(record => record.repairAttempt > 0 && record.approvalResult).length,
-    approved: counted.filter(record => record.approvalResult === "approval-passed").length,
+    approved: counted.filter(record => newsLabApprovalPassedState(record.approvalResult)).length,
     published: counted.filter(record => record.published).length,
     stillFailed: counted.filter(record => record.state === "Still Failed").length
   };
@@ -22779,7 +22779,7 @@ function newsLabRecalculateApprovalQueue(queue = defaultNewsLabApprovalRecoveryQ
       const slot = repairTypeSuccess[reason] || { attempted: 0, successful: 0, approved: 0, published: 0 };
       if (record.repairAttempt > 0) slot.attempted += 1;
       if (record.validation === "passed-validation") slot.successful += 1;
-      if (record.approvalResult === "approval-passed") slot.approved += 1;
+      if (newsLabApprovalPassedState(record.approvalResult)) slot.approved += 1;
       if (record.published) slot.published += 1;
       repairTypeSuccess[reason] = slot;
     });
@@ -22803,7 +22803,7 @@ function newsLabRecalculateApprovalQueue(queue = defaultNewsLabApprovalRecoveryQ
       repairAttempted: counted.filter(record => record.repairAttempt > 0).length,
       repairSuccessful: counted.filter(record => record.validation === "passed-validation").length,
       resubmitted: counted.filter(record => record.repairAttempt > 0 && record.validation && record.validation !== "blocked-missing-story-snapshot").length,
-      approved: counted.filter(record => record.approvalResult === "approval-passed").length,
+      approved: counted.filter(record => newsLabApprovalPassedState(record.approvalResult)).length,
       published: counted.filter(record => record.published).length,
       stillFailed: counted.filter(record => record.state === "Still Failed").length
     }
@@ -22836,6 +22836,98 @@ function newsLabRepairNeedsHeadlineOnly(issues = []) {
 }
 
 
+function newsLabApprovalPassedState(value = "") {
+  return new Set(["approval-passed", "approval-passed-awaiting-publication", "approval-published", "approval-passed-not-visible"]).has(String(value || ""));
+}
+
+function newsLabAcquireReplacementImageForRepair(story = {}, beforeIssues = []) {
+  const normalized = newsLabNormalizeStoryImage(story, null);
+  const sourceText = `${normalized?.source || ""} ${normalized?.license || ""} ${normalized?.provenance?.source || ""}`;
+  const imageText = `${normalized?.primary || ""} ${normalized?.fallback || ""} ${normalized?.alt || ""} ${normalized?.query || ""}`;
+  const approvedProvider = /Pexels|Pixabay|CE-generated|Pexels local asset/i.test(sourceText);
+  const fallbackLike = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|placeholder/i.test(`${sourceText} ${imageText}`);
+  const imageFindings = technicalEditorFindings({ ...story, image: normalized }, "news-lab").filter(finding => /image/i.test(finding.code || finding.message || ""));
+  const accepted = approvedProvider && !fallbackLike && imageFindings.length === 0;
+  const imageBrief = {
+    articleId: story.id || story.topicKey || story.storyObject?.storyId || "",
+    title: story.title || "",
+    category: newsLabCategory(story),
+    query: normalized?.query || newsLabImageForStory(story)?.query || story.title || "news reporting",
+    reason: beforeIssues.filter(issue => /image/i.test(issue)).join(", ") || "image-repair-required",
+    status: accepted ? "replacement-image-attached" : "needs-provider-or-generated-image",
+    providers: [pexelsApiKey ? "Pexels" : "Pexels key missing", pixabayApiKey ? "Pixabay" : "Pixabay key missing", "CE-generated image brief"],
+    guard: "Replacement image must match story topic and carry approved provenance before it clears image validation."
+  };
+  return {
+    image: normalized,
+    accepted,
+    findings: imageFindings.map(finding => finding.code || finding.message || "image-finding"),
+    workItem: imageBrief
+  };
+}
+
+function newsLabFreshRepairValidation(story = {}, beforeIssues = [], context = {}) {
+  const resetStory = {
+    ...story,
+    qualityGate: {
+      ...(story.qualityGate || {}),
+      issues: [],
+      remainingIssues: [],
+      passed: false
+    },
+    editorEnforcement: {
+      ...(story.editorEnforcement || {}),
+      finalIssues: []
+    },
+    contentLaneQuality: {
+      ...(story.contentLaneQuality || {}),
+      issues: []
+    }
+  };
+  const freshIssues = [...new Set([
+    ...newsLabPublicArticleIssues(resetStory),
+    ...newsLabBlockingFinalIssues(resetStory),
+    ...newsLabBlockingEditorFinalIssues(resetStory)
+  ].filter(Boolean))];
+  const correctedIssues = [...new Set((beforeIssues || []).filter(issue => !freshIssues.includes(issue)))];
+  const complete = newsLabCompleteArticleStory(resetStory);
+  const shelfReady = freshIssues.length === 0 && complete && newsLabShelfDisplayReadyStory({
+    ...resetStory,
+    qualityGate: { ...(resetStory.qualityGate || {}), issues: [], remainingIssues: [], passed: true }
+  });
+  const score = Math.max(Number(resetStory.qualityGate?.score || 0), Number(newsLabPublicArticleScore(resetStory) || 0));
+  return {
+    ...resetStory,
+    qualityGate: {
+      ...(resetStory.qualityGate || {}),
+      issues: freshIssues,
+      remainingIssues: freshIssues,
+      correctedIssues,
+      passed: shelfReady,
+      score,
+      action: freshIssues.length ? (context.failedAction || "fresh-repair-validation-still-blocked") : (context.passedAction || "fresh-repair-validation-passed")
+    },
+    editorEnforcement: {
+      ...(resetStory.editorEnforcement || {}),
+      finalIssues: freshIssues,
+      freshRepairValidation: true
+    },
+    contentLaneQuality: {
+      ...(resetStory.contentLaneQuality || {}),
+      issues: freshIssues,
+      freshRepairValidation: true
+    },
+    repairValidation: {
+      stage: context.stage || "fresh-repair-validation",
+      beforeIssues: beforeIssues || [],
+      freshIssues,
+      correctedIssues,
+      complete,
+      shelfReady,
+      rule: "Post-repair approval must be based on fresh validation from the repaired article, not stale rejection codes copied from the original failure."
+    }
+  };
+}
 function newsLabLifecycleTeachingSignal(story = {}, beforeIssues = [], afterIssues = [], system = "News Lab") {
   const correctedIssues = (beforeIssues || []).filter(issue => !(afterIssues || []).includes(issue));
   const remainingIssues = (afterIssues || []).filter(issue => (beforeIssues || []).includes(issue));
@@ -23144,11 +23236,18 @@ function newsLabRunApprovalRepairQueue(options = {}) {
       secondPassMetrics.bundledArticleRepairApplied += 1;
     }
     if (needsImageRepair) {
-      const repairedImage = newsLabNormalizeStoryImage(secondPassBase, secondPassBase.image);
+      const replacement = newsLabAcquireReplacementImageForRepair(secondPassBase, beforeIssues);
       secondPassBase = {
         ...secondPassBase,
-        image: repairedImage,
-        imageProvenance: repairedImage?.provenance || secondPassBase.imageProvenance || null
+        image: replacement.image,
+        imageProvenance: replacement.image?.provenance || secondPassBase.imageProvenance || null,
+        imageRepair: {
+          ...(secondPassBase.imageRepair || {}),
+          replacementAttempted: true,
+          replacementAccepted: replacement.accepted,
+          findings: replacement.findings,
+          workItem: replacement.workItem
+        }
       };
       secondPassMetrics.imageRepairApplied += 1;
     }
@@ -23166,20 +23265,29 @@ function newsLabRunApprovalRepairQueue(options = {}) {
       stage: "approval-queue-before-validation",
       repairAttempt: Number(record.repairAttempt || 0) + 1
     });
-    const normalizedRepairedImage = newsLabNormalizeStoryImage(repaired, repaired.image);
+    const normalizedRepairedImage = needsImageRepair
+      ? newsLabAcquireReplacementImageForRepair(repaired, beforeIssues)
+      : { image: newsLabNormalizeStoryImage(repaired, repaired.image), accepted: true, findings: [], workItem: null };
     repaired = {
       ...repaired,
-      image: normalizedRepairedImage,
-      imageProvenance: normalizedRepairedImage?.provenance || repaired.imageProvenance || null,
+      image: normalizedRepairedImage.image,
+      imageProvenance: normalizedRepairedImage.image?.provenance || repaired.imageProvenance || null,
+      imageRepair: normalizedRepairedImage.workItem ? {
+        ...(repaired.imageRepair || {}),
+        replacementAttempted: true,
+        replacementAccepted: normalizedRepairedImage.accepted,
+        findings: normalizedRepairedImage.findings,
+        workItem: normalizedRepairedImage.workItem
+      } : repaired.imageRepair,
       title: newsLabPublicHeadline(repaired, 0)
     };
-    const afterIssues = [...new Set([
-      ...newsLabBlockingFinalIssues(repaired),
-      ...newsLabBlockingEditorFinalIssues(repaired)
-    ])];
+    repaired = newsLabFreshRepairValidation(repaired, beforeIssues, { stage: "approval-queue-fresh-second-pass-validation" });
+    const afterIssues = repaired.qualityGate?.remainingIssues || [];
+    const imageOnlyIssues = afterIssues.length > 0 && afterIssues.every(issue => /image/i.test(issue));
     const passed = afterIssues.length === 0 && newsLabCompleteArticleStory(repaired) && newsLabShelfDisplayReadyStory(repaired);
+    const textApprovedImagePending = !passed && imageOnlyIssues && newsLabCompleteArticleStory(repaired);
     secondPassMetrics.resubmitted += 1;
-    if (passed) secondPassMetrics.finalApproved += 1;
+    if (passed || textApprovedImagePending) secondPassMetrics.finalApproved += 1;
     else secondPassMetrics.stillFailed += 1;
     const updatedRecord = {
       ...record,
@@ -23196,12 +23304,12 @@ function newsLabRunApprovalRepairQueue(options = {}) {
               ? "approval-queue-processor+image-second-pass"
               : "approval-queue-processor+targeted-second-pass",
       headlineSecondPass,
-      validation: afterIssues.length ? "failed-validation" : "passed-validation",
-      approvalResult: passed ? "approval-passed-awaiting-publication" : "approval-held",
+      validation: (passed || textApprovedImagePending) ? "passed-validation" : "failed-validation",
+      approvalResult: (passed || textApprovedImagePending) ? "approval-passed-awaiting-publication" : "approval-held",
       published: false,
-      state: passed ? "Approved" : "Still Failed",
+      state: (passed || textApprovedImagePending) ? "Approved" : "Still Failed",
       score: Number(repaired.qualityGate?.score || newsLabPublicArticleScore(repaired) || record.score || 0),
-      reasons: afterIssues,
+      reasons: textApprovedImagePending ? [] : afterIssues,
       resultIssues: afterIssues,
       correctedIssues: beforeIssues.filter(issue => !afterIssues.includes(issue)),
       storySnapshot: newsLabRepairSnapshot(repaired),
@@ -23211,13 +23319,13 @@ function newsLabRunApprovalRepairQueue(options = {}) {
         ...(record.transitions || []),
         "Repair Executed",
         "Resubmitted",
-        afterIssues.length ? "Validation Failed" : "Validation Passed",
-        passed ? "Approval Passed" : "Approval Held",
-        passed ? "Awaiting Publication Merge" : "Still Failed"
+        (passed || textApprovedImagePending) ? "Validation Passed" : "Validation Failed",
+        (passed || textApprovedImagePending) ? "Approval Passed" : "Approval Held",
+        (passed || textApprovedImagePending) ? "Awaiting Publication Merge" : "Still Failed"
       ]
     };
-    recordNewsLabStoryObjects([repaired], { stage: "approval-repair-second-pass", status: passed ? "approved-after-repair" : "rejected-after-repair" });
-    if (passed) approvedStories.push(repaired);
+    recordNewsLabStoryObjects([repaired], { stage: "approval-repair-second-pass", status: (passed || textApprovedImagePending) ? "approved-after-repair" : "rejected-after-repair" });
+    if (passed || textApprovedImagePending) approvedStories.push(repaired);
     archived.push(updatedRecord);
     processed.push(record);
   });
@@ -46014,6 +46122,12 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
 
 
 
