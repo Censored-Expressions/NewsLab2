@@ -3531,7 +3531,7 @@ function defaultNewsLabPublicationIntelligenceActionQueue() {
   return {
     version: "20260730-publication-intelligence-action-queue-v1",
     updatedAt: "",
-    purpose: "Turn publication intelligence failures into subsystem-owned work orders that repair, validate, resubmit, and redeploy articles.",
+    purpose: "Turn publication intelligence failures into subsystem-owned work orders that repair, validate, resubmit, redeploy, and prevent similar future failures before first draft.",
     summary: {
       active: 0,
       completed: 0,
@@ -3545,7 +3545,7 @@ function defaultNewsLabPublicationIntelligenceActionQueue() {
     completed: [],
     topFailureCodes: [],
     preventionRules: [],
-    rule: "Failures must become subsystem work orders with repair commands, validation checks, redeploy targets, and learning signals."
+    rule: "Failures must become subsystem work orders with repair commands, validation checks, redeploy targets, learning signals, and first-draft prevention guards."
   };
 }
 
@@ -3603,6 +3603,13 @@ function newsLabPublicationActionWorkOrderFromStory(story = {}, context = {}) {
       action: item.action || "Repair the failed component, preserve the article snapshot, and resubmit for validation.",
       validation: item.validation || "Re-run the failed validation and confirm the corrected article can return to the publisher."
     })),
+    preventionGuards: repairPlan.map(item => ({
+      owner: item.owner || route,
+      actionType: newsLabPublicationActionTypeForRootCause(item.rootCause || item.action || ""),
+      triggerPattern: item.rootCause || failureCodes[0] || "publication-intelligence-failure",
+      preDraftGuard: item.validation || "Apply the generalized failure check before the next draft reaches editorial review.",
+      avoidBy: item.action || "Prevent the failure class upstream; do not wait for the Editor to reject it again."
+    })),
     validationTargets: [
       "Story Dossier, headline, lead, body, category, and image must describe the same event.",
       "No process language, incomplete sentences, word salad, or placeholder copy may remain.",
@@ -3620,6 +3627,8 @@ function newsLabPublicationActionWorkOrderFromStory(story = {}, context = {}) {
     learningSignal: {
       upstream: "Teach the producing subsystem the generalized failure type, not only the exact article wording.",
       downstream: "Teach Editor, Validator, Publisher, and Image Worker how the corrected output should be recognized and moved forward.",
+      fixLesson: "Repair the failed component for this article, preserve the story snapshot, and resubmit it.",
+      preventionLesson: "Before the next similar article is drafted, run the generalized guard for this failure class so the same type of error is avoided upstream.",
       preventionRule: intel.preventionRule || "Convert recurring failure classes into first-draft prevention checks before editor review."
     },
     updatedAt: new Date().toISOString()
@@ -3675,10 +3684,13 @@ function recordNewsLabPublicationIntelligenceActionQueue(stories = [], context =
     active,
     completed,
     topFailureCodes: Object.entries(failureCounts).map(([failureCode, count]) => ({ failureCode, count })).sort((a, b) => b.count - a.count).slice(0, 20),
-    preventionRules: [...new Map(active.flatMap(item => (item.repairCommands || []).map(command => [command.rootCause, {
-      rootCause: command.rootCause,
+    preventionRules: [...new Map(active.flatMap(item => (item.preventionGuards || item.repairCommands || []).map(command => [command.rootCause || command.triggerPattern, {
+      rootCause: command.rootCause || command.triggerPattern,
       owner: command.owner,
       actionType: command.actionType,
+      triggerPattern: command.triggerPattern || command.rootCause,
+      preDraftGuard: command.preDraftGuard || command.validation || "Apply this generalized failure check before first draft.",
+      avoidBy: command.avoidBy || command.action || "Prevent this failure upstream before the Editor sees a draft.",
       preventionRule: item.learningSignal?.preventionRule || "Prevent the generalized failure before first draft approval."
     }]))).values()].slice(0, 80)
   };
@@ -38501,9 +38513,76 @@ function newsLabPublicationIdentityProof(story = {}, issueSet = {}) {
   };
 }
 
+function newsLabPublicationPreventionRulesForStory(story = {}) {
+  const queue = readJsonFile(newsLabPublicationIntelligenceActionQueueFile, defaultNewsLabPublicationIntelligenceActionQueue()) || defaultNewsLabPublicationIntelligenceActionQueue();
+  const rules = Array.isArray(queue.preventionRules) ? queue.preventionRules : [];
+  const storyText = [story.title, story.summary, story.articleSummary, story.category, ...(Array.isArray(story.body) ? story.body : [])].filter(Boolean).join(" ").toLowerCase();
+  const normalizedCategory = String(story.category || "").toLowerCase();
+  return rules
+    .filter(rule => rule && rule.actionType)
+    .filter(rule => {
+      const root = String(rule.rootCause || rule.triggerPattern || "").toLowerCase();
+      if (!root) return true;
+      if (/headline|language|sentence|identity|dossier|image|publisher|cache|evidence/.test(root)) return true;
+      return storyText.includes(root) || (normalizedCategory && root.includes(normalizedCategory));
+    })
+    .slice(0, 12);
+}
+
+function newsLabApplyPublicationPreventionMemory(story = {}, context = {}) {
+  const rules = newsLabPublicationPreventionRulesForStory(story);
+  if (!rules.length) return story;
+  let prepared = { ...story };
+  const actionTypes = new Set(rules.map(rule => rule.actionType));
+  if (actionTypes.has("rebuild-story-dossier-identity")) {
+    prepared = newsLabEnsureWriterDossierHandoff(prepared);
+    prepared = newsLabNormalizeCategoryBeforeEditor(prepared);
+  }
+  if (actionTypes.has("body-language-repair") || actionTypes.has("targeted-editorial-repair")) {
+    prepared = newsLabSanitizePublicNewsCopy(prepared);
+    if (Array.isArray(prepared.body)) {
+      prepared = {
+        ...prepared,
+        body: prepared.body.map(paragraph => newsLabCleanPublicParagraphSentences(paragraph)).filter(Boolean)
+      };
+    }
+  }
+  if (actionTypes.has("headline-only-repair")) {
+    const headline = newsLabSelectPassingHeadline(prepared, prepared.title || "") || newsLabEventHeadlineFromDossier(prepared) || prepared.title;
+    if (headline) prepared = { ...prepared, title: headline };
+  }
+  if (actionTypes.has("post-publication-image-match") && (!prepared.image || /fallback|placeholder|ce-logo/i.test(`${prepared.image?.provenance || ""} ${prepared.image?.alt || ""}`))) {
+    const image = newsLabNormalizeStoryImage(prepared, null);
+    prepared = { ...prepared, image, imageProvenance: image?.provenance || prepared.imageProvenance || null };
+  }
+  return {
+    ...prepared,
+    publicationPreventionMemory: {
+      applied: true,
+      stage: context.stage || "publication-prevention-memory",
+      checkedAt: new Date().toISOString(),
+      rulesApplied: rules.map(rule => ({
+        owner: rule.owner || "Publishing Editor",
+        actionType: rule.actionType,
+        rootCause: rule.rootCause || rule.triggerPattern || "publication-intelligence-failure",
+        preDraftGuard: rule.preDraftGuard || "Apply generalized prevention before first draft.",
+        avoidBy: rule.avoidBy || rule.preventionRule || "Avoid this failure before repair is needed."
+      })),
+      lesson: "Prior rejected article patterns are applied as first-draft prevention guards, not only post-rejection repair instructions."
+    },
+    learningApplicationProof: {
+      ...(prepared.learningApplicationProof || {}),
+      publicationPreventionMemoryApplied: true,
+      preventionRuleCount: rules.length,
+      appliedAt: new Date().toISOString()
+    }
+  };
+}
+
 function newsLabPublicationIntelligencePreflight(story = {}, context = {}) {
   const startedIssues = newsLabPublicationIdentityIssueSet(story);
-  let prepared = newsLabEnsureWriterDossierHandoff(story);
+  let prepared = newsLabApplyPublicationPreventionMemory(story, { stage: context.stage || "publication-intelligence-preflight" });
+  prepared = newsLabEnsureWriterDossierHandoff(prepared);
   prepared = newsLabNormalizeCategoryBeforeEditor(prepared);
   prepared = newsLabApplyHeadlinePreEditor(prepared, Number(context.index || 0));
   prepared = newsLabPreventKnownApprovalFailures(prepared, { stage: context.stage || "publication-intelligence-preflight" });
@@ -38526,12 +38605,15 @@ function newsLabPublicationIntelligencePreflight(story = {}, context = {}) {
       identityProof: proof,
       readyForEditor: afterIssues.identityIssues.length === 0 && afterIssues.headlineIssues.length === 0 && afterIssues.languageIssues.length === 0,
       route: afterIssues.identityIssues.length ? "Story Dossier Builder" : afterIssues.headlineIssues.length ? "Headline Editor" : afterIssues.writerReasoningIssues.length ? "Evidence Engine" : afterIssues.imageIssues.length ? "Image Intelligence Worker" : afterIssues.languageIssues.length ? "Publishing Editor" : "Editor",
-      preventionRule: "Repeated failures must become generalized root-cause prevention rules before the next first draft, not exact-string checks."
+      preventionRule: "Repeated failures must become generalized root-cause prevention rules before the next first draft, not exact-string checks.",
+      preventionMemoryApplied: Boolean(prepared.publicationPreventionMemory?.applied),
+      preventionRulesApplied: prepared.publicationPreventionMemory?.rulesApplied || []
     },
     qualityGate: {
       ...(prepared.qualityGate || {}),
       publicationIntelligenceBeforeEditor: true,
       publicationIntelligenceReady: afterIssues.identityIssues.length === 0,
+      preventionMemoryApplied: Boolean(prepared.publicationPreventionMemory?.applied),
       issues: afterIssues.allIssues,
       remainingIssues: afterIssues.allIssues,
       correctedIssues: [...new Set([...(prepared.qualityGate?.correctedIssues || []), ...correctedIssues])],
@@ -45932,6 +46014,7 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
 
 
 
