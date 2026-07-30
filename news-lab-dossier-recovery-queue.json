@@ -1,0 +1,2493 @@
+{
+  "version": "20260730-dossier-recovery-queue-v1",
+  "updatedAt": "2026-07-30T22:30:04.373Z",
+  "scope": "collector-to-dossier-readiness",
+  "totals": {
+    "queued": 14,
+    "fullArticleReady": 0,
+    "developingBriefReady": 2,
+    "needsEnrichment": 11,
+    "needsClusterRepair": 0,
+    "needsIdentityResolution": 1,
+    "duplicateEvent": 0,
+    "rejected": 0
+  },
+  "reasonCounts": {
+    "needs-source-context": 5,
+    "needs-two-unique-verified-facts": 6,
+    "needs-clean-single-event-identity": 1,
+    "mixed-event-sources-rejected": 1,
+    "needs-clear-actor-action-event": 1
+  },
+  "actionCounts": {
+    "collect-primary-or-independent-source-evidence": 5,
+    "extract-source-claims-and-promote-usable-facts": 6,
+    "route-to-developing-brief-lane": 2,
+    "resolve-primary-actor-action-time-location": 1
+  },
+  "active": [
+    {
+      "id": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "clusterId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "title": "Megan Moroney Ends Concert Early Due to Illness: ‘It Hurts Me So Much to Disappoint You All’",
+      "category": "entertainment",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-source-context",
+      "blockingReasons": [
+        "needs-source-context",
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [],
+      "missingEvidence": [
+        "needs-verifiable-story-snapshot-depth",
+        "needs-source-context"
+      ],
+      "acceptedSourceCount": 2,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "Megan Moroney Ends Concert Early Due to Illness: ‘It Hurts Me So Much to Disappoint You All’",
+          "source": "Rolling Stone",
+          "url": "https://www.rollingstone.com/music/music-news/megan-moroney-ends-denver-concert-early-illness-1235600223/"
+        },
+        {
+          "title": "‘The Hardest Decision I’ve Ever Had to Make’: Megan Moroney Ends Denver Concert Early Due to Illness",
+          "source": "Billboard",
+          "url": "https://www.billboard.com/music/country/megan-moroney-ends-denver-concert-early-illness-1236305001/"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "representative": "Megan Moroney Ends Concert Early Due to Illness: ‘It Hurts Me So Much to Disappoint You All’",
+        "facts": [
+          "“Megan is unable to continue her performance this evening due to illness, and we must end the show at this time,\" a statement reads."
+        ],
+        "sourceCount": 2
+      },
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:40:04.373Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:30:04.373Z",
+      "createdAt": "2026-07-30T22:30:04.373Z",
+      "preventionLesson": "A story with fewer than two clean facts or no full-depth source should be enriched by Collector/Dossier before Writer handoff; do not let it vanish or become weak prose."
+    },
+    {
+      "id": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "eventId": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "clusterId": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "title": "‘The King’s Warden’ Leads Korea to Best First Half Box Office Since Pandemic",
+      "category": "entertainment",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-source-context",
+      "blockingReasons": [
+        "needs-source-context",
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [],
+      "missingEvidence": [
+        "needs-verifiable-story-snapshot-depth",
+        "needs-source-context"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "‘The King’s Warden’ Leads Korea to Best First Half Box Office Since Pandemic",
+          "source": "Variety",
+          "url": "https://variety.com/2026/film/box-office/the-kings-warden-korea-best-first-half-box-office-pandemic-1236823221/"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "representative": "‘The King’s Warden’ Leads Korea to Best First Half Box Office Since Pandemic",
+        "facts": [
+          "Local films drove Korean box office recovery in the first half of 2026, with total industry revenue reaching KRW579 billion ($399.1 million) on 57.05 million admissions,."
+        ],
+        "sourceCount": 1
+      },
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:40:03.928Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:30:03.928Z",
+      "createdAt": "2026-07-30T22:30:03.928Z",
+      "preventionLesson": "A story with fewer than two clean facts or no full-depth source should be enriched by Collector/Dossier before Writer handoff; do not let it vanish or become weak prose."
+    },
+    {
+      "id": "world:event:iran-iraq-the-middle-east-u-s--saudi-expands-joint-resume-attacks",
+      "eventId": "world:event:iran-iraq-the-middle-east-u-s--saudi-expands-joint-resume-attacks",
+      "clusterId": "world:event:iran-iraq-the-middle-east-u-s--saudi-expands-joint-resume-attacks",
+      "title": "U.S. and Iran resume attacks. And, Fauci to face Senate questions on COVID pandemic",
+      "category": "world",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-source-context",
+      "blockingReasons": [
+        "needs-source-context",
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [],
+      "missingEvidence": [
+        "needs-verifiable-story-snapshot-depth",
+        "needs-source-context"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "U.S. and Iran resume attacks. And, Fauci to face Senate questions on COVID pandemic",
+          "source": "NPR World",
+          "url": "https://www.npr.org/2026/07/29/g-s1-136076/up-first-newsletter-iran-benjamin-netanyahu-trump-iowa-water-anthony-fauci-fed-rates"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "representative": "U.S. and Iran resume attacks. And, Fauci to face Senate questions on COVID pandemic",
+        "facts": [
+          "The U.S. and Iran have resumed fighting after Iran attacked U.S. forces in the Middle East yesterday. And, a Senate committee will question Anthony Fauci about the COVID-."
+        ],
+        "sourceCount": 1
+      },
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:40:03.653Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:30:03.653Z",
+      "createdAt": "2026-07-30T22:30:03.653Z",
+      "preventionLesson": "A story with fewer than two clean facts or no full-depth source should be enriched by Collector/Dossier before Writer handoff; do not let it vanish or become weak prose."
+    },
+    {
+      "id": "worker_slice_technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove_3",
+      "eventId": "worker_slice_technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove_3",
+      "clusterId": "technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove",
+      "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+      "category": "technology",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-two-unique-verified-facts",
+      "blockingReasons": [
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [
+        "needs-3-unique-facts-for-standard",
+        "needs-independent-confirmation-or-primary-source",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-two-unique-verified-facts"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 2,
+      "acceptedSources": [
+        {
+          "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+          "source": "Wired",
+          "url": "https://www.wired.com/story/first-drive-ferrari-luce/"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove_3",
+        "whatHappened": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising.",
+        "knownFacts": [
+          "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising.",
+          "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+            "source": "Wired",
+            "url": "https://www.wired.com/story/first-drive-ferrari-luce/",
+            "summary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+            "category": "technology",
+            "role": "primary-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "Wed, 29 Jul 2026 12:00:00 +0000",
+            "source": "Wired",
+            "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+            "url": "https://www.wired.com/story/first-drive-ferrari-luce/"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:30:03.224Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove",
+          "category": "technology",
+          "primaryEvent": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising.",
+          "sourceSeparation": {
+            "writingSourceCount": 0,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 0,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 0,
+            "mixedTopicRejectedCount": 0,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [],
+            "verification": [],
+            "background": [],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": []
+          },
+          "knownFacts": [
+            "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising.",
+            "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive."
+          ],
+          "entities": [],
+          "timeline": [],
+          "readiness": {
+            "readyForMainDossier": false,
+            "readyForWriterCandidate": false,
+            "blocker": "needs-same-event-source",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising.",
+            "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive."
+          ],
+          "readiness": {
+            "readyForWriter": true,
+            "writingFactCount": 2,
+            "sourceCount": 1,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "Wired",
+              "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+              "url": "https://www.wired.com/story/first-drive-ferrari-luce/",
+              "summary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+              "articleSummary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+              "role": "primary-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "Wired",
+              "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+              "url": "https://www.wired.com/story/first-drive-ferrari-luce/",
+              "summary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+              "articleSummary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+              "role": "primary-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": true,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "complete"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "ready"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:30:03.227Z",
+            "sourceContextCount": 1,
+            "promotedFactCount": 2,
+            "knownFactCount": 2,
+            "timelineCount": 1,
+            "sourceCount": 1,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "Wired",
+            "title": "Love It or Hate It, the Ferrari Luce Is a Thrilling Drive",
+            "url": "https://www.wired.com/story/first-drive-ferrari-luce/",
+            "summary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+            "articleSummary": "WIRED test-drove a preproduction version of the Luce, the storied Italian automaker’s controversial electric car, and it was remarkably surprising. Will it convert Ferrar.",
+            "role": "primary-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 1,
+          "sourcesReviewed": [
+            "Wired"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:30:03.227Z",
+          "sourceContextCount": 1,
+          "promotedFactCount": 2,
+          "knownFactCount": 2,
+          "timelineCount": 1,
+          "sourceCount": 1,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:40:03.227Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:30:03.362Z",
+      "createdAt": "2026-07-30T22:30:03.362Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "clusterId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "title": "The 15 Best Pool Accessories to Upgrade Your Summer (2026)",
+      "category": "sports",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-source-context",
+      "blockingReasons": [
+        "needs-source-context",
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [],
+      "missingEvidence": [
+        "needs-verifiable-story-snapshot-depth",
+        "needs-source-context"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "The 15 Best Pool Accessories to Upgrade Your Summer (2026)",
+          "source": "Wired",
+          "url": "https://www.wired.com/story/the-best-pool-accessories/"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "representative": "The 15 Best Pool Accessories to Upgrade Your Summer (2026)",
+        "facts": [
+          "These are the cleaning robots, water monitors, and toys actually worth buying for pool season."
+        ],
+        "sourceCount": 1
+      },
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:40:03.211Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:30:03.211Z",
+      "createdAt": "2026-07-30T22:30:03.211Z",
+      "preventionLesson": "A story with fewer than two clean facts or no full-depth source should be enriched by Collector/Dossier before Writer handoff; do not let it vanish or become weak prose."
+    },
+    {
+      "id": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_1",
+      "eventId": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_1",
+      "clusterId": "local:event:the-great-lakes-native-researchers-most-emblematic-fish-could",
+      "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+      "category": "local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-two-unique-verified-facts",
+      "blockingReasons": [
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [
+        "needs-3-unique-facts-for-standard",
+        "needs-independent-confirmation-or-primary-source",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-two-unique-verified-facts"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 2,
+      "acceptedSources": [
+        {
+          "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+          "source": "Guardian US",
+          "url": "https://www.theguardian.com/us-news/2026/jul/29/lake-whitefish-great-lakes-invasive-mussels"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_1",
+        "whatHappened": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash.",
+        "knownFacts": [
+          "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash.",
+          "The Great Lakes’ most emblematic fish could be consigned to history books."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+            "source": "Guardian US",
+            "url": "https://www.theguardian.com/us-news/2026/jul/29/lake-whitefish-great-lakes-invasive-mussels",
+            "summary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+            "category": "local",
+            "role": "primary-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "Wed, 29 Jul 2026 12:00:31 GMT",
+            "source": "Guardian US",
+            "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+            "url": "https://www.theguardian.com/us-news/2026/jul/29/lake-whitefish-great-lakes-invasive-mussels"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:30:02.527Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "local:event:the-great-lakes-native-researchers-most-emblematic-fish-could",
+          "category": "local",
+          "primaryEvent": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash.",
+          "sourceSeparation": {
+            "writingSourceCount": 0,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 0,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 0,
+            "mixedTopicRejectedCount": 0,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [],
+            "verification": [],
+            "background": [],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": []
+          },
+          "knownFacts": [
+            "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash.",
+            "The Great Lakes’ most emblematic fish could be consigned to history books."
+          ],
+          "entities": [],
+          "timeline": [],
+          "readiness": {
+            "readyForMainDossier": false,
+            "readyForWriterCandidate": false,
+            "blocker": "needs-same-event-source",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash.",
+            "The Great Lakes’ most emblematic fish could be consigned to history books."
+          ],
+          "readiness": {
+            "readyForWriter": true,
+            "writingFactCount": 2,
+            "sourceCount": 1,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "Guardian US",
+              "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+              "url": "https://www.theguardian.com/us-news/2026/jul/29/lake-whitefish-great-lakes-invasive-mussels",
+              "summary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+              "articleSummary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+              "role": "primary-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "Guardian US",
+              "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+              "url": "https://www.theguardian.com/us-news/2026/jul/29/lake-whitefish-great-lakes-invasive-mussels",
+              "summary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+              "articleSummary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+              "role": "primary-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": true,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "complete"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "ready"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:30:02.529Z",
+            "sourceContextCount": 1,
+            "promotedFactCount": 2,
+            "knownFactCount": 2,
+            "timelineCount": 1,
+            "sourceCount": 1,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "Guardian US",
+            "title": "The Great Lakes’ most emblematic fish could be consigned to history books",
+            "url": "https://www.theguardian.com/us-news/2026/jul/29/lake-whitefish-great-lakes-invasive-mussels",
+            "summary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+            "articleSummary": "A delicacy for centuries and a key part of Native tradition, the lake whitefish has seen its population crash. Researchers know why . but stopping it is another matter Fr.",
+            "role": "primary-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 1,
+          "sourcesReviewed": [
+            "Guardian US"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:30:02.529Z",
+          "sourceContextCount": 1,
+          "promotedFactCount": 2,
+          "knownFactCount": 2,
+          "timelineCount": 1,
+          "sourceCount": 1,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:40:02.530Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:30:02.810Z",
+      "createdAt": "2026-07-30T22:30:02.810Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "worker_slice_local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters_12",
+      "eventId": "worker_slice_local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters_12",
+      "clusterId": "local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters",
+      "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+      "category": "local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-two-unique-verified-facts",
+      "blockingReasons": [
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [
+        "needs-3-unique-facts-for-standard",
+        "needs-independent-confirmation-or-primary-source",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-two-unique-verified-facts"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 2,
+      "acceptedSources": [
+        {
+          "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+          "source": "DW World",
+          "url": "https://www.dw.com/en/eu-civil-protection-mechanism-coordinating-europe-s-firefighters/a-78145189?maca=en-rss-en-world-4025-rdf"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters_12",
+        "whatHappened": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires.",
+        "knownFacts": [
+          "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires.",
+          "EU civil protection mechanism: Coordinating Europe's firefighters."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+            "source": "DW World",
+            "url": "https://www.dw.com/en/eu-civil-protection-mechanism-coordinating-europe-s-firefighters/a-78145189?maca=en-rss-en-world-4025-rdf",
+            "summary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+            "category": "local",
+            "role": "primary-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "2026-07-29T12:23:35.039Z",
+            "source": "DW World",
+            "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+            "url": "https://www.dw.com/en/eu-civil-protection-mechanism-coordinating-europe-s-firefighters/a-78145189?maca=en-rss-en-world-4025-rdf"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:28:42.711Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters",
+          "category": "local",
+          "primaryEvent": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires.",
+          "sourceSeparation": {
+            "writingSourceCount": 0,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 0,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 0,
+            "mixedTopicRejectedCount": 0,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [],
+            "verification": [],
+            "background": [],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": []
+          },
+          "knownFacts": [
+            "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires.",
+            "EU civil protection mechanism: Coordinating Europe's firefighters."
+          ],
+          "entities": [],
+          "timeline": [],
+          "readiness": {
+            "readyForMainDossier": false,
+            "readyForWriterCandidate": false,
+            "blocker": "needs-same-event-source",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires.",
+            "EU civil protection mechanism: Coordinating Europe's firefighters."
+          ],
+          "readiness": {
+            "readyForWriter": true,
+            "writingFactCount": 2,
+            "sourceCount": 1,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "DW World",
+              "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+              "url": "https://www.dw.com/en/eu-civil-protection-mechanism-coordinating-europe-s-firefighters/a-78145189?maca=en-rss-en-world-4025-rdf",
+              "summary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+              "articleSummary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+              "role": "primary-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "DW World",
+              "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+              "url": "https://www.dw.com/en/eu-civil-protection-mechanism-coordinating-europe-s-firefighters/a-78145189?maca=en-rss-en-world-4025-rdf",
+              "summary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+              "articleSummary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+              "role": "primary-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": true,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "complete"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "ready"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:28:42.713Z",
+            "sourceContextCount": 1,
+            "promotedFactCount": 2,
+            "knownFactCount": 2,
+            "timelineCount": 1,
+            "sourceCount": 1,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "DW World",
+            "title": "EU civil protection mechanism: Coordinating Europe's firefighters",
+            "url": "https://www.dw.com/en/eu-civil-protection-mechanism-coordinating-europe-s-firefighters/a-78145189?maca=en-rss-en-world-4025-rdf",
+            "summary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+            "articleSummary": "French President Emmanuel Macron has activated the EU civil protection mechanism to help combat devastating wildfires. The system has become increasingly effective, yet i.",
+            "role": "primary-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 1,
+          "sourcesReviewed": [
+            "DW World"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:28:42.713Z",
+          "sourceContextCount": 1,
+          "promotedFactCount": 2,
+          "knownFactCount": 2,
+          "timelineCount": 1,
+          "sourceCount": 1,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:38:42.713Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:28:42.884Z",
+      "createdAt": "2026-07-30T22:28:42.884Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "politics:event:poland-poland-s-eu-s-court-same-sex-marriages-rejects",
+      "eventId": "politics:event:poland-poland-s-eu-s-court-same-sex-marriages-rejects",
+      "clusterId": "politics:event:poland-poland-s-eu-s-court-same-sex-marriages-rejects",
+      "title": "Poland: Top court rejects recognizing EU same-sex marriages",
+      "category": "politics",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-source-context",
+      "blockingReasons": [
+        "needs-source-context",
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [],
+      "missingEvidence": [
+        "needs-verifiable-story-snapshot-depth",
+        "needs-source-context"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "Poland: Top court rejects recognizing EU same-sex marriages",
+          "source": "DW World",
+          "url": "https://www.dw.com/en/poland-top-court-rejects-recognizing-eu-same-sex-marriages/a-78146379?maca=en-rss-en-world-4025-rdf"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "representative": "Poland: Top court rejects recognizing EU same-sex marriages",
+        "facts": [
+          "Poland's constitutional court has overturned plans to recognize same-sex marriages that took place in other EU member states. This defies an order from the EU's top court."
+        ],
+        "sourceCount": 1
+      },
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:38:42.240Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:28:42.240Z",
+      "createdAt": "2026-07-30T22:28:42.240Z",
+      "preventionLesson": "A story with fewer than two clean facts or no full-depth source should be enriched by Collector/Dossier before Writer handoff; do not let it vanish or become weak prose."
+    },
+    {
+      "id": "worker_slice_world:event:fujimori-peru-china-takes-charge-amid-balancing_1",
+      "eventId": "worker_slice_world:event:fujimori-peru-china-takes-charge-amid-balancing_1",
+      "clusterId": "world:event:fujimori-peru-china-takes-charge-amid-balancing",
+      "title": "Fujimori takes charge in Peru amid China, US balancing act",
+      "category": "local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-two-unique-verified-facts",
+      "blockingReasons": [
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [
+        "needs-3-unique-facts-for-standard",
+        "needs-independent-confirmation-or-primary-source",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-two-unique-verified-facts"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "Fujimori takes charge in Peru amid China, US balancing act",
+          "source": "DW World",
+          "url": "https://www.dw.com/en/fujimori-takes-charge-in-peru-amid-china-us-balancing-act/a-78110410?maca=en-rss-en-world-4025-rdf"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_world:event:fujimori-peru-china-takes-charge-amid-balancing_1",
+        "whatHappened": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington and Beijing's geopolitical rivalry.",
+        "knownFacts": [
+          "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington and Beijing's geopolitical rivalry."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "Fujimori takes charge in Peru amid China, US balancing act",
+            "source": "DW World",
+            "url": "https://www.dw.com/en/fujimori-takes-charge-in-peru-amid-china-us-balancing-act/a-78110410?maca=en-rss-en-world-4025-rdf",
+            "summary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+            "category": "local",
+            "role": "primary-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "2026-07-29T12:23:35.039Z",
+            "source": "DW World",
+            "title": "Fujimori takes charge in Peru amid China, US balancing act",
+            "url": "https://www.dw.com/en/fujimori-takes-charge-in-peru-amid-china-us-balancing-act/a-78110410?maca=en-rss-en-world-4025-rdf"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:28:41.000Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "world:event:fujimori-peru-china-takes-charge-amid-balancing",
+          "category": "local",
+          "primaryEvent": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington and Beijing's geopolitical rivalry.",
+          "sourceSeparation": {
+            "writingSourceCount": 0,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 0,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 0,
+            "mixedTopicRejectedCount": 0,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [],
+            "verification": [],
+            "background": [],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": []
+          },
+          "knownFacts": [
+            "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington and Beijing's geopolitical rivalry."
+          ],
+          "entities": [],
+          "timeline": [],
+          "readiness": {
+            "readyForMainDossier": false,
+            "readyForWriterCandidate": false,
+            "blocker": "needs-same-event-source",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington and Beijing's geopolitical rivalry."
+          ],
+          "readiness": {
+            "readyForWriter": false,
+            "writingFactCount": 1,
+            "sourceCount": 1,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "DW World",
+              "title": "Fujimori takes charge in Peru amid China, US balancing act",
+              "url": "https://www.dw.com/en/fujimori-takes-charge-in-peru-amid-china-us-balancing-act/a-78110410?maca=en-rss-en-world-4025-rdf",
+              "summary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+              "articleSummary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+              "role": "primary-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "DW World",
+              "title": "Fujimori takes charge in Peru amid China, US balancing act",
+              "url": "https://www.dw.com/en/fujimori-takes-charge-in-peru-amid-china-us-balancing-act/a-78110410?maca=en-rss-en-world-4025-rdf",
+              "summary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+              "articleSummary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+              "role": "primary-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": false,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "thin-source-slice"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "needs-more-dossier-work"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:28:41.003Z",
+            "sourceContextCount": 1,
+            "promotedFactCount": 1,
+            "knownFactCount": 1,
+            "timelineCount": 1,
+            "sourceCount": 1,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "DW World",
+            "title": "Fujimori takes charge in Peru amid China, US balancing act",
+            "url": "https://www.dw.com/en/fujimori-takes-charge-in-peru-amid-china-us-balancing-act/a-78110410?maca=en-rss-en-world-4025-rdf",
+            "summary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+            "articleSummary": "Peru's new president, Keiko Fujimori, has promised more security and investment. Now in office, she'll have to find space for the South American nation amid Washington",
+            "role": "primary-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 1,
+          "sourcesReviewed": [
+            "DW World"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:28:41.003Z",
+          "sourceContextCount": 1,
+          "promotedFactCount": 1,
+          "knownFactCount": 1,
+          "timelineCount": 1,
+          "sourceCount": 1,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:38:41.003Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:28:41.156Z",
+      "createdAt": "2026-07-30T22:28:41.156Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "worker_slice_world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency_0",
+      "eventId": "worker_slice_world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency_0",
+      "clusterId": "world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency",
+      "title": "Could US airstrikes stop insurgency in Mali?",
+      "category": "entertainment",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-two-unique-verified-facts",
+      "blockingReasons": [
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [
+        "needs-3-unique-facts-for-standard",
+        "needs-independent-confirmation-or-primary-source",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-two-unique-verified-facts"
+      ],
+      "acceptedSourceCount": 1,
+      "rejectedSourceCount": 0,
+      "factCount": 1,
+      "acceptedSources": [
+        {
+          "title": "Could US airstrikes stop insurgency in Mali?",
+          "source": "DW World",
+          "url": "https://www.dw.com/en/could-us-airstrikes-stop-insurgency-in-mali/a-78141641?maca=en-rss-en-world-4025-rdf"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency_0",
+        "whatHappened": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the jihadists but would not address the core issues.",
+        "knownFacts": [
+          "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the jihadists but would not address the core issues."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "Could US airstrikes stop insurgency in Mali?",
+            "source": "DW World",
+            "url": "https://www.dw.com/en/could-us-airstrikes-stop-insurgency-in-mali/a-78141641?maca=en-rss-en-world-4025-rdf",
+            "summary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+            "category": "entertainment",
+            "role": "primary-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "2026-07-29T12:23:35.039Z",
+            "source": "DW World",
+            "title": "Could US airstrikes stop insurgency in Mali?",
+            "url": "https://www.dw.com/en/could-us-airstrikes-stop-insurgency-in-mali/a-78141641?maca=en-rss-en-world-4025-rdf"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:28:40.710Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency",
+          "category": "entertainment",
+          "primaryEvent": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the jihadists but would not address the core issues.",
+          "sourceSeparation": {
+            "writingSourceCount": 0,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 0,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 0,
+            "mixedTopicRejectedCount": 0,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [],
+            "verification": [],
+            "background": [],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": []
+          },
+          "knownFacts": [
+            "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the jihadists but would not address the core issues."
+          ],
+          "entities": [],
+          "timeline": [],
+          "readiness": {
+            "readyForMainDossier": false,
+            "readyForWriterCandidate": false,
+            "blocker": "needs-same-event-source",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the jihadists but would not address the core issues."
+          ],
+          "readiness": {
+            "readyForWriter": false,
+            "writingFactCount": 1,
+            "sourceCount": 1,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "DW World",
+              "title": "Could US airstrikes stop insurgency in Mali?",
+              "url": "https://www.dw.com/en/could-us-airstrikes-stop-insurgency-in-mali/a-78141641?maca=en-rss-en-world-4025-rdf",
+              "summary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+              "articleSummary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+              "role": "primary-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "DW World",
+              "title": "Could US airstrikes stop insurgency in Mali?",
+              "url": "https://www.dw.com/en/could-us-airstrikes-stop-insurgency-in-mali/a-78141641?maca=en-rss-en-world-4025-rdf",
+              "summary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+              "articleSummary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+              "role": "primary-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": false,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "thin-source-slice"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "needs-more-dossier-work"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:28:40.718Z",
+            "sourceContextCount": 1,
+            "promotedFactCount": 1,
+            "knownFactCount": 1,
+            "timelineCount": 1,
+            "sourceCount": 1,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "DW World",
+            "title": "Could US airstrikes stop insurgency in Mali?",
+            "url": "https://www.dw.com/en/could-us-airstrikes-stop-insurgency-in-mali/a-78141641?maca=en-rss-en-world-4025-rdf",
+            "summary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+            "articleSummary": "US President Donald Trump is considering airstrikes against the Al-Qaeda-linked JNIM in Mali, according to multiple reports. Analysts say such attacks might weaken the ji.",
+            "role": "primary-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 1,
+          "sourcesReviewed": [
+            "DW World"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:28:40.718Z",
+          "sourceContextCount": 1,
+          "promotedFactCount": 1,
+          "knownFactCount": 1,
+          "timelineCount": 1,
+          "sourceCount": 1,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:38:40.719Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:28:40.988Z",
+      "createdAt": "2026-07-30T22:28:40.988Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "worker_slice_world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins_7",
+      "eventId": "worker_slice_world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins_7",
+      "clusterId": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+      "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+      "category": "world",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "holdReason": "needs-clean-single-event-identity",
+      "blockingReasons": [
+        "needs-clean-single-event-identity"
+      ],
+      "warnings": [
+        "brief-capacity-only",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-clean-single-event-identity"
+      ],
+      "acceptedSourceCount": 2,
+      "rejectedSourceCount": 2,
+      "factCount": 5,
+      "acceptedSources": [
+        {
+          "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/oil-prices-rise-after-u-s-and-saudi-arabia-attack-iran-backed-militias-in-iraq-f0f409ea?mod=mw_rss_topstories"
+        },
+        {
+          "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+          "source": "BBC World",
+          "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins_7",
+        "whatHappened": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+        "knownFacts": [
+          "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+          "US Central Command (Centcom) said the strikes were against \"Iran-aligned terrorists that the Islamic Revolutionary Guard Corps (IRGC) directed to attack US forces and Saudi energy infrastructure\".",
+          "Iraq's paramilitary Popular Mobilisation Forces (PMF), which is dominated by Iran-backed Shia militias, said at least 20 of its members had been killed in US-Saudi strikes on its bases.",
+          "It came hours after Centcom said Iran had launched missiles at US forces in the Middle East in an \"attempted surprise attack\", ending a lull in hostilities.",
+          "The IRGC said it had targeted a US air base and a command centre in Jordan \"in response to the acts of aggression of the American child-killing army\".",
+          "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+            "source": "MarketWatch",
+            "url": "https://www.marketwatch.com/story/oil-prices-rise-after-u-s-and-saudi-arabia-attack-iran-backed-militias-in-iraq-f0f409ea?mod=mw_rss_topstories",
+            "summary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+            "category": "world",
+            "role": "primary-slice-source"
+          },
+          {
+            "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+            "source": "BBC World",
+            "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss",
+            "summary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+            "category": "local",
+            "role": "supporting-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "Wed, 29 Jul 2026 11:32:00 GMT",
+            "source": "MarketWatch",
+            "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+            "url": "https://www.marketwatch.com/story/oil-prices-rise-after-u-s-and-saudi-arabia-attack-iran-backed-militias-in-iraq-f0f409ea?mod=mw_rss_topstories"
+          },
+          {
+            "id": "worker-slice-timeline-2",
+            "at": "Wed, 29 Jul 2026 11:32:00 GMT",
+            "source": "BBC World",
+            "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+            "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:20:36.462Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+          "category": "world",
+          "primaryEvent": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+          "sourceSeparation": {
+            "writingSourceCount": 0,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 0,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 1,
+            "mixedTopicRejectedCount": 1,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [],
+            "verification": [],
+            "background": [],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": [
+              {
+                "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+                "source": "BBC World",
+                "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss",
+                "reason": "insufficient event overlap",
+                "relevance": {
+                  "sameEvent": false,
+                  "sameCategory": false,
+                  "titleOverlap": 4,
+                  "termOverlap": 6,
+                  "entityOverlap": 2,
+                  "identityTermOverlap": 8,
+                  "relevantFactCount": 7,
+                  "sourceMaterialScore": 7,
+                  "sourceTier": 11,
+                  "primarySource": false,
+                  "exactDuplicateCountAtBuild": 0
+                }
+              }
+            ]
+          },
+          "knownFacts": [
+            "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+            "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq."
+          ],
+          "entities": [],
+          "timeline": [],
+          "readiness": {
+            "readyForMainDossier": false,
+            "readyForWriterCandidate": false,
+            "blocker": "needs-same-event-source",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 1,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+            "US Central Command (Centcom) said the strikes were against \"Iran-aligned terrorists that the Islamic Revolutionary Guard Corps (IRGC) directed to attack US forces and Saudi energy infrastructure\".",
+            "Iraq's paramilitary Popular Mobilisation Forces (PMF), which is dominated by Iran-backed Shia militias, said at least 20 of its members had been killed in US-Saudi strikes on its bases.",
+            "It came hours after Centcom said Iran had launched missiles at US forces in the Middle East in an \"attempted surprise attack\", ending a lull in hostilities.",
+            "The IRGC said it had targeted a US air base and a command centre in Jordan \"in response to the acts of aggression of the American child-killing army\".",
+            "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq."
+          ],
+          "readiness": {
+            "readyForWriter": true,
+            "writingFactCount": 6,
+            "sourceCount": 2,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "MarketWatch",
+              "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+              "url": "https://www.marketwatch.com/story/oil-prices-rise-after-u-s-and-saudi-arabia-attack-iran-backed-militias-in-iraq-f0f409ea?mod=mw_rss_topstories",
+              "summary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+              "articleSummary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+              "role": "primary-slice-source"
+            },
+            {
+              "source": "BBC World",
+              "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+              "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss",
+              "summary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+              "articleSummary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+              "role": "supporting-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "MarketWatch",
+              "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+              "url": "https://www.marketwatch.com/story/oil-prices-rise-after-u-s-and-saudi-arabia-attack-iran-backed-militias-in-iraq-f0f409ea?mod=mw_rss_topstories",
+              "summary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+              "articleSummary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+              "role": "primary-slice-source"
+            },
+            {
+              "source": "BBC World",
+              "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+              "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss",
+              "summary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+              "articleSummary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+              "role": "supporting-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": true,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "complete"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "ready"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:20:36.679Z",
+            "sourceContextCount": 2,
+            "promotedFactCount": 2,
+            "knownFactCount": 6,
+            "timelineCount": 2,
+            "sourceCount": 2,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "MarketWatch",
+            "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+            "url": "https://www.marketwatch.com/story/oil-prices-rise-after-u-s-and-saudi-arabia-attack-iran-backed-militias-in-iraq-f0f409ea?mod=mw_rss_topstories",
+            "summary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+            "articleSummary": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+            "role": "primary-slice-source"
+          },
+          {
+            "source": "BBC World",
+            "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+            "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss",
+            "summary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+            "articleSummary": "US Central Command says proxy groups launched attacks against US bases and Saudi energy infrastructure.",
+            "role": "supporting-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 2,
+          "sourcesReviewed": [
+            "MarketWatch",
+            "BBC World"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:20:36.679Z",
+          "sourceContextCount": 2,
+          "promotedFactCount": 2,
+          "knownFactCount": 6,
+          "timelineCount": 2,
+          "sourceCount": 2,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "route-to-developing-brief-lane",
+      "retryCount": 0,
+      "nextRetryAt": null,
+      "state": "ready-route",
+      "updatedAt": "2026-07-30T22:20:36.923Z",
+      "createdAt": "2026-07-30T22:20:36.923Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+      "eventId": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+      "clusterId": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+      "title": "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq",
+      "category": "world",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "holdReason": "mixed-event-sources-rejected",
+      "blockingReasons": [
+        "mixed-event-sources-rejected"
+      ],
+      "warnings": [
+        "single-source-developing-dossier"
+      ],
+      "missingEvidence": [
+        "needs-clear-actor-action-event",
+        "single-source-developing-dossier",
+        "mixed-event-sources-rejected"
+      ],
+      "acceptedSourceCount": 0,
+      "rejectedSourceCount": 2,
+      "factCount": 2,
+      "acceptedSources": [],
+      "rejectedSources": [
+        {
+          "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+          "source": "BBC World",
+          "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss"
+        }
+      ],
+      "partialDossier": {
+        "version": "20260730-event-sub-dossier-v1",
+        "generatedAt": "2026-07-30T22:20:36.462Z",
+        "mode": "pre-dossier-event-separation",
+        "storyId": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+        "category": "world",
+        "primaryEvent": "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+        "sourceSeparation": {
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "backgroundSourceCount": 0,
+          "reviewOnlySourceCount": 0,
+          "keywordOnlyRejectedCount": 1,
+          "mixedTopicRejectedCount": 1,
+          "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+        },
+        "sources": {
+          "writing": [],
+          "verification": [],
+          "background": [],
+          "reviewOnly": [],
+          "rejectedKeywordOnly": [
+            {
+              "title": "Saudi Arabia joins US in strikes on Iran-backed militias in Iraq",
+              "source": "BBC World",
+              "url": "https://www.bbc.co.uk/news/articles/c70g6y24d76o?at_medium=RSS&at_campaign=rss",
+              "reason": "insufficient event overlap",
+              "relevance": {
+                "sameEvent": false,
+                "sameCategory": false,
+                "titleOverlap": 4,
+                "termOverlap": 6,
+                "entityOverlap": 2,
+                "identityTermOverlap": 8,
+                "relevantFactCount": 7,
+                "sourceMaterialScore": 7,
+                "sourceTier": 11,
+                "primarySource": false,
+                "exactDuplicateCountAtBuild": 0
+              }
+            }
+          ]
+        },
+        "knownFacts": [
+          "West Texas Intermediate and Brent crude’s front-month contracts climbed on Wednesday on the risk of more fighting.",
+          "Oil prices rise after U.S. and Saudi Arabia attack Iran-backed militias in Iraq."
+        ],
+        "entities": [],
+        "timeline": [],
+        "readiness": {
+          "readyForMainDossier": false,
+          "readyForWriterCandidate": false,
+          "blocker": "needs-same-event-source",
+          "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+        },
+        "handoff": {
+          "to": "Story Dossier Builder",
+          "mainDossierMustVerify": [
+            "same-event evidence",
+            "direct writing facts",
+            "timeline anchor",
+            "keyword-only rejects",
+            "mixed-topic rejects"
+          ],
+          "writerReceivesOnlyAfterMainDossier": true
+        }
+      },
+      "nextAction": "route-to-developing-brief-lane",
+      "retryCount": 0,
+      "nextRetryAt": null,
+      "state": "ready-route",
+      "updatedAt": "2026-07-30T22:20:36.666Z",
+      "createdAt": "2026-07-30T22:20:36.666Z",
+      "preventionLesson": "Thin-but-valid dossiers should route to a developing brief; mixed or identity-unclear dossiers should return to Collector/Sub-Dossier for same-event separation before Writer handoff."
+    },
+    {
+      "id": "worker_slice_politics:event:fauci-senate-dr-anthony-fauci-rand-paul-hearing-testifying_6",
+      "eventId": "worker_slice_politics:event:fauci-senate-dr-anthony-fauci-rand-paul-hearing-testifying_6",
+      "clusterId": "politics:event:fauci-senate-dr-anthony-fauci-rand-paul-hearing-testifying",
+      "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+      "category": "politics",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "holdReason": "needs-two-unique-verified-facts",
+      "blockingReasons": [
+        "needs-two-unique-verified-facts"
+      ],
+      "warnings": [
+        "needs-3-unique-facts-for-standard",
+        "needs-confidence-above-45",
+        "needs-context-or-consequence-fact"
+      ],
+      "missingEvidence": [
+        "needs-two-unique-verified-facts"
+      ],
+      "acceptedSourceCount": 3,
+      "rejectedSourceCount": 2,
+      "factCount": 2,
+      "acceptedSources": [
+        {
+          "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+          "source": "Fox",
+          "url": "https://www.foxnews.com/us/dr-fauci-testify-about-covids-origins-senate-hearing-more-top-headlines"
+        },
+        {
+          "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+          "source": "NYT Politics",
+          "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html"
+        },
+        {
+          "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+          "source": "CBS",
+          "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/"
+        }
+      ],
+      "rejectedSources": [],
+      "partialDossier": {
+        "storyId": "worker_slice_politics:event:fauci-senate-dr-anthony-fauci-rand-paul-hearing-testifying_6",
+        "whatHappened": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing.",
+        "knownFacts": [
+          "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing.",
+          "Dr. Anthony Fauci is testifying to the Senate on the origins of the COVID-19 pandemic, setting up a showdown between the infectious disease expert and GOP Sen. Rand Paul."
+        ],
+        "unknownFacts": [
+          "Additional official updates or same-event reporting may refine timing, impact, or next steps."
+        ],
+        "sourcePool": [
+          {
+            "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+            "source": "Fox",
+            "url": "https://www.foxnews.com/us/dr-fauci-testify-about-covids-origins-senate-hearing-more-top-headlines",
+            "summary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+            "category": "politics",
+            "role": "primary-slice-source"
+          },
+          {
+            "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+            "source": "NYT Politics",
+            "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html",
+            "summary": "The Kentucky Republican has accused Dr. Anthony Fauci of funding research that triggered the Covid pandemic and lying about it to Congress — charges Dr. Fauci denies.",
+            "category": "politics",
+            "role": "supporting-slice-source"
+          },
+          {
+            "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+            "source": "CBS",
+            "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/",
+            "summary": "Dr. Anthony Fauci is testifying to the Senate on the origins of the COVID-19 pandemic, setting up a showdown between the infectious disease expert and GOP Sen. Rand Paul.",
+            "category": "politics",
+            "role": "supporting-slice-source"
+          }
+        ],
+        "timeline": [
+          {
+            "id": "worker-slice-timeline-1",
+            "at": "Wed, 29 Jul 2026 07:13:55 -0400",
+            "source": "Fox",
+            "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+            "url": "https://www.foxnews.com/us/dr-fauci-testify-about-covids-origins-senate-hearing-more-top-headlines"
+          },
+          {
+            "id": "worker-slice-timeline-2",
+            "at": "Wed, 29 Jul 2026 07:13:55 -0400",
+            "source": "NYT Politics",
+            "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+            "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html"
+          },
+          {
+            "id": "worker-slice-timeline-3",
+            "at": "Wed, 29 Jul 2026 07:13:55 -0400",
+            "source": "CBS",
+            "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+            "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/"
+          }
+        ],
+        "eventSubDossier": {
+          "version": "20260730-event-sub-dossier-v1",
+          "generatedAt": "2026-07-30T22:20:36.208Z",
+          "mode": "pre-dossier-event-separation",
+          "storyId": "politics:event:fauci-senate-dr-anthony-fauci-rand-paul-hearing-testifying",
+          "category": "politics",
+          "primaryEvent": "",
+          "sourceSeparation": {
+            "writingSourceCount": 2,
+            "verificationSourceCount": 0,
+            "backgroundSourceCount": 1,
+            "reviewOnlySourceCount": 0,
+            "keywordOnlyRejectedCount": 0,
+            "mixedTopicRejectedCount": 1,
+            "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+          },
+          "sources": {
+            "writing": [
+              {
+                "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+                "source": "CBS",
+                "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/",
+                "reason": "strict same-event match"
+              },
+              {
+                "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+                "source": "NYT Politics",
+                "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html",
+                "reason": "strict same-event match"
+              }
+            ],
+            "verification": [],
+            "background": [
+              {
+                "title": "4 takeaways from Fauci's journals ahead of his Senate testimony",
+                "source": "ABC",
+                "url": "https://abcnews.com/Politics/4-takeaways-faucis-journals-ahead-senate-testimony/story?id=135171269",
+                "reason": "same category and entity/term bridge for background only"
+              }
+            ],
+            "reviewOnly": [],
+            "rejectedKeywordOnly": []
+          },
+          "knownFacts": [
+            "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing.",
+            "Dr. Anthony Fauci is testifying to the Senate on the origins of the COVID-19 pandemic, setting up a showdown between the infectious disease expert and GOP Sen. Rand Paul."
+          ],
+          "entities": [
+            "fauci",
+            "senate",
+            "rand paul",
+            "dr. anthony fauci",
+            "covid-",
+            "gop sen. rand paul",
+            "his senate nemesis rand paul",
+            "face off",
+            "hearing the kentucky republican",
+            "covid",
+            "congress",
+            "dr. fauci",
+            "the kentucky republican"
+          ],
+          "timeline": [
+            {
+              "id": "event-sub-dossier-timeline-1",
+              "at": "",
+              "source": "CBS",
+              "title": "",
+              "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/"
+            },
+            {
+              "id": "event-sub-dossier-timeline-2",
+              "at": "",
+              "source": "NYT Politics",
+              "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing.",
+              "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html"
+            }
+          ],
+          "readiness": {
+            "readyForMainDossier": true,
+            "readyForWriterCandidate": true,
+            "blocker": "",
+            "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+          },
+          "handoff": {
+            "to": "Story Dossier Builder",
+            "mainDossierMustVerify": [
+              "same-event evidence",
+              "direct writing facts",
+              "timeline anchor",
+              "keyword-only rejects",
+              "mixed-topic rejects"
+            ],
+            "writerReceivesOnlyAfterMainDossier": true
+          }
+        },
+        "subDossierPreSeparation": {
+          "active": true,
+          "verifiedByMainDossier": true,
+          "writingSourceCount": 2,
+          "verificationSourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "rule": "Worker slice also carries an event sub-dossier so the main readiness gate sees pre-separated same-event evidence instead of raw keyword fragments."
+        },
+        "writerInput": {
+          "directWritingFacts": [
+            "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing.",
+            "Dr. Anthony Fauci is testifying to the Senate on the origins of the COVID-19 pandemic, setting up a showdown between the infectious disease expert and GOP Sen. Rand Paul."
+          ],
+          "readiness": {
+            "readyForWriter": true,
+            "writingFactCount": 2,
+            "sourceCount": 4,
+            "rule": "Dossier expansion promotes same-event source context and usable facts before Writer readiness is evaluated. Stories with source evidence must enrich the dossier instead of vanishing or drafting from thin fragments.",
+            "expandedBeforeWriting": true
+          },
+          "sourceContext": [
+            {
+              "source": "CBS",
+              "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+              "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/",
+              "summary": "",
+              "articleSummary": "",
+              "role": "source-context"
+            },
+            {
+              "source": "NYT Politics",
+              "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+              "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html",
+              "summary": "",
+              "articleSummary": "",
+              "role": "source-context"
+            },
+            {
+              "source": "ABC",
+              "title": "4 takeaways from Fauci's journals ahead of his Senate testimony",
+              "url": "https://abcnews.com/Politics/4-takeaways-faucis-journals-ahead-senate-testimony/story?id=135171269",
+              "summary": "",
+              "articleSummary": "",
+              "role": "source-context"
+            },
+            {
+              "source": "Fox",
+              "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+              "url": "https://www.foxnews.com/us/dr-fauci-testify-about-covids-origins-senate-hearing-more-top-headlines",
+              "summary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+              "articleSummary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+              "role": "primary-slice-source"
+            }
+          ],
+          "directWritingSources": [
+            {
+              "source": "CBS",
+              "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+              "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/",
+              "summary": "",
+              "articleSummary": "",
+              "role": "source-context"
+            },
+            {
+              "source": "NYT Politics",
+              "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+              "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html",
+              "summary": "",
+              "articleSummary": "",
+              "role": "source-context"
+            },
+            {
+              "source": "ABC",
+              "title": "4 takeaways from Fauci's journals ahead of his Senate testimony",
+              "url": "https://abcnews.com/Politics/4-takeaways-faucis-journals-ahead-senate-testimony/story?id=135171269",
+              "summary": "",
+              "articleSummary": "",
+              "role": "source-context"
+            },
+            {
+              "source": "Fox",
+              "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+              "url": "https://www.foxnews.com/us/dr-fauci-testify-about-covids-origins-senate-hearing-more-top-headlines",
+              "summary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+              "articleSummary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+              "role": "primary-slice-source"
+            }
+          ]
+        },
+        "dossierBuilder": {
+          "readyForWriter": true,
+          "workerFinishMode": true,
+          "stages": [
+            {
+              "name": "Collect",
+              "status": "complete"
+            },
+            {
+              "name": "Verify",
+              "status": "complete"
+            },
+            {
+              "name": "Classify",
+              "status": "complete"
+            },
+            {
+              "name": "Timeline",
+              "status": "complete"
+            },
+            {
+              "name": "Deliver Dossier To Writer",
+              "status": "ready"
+            }
+          ],
+          "expandedBeforeWriting": true,
+          "expansionMetrics": {
+            "active": true,
+            "expandedAt": "2026-07-30T22:20:36.212Z",
+            "sourceContextCount": 4,
+            "promotedFactCount": 1,
+            "knownFactCount": 2,
+            "timelineCount": 3,
+            "sourceCount": 4,
+            "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+            "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+          }
+        },
+        "sourceContext": [
+          {
+            "source": "CBS",
+            "title": "Fauci testifying to Senate panel after Rand Paul releases trove of diary entries",
+            "url": "https://www.cbsnews.com/live-updates/anthony-fauci-rand-paul-covid-origins-senate/",
+            "summary": "",
+            "articleSummary": "",
+            "role": "source-context"
+          },
+          {
+            "source": "NYT Politics",
+            "title": "Fauci and His Senate Nemesis Rand Paul to Face Off in Hearing",
+            "url": "https://www.nytimes.com/2026/07/29/us/politics/fauci-testifies-rand-paul.html",
+            "summary": "",
+            "articleSummary": "",
+            "role": "source-context"
+          },
+          {
+            "source": "ABC",
+            "title": "4 takeaways from Fauci's journals ahead of his Senate testimony",
+            "url": "https://abcnews.com/Politics/4-takeaways-faucis-journals-ahead-senate-testimony/story?id=135171269",
+            "summary": "",
+            "articleSummary": "",
+            "role": "source-context"
+          },
+          {
+            "source": "Fox",
+            "title": "Dr Fauci to testify about COVID's origins at Senate hearing and more top headlines",
+            "url": "https://www.foxnews.com/us/dr-fauci-testify-about-covids-origins-senate-hearing-more-top-headlines",
+            "summary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+            "articleSummary": "Get all the stories you need-to-know from the most powerful name in news delivered first thing every morning to your inbox.",
+            "role": "primary-slice-source"
+          }
+        ],
+        "evidence": {
+          "sourceCount": 4,
+          "sourcesReviewed": [
+            "CBS",
+            "NYT Politics",
+            "ABC",
+            "Fox"
+          ]
+        },
+        "dossierExpansion": {
+          "active": true,
+          "expandedAt": "2026-07-30T22:20:36.212Z",
+          "sourceContextCount": 4,
+          "promotedFactCount": 1,
+          "knownFactCount": 2,
+          "timelineCount": 3,
+          "sourceCount": 4,
+          "reason": "Prevent needs-source-context by expanding the dossier from same-event source records before Writer handoff.",
+          "preventionRule": "If source context exists anywhere in the dossier, Writer readiness must see it; if facts are thin, Evidence/Dossier must promote usable same-event facts before drafting."
+        }
+      },
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:30:36.213Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:20:36.449Z",
+      "createdAt": "2026-07-30T22:20:36.449Z",
+      "preventionLesson": "Dossier Readiness must identify the missing evidence class before Writer handoff so Collector/Sub-Dossier can prevent the same weak dossier type in the next cycle."
+    },
+    {
+      "id": "business:event:saudi-arabia-loadings-mediterranean-pricier-workaround-export-port",
+      "eventId": "business:event:saudi-arabia-loadings-mediterranean-pricier-workaround-export-port",
+      "clusterId": "business:event:saudi-arabia-loadings-mediterranean-pricier-workaround-export-port",
+      "title": "Saudi Arabia has a new, and pricier, workaround to export its oil",
+      "category": "business",
+      "readinessClass": "NEEDS_IDENTITY_RESOLUTION",
+      "holdReason": "needs-clear-actor-action-event",
+      "blockingReasons": [
+        "needs-clear-actor-action-event",
+        "needs-two-unique-verified-facts",
+        "single-source-developing-dossier"
+      ],
+      "warnings": [
+        "single-source-developing-dossier"
+      ],
+      "missingEvidence": [
+        "needs-clear-actor-action-event",
+        "needs-two-unique-verified-facts",
+        "single-source-developing-dossier"
+      ],
+      "acceptedSourceCount": 0,
+      "rejectedSourceCount": 0,
+      "factCount": 0,
+      "acceptedSources": [],
+      "rejectedSources": [],
+      "partialDossier": {
+        "version": "20260730-event-sub-dossier-v1",
+        "generatedAt": "2026-07-30T22:20:35.638Z",
+        "mode": "pre-dossier-event-separation",
+        "storyId": "business:event:saudi-arabia-loadings-mediterranean-pricier-workaround-export-port",
+        "category": "business",
+        "primaryEvent": "",
+        "sourceSeparation": {
+          "writingSourceCount": 0,
+          "verificationSourceCount": 0,
+          "backgroundSourceCount": 0,
+          "reviewOnlySourceCount": 0,
+          "keywordOnlyRejectedCount": 0,
+          "mixedTopicRejectedCount": 0,
+          "rule": "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
+        },
+        "sources": {
+          "writing": [],
+          "verification": [],
+          "background": [],
+          "reviewOnly": [],
+          "rejectedKeywordOnly": []
+        },
+        "knownFacts": [],
+        "entities": [],
+        "timeline": [],
+        "readiness": {
+          "readyForMainDossier": false,
+          "readyForWriterCandidate": false,
+          "blocker": "needs-same-event-source",
+          "rule": "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
+        },
+        "handoff": {
+          "to": "Story Dossier Builder",
+          "mainDossierMustVerify": [
+            "same-event evidence",
+            "direct writing facts",
+            "timeline anchor",
+            "keyword-only rejects",
+            "mixed-topic rejects"
+          ],
+          "writerReceivesOnlyAfterMainDossier": true
+        }
+      },
+      "nextAction": "resolve-primary-actor-action-time-location",
+      "retryCount": 0,
+      "nextRetryAt": "2026-07-30T22:30:35.638Z",
+      "state": "needs-recovery",
+      "updatedAt": "2026-07-30T22:20:35.872Z",
+      "createdAt": "2026-07-30T22:20:35.872Z",
+      "preventionLesson": "Thin-but-valid dossiers should route to a developing brief; mixed or identity-unclear dossiers should return to Collector/Sub-Dossier for same-event separation before Writer handoff."
+    }
+  ],
+  "archived": [],
+  "recentTransitions": [
+    {
+      "at": "2026-07-30T22:30:04.373Z",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:30:04.131Z",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-dossier-recovery"
+    },
+    {
+      "at": "2026-07-30T22:30:03.928Z",
+      "eventId": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:30:03.653Z",
+      "eventId": "world:event:iran-iraq-the-middle-east-u-s--saudi-expands-joint-resume-attacks",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:30:03.362Z",
+      "eventId": "worker_slice_technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove_3",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:30:03.211Z",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:30:03.037Z",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-dossier-recovery"
+    },
+    {
+      "at": "2026-07-30T22:30:02.810Z",
+      "eventId": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_1",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:28:43.655Z",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:28:43.475Z",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-dossier-recovery"
+    },
+    {
+      "at": "2026-07-30T22:28:42.884Z",
+      "eventId": "worker_slice_local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters_12",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:28:42.705Z",
+      "eventId": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:28:42.451Z",
+      "eventId": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_10",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:28:42.240Z",
+      "eventId": "politics:event:poland-poland-s-eu-s-court-same-sex-marriages-rejects",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:28:41.996Z",
+      "eventId": "world:event:iran-iraq-the-middle-east-u-s--saudi-expands-joint-resume-attacks",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:28:41.712Z",
+      "eventId": "worker_slice_technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove_3",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:28:41.533Z",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:28:41.348Z",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-dossier-recovery"
+    },
+    {
+      "at": "2026-07-30T22:28:41.156Z",
+      "eventId": "worker_slice_world:event:fujimori-peru-china-takes-charge-amid-balancing_1",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:28:40.988Z",
+      "eventId": "worker_slice_world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency_0",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:27:08.632Z",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:27:08.466Z",
+      "eventId": "entertainment:event:illness-megan-moroney-ends-concert-early-the-hardest-decision-i-ve-ever",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-dossier-recovery"
+    },
+    {
+      "at": "2026-07-30T22:27:08.178Z",
+      "eventId": "worker_slice_local:event:coordinating-europe-s-french-president-emmanuel-macron-civil-protection-mechanism-firefighters_12",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:27:08.011Z",
+      "eventId": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:27:07.387Z",
+      "eventId": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_10",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:27:07.112Z",
+      "eventId": "politics:event:poland-poland-s-eu-s-court-same-sex-marriages-rejects",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:27:06.833Z",
+      "eventId": "world:event:iran-iraq-the-middle-east-u-s--saudi-expands-joint-resume-attacks",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:27:06.481Z",
+      "eventId": "worker_slice_technology:event:love-hate-ferrari-luce-thrilling-drive-wired-test-drove_3",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:27:06.295Z",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:27:06.130Z",
+      "eventId": "sports:event:best-pool-accessories-upgrade-your-summer-these-2026",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-dossier-recovery"
+    },
+    {
+      "at": "2026-07-30T22:27:05.947Z",
+      "eventId": "worker_slice_world:event:fujimori-peru-china-takes-charge-amid-balancing_1",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:27:05.778Z",
+      "eventId": "worker_slice_world:event:could-mali-president-donald-trump-airstrikes-stop-insurgency_0",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:20:36.923Z",
+      "eventId": "worker_slice_world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins_7",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "needs-clean-single-event-identity"
+    },
+    {
+      "at": "2026-07-30T22:20:36.666Z",
+      "eventId": "world:event:saudi-arabia-iran-backed-iraq-militias-prices-rise-joins",
+      "readinessClass": "READY_FOR_DEVELOPING_BRIEF",
+      "nextAction": "route-to-developing-brief-lane",
+      "holdReason": "mixed-event-sources-rejected"
+    },
+    {
+      "at": "2026-07-30T22:20:36.449Z",
+      "eventId": "worker_slice_politics:event:fauci-senate-dr-anthony-fauci-rand-paul-hearing-testifying_6",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:20:36.122Z",
+      "eventId": "world:event:iran-jordan-iranian-iraq-intercepted-missiles-hits",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    },
+    {
+      "at": "2026-07-30T22:20:35.872Z",
+      "eventId": "business:event:saudi-arabia-loadings-mediterranean-pricier-workaround-export-port",
+      "readinessClass": "NEEDS_IDENTITY_RESOLUTION",
+      "nextAction": "resolve-primary-actor-action-time-location",
+      "holdReason": "needs-clear-actor-action-event"
+    },
+    {
+      "at": "2026-07-30T22:20:35.448Z",
+      "eventId": "worker_slice_local:event:the-great-lakes-native-researchers-most-emblematic-fish-could_1",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "extract-source-claims-and-promote-usable-facts",
+      "holdReason": "needs-two-unique-verified-facts"
+    },
+    {
+      "at": "2026-07-30T22:20:35.213Z",
+      "eventId": "entertainment:event:the-king-s-warden-leads-korea-best-first-half-box-office-since-pandemic-local",
+      "readinessClass": "NEEDS_ENRICHMENT",
+      "nextAction": "collect-primary-or-independent-source-evidence",
+      "holdReason": "needs-source-context"
+    }
+  ],
+  "rule": "Blocked dossiers are not terminal. Each one receives a readiness class, missing evidence, owner subsystem, next action, retry schedule, and prevention lesson."
+}
