@@ -68,7 +68,7 @@ const tokenKey = "ceOwnerAdminToken";
 let ownerToken = localStorage.getItem(tokenKey) || "";
 let selectedOwnerMetric = "health";
 let selectedOwnerTimeframe = "7d";
-let selectedOwnerArea = "News Lab";
+let selectedOwnerArea = "Overview";
 let ownerPerformancePayload = null;
 let ownerMetricOptionsLoaded = false;
 let ownerBrainStatePayload = null;
@@ -161,40 +161,61 @@ function ownerMetricTrendLabel(comparison = {}) {
   return `${direction} ${sign}${formatOwnerMetricValue(delta)} (${comparison.percent || 0}%)`;
 }
 
-function renderOwnerPerformanceExplorer(metrics = ownerPerformancePayload) {
-  ownerPerformancePayload = metrics || ownerPerformancePayload;
-  if (!ownerPerformancePanel || !ownerPerformancePayload) return;
-  const definitions = Array.isArray(ownerPerformancePayload.definitions) ? ownerPerformancePayload.definitions : [];
-  const areas = Array.isArray(ownerPerformancePayload.areas) && ownerPerformancePayload.areas.length
-    ? ownerPerformancePayload.areas
-    : Object.values(definitions.reduce((groups, definition) => {
-      const label = definition.area || "General";
-      groups[label] ||= { key: label, label, metrics: [] };
-      groups[label].metrics.push(definition);
-      return groups;
-    }, {}));
-  if (!areas.find(area => area.label === selectedOwnerArea)) selectedOwnerArea = areas[0]?.label || "General";
-  if (ownerPerformanceTimeframe && !ownerPerformanceTimeframe.dataset.loaded) {
-    ownerPerformanceTimeframe.innerHTML = (ownerPerformancePayload.timeframes || [])
-      .map(option => `<option value="${escapeHtml(option.key)}">${escapeHtml(option.label)}</option>`)
-      .join("");
-    ownerPerformanceTimeframe.value = selectedOwnerTimeframe;
-    ownerPerformanceTimeframe.dataset.loaded = "true";
+function ownerAreaMetricMatches(definition = {}, query = "") {
+  const haystack = `${definition.label || ""} ${definition.key || ""} ${definition.valueLabel || ""} ${definition.area || ""}`.toLowerCase();
+  return !query || haystack.includes(query);
+}
+
+function renderOwnerPerformanceOverview(areas = [], query = "") {
+  const currentValues = ownerPerformancePayload.currentDay?.values || {};
+  const selectedMetric = ownerPerformancePayload.selected || {};
+  const timeframe = selectedMetric.timeframe || {};
+  if (ownerPerformanceSummary) {
+    ownerPerformanceSummary.innerHTML = `
+      <article>
+        <span>Current Snapshot</span>
+        <strong>${escapeHtml(ownerPerformancePayload.currentDay?.dayId || "Today")}</strong>
+        <p>Front page view of every Owner Desk area.</p>
+      </article>
+      <article>
+        <span>Areas</span>
+        <strong>${escapeHtml(areas.length)}</strong>
+        <p>Each page tab opens a focused metric workspace.</p>
+      </article>
+      <article>
+        <span>Timeframe</span>
+        <strong>${escapeHtml(timeframe.label || "Last 7 days")}</strong>
+        <p>Used for metric deep dives and comparisons.</p>
+      </article>
+      <article>
+        <span>Search</span>
+        <strong>${escapeHtml(query ? "Filtered" : "All")}</strong>
+        <p>${escapeHtml(query || "Search filters area cards and metrics.")}</p>
+      </article>
+    `;
   }
-  if (ownerAreaTabs) {
-    ownerAreaTabs.innerHTML = areas.map(area => {
-      const active = area.label === selectedOwnerArea ? " is-active" : "";
-      return `<button class="${active.trim()}" type="button" data-owner-area="${escapeHtml(area.label)}"><span>${escapeHtml(area.label)}</span><strong>${escapeHtml(area.metrics?.length || 0)}</strong></button>`;
-    }).join("");
-  }
-  const query = String(ownerPerformanceSearch?.value || "").trim().toLowerCase();
-  const activeArea = areas.find(area => area.label === selectedOwnerArea) || areas[0] || { metrics: [] };
-  const activeDefinitions = (activeArea.metrics || []).filter(definition => {
-    const haystack = `${definition.label || ""} ${definition.key || ""} ${definition.valueLabel || ""} ${definition.area || ""}`.toLowerCase();
-    return !query || haystack.includes(query);
+  if (!ownerPerformanceGrid) return;
+  const visibleAreas = areas.filter(area => {
+    const areaText = `${area.label || ""} ${(area.metrics || []).map(metric => `${metric.label} ${metric.valueLabel}`).join(" ")}`.toLowerCase();
+    return !query || areaText.includes(query);
   });
+  ownerPerformanceGrid.innerHTML = visibleAreas.length ? visibleAreas.map(area => {
+    const metrics = (area.metrics || []).slice(0, 4);
+    const currentLine = metrics.map(metric => `${metric.label}: ${formatOwnerMetricValue(currentValues[metric.key] ?? 0)}`).join(" | ");
+    return `
+      <button class="owner-performance-area-card" type="button" data-owner-area="${escapeHtml(area.label)}">
+        <span>${escapeHtml(area.label)}</span>
+        <strong>${escapeHtml(area.metrics?.length || 0)} metrics</strong>
+        <p>${escapeHtml(currentLine || "No current metrics recorded yet.")}</p>
+      </button>
+    `;
+  }).join("") : '<p class="empty-state">No areas match this search.</p>';
+}
+
+function renderOwnerPerformanceDetail(activeArea = {}, query = "") {
   const selectedMetric = ownerPerformancePayload.selected || {};
   const currentValues = ownerPerformancePayload.currentDay?.values || {};
+  const activeDefinitions = (activeArea.metrics || []).filter(definition => ownerAreaMetricMatches(definition, query));
   const activeCards = activeDefinitions.map(definition => {
     const current = currentValues[definition.key] ?? 0;
     const isSelected = selectedMetric.metric?.key === definition.key;
@@ -214,9 +235,14 @@ function renderOwnerPerformanceExplorer(metrics = ownerPerformancePayload) {
   if (ownerPerformanceSummary) {
     ownerPerformanceSummary.innerHTML = `
       <article>
+        <span>${escapeHtml(activeArea.label || "Area")}</span>
+        <strong>${escapeHtml(activeDefinitions.length)} metrics</strong>
+        <p>Page tab deep dive. Click any metric for chart detail.</p>
+      </article>
+      <article>
         <span>Selected Metric</span>
         <strong>${escapeHtml(selectedMetric.metric?.label || "Choose a metric")}</strong>
-        <p>${escapeHtml(selectedMetric.metric?.area || selectedOwnerArea)} | ${escapeHtml(selectedMetric.metric?.valueLabel || "value")}</p>
+        <p>${escapeHtml(selectedMetric.metric?.valueLabel || "Select a metric below.")}</p>
       </article>
       <article>
         <span>${escapeHtml(timeframe.label || "Timeframe")}</span>
@@ -228,13 +254,41 @@ function renderOwnerPerformanceExplorer(metrics = ownerPerformancePayload) {
         <strong>${escapeHtml(ownerMetricTrendLabel(comparison))}</strong>
         <p>${escapeHtml(`${timeframe.comparisonStart || "no prior"} to ${timeframe.comparisonEnd || "comparison unavailable"}`)}</p>
       </article>
-      <article>
-        <span>Average / High</span>
-        <strong>${escapeHtml(formatOwnerMetricValue(selectedMetric.summary?.average ?? 0))} / ${escapeHtml(formatOwnerMetricValue(selectedMetric.summary?.high ?? 0))}</strong>
-        <p>${escapeHtml(`${selectedMetric.summary?.pointCount || 0} recorded point${selectedMetric.summary?.pointCount === 1 ? "" : "s"}`)}</p>
-      </article>
     `;
   }
+}
+
+function renderOwnerPerformanceExplorer(metrics = ownerPerformancePayload) {
+  ownerPerformancePayload = metrics || ownerPerformancePayload;
+  if (!ownerPerformancePanel || !ownerPerformancePayload) return;
+  const definitions = Array.isArray(ownerPerformancePayload.definitions) ? ownerPerformancePayload.definitions : [];
+  const areas = Array.isArray(ownerPerformancePayload.areas) && ownerPerformancePayload.areas.length
+    ? ownerPerformancePayload.areas
+    : Object.values(definitions.reduce((groups, definition) => {
+      const label = definition.area || "General";
+      groups[label] ||= { key: label, label, metrics: [] };
+      groups[label].metrics.push(definition);
+      return groups;
+    }, {}));
+  if (selectedOwnerArea !== "Overview" && !areas.find(area => area.label === selectedOwnerArea)) selectedOwnerArea = "Overview";
+  if (ownerPerformanceTimeframe && !ownerPerformanceTimeframe.dataset.loaded) {
+    ownerPerformanceTimeframe.innerHTML = (ownerPerformancePayload.timeframes || [])
+      .map(option => `<option value="${escapeHtml(option.key)}">${escapeHtml(option.label)}</option>`)
+      .join("");
+    ownerPerformanceTimeframe.value = selectedOwnerTimeframe;
+    ownerPerformanceTimeframe.dataset.loaded = "true";
+  }
+  if (ownerAreaTabs) {
+    const tabs = [{ label: "Overview", metrics: definitions }, ...areas];
+    ownerAreaTabs.innerHTML = tabs.map(area => {
+      const active = area.label === selectedOwnerArea ? " is-active" : "";
+      return `<button class="owner-page-tab${active}" type="button" data-owner-area="${escapeHtml(area.label)}"><span>${escapeHtml(area.label)}</span><strong>${escapeHtml(area.metrics?.length || 0)}</strong></button>`;
+    }).join("");
+  }
+  const query = String(ownerPerformanceSearch?.value || "").trim().toLowerCase();
+  const activeArea = areas.find(area => area.label === selectedOwnerArea) || null;
+  if (selectedOwnerArea === "Overview" || !activeArea) renderOwnerPerformanceOverview(areas, query);
+  else renderOwnerPerformanceDetail(activeArea, query);
 }
 function renderOwnerMetricOptions(metrics = {}) {
   if (!ownerMetricTimeframe || ownerMetricOptionsLoaded) return;
@@ -298,7 +352,6 @@ async function loadOwnerMetric(metricKey = selectedOwnerMetric, timeframe = sele
   renderOwnerMetricOptions(payload);
   if (ownerMetricTimeframe) ownerMetricTimeframe.value = selectedOwnerTimeframe;
   if (ownerPerformanceTimeframe) ownerPerformanceTimeframe.value = selectedOwnerTimeframe;
-  if (payload.selected?.metric?.area) selectedOwnerArea = payload.selected.metric.area;
   renderOwnerMetricGraph(payload);
   renderOwnerPerformanceExplorer(payload);
   return payload;
@@ -1516,14 +1569,35 @@ merchSaleForm?.addEventListener("submit", async event => {
   }
 });
 
+function openOwnerPerformanceArea(areaName = "Overview") {
+  selectedOwnerArea = areaName || "Overview";
+  if (selectedOwnerArea === "Overview") {
+    renderOwnerPerformanceExplorer();
+    return;
+  }
+  const areas = Array.isArray(ownerPerformancePayload?.areas) ? ownerPerformancePayload.areas : [];
+  const area = areas.find(item => item.label === selectedOwnerArea);
+  const firstMetric = area?.metrics?.[0]?.key;
+  if (firstMetric) {
+    selectedOwnerMetric = firstMetric;
+    loadOwnerMetric(selectedOwnerMetric, selectedOwnerTimeframe).catch(error => showJson({ error: error.message || "Metric load failed." }));
+    return;
+  }
+  renderOwnerPerformanceExplorer();
+}
+
 ownerAreaTabs?.addEventListener("click", event => {
   const button = event.target.closest("[data-owner-area]");
   if (!button) return;
-  selectedOwnerArea = button.dataset.ownerArea || selectedOwnerArea;
-  renderOwnerPerformanceExplorer();
+  openOwnerPerformanceArea(button.dataset.ownerArea || "Overview");
 });
 
 ownerPerformanceGrid?.addEventListener("click", event => {
+  const areaButton = event.target.closest("[data-owner-area]");
+  if (areaButton) {
+    openOwnerPerformanceArea(areaButton.dataset.ownerArea || "Overview");
+    return;
+  }
   const button = event.target.closest("[data-owner-performance-metric]");
   if (!button) return;
   const metric = button.dataset.ownerPerformanceMetric;
@@ -1542,6 +1616,9 @@ ownerPerformanceTimeframe?.addEventListener("change", () => {
   loadOwnerMetric(selectedOwnerMetric, selectedOwnerTimeframe).catch(error => showJson({ error: error.message || "Metric load failed." }));
 });
 if (ownerToken) unlockOwnerDesk(ownerToken).catch(() => {});
+
+
+
 
 
 

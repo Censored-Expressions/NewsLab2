@@ -18,6 +18,7 @@ const marketSnapshotEl = document.querySelector("[data-market-snapshot]");
 const marketSnapshotTime = document.querySelector("[data-market-snapshot-time]");
 const marketSearchForm = document.querySelector("[data-market-search-form]");
 const marketSearchResult = document.querySelector("[data-market-search-result]");
+const marketSymbolDetail = document.querySelector("[data-market-symbol-detail]");
 
 const autoRefreshMs = 6 * 60 * 1000;
 const marketRefreshMs = 60 * 1000;
@@ -78,6 +79,7 @@ function marketQuoteMarkup(item = {}) {
         <strong>${hasPrice ? formatMarketNumber(item.price) : "Live data warming"}</strong>
         <button class="market-change-toggle" type="button" data-market-percent="${escapeHtml(percentLabel)}" data-market-dollar="${escapeHtml(dollarLabel)}" aria-label="Toggle dollar or percent change">${escapeHtml(changeLabel)}</button>
         <small class="market-direction-label">${escapeHtml(directionLabel)}</small>
+        <button class="market-detail-button" type="button" data-market-detail-symbol="${escapeHtml(item.symbol || displayLabel)}" aria-label="Open ${escapeHtml(displayLabel)} market detail">Details</button>
         ${marketCap || state}
       </span>
     </article>
@@ -148,6 +150,7 @@ function renderMarketLookupResult(payload = {}) {
       <strong>${Number.isFinite(Number(quote.price)) ? formatMarketNumber(quote.price) : "Quote warming"}</strong>
       <button class="market-change-toggle" type="button" data-market-percent="${escapeHtml(Number.isFinite(Number(quote.changePercent)) ? `${Number(quote.changePercent).toFixed(2)}%` : "--")}" data-market-dollar="${escapeHtml(Number.isFinite(Number(quote.change)) ? `${Number(quote.change) >= 0 ? "+" : ""}${formatMarketNumber(quote.change)}` : "--")}" aria-label="Toggle dollar or percent change">${escapeHtml(Number.isFinite(Number(quote.changePercent)) ? `${Number(quote.changePercent).toFixed(2)}%` : "--")}</button>
       <small>${escapeHtml([quote.symbol, quote.exchange, quote.marketState].filter(Boolean).join(" / "))}</small>
+      <button class="market-detail-button" type="button" data-market-detail-symbol="${escapeHtml(quote.symbol || quote.name || "")}">Open detail</button>
     </article>
   `;
   marketSearchResult.querySelectorAll("[data-market-percent]").forEach(button => {
@@ -155,6 +158,79 @@ function renderMarketLookupResult(payload = {}) {
   });
 }
 
+function marketSignedNumber(value, decimals = 2) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "--";
+  return `${number >= 0 ? "+" : ""}${formatMarketNumber(number, { decimals })}`;
+}
+
+function marketPerformanceCardMarkup(item = {}) {
+  const className = marketChangeClass(item.changePercent);
+  const percent = Number.isFinite(Number(item.changePercent)) ? `${Number(item.changePercent).toFixed(2)}%` : "--";
+  const previous = Number.isFinite(Number(item.previousChangePercent)) ? `${Number(item.previousChangePercent).toFixed(2)}%` : "--";
+  const versus = Number.isFinite(Number(item.versusPrevious)) ? `${Number(item.versusPrevious) >= 0 ? "+" : ""}${Number(item.versusPrevious).toFixed(2)} pts` : "--";
+  return `
+    <article class="market-performance-card ${className}">
+      <span>${escapeHtml(item.label || "Period")}</span>
+      <strong>${escapeHtml(percent)}</strong>
+      <p>${escapeHtml(marketSignedNumber(item.change))} vs previous ${escapeHtml(previous)} (${escapeHtml(versus)})</p>
+      <small>${escapeHtml([item.startDate, item.endDate].filter(Boolean).join(" to ") || "Historical range warming")}</small>
+    </article>
+  `;
+}
+
+function renderMarketSymbolDetail(payload = {}) {
+  if (!marketSymbolDetail) return;
+  const quote = payload.quote || {};
+  const performance = payload.historical?.performance || [];
+  const news = payload.news || [];
+  const currentCard = {
+    label: "Current trading",
+    change: quote.change,
+    changePercent: quote.changePercent,
+    previousChangePercent: null,
+    versusPrevious: null,
+    startDate: quote.marketState || "Live/delayed",
+    endDate: payload.generatedAt ? new Date(payload.generatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : ""
+  };
+  marketSymbolDetail.hidden = false;
+  marketSymbolDetail.innerHTML = `
+    <div class="market-detail-head">
+      <div>
+        <span>${escapeHtml(quote.symbol || payload.symbol || "Symbol")}</span>
+        <strong>${escapeHtml(quote.name || quote.symbol || "Market detail")}</strong>
+        <p>${escapeHtml([quote.exchange, quote.marketState, quote.marketCap ? `${quote.marketCap} market cap` : ""].filter(Boolean).join(" / "))}</p>
+      </div>
+      <button class="market-detail-close" type="button" data-market-detail-close aria-label="Close market detail">Close</button>
+    </div>
+    <div class="market-detail-current ${marketChangeClass(quote.changePercent)}">
+      <span>Current</span>
+      <strong>${Number.isFinite(Number(quote.price)) ? formatMarketNumber(quote.price) : "Quote warming"}</strong>
+      <em>${escapeHtml(Number.isFinite(Number(quote.changePercent)) ? `${Number(quote.changePercent).toFixed(2)}%` : "--")}</em>
+    </div>
+    <div class="market-performance-grid">
+      ${[currentCard, ...performance].map(marketPerformanceCardMarkup).join("")}
+    </div>
+    <div class="market-detail-news">
+      <h3>Latest news</h3>
+      <div class="market-news-list">${news.map(marketNewsMarkup).join("") || '<p class="empty-state">Company news is warming up.</p>'}</div>
+    </div>
+  `;
+}
+
+async function loadMarketSymbolDetail(symbol = "") {
+  if (!marketSymbolDetail || !symbol) return;
+  marketSymbolDetail.hidden = false;
+  marketSymbolDetail.innerHTML = '<p class="empty-state">Loading market history and company news...</p>';
+  try {
+    const response = await fetch(`/api/market-symbol-detail?q=${encodeURIComponent(symbol)}`, { cache: "no-store" });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "Market detail unavailable");
+    renderMarketSymbolDetail(payload);
+  } catch {
+    marketSymbolDetail.innerHTML = '<p class="empty-state">Market detail is temporarily unavailable.</p>';
+  }
+}
 async function handleMarketSearch(event) {
   event.preventDefault();
   if (!marketSearchForm || !marketSearchResult) return;
@@ -658,9 +734,31 @@ storyPages?.addEventListener("click", event => {
 
 loadNewsLab(false);
 loadMarketSnapshot(false);
+marketSnapshotEl?.addEventListener("click", event => {
+  const toggle = event.target.closest("[data-market-percent]");
+  if (toggle) return;
+  const button = event.target.closest("[data-market-detail-symbol]");
+  if (!button) return;
+  loadMarketSymbolDetail(button.dataset.marketDetailSymbol || "");
+});
+
+marketSearchResult?.addEventListener("click", event => {
+  const button = event.target.closest("[data-market-detail-symbol]");
+  if (!button) return;
+  loadMarketSymbolDetail(button.dataset.marketDetailSymbol || "");
+});
+
+marketSymbolDetail?.addEventListener("click", event => {
+  if (!event.target.closest("[data-market-detail-close]")) return;
+  marketSymbolDetail.hidden = true;
+  marketSymbolDetail.innerHTML = "";
+});
+
 if (marketSearchForm) marketSearchForm.addEventListener("submit", handleMarketSearch);
 setInterval(() => loadNewsLab(true), autoRefreshMs);
 setInterval(() => loadMarketSnapshot(true), marketRefreshMs);
+
+
 
 
 

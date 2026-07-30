@@ -73,6 +73,7 @@ const newsLabProductivityFile = path.join(dataDir, "news-lab-productivity.json")
 const productionIntelligenceFile = path.join(dataDir, "production-intelligence.json");
 const newsLabThroughputDiagnosticsFile = path.join(dataDir, "news-lab-throughput-diagnostics.json");
 const marketSnapshotFile = path.join(dataDir, "market-snapshot.json");
+const marketSymbolHistoryFile = path.join(dataDir, "market-symbol-history-cache.json");
 const newsLabApiResponseCacheFile = path.join(dataDir, "news-lab-api-response-cache.json");
 const newsLabApiWorkerStatusFile = path.join(dataDir, "news-lab-api-worker-status.json");
 const newsLabCollectorDir = path.join(dataDir, "news-lab-collectors");
@@ -4067,9 +4068,15 @@ function newsLabWriterReadinessProof(story = {}) {
     || story.preDraftMemoryBrief?.lexiconIntelligence
   );
   const historicalReasoningApplied = Boolean(writerInput.historicalContextEngine || writerInput.storyDNA || writerInput.sevenThinkingLayers || dossier.historicalContext || dossier.storyIntelligenceDossier);
-  const readyForFirstDraft = knownFactCount >= 3 && sourceCount >= 1 && editorialMemoryApplied;
+  const readinessContract = story.evidenceSupportedArticleCapacity || writerInput.readinessContract || dossier.dossierLock?.readiness || dossier.dossierBuilder?.readinessContract || {};
+  const articleFormat = readinessContract.articleFormat || story.articleFormat || "standard-article";
+  const capacityReady = readinessContract.readyForWriter !== false && readinessContract.readinessTier !== "HOLD_FOR_EVIDENCE";
+  const minimumFacts = articleFormat === "breaking-brief" ? 2 : 3;
+  const readyForFirstDraft = knownFactCount >= minimumFacts && sourceCount >= 1 && editorialMemoryApplied && capacityReady;
   return {
     readyForFirstDraft,
+    readinessTier: readinessContract.readinessTier || story.articleCapacityTier || "unknown",
+    articleFormat,
     knownFactCount,
     sourceCount,
     timelineCount,
@@ -4080,11 +4087,12 @@ function newsLabWriterReadinessProof(story = {}) {
     lexiconApplied,
     historicalReasoningApplied,
     missingForFirstDraft: [
-      knownFactCount < 3 ? "needs-three-known-facts" : "",
+      knownFactCount < minimumFacts ? (articleFormat === "breaking-brief" ? "needs-two-known-facts-for-brief" : "needs-three-known-facts") : "",
       sourceCount < 1 ? "needs-source-context" : "",
+      !capacityReady ? "needs-evidence-supported-article-capacity" : "",
       !editorialMemoryApplied ? "needs-editorial-memory-before-writing" : ""
     ].filter(Boolean),
-    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, known facts, source context, Editorial Memory, and applicable Lexicon/Historical guidance."
+    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, evidence-supported article capacity, known facts, source context, Editorial Memory, and applicable Lexicon/Historical guidance."
   };
 }
 function newsLabApprovalLifecycleIssueList(story = {}, extraIssues = []) {
@@ -35650,6 +35658,129 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
   };
 }
 
+function newsLabDossierUniqueFacts(facts = [], representative = {}) {
+  return (Array.isArray(facts) ? facts : [])
+    .map(fact => newsLabTrimSentence(fact, 320))
+    .filter(Boolean)
+    .filter(fact => newsLabDossierFactQuality(fact, representative).usable)
+    .filter((fact, index, all) => all.findIndex(other => newsLabTextOverlap(other, fact) >= 0.64) === index)
+    .slice(0, 20);
+}
+
+function newsLabDossierMeaningfulTimeline(timeline = []) {
+  return (Array.isArray(timeline) ? timeline : [])
+    .filter(item => {
+      const text = cleanArticleText([item.title, item.summary, item.event, item.description, item.label, item.source].filter(Boolean).join(" "), 240);
+      if (!text) return false;
+      if (/^(published|updated|seen|first seen|latest seen|source published)$/i.test(text)) return false;
+      if (/\b(published|updated|first seen|latest seen)\b/i.test(text) && text.split(/\s+/).length < 7) return false;
+      return text.split(/\s+/).length >= 4 || /\b(ruled|announced|filed|approved|rejected|won|lost|struck|charged|signed|reported|confirmed|said)\b/i.test(text);
+    })
+    .slice(0, 12);
+}
+
+function newsLabDossierSourceKey(source = {}) {
+  return cleanArticleText(source.host || source.domain || newsLabSourceHost(source) || source.source || source.name || source.publisher || source.url || "", 120).toLowerCase();
+}
+
+function newsLabDossierPrimarySourcePresent(sources = [], storyDossier = {}) {
+  const sourceText = [
+    ...(Array.isArray(sources) ? sources : []).flatMap(source => [source.source, source.name, source.publisher, source.host, source.domain, source.url, source.sourceType, source.tier, source.type]),
+    ...(storyDossier.sourcesReviewed || []),
+    storyDossier.originalSource,
+    storyDossier.sourceLayer,
+    JSON.stringify(storyDossier.sourceLayers || {})
+  ].filter(Boolean).join(" ").toLowerCase();
+  return /\b(whitehouse\.gov|congress\.gov|supreme court|justice\.gov|fbi\.gov|sec\.gov|federalreserve\.gov|treasury\.gov|cdc\.gov|nih\.gov|fda\.gov|nasa\.gov|noaa\.gov|weather\.gov|fema\.gov|bls\.gov|bea\.gov|court|filing|docket|official|press release|newsroom|investor relations|10-k|10-q|8-k|edgar|public company|agency|department)\b/i.test(sourceText);
+}
+
+function newsLabDossierArticleCapacity(storyDossier = {}, context = {}) {
+  const representative = context.representative || storyDossier.representative || {};
+  const knownFacts = newsLabDossierUniqueFacts(storyDossier.knownFacts || [], representative);
+  const directFacts = newsLabDossierUniqueFacts(storyDossier.writerInput?.directWritingFacts || [], representative);
+  const verificationFacts = newsLabDossierUniqueFacts(storyDossier.writerInput?.verificationFacts || storyDossier.verificationFacts || [], representative);
+  const uniqueFacts = newsLabDossierUniqueFacts([...directFacts, ...knownFacts, ...verificationFacts], representative);
+  const sourcePool = Array.isArray(storyDossier.sourcePool) ? storyDossier.sourcePool : [];
+  const contextSources = Array.isArray(context.sources) ? context.sources : [];
+  const sourceRecords = [...sourcePool, ...contextSources, ...(storyDossier.sourceRecords || [])].filter(Boolean);
+  const sourceKeys = sourceRecords.map(newsLabDossierSourceKey).filter(Boolean);
+  const independentSourceCount = new Set(sourceKeys).size || Number(storyDossier.evidence?.sourceCount || sourcePool.length || contextSources.length || 0);
+  const sourceCount = Math.max(Number(storyDossier.evidence?.sourceCount || 0), sourceRecords.length, independentSourceCount);
+  const fullReadCount = Number(storyDossier.evidence?.fullReadCount || storyDossier.articleReadIntelligence?.absorbedArticles || context.fullReadCount || 0);
+  const meaningfulTimeline = newsLabDossierMeaningfulTimeline(storyDossier.timeline || []);
+  const contradictions = storyDossier.contradictions || storyDossier.disagreement?.contradictions || [];
+  const confidenceScore = Number(storyDossier.confidence?.score || storyDossier.evidence?.confidenceScore || 0);
+  const primarySourcePresent = newsLabDossierPrimarySourcePresent(sourceRecords, storyDossier);
+  const contextFactCount = newsLabDossierUniqueFacts([
+    storyDossier.historicalContext,
+    storyDossier.whyItMatters,
+    storyDossier.consequence,
+    ...(storyDossier.contextFacts || []),
+    ...(storyDossier.backgroundFacts || [])
+  ].filter(Boolean), representative).length;
+  const whatHappened = cleanArticleText(storyDossier.whatHappened || "", 260);
+  const hasEventIdentity = Boolean(whatHappened && storyNamedEntities({ title: whatHappened, summary: whatHappened }).length);
+  const holdReasons = [
+    hasEventIdentity ? "" : "needs-clear-actor-action-event",
+    sourceCount >= 1 ? "" : "needs-source-context",
+    uniqueFacts.length >= 2 ? "" : "needs-two-unique-verified-facts",
+    meaningfulTimeline.length >= 1 ? "" : "needs-meaningful-timeline",
+    contradictions.length && uniqueFacts.length < 4 ? "needs-more-evidence-to-frame-contradictions" : ""
+  ].filter(Boolean);
+  let tier = "HOLD_FOR_EVIDENCE";
+  let articleFormat = "hold";
+  if (!holdReasons.length) {
+    if (uniqueFacts.length >= 5 && independentSourceCount >= 3 && fullReadCount >= 1 && meaningfulTimeline.length >= 2 && confidenceScore >= 55 && contextFactCount >= 1) {
+      tier = "READY_FOR_DEEP_ARTICLE";
+      articleFormat = "deep-article";
+    } else if (uniqueFacts.length >= 3 && (independentSourceCount >= 2 || primarySourcePresent) && confidenceScore >= 45 && contextFactCount >= 1) {
+      tier = "READY_FOR_STANDARD_ARTICLE";
+      articleFormat = "standard-article";
+    } else {
+      tier = "READY_FOR_BREAKING_BRIEF";
+      articleFormat = "breaking-brief";
+    }
+  }
+  const standardBlockers = [
+    uniqueFacts.length >= 3 ? "" : "needs-3-unique-facts-for-standard",
+    independentSourceCount >= 2 || primarySourcePresent ? "" : "needs-independent-confirmation-or-primary-source",
+    confidenceScore >= 45 ? "" : "needs-confidence-above-45",
+    contextFactCount >= 1 ? "" : "needs-context-or-consequence-fact"
+  ].filter(Boolean);
+  return {
+    tier,
+    articleFormat,
+    readyForWriter: tier !== "HOLD_FOR_EVIDENCE",
+    readyForStandardArticle: tier === "READY_FOR_STANDARD_ARTICLE" || tier === "READY_FOR_DEEP_ARTICLE",
+    readyForDeepArticle: tier === "READY_FOR_DEEP_ARTICLE",
+    holdReasons,
+    standardBlockers,
+    metrics: {
+      uniqueFactCount: uniqueFacts.length,
+      sourceCount,
+      independentSourceCount,
+      fullReadCount,
+      meaningfulTimelineCount: meaningfulTimeline.length,
+      contradictionCount: contradictions.length,
+      confidenceScore,
+      contextFactCount,
+      primarySourcePresent,
+      hasEventIdentity
+    },
+    rule: "Dossier readiness is tiered by evidence-supported article capacity. Thin but valid dossiers become breaking briefs; weak dossiers return to Evidence/Dossier instead of being stretched into full articles."
+  };
+}
+
+function newsLabConstrainBodyToDossierCapacity(body = [], capacity = {}, storyDossier = {}) {
+  const paragraphs = Array.isArray(body) ? body.filter(Boolean) : [];
+  if (capacity.articleFormat !== "breaking-brief") return paragraphs;
+  const brief = paragraphs.slice(0, 3);
+  const unknowns = storyDossier.unknownFacts || storyDossier.stillUnknown || [];
+  const updateLine = Array.isArray(unknowns) && unknowns.length
+    ? `The remaining question is ${newsLabTrimSentence(unknowns[0], 180).replace(/[.?!]$/, "")}.`
+    : "Further reporting is expected to clarify the next confirmed step.";
+  return newsLabDedupeArticleParagraphs([...brief, updateLine], brief[0] || "").slice(0, 4);
+}
 function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   const handoff = context.cleanWriterHandoff?.diagnostic || storyDossier.writerDossierHandoff || {};
   const knownFacts = (storyDossier.knownFacts || []).filter(Boolean);
@@ -35662,30 +35793,36 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   const sourceCount = Number(storyDossier.evidence?.sourceCount || sourcePool.length || storyDossier.eventSubDossier?.sourceSeparation?.writingSourceCount || storyDossier.eventSubDossier?.sourceSeparation?.verificationSourceCount || context.sources?.length || 0);
   const writerPackReady = Boolean(storyDossier.writerInput?.readiness?.readyForWriter || storyDossier.dossierBuilder?.readyForWriter);
   const mixedOrGeneric = Boolean(handoff.genericRepresentative || handoff.mixedEvent || handoff.topicContamination || handoff.minimumDossierFallback);
+  const capacity = newsLabDossierArticleCapacity(storyDossier, context);
   const missing = [
     whatHappened ? "" : "needs-primary-event",
-    knownFacts.length >= 2 || directWritingFacts.length >= 2 ? "" : "needs-two-direct-writing-facts",
-    sourceCount >= 1 ? "" : "needs-source-context",
-    timeline.length >= 1 ? "" : "needs-timeline-anchor",
     mixedOrGeneric ? "needs-clean-single-event-identity" : "",
-    writerPackReady || directWritingFacts.length >= 1 ? "" : "needs-writer-evidence-pack"
-  ].filter(Boolean);
+    writerPackReady || directWritingFacts.length >= 1 ? "" : "needs-writer-evidence-pack",
+    ...capacity.holdReasons
+  ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
   const warning = [
     confidenceScore && confidenceScore < 45 ? "low-confidence-dossier" : "",
     contradictions.length > 0 ? "contradictions-must-be-qualified" : "",
-    sourceCount < 2 ? "single-source-developing-dossier" : ""
-  ].filter(Boolean);
-  const readyForWriter = missing.length === 0;
+    capacity.metrics?.sourceCount < 2 && !capacity.metrics?.primarySourcePresent ? "single-source-developing-dossier" : "",
+    capacity.tier === "READY_FOR_BREAKING_BRIEF" ? "brief-capacity-only" : "",
+    ...(capacity.standardBlockers || [])
+  ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
+  const readyForWriter = missing.length === 0 && capacity.readyForWriter;
   const score = clampScore(35
-    + Math.min(20, Math.max(knownFacts.length, directWritingFacts.length) * 7)
-    + Math.min(18, sourceCount * 8)
-    + Math.min(12, timeline.length * 6)
+    + Math.min(22, Number(capacity.metrics?.uniqueFactCount || Math.max(knownFacts.length, directWritingFacts.length)) * 6)
+    + Math.min(18, Number(capacity.metrics?.independentSourceCount || sourceCount) * 8)
+    + Math.min(12, Number(capacity.metrics?.meaningfulTimelineCount || timeline.length) * 6)
     + Math.min(15, confidenceScore * 0.15)
     + (writerPackReady ? 10 : 0)
+    + (capacity.readyForStandardArticle ? 8 : 0)
     - (mixedOrGeneric ? 30 : 0));
   return {
-    version: "20260730-dossier-readiness-contract-v1",
+    version: "20260730-dossier-readiness-contract-v2",
     readyForWriter,
+    readinessTier: capacity.tier,
+    articleFormat: capacity.articleFormat,
+    readyForStandardArticle: capacity.readyForStandardArticle,
+    readyForDeepArticle: capacity.readyForDeepArticle,
     score,
     missing,
     warning,
@@ -35701,10 +35838,11 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
       contradictionCount: contradictions.length,
       confidenceScore,
       writerPackReady,
-      mixedOrGeneric
+      mixedOrGeneric,
+      articleCapacity: capacity.metrics
     },
-    decision: readyForWriter ? "lock-dossier-and-write" : "hold-for-dossier-evidence",
-    rule: "The Writer may not draft from raw RSS, mixed fragments, or a changing investigation. Dossier Builder must identify one primary event, direct writing facts, source context, timeline, and writer evidence pack before prose generation."
+    decision: readyForWriter ? (capacity.readyForStandardArticle ? "lock-dossier-and-write-standard" : "lock-dossier-and-write-brief") : "hold-for-dossier-evidence",
+    rule: "The Writer may not draft from raw RSS, mixed fragments, or a changing investigation. Dossier Builder must identify one primary event and evidence-supported article capacity before prose generation; thin dossiers become briefs or return to evidence collection."
   };
 }
 
@@ -42359,6 +42497,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
   const image = await boundedNewsLabImageForStory(imageStoryContext, newsLabImageForStory(imageStoryContext), usedPhotoIds);
 
   let body = newsLabStraightBody({ representative, supporting, facts, dossier: storyDossier });
+  body = newsLabConstrainBodyToDossierCapacity(body, dossierReadiness, storyDossier);
   if (!body.some(paragraph => /reported|official|source|statement|filing|agency|court|police|records/i.test(paragraph))) {
     body = newsLabDedupeArticleParagraphs([
       ...body,
@@ -42372,8 +42511,10 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
   }
   const bodyText = body.join(" ");
   const fullReadCount = allStories.filter(story => story.articleSummary && (story.articleReadStatus === "full-article-read" || story.sourceDepth === "publisher-article-read" || String(story.articleSummary || "").length >= 180)).length;
-  const hasArticleDepth = (fullReadCount >= 1 && facts.length >= 2 && body.length >= 4 && bodyText.length >= 520)
-    || (facts.length >= 1 && body.length >= 5 && bodyText.length >= 900);
+  const hasArticleDepth = dossierReadiness.readyForStandardArticle && ((fullReadCount >= 1 && facts.length >= 2 && body.length >= 4 && bodyText.length >= 520)
+    || (facts.length >= 1 && body.length >= 5 && bodyText.length >= 900));
+  const articleCapacityTier = dossierReadiness.readinessTier || "HOLD_FOR_EVIDENCE";
+  const articleFormat = dossierReadiness.articleFormat || (hasArticleDepth ? "standard-article" : "breaking-brief");
   const canonicalStoryIdentity = newsLabCanonicalStoryIdentity({
     ...representative,
     storyDossier,
@@ -42807,7 +42948,10 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     title,
     categoryLabel: newsLabCategoryLabel(representativeCategory),
     matter: "",
-    hasArticleDepth: bodyText.length >= 520 && body.length >= 4,
+    hasArticleDepth: workerSliceDossierReadiness.readyForStandardArticle && bodyText.length >= 520 && body.length >= 4,
+    articleCapacityTier: workerSliceDossierReadiness.readinessTier,
+    articleFormat: workerSliceDossierReadiness.articleFormat,
+    evidenceSupportedArticleCapacity: workerSliceDossierReadiness,
     storyEvolution: {
       timeline: sourceCandidates.slice(0, 8).map(source => ({
         at: source.published || source.publishedAt || new Date().toISOString(),
@@ -43107,7 +43251,10 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
     const sourceCount = Number(story.sources?.length || story.storyDossier?.sourcePool?.length || story.storyDossier?.evidence?.sourceCount || 0);
     const confidence = Number(story.brainConfidence?.score || story.storyDossier?.evidence?.confidenceScore || story.writerDossierInput?.evidenceScore || 0);
     const dossierPercent = Math.min(100, knownFacts * 18 + Math.min(24, sourceCount * 8) + Math.min(24, confidence / 3));
-    const writerPercent = Math.min(100, (bodyLength >= 900 ? 38 : bodyLength >= 650 ? 28 : bodyLength >= 360 ? 18 : 6) + Math.min(20, paragraphCount * 4) + (writerReadiness.readyForFirstDraft ? 30 : 0) + (writerReadiness.editorialMemoryApplied ? 12 : 0));
+    const supportedBrief = writerReadiness.articleFormat === "breaking-brief";
+    const draftLengthPassed = supportedBrief ? bodyLength >= 220 : bodyLength >= 650;
+    const draftLengthAttention = supportedBrief ? bodyLength >= 140 : bodyLength >= 360;
+    const writerPercent = Math.min(100, (bodyLength >= 900 ? 38 : bodyLength >= 650 ? 28 : bodyLength >= 360 ? 18 : bodyLength >= 220 ? 14 : 6) + Math.min(20, paragraphCount * 4) + (writerReadiness.readyForFirstDraft ? 30 : 0) + (writerReadiness.editorialMemoryApplied ? 12 : 0));
     const repairAttempted = Boolean(story.editorRepairReview?.applied || story.approvalRecoveryReview?.applied || story.lifecycleRepair?.repaired || (story.qualityGate?.correctedIssues || []).length);
     const repairPassed = Boolean(story.editorRepairReview?.finalPassed || story.approvalRecoveryReview?.passed || story.lifecycleRepair?.passedAfterRepair || (repairAttempted && !issues.length));
     const qualityPassed = Boolean(story.qualityGate?.passed || (!issues.length && newsLabCompleteArticleStory(story)));
@@ -43119,7 +43266,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
       newsLabLifecycleStage("Evidence Collected", "Evidence Engine", newsLabLifecycleStageStatus(sourceCount > 0), Math.min(100, sourceCount * 24 + knownFacts * 8), { sourceCount, knownFacts, fullReadCount: Number(story.articleReadDepth?.fullReadCount || story.storyDossier?.evidence?.fullReadCount || 0) }, sourceCount ? "" : "missing-source-evidence", "Add source context or mark needs-dossier-evidence before writing."),
       newsLabLifecycleStage("Story Dossier Built", "Story Dossier Builder", newsLabLifecycleStageStatus(Boolean(story.storyDossier), Boolean(story.writerDossierInput)), dossierPercent, { knownFacts, sourcePool: Number(story.storyDossier?.sourcePool?.length || 0), confidence, storyId: story.storyDossier?.storyId || story.id || "" }, story.storyDossier ? "" : "missing-story-dossier", "Build one canonical event dossier before Writer, Headline, Image, and Editor run."),
       newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read dossier, editorial memory, lexicon/historical guidance, and prevention rules before drafting."),
-      newsLabLifecycleStage("Draft Generated", "Article Writer", newsLabLifecycleStageStatus(bodyLength >= 650, bodyLength >= 360), Math.min(100, Math.round(bodyLength / 10)), { paragraphs: paragraphCount, bodyLength }, bodyLength >= 650 ? "" : "draft-body-too-thin", "Expand only the missing section from the dossier; do not restart from raw feed text."),
+      newsLabLifecycleStage("Draft Generated", "Article Writer", newsLabLifecycleStageStatus(draftLengthPassed, draftLengthAttention), Math.min(100, Math.round(bodyLength / 10)), { paragraphs: paragraphCount, bodyLength, articleFormat: writerReadiness.articleFormat, readinessTier: writerReadiness.readinessTier }, draftLengthPassed ? "" : (supportedBrief ? "brief-body-too-thin" : "draft-body-too-thin"), "Generate only the article format supported by the locked dossier capacity; do not stretch a brief dossier into a full article."),
       newsLabLifecycleStage("Headline Generated", "Headline Generator", newsLabLifecycleStageStatus(Boolean(headlineReview.passed), Boolean((headlineReview.issues || []).length === 0 && story.title)), headlineReview.passed ? 100 : Math.max(20, 100 - (headlineReview.issues || []).length * 25), { title: story.title || "", headlineIssues: headlineReview.issues || [], headlineAudit: story.headlineAudit || null }, headlineReview.passed ? "" : (headlineReview.issues || ["headline-validation-failed"])[0], "Rebuild headline from final dossier/article identity using actor + action + consequence."),
       newsLabLifecycleStage("Self Review", "Draft Optimization Engine", story.editorialCoach ? (story.editorialCoach.passed ? "passed" : "attention") : "not-recorded", story.editorialCoach ? (story.editorialCoach.passed ? 100 : 55) : 0, { editorialCoach: story.editorialCoach || null, preventionMemory: story.publicationPreventionMemory || null }, story.editorialCoach?.passed === false ? "self-review-found-issues" : "", "Draft Optimization should repair automatic language/headline/context issues before Editor."),
       newsLabLifecycleStage("Editor", "Publishing Editor", nonImageIssues.length ? "rejected" : "passed", nonImageIssues.length ? Math.max(0, 100 - nonImageIssues.length * 18) : 100, { issues: nonImageIssues, qualityGate: story.qualityGate || null }, nonImageIssues[0] || "", "Route each issue to its owner and rerun fresh validation from current article state."),
@@ -45222,6 +45369,185 @@ async function marketSnapshotLookupQuote(query = "") {
     }
   };
 }
+function marketHistoryPointValue(point = {}) {
+  const value = Number(point.close || point.adjclose || 0);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function marketHistoryNearestAtOrAfter(points = [], targetMs = 0) {
+  return points.find(point => Number(point.dateMs || 0) >= targetMs && marketHistoryPointValue(point) !== null) || null;
+}
+
+function marketHistoryNearestAtOrBefore(points = [], targetMs = 0) {
+  for (let index = points.length - 1; index >= 0; index -= 1) {
+    const point = points[index];
+    if (Number(point.dateMs || 0) <= targetMs && marketHistoryPointValue(point) !== null) return point;
+  }
+  return null;
+}
+
+function marketHistoryPerformance(points = [], now = new Date()) {
+  const usable = points.filter(point => marketHistoryPointValue(point) !== null).sort((a, b) => a.dateMs - b.dateMs);
+  const latestPoint = usable[usable.length - 1] || null;
+  const latest = marketHistoryPointValue(latestPoint || {});
+  const windows = [
+    { key: "currentWeek", label: "Current week", days: 7 },
+    { key: "monthToDate", label: "Month to date", start: new Date(now.getFullYear(), now.getMonth(), 1) },
+    { key: "oneYear", label: "1 year", days: 365 },
+    { key: "twoYears", label: "2 years", days: 365 * 2 },
+    { key: "tenYears", label: "10 years", days: 365 * 10 }
+  ];
+  if (!latestPoint || latest === null) return windows.map(window => ({ ...window, status: "unavailable" }));
+  return windows.map(window => {
+    const endMs = Number(latestPoint.dateMs || Date.now());
+    const startMs = window.start instanceof Date ? window.start.getTime() : endMs - Number(window.days || 0) * 86400000;
+    const durationMs = Math.max(86400000, endMs - startMs);
+    const startPoint = marketHistoryNearestAtOrAfter(usable, startMs) || usable[0] || null;
+    const startValue = marketHistoryPointValue(startPoint || {});
+    const previousEnd = marketHistoryNearestAtOrBefore(usable, startMs - 1) || null;
+    const previousStart = marketHistoryNearestAtOrAfter(usable, startMs - durationMs) || usable[0] || null;
+    const previousStartValue = marketHistoryPointValue(previousStart || {});
+    const previousEndValue = marketHistoryPointValue(previousEnd || {});
+    const change = latest !== null && startValue !== null ? latest - startValue : null;
+    const changePercent = change !== null && startValue ? (change / startValue) * 100 : null;
+    const previousChange = previousEndValue !== null && previousStartValue !== null ? previousEndValue - previousStartValue : null;
+    const previousChangePercent = previousChange !== null && previousStartValue ? (previousChange / previousStartValue) * 100 : null;
+    return {
+      key: window.key,
+      label: window.label,
+      startDate: startPoint?.date || "",
+      endDate: latestPoint.date || "",
+      startValue,
+      endValue: latest,
+      change,
+      changePercent,
+      previousStartDate: previousStart?.date || "",
+      previousEndDate: previousEnd?.date || "",
+      previousChange,
+      previousChangePercent,
+      versusPrevious: changePercent !== null && previousChangePercent !== null ? changePercent - previousChangePercent : null,
+      status: startValue !== null ? "available" : "unavailable"
+    };
+  });
+}
+
+async function marketSnapshotFetchHistorical(symbol = "") {
+  const endpoint = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=10y&interval=1d`;
+  const response = await marketSnapshotProviderFetch(endpoint, 6500);
+  if (!response.ok) throw new Error(`market-history-${symbol}-${response.status}`);
+  const json = await response.json();
+  const result = json.chart?.result?.[0] || {};
+  const timestamps = result.timestamp || [];
+  const quote = result.indicators?.quote?.[0] || {};
+  const adjclose = result.indicators?.adjclose?.[0]?.adjclose || [];
+  const points = timestamps.map((timestamp, index) => ({
+    date: new Date(Number(timestamp || 0) * 1000).toISOString().slice(0, 10),
+    dateMs: Number(timestamp || 0) * 1000,
+    close: Number(quote.close?.[index] || 0) || null,
+    adjclose: Number(adjclose[index] || 0) || null,
+    volume: Number(quote.volume?.[index] || 0) || 0
+  })).filter(point => marketHistoryPointValue(point) !== null);
+  return {
+    source: "Yahoo Finance chart endpoint",
+    range: "10y",
+    interval: "1d",
+    pointCount: points.length,
+    points,
+    performance: marketHistoryPerformance(points)
+  };
+}
+
+function marketSymbolNewsFromCache(symbol = "", name = "") {
+  const payload = readJsonFile(newsLabPublishedPayloadFile, {}) || {};
+  const stories = Array.isArray(payload.ownedStories) ? payload.ownedStories : Array.isArray(payload.stories) ? payload.stories : [];
+  const symbolText = String(symbol || "").replace(/[^a-z0-9]/gi, "");
+  const nameWords = String(name || "").toLowerCase().split(/\s+/).filter(word => word.length > 3).slice(0, 4);
+  return stories
+    .filter(story => {
+      const text = `${story.title || ""} ${story.summary || ""} ${story.body || ""}`.toLowerCase();
+      if (symbolText && new RegExp(`\\b${symbolText.toLowerCase()}\\b`, "i").test(text)) return true;
+      return nameWords.some(word => text.includes(word));
+    })
+    .slice(0, 6)
+    .map(story => ({
+      title: story.title || "Company update",
+      url: story.id ? `./news-lab-story.html?id=${encodeURIComponent(story.id)}` : (story.url || "#"),
+      source: "CE Media",
+      type: "ce-company-story",
+      published: story.originalPublishedAt || story.generatedAt || story.lastUpdatedAt || ""
+    }));
+}
+
+async function marketSymbolProviderNews(query = "") {
+  const endpoint = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&quotesCount=1&newsCount=8`;
+  const response = await marketSnapshotProviderFetch(endpoint, 4500);
+  if (!response.ok) throw new Error(`market-news-${response.status}`);
+  const json = await response.json();
+  return (json.news || []).slice(0, 8).map(item => ({
+    title: item.title || "Company market news",
+    url: item.link || item.url || "#",
+    source: item.publisher || "Market news",
+    type: "provider-company-news",
+    published: item.providerPublishTime ? new Date(Number(item.providerPublishTime) * 1000).toISOString() : ""
+  }));
+}
+
+async function marketSnapshotSymbolDetail(query = "") {
+  const quotePayload = await marketSnapshotLookupQuote(query);
+  const quote = quotePayload.quote || {};
+  const symbol = quote.symbol || quotePayload.resolvedSymbol || query;
+  const cleanSymbol = String(symbol || "").toUpperCase();
+  const cache = readJsonFile(marketSymbolHistoryFile, { version: "20260730-market-symbol-history-v1", symbols: {} }) || { symbols: {} };
+  const cached = cache.symbols?.[cleanSymbol];
+  if (cached?.generatedAt && Date.now() - new Date(cached.generatedAt).getTime() < 15 * 60 * 1000) {
+    return { ...cached, cacheStatus: "hit" };
+  }
+  const [historyResult, providerNewsResult] = await Promise.allSettled([
+    marketSnapshotFetchHistorical(symbol),
+    marketSymbolProviderNews(`${quote.name || ""} ${symbol}`.trim())
+  ]);
+  const cachedNews = marketSymbolNewsFromCache(symbol, quote.name);
+  const providerNews = providerNewsResult.status === "fulfilled" ? providerNewsResult.value : [];
+  const news = [...cachedNews, ...providerNews]
+    .filter((item, index, list) => item.url && list.findIndex(other => other.url === item.url || other.title === item.title) === index)
+    .slice(0, 10);
+  const detail = {
+    generatedAt: new Date().toISOString(),
+    query,
+    symbol,
+    source: quotePayload.source || "Yahoo Finance",
+    cacheStatus: "refreshed",
+    quote,
+    current: {
+      price: quote.price,
+      change: quote.change,
+      changePercent: quote.changePercent,
+      marketState: quote.marketState || "",
+      exchange: quote.exchange || "",
+      marketCap: quote.marketCap || ""
+    },
+    historical: historyResult.status === "fulfilled" ? historyResult.value : {
+      source: "unavailable",
+      range: "10y",
+      interval: "1d",
+      pointCount: 0,
+      points: [],
+      performance: marketHistoryPerformance([]),
+      error: historyResult.reason?.message || String(historyResult.reason || "history unavailable")
+    },
+    news,
+    notes: [
+      "Market Pulse data may be live or delayed depending on provider availability.",
+      "Historical performance compares each selected window with the previous equivalent window when enough history exists."
+    ]
+  };
+  cache.version = "20260730-market-symbol-history-v1";
+  cache.updatedAt = detail.generatedAt;
+  cache.symbols ||= {};
+  cache.symbols[cleanSymbol] = detail;
+  writeJsonFile(marketSymbolHistoryFile, cache);
+  return detail;
+}
 function triggerMarketSnapshotRefresh(reason = "manual-refresh", force = false) {
   if (runtimeState.marketSnapshotRefreshActive) return { queued: false, skipped: "refresh-already-active", status: marketSnapshotLoopStatus() };
   runtimeState.marketSnapshotRefreshActive = true;
@@ -45890,6 +46216,20 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
+
+  if (url.pathname === "/api/market-symbol-detail") {
+    try {
+      const query = String(url.searchParams.get("q") || url.searchParams.get("symbol") || "").trim();
+      if (!query) {
+        sendNoStoreJson(response, 400, { generatedAt: new Date().toISOString(), error: "Missing stock search query." });
+        return;
+      }
+      sendNoStoreJson(response, 200, await marketSnapshotSymbolDetail(query));
+    } catch (error) {
+      sendNoStoreJson(response, 502, { generatedAt: new Date().toISOString(), error: "Market symbol detail unavailable.", detail: error.message || String(error) });
+    }
+    return;
+  }
 
   if (url.pathname === "/api/market-quote") {
     try {
@@ -47789,6 +48129,14 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
 
 
 

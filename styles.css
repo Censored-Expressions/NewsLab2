@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   color-scheme: dark;
   --bg: #060606;
   --panel: #111;
@@ -6383,7 +6383,8 @@ h3 {
 }
 
 .owner-area-tabs button,
-.owner-performance-metric {
+.owner-performance-metric,
+.owner-performance-area-card {
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -6401,14 +6402,16 @@ h3 {
 .owner-area-tabs button.is-active,
 .owner-area-tabs button:hover,
 .owner-performance-metric.is-active,
-.owner-performance-metric:hover {
+.owner-performance-metric:hover,
+.owner-performance-area-card:hover {
   border-color: rgba(215, 25, 32, 0.85);
   background: #151111;
 }
 
 .owner-area-tabs span,
 .owner-performance-summary span,
-.owner-performance-metric span {
+.owner-performance-metric span,
+.owner-performance-area-card span {
   display: block;
   color: var(--muted);
   font-size: 11px;
@@ -6418,7 +6421,8 @@ h3 {
 
 .owner-area-tabs strong,
 .owner-performance-summary strong,
-.owner-performance-metric strong {
+.owner-performance-metric strong,
+.owner-performance-area-card strong {
   display: block;
   margin-top: 6px;
   color: white;
@@ -6442,7 +6446,8 @@ h3 {
 }
 
 .owner-performance-summary article,
-.owner-performance-metric {
+.owner-performance-metric,
+.owner-performance-area-card {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #080808;
@@ -6451,7 +6456,8 @@ h3 {
 }
 
 .owner-performance-summary p,
-.owner-performance-metric p {
+.owner-performance-metric p,
+.owner-performance-area-card p {
   margin: 7px 0 0;
   color: var(--muted);
   font-size: 13px;
@@ -6462,6 +6468,123 @@ h3 {
   .owner-performance-controls,
   .owner-performance-summary,
   .owner-performance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+/* Market Pulse symbol drill-in: current quote, history windows, and latest company news. */
+.news-lab-page .market-detail-button,
+.news-lab-page .market-detail-close {
+  border: 1px solid rgba(215, 25, 32, 0.5);
+  border-radius: 999px;
+  background: rgba(215, 25, 32, 0.14);
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 5px 8px;
+  text-transform: uppercase;
+}
+
+.news-lab-page .market-detail-button {
+  justify-self: end;
+  margin-top: 3px;
+}
+
+.news-lab-page .market-symbol-detail {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 12px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.news-lab-page .market-symbol-detail[hidden] {
+  display: none;
+}
+
+.news-lab-page .market-detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.news-lab-page .market-detail-head span,
+.news-lab-page .market-performance-card span {
+  display: block;
+  color: #ff2430;
+  font-size: 0.7rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.news-lab-page .market-detail-head strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.news-lab-page .market-detail-head p,
+.news-lab-page .market-performance-card p,
+.news-lab-page .market-performance-card small {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.news-lab-page .market-detail-current,
+.news-lab-page .market-performance-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 9px;
+}
+
+.news-lab-page .market-detail-current {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.news-lab-page .market-detail-current strong,
+.news-lab-page .market-performance-card strong {
+  color: white;
+  font-size: 1rem;
+}
+
+.news-lab-page .market-detail-current.positive em,
+.news-lab-page .market-performance-card.positive strong {
+  color: #4ce26c;
+}
+
+.news-lab-page .market-detail-current.negative em,
+.news-lab-page .market-performance-card.negative strong {
+  color: #ff3445;
+}
+
+.news-lab-page .market-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.news-lab-page .market-detail-news h3 {
+  margin: 2px 0 8px;
+  font-size: 0.76rem;
+}
+
+@media (max-width: 520px) {
+  .news-lab-page .market-performance-grid,
+  .news-lab-page .market-detail-current {
     grid-template-columns: 1fr;
   }
 }
