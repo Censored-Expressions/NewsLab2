@@ -1,4 +1,4 @@
-const ownerLogin = document.querySelector("[data-owner-login]");
+﻿const ownerLogin = document.querySelector("[data-owner-login]");
 const ownerConsole = document.querySelector("[data-owner-console]");
 const ownerLoginForm = document.querySelector("[data-owner-login-form]");
 const ownerLoginStatus = document.querySelector("[data-owner-login-status]");
@@ -240,6 +240,13 @@ function renderProductionIntelligence(payload = {}) {
   const waste = payload.unnecessaryWork || {};
   const proposal = payload.boundedImprovementProposal || {};
   const routing = Array.isArray(payload.targetedRepairRouting) ? payload.targetedRepairRouting : [];
+  const observability = payload.observability || {};
+  const publishing = observability.publishing || {};
+  const editorial = observability.editorial || {};
+  const actionQueue = observability.queues?.approvalActionPlan || {};
+  const funnel = publishing.publicationFunnelDashboard || payload.publicationFunnelDashboard || {};
+  const stageRows = Array.isArray(funnel.stageRows) ? funnel.stageRows : [];
+  const topRejections = Array.isArray(editorial.topRejectionReasons) ? editorial.topRejectionReasons : (Array.isArray(funnel.topRejectionReasons) ? funnel.topRejectionReasons : []);
   const firstPassRate = Math.round(Number(current.firstPassPublicationRate || 0) * 100);
   const finalRate = Math.round(Number(current.finalApprovalRate || 0) * 100);
   ownerProductionRate.textContent = `${firstPassRate}%`;
@@ -247,6 +254,7 @@ function renderProductionIntelligence(payload = {}) {
     <p>${escapeHtml(payload.primaryGoal || "Increase First-Pass Publication Rate.")}</p>
     <p><strong>${escapeHtml(proposal.subsystem || proposal.target || "Production Intelligence")}</strong>: ${escapeHtml(proposal.action || "No bounded improvement selected yet.")}</p>
     <p>${escapeHtml(proposal.expectedOutcome || proposal.measurement || "Measure the next production window before promoting changes.")}</p>
+    <p>${escapeHtml(`Visible: ${publishing.activeBoardStories ?? publishing.visibleStories ?? 0}; cache: ${publishing.publicCache?.freshness?.label || "unknown"}; action tasks: ${actionQueue.active ?? 0}.`)}</p>
   `;
   const cards = [
     ["First-Pass", `${firstPassRate}%`, `${escapeHtml(current.publishedFirstPass ?? current.firstPassApproved ?? 0)} first-pass approvals`],
@@ -254,7 +262,10 @@ function renderProductionIntelligence(payload = {}) {
     ["Repairs", escapeHtml(waste.repairFrequency ?? 0), "repair attempts this window"],
     ["Headline Pressure", escapeHtml(waste.headlineRewritePressure ?? 0), "headline/title blockers"],
     ["Dossier Pressure", escapeHtml(waste.evidenceOrDossierPressure ?? 0), "evidence/body/context blockers"],
-    ["Avg Repair Passes", escapeHtml(current.averageRepairPasses ?? 0), "target below 1.5"]
+    ["Avg Repair Passes", escapeHtml(current.averageRepairPasses ?? 0), "target below 1.5"],
+    ["Visible Tiles", escapeHtml(publishing.activeBoardStories ?? publishing.visibleStories ?? 0), "currently public after tile rules"],
+    ["Cache Age", escapeHtml(publishing.publicCache?.freshness?.label || "unknown"), publishing.publicCache?.stale ? "public cache is stale" : "public cache freshness"],
+    ["Action Tasks", escapeHtml(actionQueue.active ?? 0), "repair/publication tasks waiting"]
   ];
   const routeHtml = routing.slice(0, 4).map(item => `
     <article>
@@ -263,13 +274,27 @@ function renderProductionIntelligence(payload = {}) {
       <p>${escapeHtml(item.count ?? 0)} recent blockers</p>
     </article>
   `).join("");
+  const funnelHtml = stageRows.slice(0, 8).map(item => `
+    <article>
+      <span>${escapeHtml(item.stage || "Stage")}</span>
+      <strong>${escapeHtml(item.count ?? 0)}</strong>
+      <p>${escapeHtml(`${item.percentRemaining ?? 0}% remaining`)}</p>
+    </article>
+  `).join("");
+  const rejectionHtml = topRejections.slice(0, 6).map(item => `
+    <article>
+      <span>${escapeHtml(item.failureCode || "REJECTION")}</span>
+      <strong>${escapeHtml(item.count ?? 0)}</strong>
+      <p>top rejection reason</p>
+    </article>
+  `).join("");
   ownerProductionGrid.innerHTML = cards.map(([label, value, detail]) => `
     <article>
       <span>${escapeHtml(label)}</span>
       <strong>${value}</strong>
       <p>${detail}</p>
     </article>
-  `).join("") + routeHtml;
+  `).join("") + routeHtml + funnelHtml + rejectionHtml;
 }
 function renderHighImpactCapabilities(payload = {}) {
   const plan = payload.highImpactCapabilityPlan || {};
@@ -843,18 +868,21 @@ async function loadPatchRequests() {
 }
 
 async function loadOwnerDashboard() {
-  const [learning, health, revenue, metrics, brainState, productionIntelligence, patches] = await Promise.all([
+  const [learning, health, revenue, metrics, brainState, productionIntelligence, observability, patches] = await Promise.all([
     ownerApi("/api/learning"),
     ownerApi("/api/health"),
     ownerApi("/api/revenue-growth"),
     ownerApi(`/api/owner-metrics?metric=${encodeURIComponent(selectedOwnerMetric)}&timeframe=${encodeURIComponent(selectedOwnerTimeframe)}`),
     ownerApi("/api/owner-brain-state"),
+    ownerApi("/api/production-intelligence").catch(() => ({})),
+    ownerApi("/api/news-lab-observability").catch(() => ({})),
     ownerApi("/api/code-patch-proposals?limit=250").catch(() => null)
   ]);
   renderSummary({ learning, health, revenue, metrics });
   renderOwnerMetricOptions(metrics);
   renderOwnerMetricGraph(metrics);
   renderBrainState(brainState);
+  renderProductionIntelligence({ ...(productionIntelligence || {}), observability });
   if (patches) renderPatchRequests(patches.proposals || {});
   const dashboard = {
     learning: learning.learning,
@@ -862,6 +890,8 @@ async function loadOwnerDashboard() {
     revenueGrowth: revenue.revenueGrowth,
     ownerMetrics: metrics.selected,
     brainState,
+    productionIntelligence,
+    observability,
     patchRequests: patches?.proposals
   };
   showJson(dashboard);
@@ -1379,6 +1409,9 @@ merchSaleForm?.addEventListener("submit", async event => {
 });
 
 if (ownerToken) unlockOwnerDesk(ownerToken).catch(() => {});
+
+
+
 
 
 

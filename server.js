@@ -2918,6 +2918,7 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   const productivity = newsLabProductivitySummary();
   const productivityRaw = readJsonFile(newsLabProductivityFile, {}) || {};
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
+  const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
   const worker = readNewsLabWorkerStatus();
   const apiWorker = readNewsLabApiWorkerStatus();
   const stuckWorker = readNewsLabStuckRescueWorkerStatus();
@@ -2926,6 +2927,7 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   const workerSync = readJsonFile(newsLabWorkerSyncLedgerFile, defaultNewsLabWorkerSyncLedger()) || defaultNewsLabWorkerSyncLedger();
   const collectorSummary = newsLabCollectorWorkerStatusSummary();
   const payload = readNewsLabPublishedPayload() || { ownedStories: [] };
+  const publicCacheFreshness = newsLabObservabilityFreshness(payload.generatedAt || payload.savedAt || "");
   const visibleStories = Array.isArray(payload.ownedStories) ? payload.ownedStories.length : 0;
   const activePayload = newsLabApplyCurrentBoardPolicy({ ownedStories: payload.ownedStories || [] });
   const activeStories = Array.isArray(activePayload.ownedStories) ? activePayload.ownedStories : [];
@@ -2965,6 +2967,7 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   const findings = [];
   if (!workers.orchestrator.freshness.fresh) findings.push("background worker orchestrator heartbeat is stale or missing");
   if (collectorSummary.underfilledCategories?.length) findings.push(`underfilled tabs: ${collectorSummary.underfilledCategories.join(", ")}`);
+  if (publicCacheFreshness.ageMs !== null && publicCacheFreshness.ageMs > 12 * 60 * 60 * 1000) findings.push(`public News Lab cache is stale: ${publicCacheFreshness.label}`);
   if (approvalRate && approvalRate < 20) findings.push(`low editorial approval rate: ${approvalRate}%`);
   if (Number(approvalQueue.active?.length || 0) > 0) findings.push(`${approvalQueue.active.length} approval recovery items are active`);
   if (Number(headlineQueue.active?.length || 0) > 0) findings.push(`${headlineQueue.active.length} headline repair items are active`);
@@ -2974,7 +2977,8 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
     reason,
     queues: {
       headlineRepair: { active: headlineQueue.active?.length || 0, totals: headlineQueue.totals || {}, topReasons: (headlineQueue.reasonRanking || []).slice(0, 6), recoveryRates: headlineQueue.recoveryRates || {}, fileAgeMs: safeFileAgeMs(newsLabHeadlineRepairQueueFile) },
-      approvalRecovery: { active: approvalQueue.active?.length || 0, totals: approvalQueue.totals || {}, topReasons: (approvalQueue.reasonRanking || []).slice(0, 6), stageRanking: (approvalQueue.stageRanking || []).slice(0, 6), recoveryRates: approvalQueue.recoveryRates || {}, fileAgeMs: safeFileAgeMs(newsLabApprovalRecoveryQueueFile) }
+      approvalRecovery: { active: approvalQueue.active?.length || 0, totals: approvalQueue.totals || {}, topReasons: (approvalQueue.reasonRanking || []).slice(0, 6), stageRanking: (approvalQueue.stageRanking || []).slice(0, 6), recoveryRates: approvalQueue.recoveryRates || {}, fileAgeMs: safeFileAgeMs(newsLabApprovalRecoveryQueueFile) },
+      approvalActionPlan: { active: approvalActionPlan.tasks?.length || 0, summary: approvalActionPlan.summary || {}, systemIssues: (approvalActionPlan.systemIssues || []).slice(0, 6), fileAgeMs: safeFileAgeMs(newsLabArticleApprovalActionPlanFile) }
     },
     workers,
     collectors: {
@@ -2998,6 +3002,8 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
       rejected: rejectedArticles,
       approvalRate,
       topBlockers: (approval.topBlockers || approval.currentCycle?.topBlockers || []).slice(0, 8),
+      topRejectionReasons: (approval.publicationFunnelDashboard?.topRejectionReasons || approvalActionPlan.publicationFunnelDashboard?.topRejectionReasons || []).slice(0, 12),
+      articleDeathCertificates: (approval.articleDeathCertificates || approvalActionPlan.articleDeathCertificates || []).slice(0, 20),
       passFailLastHour: { approved: Number(lastHour.approvedArticles || 0), rejected: Number(lastHour.finalBlocked || lastHour.rejected || 0) }
     },
     publishing: {
@@ -3006,7 +3012,13 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
       categoryCounts,
       publishedCounter: publishedArticles,
       publishConversionRate: approvedArticles ? Number(((visibleStories / approvedArticles) * 100).toFixed(2)) : 0,
-      boardPolicy: activePayload.boardDatePolicy || null
+      boardPolicy: activePayload.boardDatePolicy || null,
+      publicCache: {
+        generatedAt: payload.generatedAt || payload.savedAt || "",
+        freshness: publicCacheFreshness,
+        stale: Boolean(publicCacheFreshness.ageMs !== null && publicCacheFreshness.ageMs > 12 * 60 * 60 * 1000)
+      },
+      publicationFunnelDashboard: approval.publicationFunnelDashboard || approvalActionPlan.publicationFunnelDashboard || null
     },
     health: {
       status: findings.length ? "attention" : "ok",
@@ -4062,6 +4074,99 @@ function newsLabApprovalSystemIssuesFromLifecycle(lifecycle = {}) {
   return issues;
 }
 
+function newsLabPublicationFunnelDashboard(context = {}) {
+  const lifecycle = context.articleLifecycle || newsLabApprovalLifecycleRows(context);
+  const current = context.currentCycle || {};
+  const quality = context.qualityGateResult || {};
+  const diagnostics = context.finalPublishDiagnostics || {};
+  const publicationAudit = context.publicationOutcomeAudit || context.publicationAudit || {};
+  const rowCount = Number(lifecycle.rowCount || 0);
+  const collected = Number(context.generatedCandidates || current.generatedCandidates || quality.totalStories || quality.candidateStoryCount || rowCount || 0);
+  const dossiers = Number(context.dossiersCompleted || quality.dossiersCompleted || rowCount || 0);
+  const drafts = Number(current.editorialReviewed || context.editorialReviewed || quality.reviewedCount || quality.reviewedStories || rowCount || 0);
+  const selfReviewPassed = Number(quality.passedCount || quality.acceptedCount || current.firstPassApproved || 0);
+  const editorPassed = Number(current.finalApproved || diagnostics.finalCompleteCount || 0);
+  const repairEntered = Number(current.approvalRecoveryAttempted || diagnostics.approvalRecoveryAttempted || 0);
+  const repairPassed = Number(current.approvalRecoveryResolved || diagnostics.approvalRecoveryResolved || 0);
+  const visible = Number(current.publishedShelfCount || context.publishedShelfCount || lifecycle.publishedVisible || 0);
+  const stageRows = [
+    { stage: "Feed items collected", count: collected },
+    { stage: "Story dossiers created", count: dossiers },
+    { stage: "Drafts generated", count: drafts },
+    { stage: "Passed self-review", count: selfReviewPassed },
+    { stage: "Passed editor/final review", count: editorPassed },
+    { stage: "Entered repair", count: repairEntered },
+    { stage: "Passed repair", count: repairPassed },
+    { stage: "Published to public cache", count: visible }
+  ].map(item => ({
+    ...item,
+    percentRemaining: Number(((Number(item.count || 0) / Math.max(1, collected)) * 100).toFixed(2))
+  }));
+  const topRejectionReasons = (lifecycle.topStandardizedFailureCodes || [])
+    .map(item => ({ failureCode: item.failureCode, count: item.count }))
+    .slice(0, 12);
+  const counters = publicationAudit.counters || {};
+  return {
+    generatedAt: new Date().toISOString(),
+    stageRows,
+    topRejectionReasons,
+    leakage: {
+      collectedToDraftLoss: Math.max(0, collected - drafts),
+      draftToEditorLoss: Math.max(0, drafts - editorPassed),
+      repairFailureCount: Math.max(0, repairEntered - repairPassed),
+      approvedNotVisible: Number(lifecycle.approvedNotVisible || 0),
+      publicationAuditCounters: counters
+    },
+    bottleneck: stageRows.reduce((worst, item, index, rows) => {
+      if (!index) return worst;
+      const previous = rows[index - 1];
+      const drop = Number(previous.count || 0) - Number(item.count || 0);
+      return drop > Number(worst.drop || 0) ? { from: previous.stage, to: item.stage, drop, nextAction: newsLabPublicationFunnelNextAction(previous.stage, item.stage) } : worst;
+    }, { from: "none", to: "none", drop: 0, nextAction: "No dominant publication leak measured yet." }),
+    rule: "The publication funnel must show where candidates disappear between collection, dossier, draft, editor, repair, and public cache visibility."
+  };
+}
+
+function newsLabPublicationFunnelNextAction(fromStage = "", toStage = "") {
+  const path = `${fromStage} -> ${toStage}`.toLowerCase();
+  if (/feed items collected.*story dossiers/.test(path)) return "Inspect collector-to-cluster handoff and ensure valid source items become clean event dossiers.";
+  if (/story dossiers.*drafts/.test(path)) return "Inspect Writer/Dossier handoff and require one clean event dossier before drafting.";
+  if (/drafts.*self-review/.test(path)) return "Apply Editorial Memory and Draft Optimization before drafts reach the Editor.";
+  if (/self-review.*editor/.test(path)) return "Rank editor rejection reasons and promote generalized prevention rules upstream.";
+  if (/entered repair.*passed repair/.test(path)) return "Run targeted component repair, then resubmit only failed checks before final validation.";
+  if (/passed repair.*published/.test(path) || /final review.*entered repair/.test(path)) return "Trace publisher merge, duplicate, category, seven-day tile window, and public cache write decisions.";
+  return "Trace the article lifecycle rows for the largest stage drop.";
+}
+
+function newsLabArticleDeathCertificatesFromLifecycle(lifecycle = {}, limit = 80) {
+  const rows = Array.isArray(lifecycle.rows) ? lifecycle.rows : [];
+  return rows
+    .filter(row => row.outcome !== "published-visible")
+    .slice(0, Math.max(1, Number(limit || 80)))
+    .map(row => ({
+      articleId: row.id || "",
+      title: row.title || "",
+      category: row.category || "",
+      collected: row.stages?.collected || "unknown",
+      dossier: row.stages?.dossier || "unknown",
+      writer: row.stages?.writer || "unknown",
+      selfReview: row.stages?.selfReview || "unknown",
+      editor: row.stages?.editor || "unknown",
+      repair: row.stages?.repair || "unknown",
+      publisher: row.stages?.publisher || "unknown",
+      reason: row.primaryReason || "",
+      failureCode: row.failureCode || "",
+      failureCodes: row.standardizedFailureCodes || [],
+      repairAttempted: Boolean(row.repairAttempted),
+      repairPassed: Boolean(row.repairPassed),
+      disposition: row.outcome || "held",
+      responsibleSubsystem: row.responsibleSubsystem || "Publishing Editor",
+      repairAction: row.repairAction || "",
+      preventionRuleAdded: Boolean(row.preventionRule),
+      preventionRule: row.preventionRule || "",
+      nextAction: row.nextAction || "Repair, resubmit, and measure public visibility."
+    }));
+}
 function newsLabBuildArticleApprovalActionPlan(context = {}) {
   const lifecycle = context.articleLifecycle || newsLabApprovalLifecycleRows(context);
   const rows = Array.isArray(lifecycle.rows) ? lifecycle.rows : [];
@@ -4091,6 +4196,8 @@ function newsLabBuildArticleApprovalActionPlan(context = {}) {
     tasks,
     systemIssues: newsLabApprovalSystemIssuesFromLifecycle(lifecycle),
     preventionRules,
+    articleDeathCertificates: newsLabArticleDeathCertificatesFromLifecycle(lifecycle),
+    publicationFunnelDashboard: newsLabPublicationFunnelDashboard({ ...context, articleLifecycle: lifecycle }),
     lifecycleSummary: {
       rowCount: lifecycle.rowCount || 0,
       publishedVisible: lifecycle.publishedVisible || 0,
@@ -4159,7 +4266,9 @@ function newsLabArticleApprovalIntelligence(context = {}) {
       topBlockers,
       approvalSprint,
       articleLifecycle: existing.articleLifecycle || newsLabApprovalLifecycleRows({ mode: "read-only-existing" }),
-      actionPlan: readJsonFile(newsLabArticleApprovalActionPlanFile, null) || defaultNewsLabArticleApprovalActionPlan(),
+      actionPlan: storedActionPlan,
+      publicationFunnelDashboard: existing.publicationFunnelDashboard || storedActionPlan.publicationFunnelDashboard || null,
+      articleDeathCertificates: existing.articleDeathCertificates || storedActionPlan.articleDeathCertificates || [],
       bottleneck: newsLabArticleApprovalBottleneck({ currentCycle, topBlockers }),
       rule: existing.rule || defaultNewsLabArticleApprovalIntelligence().rule
     };
@@ -4213,7 +4322,9 @@ function newsLabArticleApprovalIntelligence(context = {}) {
     qualityGateResult
   });
 
-  const actionPlan = newsLabBuildArticleApprovalActionPlan({ ...context, articleLifecycle });
+  const publicationFunnelDashboard = newsLabPublicationFunnelDashboard({ ...context, articleLifecycle, currentCycle, finalPublishDiagnostics, qualityGateResult });
+  const articleDeathCertificates = newsLabArticleDeathCertificatesFromLifecycle(articleLifecycle);
+  const actionPlan = newsLabBuildArticleApprovalActionPlan({ ...context, articleLifecycle, currentCycle, finalPublishDiagnostics, qualityGateResult });
 
   const report = {
     ...existing,
@@ -9236,6 +9347,7 @@ function frameworkContinuousOptimizerSnapshot(memory = learningMemory(), diagnos
   const imageWorker = readJsonFile(newsLabImageWorkerStatusFile, {}) || {};
   const publishedPayload = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
+  const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
   const endpoints = Object.values(apiPerformance.endpoints || {});
   const worstEndpoint = (apiPerformance.slowestEndpoints || []).slice(0, 1)[0]
     || endpoints.map(item => ({ endpoint: item.endpoint || "unknown", maxMs: item.maxMs || 0, avgMs: item.avgMs || 0 })).sort((a, b) => Number(b.maxMs || 0) - Number(a.maxMs || 0))[0]
@@ -42620,6 +42732,7 @@ function newsLabCoverageComparisonReport(reason = "manual") {
 function newsLabThroughputDiagnosticsReport(reason = "manual") {
   const productivity = readJsonFile(newsLabProductivityFile, {}) || {};
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, {}) || {};
+  const approvalActionPlan = readJsonFile(newsLabArticleApprovalActionPlanFile, defaultNewsLabArticleApprovalActionPlan()) || defaultNewsLabArticleApprovalActionPlan();
   const worker = readJsonFile(newsLabWorkerStatusFile, {}) || {};
   const payload = readNewsLabPublishedPayload() || {};
   const storyObjects = readJsonFile(newsLabStoryObjectsFile, { stories: {} }) || { stories: {} };
@@ -45513,6 +45626,12 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
 
 
 
