@@ -265,7 +265,9 @@ function renderProductionIntelligence(payload = {}) {
     ["Avg Repair Passes", escapeHtml(current.averageRepairPasses ?? 0), "target below 1.5"],
     ["Visible Tiles", escapeHtml(publishing.activeBoardStories ?? publishing.visibleStories ?? 0), "currently public after tile rules"],
     ["Cache Age", escapeHtml(publishing.publicCache?.freshness?.label || "unknown"), publishing.publicCache?.stale ? "public cache is stale" : "public cache freshness"],
-    ["Action Tasks", escapeHtml(actionQueue.active ?? 0), "repair/publication tasks waiting"]
+    ["Action Tasks", escapeHtml(actionQueue.active ?? 0), "repair/publication tasks waiting"],
+    ["Lifecycle", escapeHtml(lifecycle.latestStatus || "not-recorded"), `${escapeHtml(lifecycle.storyCount ?? 0)} traced stories`],
+    ["Stop Point", escapeHtml(lifecycleStop.stage || "unknown"), escapeHtml(lifecycleStop.reason || "waiting for trace")]
   ];
   const routeHtml = routing.slice(0, 4).map(item => `
     <article>
@@ -1409,6 +1411,7 @@ merchSaleForm?.addEventListener("submit", async event => {
 });
 
 if (ownerToken) unlockOwnerDesk(ownerToken).catch(() => {});
+
 
 
 
