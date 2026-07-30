@@ -1,4 +1,4 @@
-﻿services:
+services:
   - type: web
     name: censored-expressions-web
     runtime: node
@@ -29,10 +29,6 @@
         value: "180"
       - key: CE_OWNER_API_RESPONSE_CACHE_MS
         value: "30000"
-      - key: CE_OWNER_DASHBOARD_LARGE_FILE_BYTES
-        value: "12582912"
-      - key: CE_OWNER_DASHBOARD_FULL_AUDIT_LOGS
-        value: "false"
       - key: CE_WORKER_SYNC_BODY_LIMIT_BYTES
         value: "16777216"
       - key: CE_WORKER_SYNC_MAX_FILE_BYTES
@@ -84,10 +80,6 @@
         value: "180"
       - key: CE_OWNER_API_RESPONSE_CACHE_MS
         value: "30000"
-      - key: CE_OWNER_DASHBOARD_LARGE_FILE_BYTES
-        value: "12582912"
-      - key: CE_OWNER_DASHBOARD_FULL_AUDIT_LOGS
-        value: "false"
       - key: CE_NEWS_LAB_LIVE_IMAGES
         value: "true"
       - key: CE_CONTENT_LANE_EDITOR_ATTEMPTS
@@ -168,8 +160,6 @@
         sync: false
       - key: NEWSDATA_API_KEY
         sync: false
-
-
 
 
 

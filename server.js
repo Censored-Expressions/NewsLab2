@@ -83,6 +83,7 @@ const newsLabHeadlinePatternMemoryFile = path.join(dataDir, "headline-pattern-me
 const newsLabHeadlineRepairQueueFile = path.join(dataDir, "headline-repair-queue.json");
 const newsLabApprovalRecoveryQueueFile = path.join(dataDir, "approval-recovery-queue.json");
 const newsLabArticleApprovalIntelligenceFile = path.join(dataDir, "article-approval-intelligence.json");
+const newsLabArticleApprovalActionPlanFile = path.join(dataDir, "article-approval-action-plan.json");
 const newsLabArticleLifecycleTraceFile = path.join(dataDir, "news-lab-article-lifecycle-trace.json");
 const newsLabStuckRescueWorkerStatusFile = path.join(dataDir, "news-lab-stuck-rescue-worker-status.json");
 const newsLabStuckRescueLearningFile = path.join(dataDir, "news-lab-stuck-rescue-learning.json");
@@ -1722,6 +1723,7 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(newsLabHeadlineRepairQueueFile)) fs.writeFileSync(newsLabHeadlineRepairQueueFile, `${JSON.stringify(defaultNewsLabHeadlineRepairQueue(), null, 2)}\n`);
   if (!fs.existsSync(newsLabApprovalRecoveryQueueFile)) fs.writeFileSync(newsLabApprovalRecoveryQueueFile, `${JSON.stringify(defaultNewsLabApprovalRecoveryQueue(), null, 2)}\n`);
   if (!fs.existsSync(newsLabArticleApprovalIntelligenceFile)) fs.writeFileSync(newsLabArticleApprovalIntelligenceFile, `${JSON.stringify(defaultNewsLabArticleApprovalIntelligence(), null, 2)}\n`);
+  if (!fs.existsSync(newsLabArticleApprovalActionPlanFile)) fs.writeFileSync(newsLabArticleApprovalActionPlanFile, `${JSON.stringify(defaultNewsLabArticleApprovalActionPlan(), null, 2)}\n`);
   if (!fs.existsSync(knowledgeDistillationPolicyFile)) fs.writeFileSync(knowledgeDistillationPolicyFile, `${JSON.stringify(defaultKnowledgeDistillationPolicy(), null, 2)}\n`);
   if (!fs.existsSync(semanticMemoryFile)) fs.writeFileSync(semanticMemoryFile, `${JSON.stringify(defaultSemanticMemory(), null, 2)}\n`);
   if (!fs.existsSync(skillMemoryFile)) fs.writeFileSync(skillMemoryFile, `${JSON.stringify(defaultSkillMemory(), null, 2)}\n`);
@@ -2746,6 +2748,7 @@ function newsLabWorkerSyncAllowlist() {
     "production-intelligence": productionIntelligenceFile,
     "news-lab-throughput-diagnostics": newsLabThroughputDiagnosticsFile,
     "article-approval-intelligence": newsLabArticleApprovalIntelligenceFile,
+    "article-approval-action-plan": newsLabArticleApprovalActionPlanFile,
     "news-lab-image-worker-status": newsLabImageWorkerStatusFile,
     "news-lab-stuck-rescue-worker-status": newsLabStuckRescueWorkerStatusFile,
     "creator-posts": creatorPostsFile,
@@ -3487,6 +3490,25 @@ function defaultNewsLabArticleApprovalIntelligence() {
   };
 }
 
+function defaultNewsLabArticleApprovalActionPlan() {
+  return {
+    version: "20260729-article-approval-action-plan-v1",
+    updatedAt: "",
+    purpose: "Convert approval lifecycle evidence into actionable repair, resubmission, and prevention tasks so article failures do not become passive logs.",
+    summary: {
+      taskCount: 0,
+      repairNeeded: 0,
+      repairStillHeld: 0,
+      needsDossierEvidence: 0,
+      publisherRoutingNeeded: 0,
+      systemIssueCount: 0
+    },
+    tasks: [],
+    systemIssues: [],
+    preventionRules: [],
+    rule: "Every failed or stuck article must identify the responsible subsystem, targeted repair scope, resubmission destination, and generalized prevention lesson before it can be abandoned."
+  };
+}
 function approvalRate(part, total) {
   return Number((Number(part || 0) / Math.max(1, Number(total || 0))).toFixed(2));
 }
@@ -3757,6 +3779,63 @@ function newsLabApprovalSprintStageReport({
   };
 }
 
+function newsLabStandardFailureCode(issue = "") {
+  const failureClass = newsLabFailureClassForIssue(issue);
+  const normalizedIssue = String(issue || "approved")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .toUpperCase() || "APPROVED";
+  const normalizedClass = String(failureClass.classId || "general")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "_");
+  return `${normalizedClass}_${normalizedIssue}`;
+}
+
+function newsLabWriterReadinessProof(story = {}) {
+  const dossier = story.storyDossier || {};
+  const writerInput = story.writerDossierInput || dossier.writerInput || {};
+  const knownFactCount = Number((writerInput.knownFacts || dossier.knownFacts || []).length || 0);
+  const sourceCount = Number((writerInput.independentReports || dossier.independentSources || dossier.sourcePool || story.sources || []).length || 0);
+  const timelineCount = Number((writerInput.timeline || dossier.timeline || story.storyEvolution?.timeline || []).length || 0);
+  const unknownCount = Number((writerInput.unknownFacts || dossier.unknownFacts || []).length || 0);
+  const contradictionCount = Number((writerInput.contradictions || dossier.contradictions || story.contradictionDetection?.possibleContradictions || []).length || 0);
+  const evidenceScore = Number(writerInput.evidenceScore || dossier.evidence?.confidenceScore || dossier.confidence?.score || story.brainConfidence?.score || 0);
+  const editorialMemoryApplied = Boolean(
+    story.preDraftMemoryBrief
+    || story.writerMemoryBrief
+    || writerInput.editorialIntelligenceV2?.active
+    || writerInput.editorialIntelligenceV2?.editorialMemory?.topIssues?.length
+    || writerInput.editorialIntelligenceV2?.editorialMemory?.headlinePatternMemory
+  );
+  const lexiconApplied = Boolean(
+    writerInput.editorialIntelligenceV2?.editorialMemory?.lexiconIntelligence
+    || writerInput.editorialIntelligenceV2?.editorialMemory?.behavioralLexiconApplication
+    || story.preDraftMemoryBrief?.lexiconIntelligence
+  );
+  const historicalReasoningApplied = Boolean(writerInput.historicalContextEngine || writerInput.storyDNA || writerInput.sevenThinkingLayers || dossier.historicalContext || dossier.storyIntelligenceDossier);
+  const readyForFirstDraft = knownFactCount >= 3 && sourceCount >= 1 && editorialMemoryApplied;
+  return {
+    readyForFirstDraft,
+    knownFactCount,
+    sourceCount,
+    timelineCount,
+    unknownCount,
+    contradictionCount,
+    evidenceScore,
+    editorialMemoryApplied,
+    lexiconApplied,
+    historicalReasoningApplied,
+    missingForFirstDraft: [
+      knownFactCount < 3 ? "needs-three-known-facts" : "",
+      sourceCount < 1 ? "needs-source-context" : "",
+      !editorialMemoryApplied ? "needs-editorial-memory-before-writing" : ""
+    ].filter(Boolean),
+    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, known facts, source context, Editorial Memory, and applicable Lexicon/Historical guidance."
+  };
+}
 function newsLabApprovalLifecycleIssueList(story = {}, extraIssues = []) {
   return [...new Set([
     ...(extraIssues || []),
@@ -3810,6 +3889,8 @@ function newsLabApprovalLifecycleRows(context = {}) {
       || (repairAttempted && issues.length === 0)
     );
     const primaryClass = failureClasses[0] || newsLabFailureClassForIssue(issues[0] || "approved");
+    const primaryIssue = issues[0] || "approved";
+    const writerReadiness = newsLabWriterReadinessProof(story);
     return {
       id: story.id || story.topicKey || story.title || "",
       title: story.title || "",
@@ -3826,9 +3907,12 @@ function newsLabApprovalLifecycleRows(context = {}) {
       },
       issueCount: issues.length,
       issues,
-      primaryReason: issues[0] || "approved",
+      primaryReason: primaryIssue,
+      failureCode: newsLabStandardFailureCode(primaryIssue),
+      standardizedFailureCodes: issues.map(newsLabStandardFailureCode),
       failureClasses,
       responsibleSubsystem: primaryClass.repairOwner || "Publishing Editor",
+      writerReadiness,
       repairable: !issues.some(issue => /fabricated|legal-fatal|copyright-fatal/i.test(issue)),
       repairAttempted,
       repairPassed,
@@ -3836,8 +3920,8 @@ function newsLabApprovalLifecycleRows(context = {}) {
       score: Number(story.qualityGate?.score || blocked?.score || newsLabPublicArticleScore(story) || 0),
       bodyLength: Array.isArray(story.body) ? story.body.join(" ").length : Number(blocked?.bodyLength || 0),
       sourceCount: Number(story.sources?.length || story.storyDossier?.sourcePool?.length || 0),
-      preventionRule: primaryClass.preventionBehavior || articleApprovalRepairAction(issues[0] || ""),
-      repairAction: primaryClass.repairBehavior || articleApprovalRepairAction(issues[0] || ""),
+      preventionRule: writerReadiness.readyForFirstDraft ? (primaryClass.preventionBehavior || articleApprovalRepairAction(primaryIssue)) : "Strengthen the Story Dossier and apply Editorial Memory before the Writer drafts; do not let thin feed fragments reach prose generation.",
+      repairAction: writerReadiness.readyForFirstDraft ? (primaryClass.repairBehavior || articleApprovalRepairAction(primaryIssue)) : "Return to Story Dossier Builder/Evidence Engine, add verified facts/source context/editorial-memory proof, then regenerate affected sections only.",
       nextAction: visible
         ? "Use as an accepted pattern for future first drafts."
         : issues.length
@@ -3851,6 +3935,13 @@ function newsLabApprovalLifecycleRows(context = {}) {
       classCounts[item.classId] = Number(classCounts[item.classId] || 0) + 1;
     });
   });
+  const writerReadinessFailures = rows.filter(row => row.writerReadiness && !row.writerReadiness.readyForFirstDraft);
+  const standardizedFailureCounts = {};
+  rows.forEach(row => {
+    (row.standardizedFailureCodes || []).forEach(code => {
+      standardizedFailureCounts[code] = Number(standardizedFailureCounts[code] || 0) + 1;
+    });
+  });
   return {
     updatedAt: new Date().toISOString(),
     mode: context.mode || "article-approval-lifecycle",
@@ -3859,10 +3950,158 @@ function newsLabApprovalLifecycleRows(context = {}) {
     rejectedNeedsRepair: rows.filter(row => row.outcome === "rejected-needs-repair").length,
     repairStillHeld: rows.filter(row => row.outcome === "repair-still-held").length,
     approvedNotVisible: rows.filter(row => row.outcome === "approved-not-yet-visible").length,
+    writerReadinessFailures: writerReadinessFailures.length,
+    writerReadinessFailureRate: Number((writerReadinessFailures.length / Math.max(1, rows.length)).toFixed(2)),
     topFailureClasses: Object.entries(classCounts).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([failureClass, count]) => ({ failureClass, count })),
+    topStandardizedFailureCodes: Object.entries(standardizedFailureCounts).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([failureCode, count]) => ({ failureCode, count })),
     rows,
     rule: "Every article receives an approval lifecycle row: collected, dossier, writer, self-review, editor, repair, publisher, public visibility. Rejections must record all reasons, responsible subsystem, repair action, and prevention rule."
   };
+}
+function newsLabRepairScopeForFailureClasses(failureClasses = []) {
+  const classIds = new Set((failureClasses || []).map(item => item.classId).filter(Boolean));
+  if (classIds.has("headline-integrity")) return "headline-only";
+  if (classIds.has("visual-relevance")) return "image-only";
+  if (classIds.has("story-identity-integrity")) return "dossier-and-affected-sections";
+  if (classIds.has("evidence-depth")) return "dossier-expansion-and-weak-sections";
+  if (classIds.has("language-integrity")) return "paragraph-cleanup";
+  if (classIds.has("originality-and-public-copy")) return "public-copy-optimization";
+  return "targeted-publishing-editor-repair";
+}
+
+function newsLabResubmitDestinationForTask(row = {}) {
+  if (row.outcome === "approved-not-yet-visible") return "Publisher merge and public payload visibility";
+  const classes = row.failureClasses || [];
+  const owners = new Set(classes.map(item => item.repairOwner).filter(Boolean));
+  if (owners.has("Headline Editor")) return "Headline Editor -> Validator -> Publisher";
+  if (owners.has("Image Intelligence Worker")) return "Image Intelligence Worker -> Publisher image patch";
+  if (owners.has("Story Dossier Builder") || owners.has("Evidence Engine")) return "Story Dossier Builder -> Writer affected sections -> Publishing Editor";
+  return "Publishing Editor -> Validator -> Publisher";
+}
+
+function newsLabActionableApprovalTaskFromLifecycleRow(row = {}) {
+  const failureClasses = Array.isArray(row.failureClasses) ? row.failureClasses : [];
+  const writerReady = row.writerReadiness?.readyForFirstDraft !== false;
+  const status = row.outcome === "published-visible"
+    ? "completed"
+    : row.outcome === "approved-not-yet-visible"
+      ? "publisher-routing-needed"
+      : !writerReady
+        ? "needs-dossier-evidence"
+        : row.outcome === "repair-still-held"
+          ? "repair-still-held"
+          : "repair-needed";
+  const primaryClass = failureClasses[0] || newsLabFailureClassForIssue(row.primaryReason || "general-publishability");
+  return {
+    taskId: String(`approval-action:${row.id || row.title || "story"}`).replace(/\s+/g, "-").slice(0, 180),
+    articleId: row.id || "",
+    title: row.title || "",
+    category: row.category || "",
+    status,
+    outcome: row.outcome || "unknown",
+    failureCode: row.failureCode || newsLabStandardFailureCode(row.primaryReason || "general-publishability"),
+    standardizedFailureCodes: row.standardizedFailureCodes || [],
+    primaryReason: row.primaryReason || "",
+    allReasons: row.issues || [],
+    responsibleSubsystem: writerReady ? (row.responsibleSubsystem || primaryClass.repairOwner || "Publishing Editor") : "Story Dossier Builder",
+    repairScope: writerReady ? newsLabRepairScopeForFailureClasses(failureClasses) : "dossier-expansion-before-writing",
+    repairable: row.repairable !== false && status !== "completed",
+    repairAction: row.repairAction || primaryClass.repairBehavior || articleApprovalRepairAction(row.primaryReason || ""),
+    preventionRule: row.preventionRule || primaryClass.preventionBehavior || "Convert this exact rejection into a generalized first-draft prevention rule.",
+    resubmitTo: newsLabResubmitDestinationForTask(row),
+    validationRequired: status === "publisher-routing-needed" ? ["public-payload-visible", "tile-retention-rules"] : ["failed-rule-cleared", "no-new-regressions", "public-payload-visible-if-approved"],
+    writerReadiness: row.writerReadiness || null,
+    nextAction: row.nextAction || "Repair the failed component, resubmit, and record second-pass outcome.",
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function newsLabApprovalSystemIssuesFromLifecycle(lifecycle = {}) {
+  const issues = [];
+  if (Number(lifecycle.writerReadinessFailures || 0) > 0) {
+    issues.push({
+      issueId: "writer-starting-before-ready-dossier",
+      subsystem: "Story Dossier Builder / Writer",
+      severity: "high",
+      evidence: `${lifecycle.writerReadinessFailures} lifecycle row(s) lacked first-draft readiness proof`,
+      fix: "Block first-draft generation until the Writer has one clean event dossier, known facts, source context, and Editorial Memory proof.",
+      prevention: "Dossier Builder must emit needs-dossier-evidence instead of letting thin feed fragments vanish between pre-editor and repair."
+    });
+  }
+  if (Number(lifecycle.repairStillHeld || 0) > 0) {
+    issues.push({
+      issueId: "repair-loop-not-closing",
+      subsystem: "Publishing Editor / Validator",
+      severity: "high",
+      evidence: `${lifecycle.repairStillHeld} article(s) were repaired but still held`,
+      fix: "Run targeted repair by failure class, then resubmit only the affected validation checks before full publisher review.",
+      prevention: "Every repair must store before/after issues, pass/fail, and a generalized prevention rule."
+    });
+  }
+  if (Number(lifecycle.approvedNotVisible || 0) > 0) {
+    issues.push({
+      issueId: "approved-not-visible",
+      subsystem: "Publisher / Public Payload Merge",
+      severity: "critical",
+      evidence: `${lifecycle.approvedNotVisible} approved article(s) were not visible in the public shelf`,
+      fix: "Trace merge, duplicate, age-window, and category placement decisions; count publication only when the public payload visible count increases or an approved update replaces the same story.",
+      prevention: "Already approved articles remain visible until the seven-day tile expiry unless replaced by a same-story factual update."
+    });
+  }
+  (lifecycle.topFailureClasses || []).slice(0, 5).forEach(item => {
+    if (!item.failureClass || item.failureClass === "general-publishability") return;
+    issues.push({
+      issueId: `top-failure-${item.failureClass}`,
+      subsystem: newsLabFailureClassForIssue(item.failureClass).repairOwner || "Publishing Editor",
+      severity: Number(item.count || 0) >= 3 ? "medium" : "low",
+      evidence: `${item.count} lifecycle issue(s) in ${item.failureClass}`,
+      fix: "Promote the matching failure-class prevention behavior into the pre-draft checklist.",
+      prevention: "Learn failure types, not exact failed strings, so future drafts avoid similar classes of problems."
+    });
+  });
+  return issues;
+}
+
+function newsLabBuildArticleApprovalActionPlan(context = {}) {
+  const lifecycle = context.articleLifecycle || newsLabApprovalLifecycleRows(context);
+  const rows = Array.isArray(lifecycle.rows) ? lifecycle.rows : [];
+  const tasks = rows
+    .filter(row => row.outcome !== "published-visible")
+    .map(newsLabActionableApprovalTaskFromLifecycleRow)
+    .filter(task => task.repairable || task.status === "publisher-routing-needed")
+    .slice(0, 150);
+  const preventionRules = [...new Map(tasks.map(task => [task.failureCode, {
+    failureCode: task.failureCode,
+    responsibleSubsystem: task.responsibleSubsystem,
+    preventionRule: task.preventionRule,
+    repairScope: task.repairScope
+  }])).values()].slice(0, 60);
+  const plan = {
+    ...defaultNewsLabArticleApprovalActionPlan(),
+    updatedAt: new Date().toISOString(),
+    summary: {
+      taskCount: tasks.length,
+      repairNeeded: tasks.filter(task => task.status === "repair-needed").length,
+      repairStillHeld: tasks.filter(task => task.status === "repair-still-held").length,
+      needsDossierEvidence: tasks.filter(task => task.status === "needs-dossier-evidence").length,
+      publisherRoutingNeeded: tasks.filter(task => task.status === "publisher-routing-needed").length,
+      systemIssueCount: newsLabApprovalSystemIssuesFromLifecycle(lifecycle).length,
+      secondPassMetric: "repaired-and-visible-public-articles"
+    },
+    tasks,
+    systemIssues: newsLabApprovalSystemIssuesFromLifecycle(lifecycle),
+    preventionRules,
+    lifecycleSummary: {
+      rowCount: lifecycle.rowCount || 0,
+      publishedVisible: lifecycle.publishedVisible || 0,
+      rejectedNeedsRepair: lifecycle.rejectedNeedsRepair || 0,
+      repairStillHeld: lifecycle.repairStillHeld || 0,
+      approvedNotVisible: lifecycle.approvedNotVisible || 0,
+      topStandardizedFailureCodes: lifecycle.topStandardizedFailureCodes || []
+    }
+  };
+  writeJsonFile(newsLabArticleApprovalActionPlanFile, plan);
+  return plan;
 }
 function newsLabArticleApprovalIntelligence(context = {}) {
   const existing = readJsonFile(newsLabArticleApprovalIntelligenceFile, null) || defaultNewsLabArticleApprovalIntelligence();
@@ -3920,6 +4159,7 @@ function newsLabArticleApprovalIntelligence(context = {}) {
       topBlockers,
       approvalSprint,
       articleLifecycle: existing.articleLifecycle || newsLabApprovalLifecycleRows({ mode: "read-only-existing" }),
+      actionPlan: readJsonFile(newsLabArticleApprovalActionPlanFile, null) || defaultNewsLabArticleApprovalActionPlan(),
       bottleneck: newsLabArticleApprovalBottleneck({ currentCycle, topBlockers }),
       rule: existing.rule || defaultNewsLabArticleApprovalIntelligence().rule
     };
@@ -3973,6 +4213,8 @@ function newsLabArticleApprovalIntelligence(context = {}) {
     qualityGateResult
   });
 
+  const actionPlan = newsLabBuildArticleApprovalActionPlan({ ...context, articleLifecycle });
+
   const report = {
     ...existing,
     updatedAt: new Date().toISOString(),
@@ -4000,6 +4242,7 @@ function newsLabArticleApprovalIntelligence(context = {}) {
     },
     bottleneck: newsLabArticleApprovalBottleneck({ currentCycle, topBlockers }),
     articleLifecycle,
+    actionPlan,
     lastCycleEvidence: {
       qualityGate: qualityGateResult,
       finalPublishDiagnostics,
@@ -45270,6 +45513,12 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
 
 
 
