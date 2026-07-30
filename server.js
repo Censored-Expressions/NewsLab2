@@ -34232,6 +34232,17 @@ function newsLabSpecificHeadlineFromFacts(story = {}, index = 0) {
   if (/birthright citizenship|fourteenth amendment|14th amendment|scotus|supreme court/.test(lower)) {
     return "Birthright Citizenship Fight Returns To The Supreme Court";
   }
+  if (/\b(nomination|nominee|confirmation|judiciary committee|senate committee|senate vote|attorney general|deputy attorney general)\b/.test(lower)) {
+    if (/\btodd blanche|blanche\b/.test(lower) && /\b(trump|cornyn|tillis|senate|judiciary|nomination|confirmation)\b/.test(lower)) {
+      if (/\b(delay|delayed|pull|withdraw|holdup|hold up|wait|critics|concerns)\b/.test(lower)) {
+        return "Todd Blanche Nomination Faces Senate Delay";
+      }
+      return "Todd Blanche Nomination Heads To Senate Fight";
+    }
+    const nominee = newsLabCleanHeadlineSubject((text.match(/\b[A-Z][A-Za-z.'-]+(?:\s+[A-Z][A-Za-z.'-]+){0,2}\b/) || [])[0] || seed, "Nominee");
+    if (/\b(delay|delayed|pull|withdraw|holdup|hold up|wait|critics|concerns)\b/.test(lower)) return newsLabTitleCase(`${nominee} Nomination Faces Senate Delay`);
+    return newsLabTitleCase(`${nominee} Nomination Heads To Senate Review`);
+  }
   if (/world cup|fifa|wimbledon|u\.s\. open|playoff|championship|tournament/.test(lower)) {
     const teamOrPlayer = newsLabCleanHeadlineSubject((seed.match(/\b[A-Z][A-Za-z.'-]+(?:\s+[A-Z][A-Za-z.'-]+){0,3}\b/) || [])[0] || seed, "Tournament");
     if (/advances?|beats?|wins?|defeats?|knockout|shootout/.test(lower)) return newsLabTitleCase(`${teamOrPlayer} Advances In Tournament Test`);
@@ -38585,7 +38596,10 @@ function newsLabPublicArticleIssues(story = {}) {
   if (story.summary && body.some(paragraph => newsLabTextOverlap(paragraph, story.summary) >= 0.82)) {
     issues.push("summary-repeats-body");
   }
-  if (!body.some(paragraph => /CE Media|current reporting|reported|official|source|reporting trail/i.test(paragraph))) {
+  const hasNaturalReportingContext = body.some(paragraph => /\b(reported|reports|according to|officials?|agency|department|court|filing|statement|records?|company said|spokesperson|announced|confirmed|told|data from|documents?)\b/i.test(paragraph))
+    || Number(story.sources?.length || 0) >= 2
+    || Number(story.storyDossier?.evidence?.sourceCount || 0) >= 2;
+  if (!hasNaturalReportingContext) {
     issues.push("missing-reporting-context");
   }
   if (/The story is this|source-specific detail|The article should|article should|My read|My view|approved narrative|free people should not outsource|Readers should/i.test(bodyText)) {
@@ -40885,9 +40899,46 @@ function newsLabRepairReviewSummary(stories = []) {
     rule: "Repairs are no longer counted as done until the Editor re-reviews the repaired draft and records whether it passed, changed failure type, or still needs teaching."
   };
 }
+function newsLabFirstPassPublicationPreparation(story = {}, index = 0) {
+  let prepared = newsLabSanitizePublicNewsCopy({
+    ...story,
+    title: newsLabCleanPublicHeadlineText(story.title || story.headline || newsLabHeadlineFromCompletedArticle(story, index) || story.originalHeadline || ""),
+    body: Array.isArray(story.body) ? story.body.map(paragraph => cleanArticleText(paragraph || "", 900)).filter(Boolean) : []
+  });
+  const beforeIssues = [...new Set(newsLabPublicArticleIssues(prepared))];
+  const repairableBeforeEditor = beforeIssues.some(issue => /headline|title|summary-repeats-body|incomplete-sentence|process-language|template|missing-reporting-context|body-too-short|body-needs|insufficient-full-article-facts|brief-body-too-thin|developing-story-too-thin|copied-or-noisy/i.test(issue));
+  if (repairableBeforeEditor) {
+    prepared = newsLabAcceptanceRepairPass(newsLabFinalApprovalRepair(newsLabPublisherRepairStory(prepared)));
+    prepared = newsLabSanitizePublicNewsCopy(prepared);
+  }
+  const afterIssues = [...new Set(newsLabPublicArticleIssues(prepared))];
+  return {
+    ...prepared,
+    firstPassPrevention: {
+      applied: true,
+      stage: "before-candidate-expansion-editor-review",
+      beforeIssues,
+      afterIssues,
+      correctedIssues: beforeIssues.filter(issue => !afterIssues.includes(issue)),
+      remainingIssues: afterIssues,
+      improved: afterIssues.length < beforeIssues.length,
+      rule: "Known rejection patterns are repaired before first-pass editor review. The Writer/Publisher applies learned prevention behavior for the failure type, not just the exact prior bad wording."
+    },
+    qualityGate: {
+      ...(prepared.qualityGate || {}),
+      issues: afterIssues,
+      remainingIssues: afterIssues,
+      passed: afterIssues.length === 0,
+      score: newsLabPublicArticleScore(prepared),
+      correctedIssues: [...new Set([...(prepared.qualityGate?.correctedIssues || []), ...beforeIssues.filter(issue => !afterIssues.includes(issue))])],
+      action: afterIssues.length === 0 ? "first-pass-prevention-ready" : "first-pass-prevention-needs-editor"
+    }
+  };
+}
 async function runNewsLabPrepublishQualityGate(stories = []) {
   const reviewedAt = new Date().toISOString();
-  const candidateStories = (Array.isArray(stories) ? stories : []).flatMap((story, index) => newsLabArticleCandidateVariants(story, index));
+  const preparedInputStories = (Array.isArray(stories) ? stories : []).map((story, index) => newsLabFirstPassPublicationPreparation(story, index)).filter(Boolean);
+  const candidateStories = preparedInputStories.flatMap((story, index) => newsLabArticleCandidateVariants(story, index));
   const draftStoryObjectStore = recordNewsLabStoryObjects(candidateStories, {
     stage: "draft-written-before-editor",
     status: "draft-written",
@@ -41015,12 +41066,12 @@ async function runNewsLabPrepublishQualityGate(stories = []) {
     reviewedCount: reviewedStories.length,
     candidateReviewedCount: reviewedCandidateStories.length,
     candidateExpansion: {
-      sourceStoryCount: (Array.isArray(stories) ? stories : []).length,
+      sourceStoryCount: preparedInputStories.length,
       draftStoryObjectCount: candidateStoriesWithStoryObjects.length,
       originalCandidateStoryCount: candidateStories.length,
       candidateStoryCount: reviewedCandidateStories.length,
       fallbackCandidateExpansionApplied: candidateStories.length === 0 && candidateStoriesWithStoryObjects.length > 0,
-      candidatesPerStory: Number((reviewedCandidateStories.length / Math.max(1, (Array.isArray(stories) ? stories : []).length)).toFixed(2)),
+      candidatesPerStory: Number((reviewedCandidateStories.length / Math.max(1, preparedInputStories.length)).toFixed(2)),
       rule: "The Brain creates multiple headline/article candidates per story, lets the Editor score them, then keeps the strongest reviewed candidate for publication."
     },
     passedCount: passed.length,
@@ -43171,9 +43222,16 @@ function newsLabMarkLatestLifecyclePublicReady(payload = {}, context = {}) {
           }
         }
       : stage);
+    const revisedStopPoint = verifiedVisible
+      ? { stage: "Public API", system: "Publisher", reason: "verified-visible", nextAction: "Use this article as an accepted public pattern." }
+      : payloadPersisted
+        ? { stage: "Public API", system: "API Worker/Public Server", reason: "persisted-but-not-visible-in-public-api-cache", nextAction: "Refresh the prepared public API cache and verify the article appears before counting it as published." }
+        : { stage: "Publisher", system: "Publisher", reason: "not-in-board-filtered-public-payload", nextAction: "Repair the merge, duplicate, expiry, or board policy decision that removed this article before public view." };
     return {
       ...row,
       stages,
+      disposition: verifiedVisible ? "Published" : payloadPersisted ? "Publication Pending Visibility" : "Not Visible",
+      stopPoint: revisedStopPoint,
       readyForPublicShelf: verifiedVisible,
       publicationStatus: verifiedVisible ? "verified-visible" : payloadPersisted ? "publication-pending-api-visibility" : "not-visible",
       publicVisibilityVerification: {
@@ -43184,9 +43242,13 @@ function newsLabMarkLatestLifecyclePublicReady(payload = {}, context = {}) {
       }
     };
   });
+  const latestPublicationFunnel = (trace.latest.publicationFunnel || []).map(item => item.stage === "Published"
+    ? { ...item, count: verifiedVisibleCount, rule: "Published means verified visible in the public API cache, not merely approved or persisted." }
+    : item);
   const latest = {
     ...trace.latest,
     status: verifiedVisibleCount ? "article-published-on-site" : pendingVisibleCount ? "article-pending-public-visibility" : "article-not-visible",
+    publicationFunnel: latestPublicationFunnel,
     publicationVisibilityVerification: {
       active: true,
       checkedAt: new Date().toISOString(),
@@ -43239,7 +43301,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
   const generatedAt = new Date().toISOString();
   const finalPublishedIds = new Set((finalStories || []).map(story => story.id || story.topicKey || story.title).filter(Boolean));
   const visiblePayloadIds = new Set((payload.ownedStories || payload.finalOwnedStories || finalStories || []).map(story => story.id || story.topicKey || story.title).filter(Boolean));
-  const traceInput = finalStories.length ? finalStories : publishableStories.length ? publishableStories : editorInputStories.length ? editorInputStories : generatedStories.filter(Boolean);
+  const traceInput = newsLabDedupeFinalSemanticStories([...(finalStories || []), ...(publishableStories || []), ...(editorInputStories || []), ...(generatedStories || []).filter(Boolean)]);
   const storyRows = traceInput.map(story => {
     const key = story.id || story.topicKey || story.title || "unknown-story";
     const issues = newsLabApprovalLifecycleIssueList(story, newsLabLifecycleIssuesForStory(story));
@@ -48129,6 +48191,11 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
 
 
 
