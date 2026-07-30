@@ -1,4 +1,4 @@
-# Censored Expressions Render Deployment
+﻿# Censored Expressions Render Deployment
 
 This package mirrors the current local `localhost:3000` build.
 
@@ -208,6 +208,8 @@ Recommended Web Service environment values:
 CE_JSON_OBJECT_CACHE=true
 CE_JSON_OBJECT_CACHE_MAX_ENTRIES=180
 CE_OWNER_API_RESPONSE_CACHE_MS=30000
+CE_OWNER_DASHBOARD_LARGE_FILE_BYTES=12582912
+CE_OWNER_DASHBOARD_FULL_AUDIT_LOGS=false
 ```
 
 `/api/learning` is summary-first by default. Use `/api/learning?full=1` only when the complete learning memory is explicitly needed. `/api/owner-brain-state` uses a short cache unless `?refresh=1` is requested. This keeps admin polling from blocking the Node event loop while preserving the audit files and worker-written JSON stores.
@@ -251,6 +253,7 @@ Expected worker log after deploy:
 ```text
 [worker] cpu guard enabled=true maxCollectors=4 startupStaggerMs=4500 maxOneShots=1
 ```
+
 
 
 
