@@ -18333,6 +18333,10 @@ function newsLabUnderfilledPublicCategories(target = 7) {
 
 function newsLabClusterMatchesCategory(cluster = {}, category = "") {
   const stories = newsLabClusterStories(cluster);
+  if (category === "sports") {
+    return newsLabCanonicalCategoryFromIdentity(cluster.representative || {}).category === "sports"
+      || stories.some(story => newsLabCanonicalCategoryFromIdentity(story).category === "sports");
+  }
   return newsLabCategory(cluster.representative || {}) === category
     || stories.some(story => newsLabCategory(story) === category);
 }
@@ -26526,6 +26530,16 @@ function applyNewsLabStoryContinuity(payload = null) {
   return { ...payload, ownedStories };
 }
 
+function newsLabStoryHasStrongSportsEvidence(value = "") {
+  const text = String(value || "").toLowerCase();
+  const sportsSource = /\b(espn|cbs sports|fox sports|nbc sports|sports illustrated|the athletic|bleacher report|mlb\.com|nba\.com|nfl\.com|nhl\.com|fifa\.com|uefa\.com|ncaa\.com|cbssports\.com|foxsports\.com|nbcsports\.com|espn\.com)\b/.test(text);
+  const leagueOrEvent = /\b(world cup|college world series|world series|fifa|uefa|olympics|nfl|nba|wnba|mlb|nhl|ncaa|wimbledon|u\.s\. open|masters|super bowl|stanley cup|playoff|championship|tournament|finals|draft|trade deadline)\b/.test(text);
+  const sportName = /\b(soccer|football|basketball|baseball|hockey|golf|tennis|boxing|mma|nascar|racing|rugby|cricket|volleyball)\b/.test(text);
+  const resultLanguage = /\b(score|scores|scored|wins|won|loses|lost|beats|defeats|draw|shootout|goalkeeper|goals|standings|seed|bracket|roster|lineup|injury report|coach|player|athlete|team|club|matchup)\b/.test(text);
+  const teamNames = /\b(lakers|warriors|celtics|yankees|mets|dodgers|cubs|tigers|lions|pistons|red wings|wolverines|spartans|grizzlies|blazers|cowboys|chiefs|eagles|patriots|bears|packers|bills|dolphins)\b/.test(text);
+  return sportsSource || leagueOrEvent || (sportName && resultLanguage) || (teamNames && resultLanguage);
+}
+
 function newsLabCanonicalCategoryFromIdentity(story = {}) {
   const valid = value => newsLabSectionCategories.includes(String(value || "").toLowerCase()) ? String(value || "").toLowerCase() : "";
   const identityText = [story.topicKey, story.eventId, story.storyId, story.id].filter(Boolean).join(" ").toLowerCase();
@@ -26547,7 +26561,16 @@ function newsLabCanonicalCategoryFromIdentity(story = {}) {
     ...(story.sources || []).flatMap(source => [source.title, source.summary, source.articleSummary, source.source])
   ].filter(Boolean).join(" ");
   const evidenceCategory = valid(newsLabEditorCategoryFromEvidence(evidenceText));
-  const category = identityCategory || (story.collectorSubDossier?.role === "tab-writing-source" ? collectorCategory : "") || evidenceCategory || sourceCategory || explicitCategory || "politics";
+  const sportsEvidenceText = [
+    evidenceText,
+    ...(story.sources || []).flatMap(source => [source.url, source.link, source.feed, source.homepage])
+  ].filter(Boolean).join(" ").toLowerCase();
+  const sportsEvidenceStrong = newsLabStoryHasStrongSportsEvidence(sportsEvidenceText);
+  const guardedIdentityCategory = identityCategory === "sports" && !sportsEvidenceStrong ? "" : identityCategory;
+  const guardedCollectorCategory = collectorCategory === "sports" && !sportsEvidenceStrong ? "" : collectorCategory;
+  const guardedSourceCategory = sourceCategory === "sports" && !sportsEvidenceStrong ? "" : sourceCategory;
+  const guardedExplicitCategory = explicitCategory === "sports" && !sportsEvidenceStrong ? "" : explicitCategory;
+  const category = guardedIdentityCategory || (story.collectorSubDossier?.role === "tab-writing-source" ? guardedCollectorCategory : "") || evidenceCategory || guardedSourceCategory || guardedExplicitCategory || "politics";
   const conflictingSignals = [...new Set([identityCategory, collectorCategory, evidenceCategory, sourceCategory, explicitCategory].filter(Boolean).filter(item => item !== category))];
   return {
     category,
@@ -26556,9 +26579,10 @@ function newsLabCanonicalCategoryFromIdentity(story = {}) {
     sourceCategory,
     evidenceCategory,
     explicitCategory,
+    sportsEvidenceStrong,
     conflictingSignals,
     corrected: Boolean(explicitCategory && explicitCategory !== category),
-    rule: "Canonical category is decided before editor review from event/topic identity first, then tab-writing sub-dossier, then source/body evidence. Worker lane text alone cannot move a story into another public tab."
+    rule: "Canonical category is decided before editor review from event/topic identity first, then tab-writing sub-dossier, then source/body evidence. Sports requires actual sports evidence; worker lane text alone cannot move a story into another public tab."
   };
 }
 function newsLabHardDuplicateEventKey(story = {}) {
@@ -33578,7 +33602,7 @@ function newsLabStorySpecificHeadline(story = {}, index = 0) {
 
 function newsLabEditorCategoryFromEvidence(value = "") {
   const text = String(value || "").toLowerCase();
-  if (/\b(sports|world cup|college world series|world series|fifa|soccer|nfl|nba|mlb|nhl|golf|tennis|playoff|championship|match|game|score|shootout|goalkeeper|standings|tournament|grizzlies|blazers|morant|desmond bane|jaren jackson|memphis|portland|espn|cbs sports|fox sports)\b/.test(text)) return "sports";
+  if (newsLabStoryHasStrongSportsEvidence(text)) return "sports";
   if (/\b(technology|artificial intelligence|ai headlines|cybersecurity|digital policy|techcrunch|the verge|software|startup|data center|semiconductor|openai|google|microsoft|apple|meta|tesla)\b/.test(text)) return "technology";
   if (/\b(business|markets|stocks|economy|inflation|federal reserve|investors|earnings|housing affordability|wall street|cnbc)\b/.test(text)) return "business";
   if (/\b(global|international|iran|israel|gaza|ukraine|russia|china|military|war|diplomacy|ap headlines|foreign ministry|united nations|nato|sanctions|ceasefire)\b/.test(text)) return "world";
@@ -33663,7 +33687,7 @@ function newsLabFinalSemanticEditor(record = {}) {
   ].filter(Boolean).join(" ").toLowerCase();
   let category = record.category || newsLabCategory(record);
   let title = record.title || "";
-  if (/\b(world cup|college world series|world series|fifa|soccer|nba|nfl|mlb|nhl|grizzlies|blazers|morant|desmond bane|jaren jackson|playoff|score|match|tournament|standings)\b/.test(evidence)) {
+  if (newsLabStoryHasStrongSportsEvidence(evidence)) {
     category = "sports";
   } else if (/\b(village people|singer|co-writer|album|lizzo|music|artist|band|song|celebrity|variety|rolling stone)\b/.test(sourceEvidence)) {
     category = "entertainment";
