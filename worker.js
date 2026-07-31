@@ -73,6 +73,7 @@ const categories = String(process.env.CE_NEWS_LAB_WORKER_CATEGORIES || "top,worl
 adaptiveCollectorLimit = Math.min(maxCollectorWorkers, categories.length || maxCollectorWorkers);
 runtimePressureState.adaptiveCollectorLimit = adaptiveCollectorLimit;
 
+let workerDataSeededFromRoot = false;
 
 function rawJsonStoryCount(filePath = "") {
   try {
@@ -98,6 +99,8 @@ function seedWorkerDataFileFromRootIfStronger(targetPath = "") {
 }
 
 function seedWorkerDataFilesFromRoot() {
+  if (workerDataSeededFromRoot) return;
+  workerDataSeededFromRoot = true;
   syncFileSpecs
     .filter(spec => ["news-lab-published-payload", "news-lab-api-response-cache", "creator-posts", "newsletters"].includes(spec.key))
     .forEach(spec => seedWorkerDataFileFromRootIfStronger(spec.file));

@@ -1369,6 +1369,8 @@ let runtimeState = {
   newsLabApiWorkerRestartQueued: false,
   newsLabApiWorkerLastMessageAt: "",
   newsLabApiWorkerStatus: {},
+  newsLabApiWorkerLastStartRequestAt: 0,
+  newsLabApiWorkerLastStartReason: "",
   newsLabStuckRescueWorkerProcess: null,
   newsLabStuckRescueWorkerPid: 0,
   newsLabStuckRescueWorkerStartedAt: "",
@@ -31158,6 +31160,15 @@ function startNewsLabApiResponseWorkerProcess(reason = "startup") {
   if (!shouldUseNewsLabApiWorkerProcess()) return false;
   const current = runtimeState.newsLabApiWorkerProcess;
   if (current && current.exitCode === null && !current.killed) return true;
+  const now = Date.now();
+  const minStartIntervalMs = Math.max(5000, Number(process.env.CE_NEWS_LAB_API_WORKER_START_DEBOUNCE_MS || 20000));
+  const bypassDebounce = /startup|manual|restart/i.test(String(reason || ""));
+  if (!bypassDebounce && now - Number(runtimeState.newsLabApiWorkerLastStartRequestAt || 0) < minStartIntervalMs) {
+    runtimeState.newsLabApiWorkerLastStartReason = reason;
+    return false;
+  }
+  runtimeState.newsLabApiWorkerLastStartRequestAt = now;
+  runtimeState.newsLabApiWorkerLastStartReason = reason;
   const child = childProcess.fork(__filename, [], {
     cwd: __dirname,
     env: {
@@ -44684,7 +44695,20 @@ async function buildNewsLabPayload(payload = {}) {
     runtimeState.newsLabSearchPayload = persistedWorkerResult;
     persistedWorkerResult = newsLabPreserveLockedPublicPayload(persistedWorkerResult, "worker-finish-payload-persisted");
     writeJsonFile(newsLabPublishedPayloadFile, persistedWorkerResult);
-    runNewsLabApiResponseCycle("worker-finish-after-published-payload-persist-inline");
+    const inlineApiCacheRebuildAllowed = process.env.CE_NEWS_LAB_INLINE_API_CACHE_REBUILD === "true";
+    if (inlineApiCacheRebuildAllowed) {
+      runNewsLabApiResponseCycle("worker-finish-after-published-payload-persist-inline");
+    } else {
+      saveFrameworkActionLogEntry({
+        timestamp: new Date().toISOString(),
+        type: "news-lab-api-cache-rebuild-deferred",
+        subsystem: "Performance Brain",
+        status: "deferred-to-api-response-worker",
+        reason: "worker-finish-after-published-payload-persist",
+        summary: "The production worker wrote the durable public payload and deferred prepared API cache rebuilding to the API response worker to avoid duplicate CPU-heavy rebuilds during publication.",
+        impact: "Keeps article publication intact while reducing post-publish CPU spikes and public API contention."
+      });
+    }
     setTimeout(() => startNewsLabApiResponseWorkerProcess("worker-finish-after-published-payload-persist"), 0);
     newsLabMarkLatestLifecyclePublicReady(persistedWorkerResult);
     writeNewsLabWorkerStatus({
