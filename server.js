@@ -3349,6 +3349,101 @@ function productionIntelligenceSharedWorkflowDiagnosis(stageEfficiency = {}, blo
   };
 }
 
+function productionIntelligenceRootCauseWorkOrders(stageEfficiency = {}, blockers = [], context = {}) {
+  const taxonomy = productionIntelligenceTaxonomy(blockers);
+  const weakStage = stageEfficiency.weakestStage || {};
+  const categoryDrift = context.categoryDrift || {};
+  const image = context.image || {};
+  const workOrders = [];
+  const add = (order = {}) => {
+    if (!order.id || workOrders.some(existing => existing.id === order.id)) return;
+    workOrders.push({
+      id: order.id,
+      layer: order.layer || "Production Intelligence",
+      affectedSubsystems: order.affectedSubsystems || [],
+      evidence: order.evidence || {},
+      rootCause: order.rootCause || "unknown",
+      action: order.action || "",
+      preventionRule: order.preventionRule || "",
+      verification: order.verification || "",
+      goalImpact: order.goalImpact || "Raise first-pass publication and reduce wasted work."
+    });
+  };
+  taxonomy.slice(0, 6).forEach(item => {
+    if (/HEADLINE/.test(item.code || "")) {
+      add({
+        id: "root-cause-headline-before-reasoning",
+        layer: "Writer Reasoning + Headline Generator",
+        affectedSubsystems: ["Story Dossier Builder", "Article Writer", "Headline Generator", "Publishing Editor"],
+        evidence: { blockerCount: item.count, examples: item.examples },
+        rootCause: "Headline failures share a common upstream cause: headline construction is not always anchored to the locked dossier, reasoning plan, and completed body.",
+        action: "Require actor/action/consequence fields from the Writer Reasoning plan and reject headline candidates before Editor when body overlap or action clarity fails.",
+        preventionRule: "Generate headlines after dossier lock and writer reasoning, not from source headlines or loose cluster fragments.",
+        verification: "Headline blocker count and headline rewrite rate decline while first-pass approvals rise."
+      });
+    } else if (/DOSSIER|SOURCE|TOPIC/.test(item.code || "")) {
+      add({
+        id: "root-cause-dossier-readiness-before-writing",
+        layer: "Story Curator + Story Dossier Builder",
+        affectedSubsystems: ["Collector", "Event Clusterer", "Evidence Engine", "Story Dossier Builder", "Article Writer"],
+        evidence: { blockerCount: item.count, examples: item.examples },
+        rootCause: "Multiple failures trace to the story object not being complete, stable, or semantically separated before writing begins.",
+        action: "Expand or hold as needs-dossier-evidence until canonical event, verified facts, attribution, category, and known unknowns are ready.",
+        preventionRule: "The Writer may consume only locked Story Dossiers and must never draft from raw RSS or thin source fragments.",
+        verification: "Dossier stage efficiency improves and story-identity/headline-lead mismatch failures fall."
+      });
+    } else if (/IMAGE/.test(item.code || "")) {
+      add({
+        id: "root-cause-image-dossier-detached",
+        layer: "Image Intelligence",
+        affectedSubsystems: ["Story Dossier Builder", "Image Worker", "Publisher"],
+        evidence: { blockerCount: item.count, examples: item.examples },
+        rootCause: "Image work is not always driven by a structured image dossier tied to the story ID and licensing requirements.",
+        action: "Create image dossiers from canonical story facts, rank licensed candidates, and keep post-publication image repair attached to the live article.",
+        preventionRule: "A clean article can publish with a temporary CE fallback, but must retain an image work item until a matched licensed or CE-generated visual is attached.",
+        verification: "Fallback persistence decreases while image mismatch never removes otherwise publishable articles."
+      });
+    }
+  });
+  if (Number(categoryDrift.changedCount || 0) > 0) {
+    add({
+      id: "root-cause-category-before-canonical-event",
+      layer: "Semantic Reclassification",
+      affectedSubsystems: ["Collector", "Sub-Dossier", "Story Dossier Builder", "Publisher"],
+      evidence: categoryDrift,
+      rootCause: "Collector/RSS category hints differ from the canonical event category after dossier completion.",
+      action: "Treat collector and source category as hints only; publish under the semantic category assigned by the locked dossier.",
+      preventionRule: "Final public tab placement is decided after dossier completion and must not prevent publication of an otherwise clean article.",
+      verification: "Wrong-tab reports fall and underfilled tabs receive only semantically valid stories."
+    });
+  }
+  if (Number(image.needingImage || 0) > 0 || Number(image.fallbackCount || 0) > 0) {
+    add({
+      id: "root-cause-image-work-needs-persistent-queue",
+      layer: "Image Intelligence",
+      affectedSubsystems: ["Image Worker", "Publisher", "Public API"],
+      evidence: image,
+      rootCause: "Image acquisition can lag article publication, so image tasks need persistent story-attached work orders instead of optional one-shot visibility.",
+      action: "Keep image dossiers and generated-image briefs queued by story ID until a licensed or CE-generated image passes relevance and credit checks.",
+      preventionRule: "Do not abandon image work after public publication; upgrade the live article when a better image is verified.",
+      verification: "Image queue age and CE fallback count decline without reducing public article count."
+    });
+  }
+  if (Number(weakStage.efficiency || 1) < 0.5) {
+    add({
+      id: "root-cause-weakest-stage-efficiency",
+      layer: weakStage.stage || "Production Pipeline",
+      affectedSubsystems: ["Production Intelligence", "Worker Orchestrator"],
+      evidence: weakStage,
+      rootCause: "The earliest low-efficiency stage is consuming work before it becomes visible public output.",
+      action: "Throttle later-stage work until this stage records a clear repair, prevention rule, and publication outcome.",
+      preventionRule: "Optimize useful published output per unit of work before increasing candidate volume.",
+      verification: "CPU milliseconds per visible article and repair loops per article decline."
+    });
+  }
+  return workOrders.slice(0, 8);
+}
+
 function productionIntelligencePreventionRules(blockers = []) {
   const rules = [];
   const addRule = (id, appliesTo, preventBy, detection) => {
@@ -3377,6 +3472,10 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, defaultNewsLabArticleApprovalIntelligence()) || defaultNewsLabArticleApprovalIntelligence();
   const apiPerformance = readJsonFile(apiEndpointPerformanceFile, defaultApiEndpointPerformance()) || defaultApiEndpointPerformance();
   const workerStatus = readJsonFile(newsLabWorkerStatusFile, {}) || {};
+  const imageWorkerStatus = readJsonFile(newsLabImageWorkerStatusFile, {}) || {};
+  const imageQueue = readJsonFile(newsLabGeneratedImageQueueFile, { queue: [], active: [] }) || {};
+  const publicPayload = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
+  const publicStories = Array.isArray(publicPayload.ownedStories) ? publicPayload.ownedStories : [];
   const currentCycle = approval.currentCycle || {};
   const recovery = approval.recoveryOutput || {};
   const topBlockers = Array.isArray(approval.topBlockers) ? approval.topBlockers : [];
@@ -3406,7 +3505,44 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const repeatedReasoning = Number(recovery.resubmitted || 0) + Math.max(0, Number(repairFrequency || 0) - Number(recovery.repairSuccessful || currentCycle.approvalRecoveryResolved || 0));
   const failureTaxonomy = productionIntelligenceTaxonomy(topBlockers);
   const stageEfficiency = productionIntelligenceStageEfficiency({ hour, currentCycle, lastMetrics, reviewed, finalApproved, visiblePublished });
+  const categoryDriftStories = publicStories.filter(story => {
+    const original = String(story.originalCategory || story.categoryClassification?.collectorCategory || "").toLowerCase();
+    const semantic = String(story.categoryClassification?.semanticCategory || story.category || "").toLowerCase();
+    return original && semantic && original !== semantic && original !== "top";
+  });
+  const fallbackImageStories = publicStories.filter(story => {
+    const imageText = `${story.image?.url || ""} ${story.image?.source || ""} ${story.image?.license || ""} ${story.imageProvenance?.source || ""}`;
+    return !imageText || /newsroom-hero|ce fallback|fallback|placeholder|creator-bg/i.test(imageText);
+  });
+  const imageOptimizationState = {
+    reviewed: Number(imageWorkerStatus.summary?.reviewed || imageWorkerStatus.lastSummary?.reviewed || 0),
+    upgraded: Number(imageWorkerStatus.summary?.upgraded || imageWorkerStatus.lastSummary?.upgraded || 0),
+    queued: Number(imageWorkerStatus.summary?.generatedImageBriefsQueued || imageWorkerStatus.lastSummary?.generatedImageBriefsQueued || 0),
+    generatedPromoted: Number(imageWorkerStatus.summary?.generatedImageAssetsPromoted || imageWorkerStatus.lastSummary?.generatedImageAssetsPromoted || 0),
+    needingImage: Number(imageWorkerStatus.summary?.publicStoriesNeedingImage || imageWorkerStatus.lastSummary?.publicStoriesNeedingImage || 0),
+    fallbackCount: fallbackImageStories.length,
+    queueDepth: Number((Array.isArray(imageQueue.queue) ? imageQueue.queue.length : 0) + (Array.isArray(imageQueue.active) ? imageQueue.active.length : 0)),
+    live: Boolean(imageWorkerStatus.config?.liveImageSearch),
+    pexels: Boolean(imageWorkerStatus.config?.hasPexelsKey),
+    unsplash: Boolean(imageWorkerStatus.config?.hasUnsplashKey),
+    pixabay: Boolean(imageWorkerStatus.config?.hasPixabayKey)
+  };
+  const semanticReclassification = {
+    changedCount: categoryDriftStories.length,
+    changedExamples: categoryDriftStories.slice(0, 6).map(story => ({
+      id: story.id || story.topicKey || story.title || "",
+      title: story.title || "",
+      from: story.originalCategory || story.categoryClassification?.collectorCategory || "",
+      to: story.categoryClassification?.semanticCategory || story.category || "",
+      confidence: story.categoryClassification?.confidence || ""
+    })),
+    rule: "Collector/RSS categories are hints. The locked Story Dossier assigns the final semantic public tab after canonical event identity is known."
+  };
   const sharedWorkflowDiagnosis = productionIntelligenceSharedWorkflowDiagnosis(stageEfficiency, topBlockers);
+  const rootCauseWorkOrders = productionIntelligenceRootCauseWorkOrders(stageEfficiency, topBlockers, {
+    categoryDrift: semanticReclassification,
+    image: imageOptimizationState
+  });
   const publishedAfterRepair = Number(currentCycle.approvalRecoveryResolved || recovery.approved || recovery.published || 0);
   const draftsCompleted = reviewed;
   const averageRepairPasses = productionIntelligenceRate(repairFrequency, Math.max(1, finalApproved + finalBlocked));
@@ -3461,6 +3597,28 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
     },
     stageEfficiency,
     sharedWorkflowDiagnosis,
+    rootCauseWorkOrders,
+    semanticReclassification,
+    imageIntelligence: {
+      ...imageOptimizationState,
+      sourcePolicy: {
+        preferredLicensedProviders: ["Pexels", "Unsplash", "Pixabay"],
+        sourceImages: "disabled unless separately rights-reviewed",
+        generatedImages: "use CE-generated story-specific image briefs when licensed search cannot find a relevant, credited image",
+        postPublicationRepair: true
+      },
+      dossierRequirements: [
+        "storyId",
+        "canonical event summary",
+        "primary actor/action/consequence",
+        "category",
+        "locations and entities",
+        "avoid real-person/event misrepresentation",
+        "license and credit requirements",
+        "relevance score and duplicate-image check"
+      ],
+      rule: "Image Intelligence selects visuals from an Image Dossier tied to the locked Story Dossier and keeps image repair alive after text publication."
+    },
     publicationEfficiencyDashboard: {
       visiblePublishedArticles: visiblePublished,
       sourceStories,
@@ -3478,6 +3636,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       repeatedReasoningPerArticle: Number((repeatedReasoning / Math.max(1, finalApproved || recentPublished || 1)).toFixed(2)),
       firstPassPublicationRate: productionIntelligenceRate(firstPassApproved, reviewed),
       finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
+      memoryPressureSignal: Number(workerStatus.memoryRssMb || workerStatus.memoryMb || lastMetrics.memoryRssMb || 0),
+      cpuPressureSignal: Number(workerStatus.cpuPercent || lastMetrics.cpuPercent || 0),
       primaryOptimizationMetric: "first-pass publication rate and CPU milliseconds per newly visible article",
       interpretation: budgetOverrun
         ? "The worker exceeded its production budget; reduce repeated repair/rebuild work before increasing collection."
@@ -3497,15 +3657,15 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       failureTaxonomy
     },
     boundedImprovementProposal: {
-      subsystem: sharedWorkflowDiagnosis.shared ? sharedWorkflowDiagnosis.interventionLayer : selected.subsystem,
-      cause: sharedWorkflowDiagnosis.shared ? sharedWorkflowDiagnosis.likelySharedCause : selected.cause,
-      action: sharedWorkflowDiagnosis.shared
+      subsystem: rootCauseWorkOrders[0]?.layer || (sharedWorkflowDiagnosis.shared ? sharedWorkflowDiagnosis.interventionLayer : selected.subsystem),
+      cause: rootCauseWorkOrders[0]?.rootCause || (sharedWorkflowDiagnosis.shared ? sharedWorkflowDiagnosis.likelySharedCause : selected.cause),
+      action: rootCauseWorkOrders[0]?.action || (sharedWorkflowDiagnosis.shared
         ? `Repair the shared ${sharedWorkflowDiagnosis.interventionLayer} layer before creating isolated tab proposals; verify improvement through ${stageEfficiency.weakestStage?.stage || "stage"} efficiency, first-pass approval, and visible-public count.`
-        : selected.action,
+        : selected.action),
       expectedOutcome: sharedWorkflowDiagnosis.shared
         ? "Reduce duplicate subsystem fixes, raise first-pass publication rate, and lower repair loops per visible article by fixing the earliest common production cause."
         : selected.expectedOutcome,
-      measurement: "Compare firstPassPublicationRate, finalApprovalRate, repairFrequency, repeatedReasoning, and highQualityPublishedArticlesPerHour after the next production window.",
+      measurement: rootCauseWorkOrders[0]?.verification || "Compare firstPassPublicationRate, finalApprovalRate, repairFrequency, repeatedReasoning, and highQualityPublishedArticlesPerHour after the next production window.",
       risk: "bounded-low-to-medium; changes should affect prevention, routing, or caching before standards are loosened."
     },
     failurePreventionMemory: {
@@ -27102,6 +27262,8 @@ function newsLabNormalizeStoryImage(story = {}, existingImage = null) {
     source: image.source || topicImage.source,
     photographer: image.photographer || topicImage.photographer || "",
     license: image.license || topicImage.license,
+    imageDossier: image.imageDossier || topicImage.imageDossier || story.imageDossier || newsLabBuildImageDossier(story),
+    licensing: image.licensing || topicImage.licensing || story.imageDossier?.licensePolicy || newsLabBuildImageDossier(story).licensePolicy,
     provenance: image.provenance || topicImage.provenance
   };
 }
@@ -33539,8 +33701,70 @@ function newsLabImageProvenance(input = {}) {
   };
 }
 
+function newsLabBuildImageDossier(story = {}) {
+  const dossier = story.storyDossier || {};
+  const identity = story.canonicalStoryIdentity || {};
+  const reasoning = story.writerReasoningPlan || {};
+  const category = newsLabCategory(story);
+  const actor = cleanArticleText(identity.primaryActor || reasoning.headlineInputs?.actor || dossier.primaryActor || dossier.who || story.title || "", 90);
+  const action = cleanArticleText(identity.primaryAction || reasoning.headlineInputs?.action || dossier.primaryAction || dossier.bestVerb || dossier.whatHappened || "", 120);
+  const consequence = cleanArticleText(reasoning.headlineInputs?.consequence || dossier.consequence || dossier.whyItMatters || story.summary || "", 160);
+  const eventSummary = cleanArticleText(dossier.whatHappened || story.summary || story.articleSummary || story.title || "", 240);
+  const locations = [
+    ...(Array.isArray(dossier.locations) ? dossier.locations : []),
+    ...(Array.isArray(story.writerDossierInput?.relatedEntities?.locations) ? story.writerDossierInput.relatedEntities.locations : [])
+  ].filter(Boolean).slice(0, 6);
+  const entities = [
+    actor,
+    ...(Array.isArray(dossier.people) ? dossier.people : []),
+    ...(Array.isArray(dossier.organizations) ? dossier.organizations : []),
+    ...(Array.isArray(story.writerDossierInput?.relatedEntities?.organizations) ? story.writerDossierInput.relatedEntities.organizations : [])
+  ].filter(Boolean).map(item => cleanArticleText(item, 80)).filter(Boolean).slice(0, 10);
+  const queryTerms = newsLabImageQueryTermsForAudit({
+    ...story,
+    summary: [eventSummary, actor, action, consequence, locations.join(" "), entities.join(" ")].filter(Boolean).join(" ")
+  }).slice(0, 12);
+  return {
+    version: "20260801-image-dossier-v1",
+    storyId: story.id || story.topicKey || story.eventId || "",
+    eventId: story.eventId || story.topicKey || dossier.eventId || "",
+    category,
+    canonicalEvent: {
+      actor,
+      action,
+      consequence,
+      summary: eventSummary,
+      locations,
+      entities
+    },
+    searchStrategy: {
+      queryTerms,
+      preferredQueries: newsLabImageQueryTerms({ ...story, imageDossier: null }).slice(0, 5),
+      avoidTerms: ["graphic injury", "misleading portrait", "unverified scene", "specific private person without rights context"],
+      relevanceRule: "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+    },
+    licensePolicy: {
+      preferred: ["Pexels", "Unsplash", "Pixabay"],
+      sourceImagesAllowed: /^true$/i.test(String(process.env.CE_NEWS_LAB_ALLOW_SOURCE_IMAGES || "")),
+      generatedFallbackAllowed: true,
+      requireCredit: true,
+      requireProviderProvenance: true
+    },
+    generatedFallbackBrief: {
+      useWhen: "No licensed image passes relevance, credit, duplicate, and rights checks.",
+      promptSeed: [category, eventSummary, actor, action, consequence].filter(Boolean).join(". "),
+      guardrail: "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+    },
+    postPublicationRepair: {
+      allowed: true,
+      rule: "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+    }
+  };
+}
+
 function newsLabImageForStory(story = {}) {
-  const text = `${story.title || ""} ${story.summary || ""} ${story.category || ""}`.toLowerCase();
+  const imageDossier = story.imageDossier || newsLabBuildImageDossier(story);
+  const text = `${story.title || ""} ${story.summary || ""} ${story.category || ""} ${imageDossier.canonicalEvent?.summary || ""} ${(imageDossier.canonicalEvent?.entities || []).join(" ")}`.toLowerCase();
   const options = [
     { test: /google|android|european union|eu antitrust|antitrust|competition fine|regulator|commission/, image: "/assets/pexels/business-economy.jpg", fallback: "/assets/newsroom-hero.png", label: "business regulation image", query: "technology business regulation" },
     { test: /storm|weather|flood|power|outage|cleanup|utility|damage/, image: "/assets/pexels/weather-response.jpg", fallback: "/assets/creator-bg-break-silence.png", label: "weather response image", query: "storm cleanup utility crews" },
@@ -33569,6 +33793,8 @@ function newsLabImageForStory(story = {}) {
     source: hasLocalPexelsImage ? "Pexels local asset" : "Local placeholder",
     photographer: pexelsCredit?.photographer || "",
     license: hasLocalPexelsImage ? "Pexels" : "local-placeholder",
+    imageDossier,
+    licensing: imageDossier.licensePolicy,
     provenance: newsLabImageProvenance({
       source: hasLocalPexelsImage ? "Pexels local asset" : "Local placeholder",
       photographer: pexelsCredit?.photographer || "",
@@ -33630,6 +33856,9 @@ function newsLabImageQueryTermsForAudit(story = {}) {
 }
 
 function newsLabImageQueryTerms(story = {}) {
+  if (story.imageDossier?.searchStrategy?.preferredQueries?.length) {
+    return story.imageDossier.searchStrategy.preferredQueries.slice(0, 8);
+  }
   const title = cleanArticleText(story.title || "", 120);
   const dossier = story.storyDossier || {};
   const writerInput = story.writerDossierInput || {};
@@ -44320,6 +44549,8 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     preDraftMemoryBrief,
     headlineMemoryBrief: newsLabAttachPreDraftMemory({ ...representative, storyDossier, evidenceEngine }, storyDossier, evidenceEngine).headlineMemoryBrief
   };
+  const imageDossier = newsLabBuildImageDossier(imageStoryContext);
+  imageStoryContext.imageDossier = imageDossier;
   const image = await boundedNewsLabImageForStory(imageStoryContext, newsLabImageForStory(imageStoryContext), usedPhotoIds);
 
   let body = newsLabWriteFromReasoningPlan({ representative, supporting, facts, dossier: storyDossier, identity: canonicalStoryIdentity, reasoningPlan: writerReasoningPlan });
@@ -44536,6 +44767,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       eventId,
       rule: "Supporting stories must share the same event dossier, event-level entities, title terms, or strong term overlap before the Brain may use them in a CE Media article draft."
     },
+    imageDossier,
     image,
     imageProvenance: image.provenance || newsLabImageProvenance({
       source: image.source || "Unknown",
@@ -44918,7 +45150,8 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
   };
   const titleSeed = newsLabHeadlineFromCompletedArticle(baseStory, index) || newsLabSelectPassingHeadline(baseStory, newsLabHardRewriteCeHeadline(baseStory, index));
   const title = newsLabEnsureOwnedHeadline(titleSeed || newsLabHardRewriteCeHeadline(baseStory, index), baseStory, index);
-  const image = newsLabNormalizeStoryImage({ ...baseStory, title, category: finalWorkerCategory }, representative.image);
+  const imageDossier = newsLabBuildImageDossier({ ...baseStory, title, category: finalWorkerCategory });
+  const image = newsLabNormalizeStoryImage({ ...baseStory, title, category: finalWorkerCategory, imageDossier }, representative.image);
   return enforceNewsLabEditorCategory({
     ...baseStory,
     id: `news_lab_worker_slice_${finalWorkerCategory}_${index}_${safeFileSlug(title).slice(0, 52)}`,
@@ -44990,6 +45223,7 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     publicationTier: thinEvidenceSlice
       ? { tier: 3, label: "Developing story / monitoring", publishable: body.length >= 1 && bodyText.length >= 220 && facts.length >= 1, reason: "Worker slice preserved a thin but verifiable same-event candidate for Editor review instead of dropping it before approval." }
       : null,
+    imageDossier,
     image,
     imageProvenance: image.provenance || newsLabImageProvenance({
       source: image.source || "Local fallback",

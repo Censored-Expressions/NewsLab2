@@ -400,6 +400,9 @@ function renderProductionIntelligence(payload = {}) {
   const stageEfficiency = payload.stageEfficiency || {};
   const weakestStage = stageEfficiency.weakestStage || {};
   const sharedWorkflow = payload.sharedWorkflowDiagnosis || {};
+  const rootCauseOrders = Array.isArray(payload.rootCauseWorkOrders) ? payload.rootCauseWorkOrders : [];
+  const semanticReclassification = payload.semanticReclassification || {};
+  const imageIntelligence = payload.imageIntelligence || {};
   const routing = Array.isArray(payload.targetedRepairRouting) ? payload.targetedRepairRouting : [];
   const observability = payload.observability || {};
   const publishing = observability.publishing || {};
@@ -438,6 +441,9 @@ function renderProductionIntelligence(payload = {}) {
     ["Repair Loops / Article", escapeHtml(efficiency.repairLoopsPerArticle ?? current.averageRepairPasses ?? 0), "target below 1.5"],
     ["Weakest Stage", escapeHtml(weakestStage.stage || "unknown"), `${Math.round(Number(weakestStage.efficiency || 0) * 100)}% efficiency`],
     ["Shared Cause", escapeHtml(sharedWorkflow.interventionLayer || "none"), escapeHtml(sharedWorkflow.shared ? "fix shared workflow first" : "isolated/monitor")],
+    ["Root-Cause Orders", escapeHtml(rootCauseOrders.length), "shared upstream fixes"],
+    ["Category Drift", escapeHtml(semanticReclassification.changedCount ?? 0), "semantic reclassifications"],
+    ["Image Queue", escapeHtml(imageIntelligence.queueDepth ?? 0), `${escapeHtml(imageIntelligence.fallbackCount ?? 0)} fallback images`],
     ["Repairs", escapeHtml(waste.repairFrequency ?? 0), "repair attempts this window"],
     ["Headline Pressure", escapeHtml(waste.headlineRewritePressure ?? 0), "headline/title blockers"],
     ["Dossier Pressure", escapeHtml(waste.evidenceOrDossierPressure ?? 0), "evidence/body/context blockers"],
@@ -469,13 +475,20 @@ function renderProductionIntelligence(payload = {}) {
       <p>top rejection reason</p>
     </article>
   `).join("");
+  const rootCauseHtml = rootCauseOrders.slice(0, 4).map(item => `
+    <article class="owner-production-card owner-production-card--route">
+      <span title="${escapeHtml(item.id || "root-cause")}">${escapeHtml(compactCode(item.layer || "Root Cause"))}</span>
+      <strong>${escapeHtml(compactCode(item.rootCause || "Shared upstream issue"))}</strong>
+      <p>${escapeHtml(item.verification || item.goalImpact || "verify next cycle")}</p>
+    </article>
+  `).join("");
   ownerProductionGrid.innerHTML = cards.map(([label, value, detail]) => `
     <article class="owner-production-card owner-production-card--metric">
       <span>${escapeHtml(label)}</span>
       <strong>${value}</strong>
       <p>${detail}</p>
     </article>
-  `).join("") + routeHtml + funnelHtml + rejectionHtml;
+  `).join("") + rootCauseHtml + routeHtml + funnelHtml + rejectionHtml;
 }
 function renderHighImpactCapabilities(payload = {}) {
   const plan = payload.highImpactCapabilityPlan || {};
