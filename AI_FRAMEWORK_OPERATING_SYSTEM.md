@@ -140,6 +140,10 @@ See `AI_FRAMEWORK_PHASE_12_PATENT_IP_PORTFOLIO.md` for the Patent and Intellectu
 
 See `AI_FRAMEWORK_PHASE_13_FRAMEWORK_OS_INTEGRATION.md` for the Framework OS Integration plan. It defines Project 13 as the system integrator, with shared engines, standard project lifecycle, cross-project contracts, framework-wide metrics, integration gates, release gates, application adapters, and the integration-first rule.
 
+See `AI_FRAMEWORK_OPERATIONAL_EFFICIENCY_AUDIT.md` for the code-driven Operational Efficiency Audit. It identifies oversized active state, repeated JSON/file work, sync serialization pressure, dead direct-build code, repair queue growth, dossier-to-writer enforcement gaps, category enforcement gaps, and prioritized efficiency work orders.
+
+See `AI_FRAMEWORK_DOSSIER_EFFICIENCY_REPORT.md` for the Project 2 Dossier Efficiency Report. It audits when dossiers are considered complete, why collected stories fail to become viable dossiers, whether Writer paths can bypass sufficient dossier readiness, how dossier rebuilds should be measured, and how the Story Dossier should become an authoritative state machine before writing begins.
+
 ## V2 Capability Priorities
 
 | Capability | Current Direction | Target Behavior |

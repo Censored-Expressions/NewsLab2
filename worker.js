@@ -14,8 +14,11 @@ const workerSyncEnabled = process.env.CE_WORKER_SYNC_ENABLED !== "false" && Bool
 const workerSyncIntervalMs = Math.max(30000, Number(process.env.CE_WORKER_SYNC_INTERVAL_MS || 60000));
 const workerSyncTimeoutMs = Math.max(15000, Number(process.env.CE_WORKER_SYNC_TIMEOUT_MS || 45000));
 const workerSyncRetryCount = Math.max(1, Number(process.env.CE_WORKER_SYNC_RETRY_COUNT || 3));
+const workerSyncScheduledRetryCount = Math.max(1, Number(process.env.CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT || 1));
 const workerSyncRetryDelayMs = Math.max(1000, Number(process.env.CE_WORKER_SYNC_RETRY_DELAY_MS || 3000));
 const workerSyncDeltaEnabled = process.env.CE_WORKER_SYNC_DELTA_ENABLED !== "false";
+const workerSyncMaxFilesPerRun = Math.max(1, Number(process.env.CE_WORKER_SYNC_MAX_FILES_PER_RUN || 4));
+const workerSyncThrottlesProduction = process.env.CE_WORKER_SYNC_THROTTLES_PRODUCTION === "true";
 const workerCpuGuardEnabled = process.env.CE_WORKER_CPU_GUARD !== "false";
 const maxCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MAX_COLLECTORS || (workerCpuGuardEnabled ? 4 : 99)));
 const minCollectorWorkers = Math.max(1, Number(process.env.CE_WORKER_MIN_COLLECTORS || 1));
@@ -64,6 +67,21 @@ const syncFileSpecs = [
   { key: "newsletters", file: path.join(dataDir, "newsletters.json") },
   { key: "scheduled-content-worker-status", file: path.join(dataDir, "scheduled-content-worker-status.json") }
 ];
+const syncPriority = {
+  "news-lab-published-payload": 1,
+  "news-lab-api-response-cache": 2,
+  "news-lab-worker-status": 3,
+  "news-lab-api-worker-status": 4,
+  "news-lab-observability": 5,
+  "news-lab-image-worker-status": 6,
+  "scheduled-content-worker-status": 7,
+  "news-lab-productivity": 8,
+  "news-lab-throughput-diagnostics": 9,
+  "article-approval-intelligence": 10,
+  "news-lab-stuck-rescue-worker-status": 11,
+  "creator-posts": 12,
+  "newsletters": 13
+};
 
 const categories = String(process.env.CE_NEWS_LAB_WORKER_CATEGORIES || "top,world,politics,business,technology,sports,entertainment,local")
   .split(",")
@@ -207,6 +225,8 @@ function workerSyncStateSummary() {
     acceptedKeys: ledger.acceptedKeys || [],
     rejectedKeys: ledger.rejectedKeys || [],
     deltaEnabled: workerSyncDeltaEnabled,
+    maxFilesPerRun: workerSyncMaxFilesPerRun,
+    throttlesProduction: workerSyncThrottlesProduction,
     lastPayloadBytes: Number(ledger.lastPayloadBytes || 0),
     lastElapsedMs: Number(ledger.lastElapsedMs || 0)
   };
@@ -459,6 +479,45 @@ function tuneRuntimeFromSync(event = {}) {
   }
 }
 
+function observeSyncWithoutProductionThrottle(event = {}) {
+  const status = String(event.status || "");
+  const isOk = status === "ok";
+  const slowOkPressure = isOk && (
+    Number(event.elapsedMs || 0) >= syncPressureElapsedMs
+    || Number(event.payloadBytes || 0) >= syncPressurePayloadBytes
+    || Number(event.serverSyncDiagnostics?.totalMs || 0) >= syncPressureElapsedMs
+  );
+  const isPressure = slowOkPressure || status === "error" || /^http-(429|500|502|503|504)$/.test(status);
+  if (isOk && !slowOkPressure) {
+    runtimePressureState.consecutiveSyncOk += 1;
+    runtimePressureState.lastAction = "sync-stable-production-decoupled";
+    runtimePressureState.lastActionAt = new Date().toISOString();
+    return;
+  }
+  if (!isPressure) return;
+  runtimePressureState.lastPressureReason = slowOkPressure
+    ? `slow-sync observed without production throttle elapsed=${Number(event.elapsedMs || 0)}ms payload=${Number(event.payloadBytes || 0)} bytes server=${Number(event.serverSyncDiagnostics?.totalMs || 0)}ms`
+    : `sync ${status} observed without production throttle`;
+  runtimePressureState.lastAction = "sync-pressure-observed-production-decoupled";
+  runtimePressureState.lastActionAt = new Date().toISOString();
+  recordWorkerEvent({
+    type: "worker-sync-pressure-observed",
+    action: runtimePressureState.lastAction,
+    status,
+    elapsedMs: Number(event.elapsedMs || 0),
+    payloadBytes: Number(event.payloadBytes || 0),
+    rule: "Remote synchronization pressure is observed and logged, but it does not throttle article production unless CE_WORKER_SYNC_THROTTLES_PRODUCTION=true."
+  });
+}
+
+function applyWorkerSyncRuntimePolicy(event = {}) {
+  if (workerSyncThrottlesProduction) {
+    tuneRuntimeFromSync(event);
+    return;
+  }
+  observeSyncWithoutProductionThrottle(event);
+}
+
 function oneShotsDeferred(name = "one-shot") {
   if (!workerCpuGuardEnabled) return false;
   if (Date.now() < runtimePressureState.deferOneShotsUntil) {
@@ -578,10 +637,43 @@ function collectSyncFiles(options = {}) {
       skipped.push({ key: spec.key, reason: error.message || String(error) });
     }
   }
+  files.sort((a, b) => Number(syncPriority[a.key] || 99) - Number(syncPriority[b.key] || 99));
+  if (!fullSync && files.length > workerSyncMaxFilesPerRun) {
+    const deferred = files.splice(workerSyncMaxFilesPerRun);
+    for (const file of deferred) {
+      skipped.push({
+        key: file.key,
+        reason: "deferred-by-incremental-sync-batch-limit",
+        bytes: file.bytes,
+        mtimeMs: file.mtimeMs,
+        rule: "Incremental sync sends the highest-priority changed files first so public article payloads are not delayed behind lower-priority large state files."
+      });
+    }
+  }
   return { files, skipped, fullSync };
 }
 
-async function syncWorkerOutputs(reason = "scheduled-sync") {
+function syncWorkerOutputs(reason = "scheduled-sync") {
+  setImmediate(() => {
+    performWorkerSync(reason).catch(error => {
+      const event = {
+        type: "worker-sync-error",
+        reason,
+        status: "error",
+        error: error?.message || String(error || "sync failed"),
+        at: new Date().toISOString()
+      };
+      syncInProgress = false;
+      recordWorkerEvent(event);
+      writeWorkerSyncLedger(event);
+      applyWorkerSyncRuntimePolicy(event);
+      console.log(`[worker] sync error: ${event.error}`);
+    });
+  });
+  return Promise.resolve({ queued: true, reason });
+}
+
+async function performWorkerSync(reason = "scheduled-sync") {
   if (syncInProgress) {
     const event = { type: "worker-sync-skipped", reason, status: "skipped", at: new Date().toISOString(), skipReason: "sync-already-in-progress" };
     recordWorkerEvent(event);
@@ -612,7 +704,10 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
   syncInProgress = true;
   const syncFileMtimes = Object.fromEntries(files.map(file => [file.key, file.mtimeMs || 0]));
   let lastError = null;
-  for (let attempt = 1; attempt <= workerSyncRetryCount; attempt += 1) {
+  const retryLimit = /scheduled|after-one-shot/i.test(String(reason || ""))
+    ? Math.min(workerSyncRetryCount, workerSyncScheduledRetryCount)
+    : workerSyncRetryCount;
+  for (let attempt = 1; attempt <= retryLimit; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), workerSyncTimeoutMs);
     const syncStarted = Date.now();
@@ -641,7 +736,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
         status: response.ok ? "ok" : `http-${response.status}`,
         at: new Date().toISOString(),
         attempt,
-        retryCount: workerSyncRetryCount,
+        retryCount: retryLimit,
         acceptedCount: Number(result.acceptedCount || 0),
         rejectedCount: Number(result.rejectedCount || 0),
         acceptedKeys: (result.accepted || []).map(item => item.key).filter(Boolean),
@@ -654,18 +749,18 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
       };
       recordWorkerEvent(event);
       writeWorkerSyncLedger(event);
-      tuneRuntimeFromSync(event);
+      applyWorkerSyncRuntimePolicy(event);
       syncInProgress = false;
       writeWorkerObservability("worker-sync-complete");
       const skippedSummary = skipped.map(item => `${item.key}:${item.reason}`).join(",") || "none";
       const serverMs = Number(event.serverSyncDiagnostics?.totalMs || 0);
-      console.log(`[worker] sync ${event.status}: attempt=${attempt}/${workerSyncRetryCount} elapsedMs=${event.elapsedMs} serverMs=${serverMs} payloadBytes=${event.payloadBytes} accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
+      console.log(`[worker] sync ${event.status}: attempt=${attempt}/${retryLimit} elapsedMs=${event.elapsedMs} serverMs=${serverMs} payloadBytes=${event.payloadBytes} accepted=${event.acceptedKeys.join(",") || "none"} rejected=${event.rejectedKeys.join(",") || "none"} skipped=${skippedSummary}`);
       return;
     } catch (error) {
       clearTimeout(timeout);
       lastError = error;
-      if (attempt < workerSyncRetryCount && transientWorkerSyncError(error)) {
-        console.log(`[worker] sync retry ${attempt}/${workerSyncRetryCount}: ${error.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : error.message || String(error)}`);
+      if (attempt < retryLimit && transientWorkerSyncError(error)) {
+        console.log(`[worker] sync retry ${attempt}/${retryLimit}: ${error.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : error.message || String(error)}`);
         await sleep(workerSyncRetryDelayMs * attempt);
         continue;
       }
@@ -678,7 +773,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
     status: "error",
     error: lastError?.name === "AbortError" ? `sync-timeout-${workerSyncTimeoutMs}ms` : lastError?.message || String(lastError || "sync failed"),
     at: new Date().toISOString(),
-    retryCount: workerSyncRetryCount,
+    retryCount: retryLimit,
     skipped,
     elapsedMs: 0,
     payloadBytes: 0,
@@ -687,7 +782,7 @@ async function syncWorkerOutputs(reason = "scheduled-sync") {
   syncInProgress = false;
   recordWorkerEvent(event);
   writeWorkerSyncLedger(event);
-  tuneRuntimeFromSync(event);
+  applyWorkerSyncRuntimePolicy(event);
   writeWorkerObservability("worker-sync-error");
   console.log(`[worker] sync error: ${event.error}`);
 }
@@ -784,7 +879,7 @@ process.on("SIGTERM", shutdown);
 console.log("Censored Expressions background worker orchestrator starting");
 recordWorkerEvent({ type: "orchestrator-started", pid: process.pid });
 writeWorkerObservability("orchestrator-started");
-console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs}`);
+console.log(`[worker] sync config enabled=${workerSyncEnabled} hasUrl=${Boolean(webSyncBaseUrl)} hasToken=${Boolean(ownerAdminToken)} intervalMs=${workerSyncIntervalMs} delta=${workerSyncDeltaEnabled} maxFilesPerRun=${workerSyncMaxFilesPerRun} retryCount=${workerSyncRetryCount} scheduledRetryCount=${workerSyncScheduledRetryCount} throttlesProduction=${workerSyncThrottlesProduction}`);
 console.log(`[worker] cpu guard enabled=${workerCpuGuardEnabled} maxCollectors=${maxCollectorWorkers} startupStaggerMs=${roleStartupStaggerMs} maxOneShots=${maxOneShotConcurrency} productionSourceLimit=${productionSourceLimit} productionClusterLimit=${productionClusterLimit} productionBudgetMs=${productionBudgetMs} productionCycleMs=${productionCycleMs} syncPressureElapsedMs=${syncPressureElapsedMs} syncPressurePayloadBytes=${syncPressurePayloadBytes}`);
 
 const enabledCollectorCategories = collectorWindowCategories();

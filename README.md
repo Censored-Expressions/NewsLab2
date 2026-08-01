@@ -219,6 +219,8 @@ See `AI_FRAMEWORK_PHASE_7_LEARNING_ARCHITECTURE.md` for the governed Learning Ar
 
 See `AI_FRAMEWORK_PHASE_8_FRAMEWORK_GOVERNANCE_MANUAL.md` for the Framework Governance Manual. It defines the rulebook for authority, trust levels, permissions, owner approval, bounded execution, rollback, verification, audit logging, risk assessment, change management, learning governance, incident response, and governance metrics.
 
+See `AI_FRAMEWORK_DOSSIER_EFFICIENCY_REPORT.md` for the Project 2 Dossier Efficiency Report. It answers when a dossier is complete, why collected stories fail to become viable dossiers, whether the Writer can still be invoked too early, whether dossiers are rebuilt repeatedly, and what work orders make the Story Dossier the authoritative gate before writing.
+
 See `AI_FRAMEWORK_PHASE_9_IMAGE_INTELLIGENCE_ENGINE.md` for the Image Intelligence Engine. It defines how the Framework discovers, verifies, licenses, ranks, selects, documents, and learns from images across News Lab, Creator Desk, newsletters, social media, and future multimedia products.
 
 See `AI_FRAMEWORK_PHASE_10_PERFORMANCE_ENGINEERING.md` for the Performance Engineering guide. It defines how the Framework is engineered for speed, scalability, efficiency, reliability, lower CPU and memory per public output, better worker behavior, faster APIs, and safer synchronization.
@@ -228,6 +230,8 @@ See `AI_FRAMEWORK_PHASE_11_COMMERCIALIZATION.md` for the Commercialization plan.
 See `AI_FRAMEWORK_PHASE_12_PATENT_IP_PORTFOLIO.md` for the Patent and Intellectual Property Portfolio. It defines how the Framework continuously documents invention candidates, technical effects, implementation evidence, trade secrets, claim strategy, prior-art research, filing packages, and commercialization opportunities.
 
 See `AI_FRAMEWORK_PHASE_13_FRAMEWORK_OS_INTEGRATION.md` for the Framework OS Integration plan. It defines how Projects 1-12 become one operating framework through shared engines, standard project lifecycles, explicit integration contracts, framework-wide metrics, release gates, application adapters, and the integration-first rule.
+
+See `AI_FRAMEWORK_OPERATIONAL_EFFICIENCY_AUDIT.md` for the code-driven Operational Efficiency Audit. It examines whether subsystems are doing unnecessary work, doing work too early, doing work twice, or duplicating work another subsystem could perform once for the full Framework.
 
 The private Framework is organized into a defined decision system:
 

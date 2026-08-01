@@ -283,6 +283,15 @@ function safeUrl(value = "") {
   }
 }
 
+function publicImageCredit(value = "") {
+  const credit = String(value || "").trim();
+  if (!credit) return "";
+  if (/temporary\s+local\s+image|add\s+a\s+matching|placeholder|before\s+publishing/i.test(credit)) {
+    return "";
+  }
+  return credit;
+}
+
 function formatStoryDate(value = "") {
   const date = value ? new Date(value) : null;
   if (!date || Number.isNaN(date.getTime())) return "";
@@ -341,6 +350,7 @@ function storyCard(story, index) {
   const image = story.image || {};
   const imageUrl = safeUrl(image.primary || image.fallback || "/assets/newsroom-hero.png");
   const fallback = safeUrl(image.fallback || "/assets/newsroom-hero.png");
+  const imageCredit = publicImageCredit(image.credit || "");
   const summary = story.summary || (story.body || [])[0] || "Original Censored Expressions reporting is being prepared.";
   const originalDate = story.originalPublishedAt || story.generatedAt;
   const updateDate = story.boardVisibility?.latestUpdateAt || story.lastUpdatedAt || "";
@@ -351,7 +361,7 @@ function storyCard(story, index) {
       <a class="story-image" href="${escapeHtml(storyArticleUrl(story))}" aria-label="${escapeHtml(story.title || "Open story")}">
         <img src="${escapeHtml(imageUrl)}" data-fallback-src="${escapeHtml(fallback)}" alt="${escapeHtml(image.alt || "")}" loading="lazy" referrerpolicy="no-referrer" />
       </a>
-      <p class="news-lab-image-credit">${escapeHtml(image.credit || "")}</p>
+      ${imageCredit ? `<p class="news-lab-image-credit">${escapeHtml(imageCredit)}</p>` : ""}
       <div class="story-topline">
         <span class="category-pill">${escapeHtml(story.categoryLabel || story.category || "news")}</span>
         <span>${escapeHtml(originalLabel)}</span>

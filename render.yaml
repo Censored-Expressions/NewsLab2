@@ -74,10 +74,16 @@
         value: "45000"
       - key: CE_WORKER_SYNC_RETRY_COUNT
         value: "3"
+      - key: CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT
+        value: "1"
       - key: CE_WORKER_SYNC_RETRY_DELAY_MS
         value: "3000"
       - key: CE_WORKER_SYNC_DELTA_ENABLED
         value: "true"
+      - key: CE_WORKER_SYNC_MAX_FILES_PER_RUN
+        value: "4"
+      - key: CE_WORKER_SYNC_THROTTLES_PRODUCTION
+        value: "false"
       - key: CE_JSON_OBJECT_CACHE
         value: "true"
       - key: CE_JSON_OBJECT_CACHE_MAX_ENTRIES

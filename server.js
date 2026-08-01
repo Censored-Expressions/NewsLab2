@@ -33781,24 +33781,24 @@ function newsLabImageForStory(story = {}) {
   const pexelsCredit = hasLocalPexelsImage ? newsLabPexelsCreditForAsset(match.image) : null;
   const creditText = pexelsCredit?.photographer
     ? `Photo by ${pexelsCredit.photographer} via Pexels`
-    : "Temporary local image. Add a matching Pexels photo before publishing this story.";
+    : "CE Media visual";
   return {
     primary: hasLocalPexelsImage ? match.image : match.fallback,
     fallback: match.fallback,
     url: hasLocalPexelsImage ? match.image : match.fallback,
     src: hasLocalPexelsImage ? match.image : match.fallback,
     alt: match.label,
-    credit: hasLocalPexelsImage ? creditText : "Temporary local image. Add a matching Pexels photo before publishing this story.",
+    credit: creditText,
     query: match.query,
-    source: hasLocalPexelsImage ? "Pexels local asset" : "Local placeholder",
+    source: hasLocalPexelsImage ? "Pexels local asset" : "CE Media visual",
     photographer: pexelsCredit?.photographer || "",
-    license: hasLocalPexelsImage ? "Pexels" : "local-placeholder",
+    license: hasLocalPexelsImage ? "Pexels" : "CE Media",
     imageDossier,
     licensing: imageDossier.licensePolicy,
     provenance: newsLabImageProvenance({
-      source: hasLocalPexelsImage ? "Pexels local asset" : "Local placeholder",
+      source: hasLocalPexelsImage ? "Pexels local asset" : "CE Media visual",
       photographer: pexelsCredit?.photographer || "",
-      license: hasLocalPexelsImage ? "Pexels" : "local-placeholder",
+      license: hasLocalPexelsImage ? "Pexels" : "CE Media",
       sourceUrl: pexelsCredit?.pexelsUrl || "",
       originalQuery: match.query,
       auditNote: hasLocalPexelsImage

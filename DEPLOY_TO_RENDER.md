@@ -51,6 +51,9 @@ CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
 CE_WORKER_SYNC_DELTA_ENABLED=true
+CE_WORKER_SYNC_MAX_FILES_PER_RUN=4
+CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT=1
+CE_WORKER_SYNC_THROTTLES_PRODUCTION=false
 CE_WORKER_SYNC_SLOW_MS=5000
 CE_CONTENT_LANE_EDITOR_ATTEMPTS=4
 NEWSLETTER_WEBHOOK_URL=https://your-cloudflare-newsletter-worker.workers.dev
@@ -139,6 +142,9 @@ CE_RENDER_EMBEDDED_WORKER_FALLBACK=false
 CE_WORKER_SYNC_BODY_LIMIT_BYTES=16777216
 CE_WORKER_SYNC_MAX_FILE_BYTES=16777216
 CE_WORKER_SYNC_DELTA_ENABLED=true
+CE_WORKER_SYNC_MAX_FILES_PER_RUN=4
+CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT=1
+CE_WORKER_SYNC_THROTTLES_PRODUCTION=false
 CE_WORKER_SYNC_SLOW_MS=5000
 CE_CONTENT_LANE_EDITOR_ATTEMPTS=4
 ```
@@ -247,7 +253,9 @@ CE_IMAGE_WORKER_INTERVAL_MS=3600000
 
 If CPU remains high, lower `CE_WORKER_MAX_COLLECTORS` to `3` and keep `CE_WORKER_PRODUCTION_SOURCE_LIMIT` near `30`. If CPU is stable and article coverage needs more throughput, raise collectors gradually to `6` or `8` and raise `CE_WORKER_PRODUCTION_SOURCE_LIMIT`/`CE_WORKER_PRODUCTION_CLUSTER_LIMIT` with it. Extra collectors alone only gather more material; these production handoff limits determine how much of that material reaches the Writer, Editor, and Publisher.
 
-The worker also reacts to repeated sync pressure automatically. After repeated `http-502`, `http-503`, `http-504`, `http-429`, or sync errors, it lowers active collector workers, defers heavy one-shot jobs, and then restores collectors after stable syncs. This is the Framework control loop for protecting public API responsiveness while preserving article production.
+The worker treats remote synchronization as a side channel. By default, `CE_WORKER_SYNC_THROTTLES_PRODUCTION=false`, so repeated `http-502`, `http-503`, `http-504`, `http-429`, timeout, or large-payload sync pressure is logged and reported without lowering collectors or deferring article/image/newsletter production. Enable `CE_WORKER_SYNC_THROTTLES_PRODUCTION=true` only if the web service is under severe pressure and protecting public API responsiveness is more important than publication throughput.
+
+Incremental sync is bounded by `CE_WORKER_SYNC_MAX_FILES_PER_RUN=4`. The worker sends changed public article payloads, API cache, and status files first so approved articles are not delayed behind lower-priority large state files such as newsletters or learning data. Scheduled sync uses `CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT=1`; if a scheduled sync fails, the next scheduled sync handles retry work without tying up the worker.
 
 Expected worker log after deploy:
 

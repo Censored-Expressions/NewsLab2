@@ -21,6 +21,15 @@ function safeUrl(value = "") {
   }
 }
 
+function publicImageCredit(value = "") {
+  const credit = String(value || "").trim();
+  if (!credit) return "";
+  if (/temporary\s+local\s+image|add\s+a\s+matching|placeholder|before\s+publishing/i.test(credit)) {
+    return "";
+  }
+  return credit;
+}
+
 function shareUrl(story = {}) {
   return window.location.href;
 }
@@ -97,6 +106,7 @@ function renderStoryUpdates(story = {}) {
 
 function renderStory(story = {}) {
   const image = story.image || {};
+  const imageCredit = publicImageCredit(image.credit || "");
   const paragraphs = (story.body || [story.summary]).filter(Boolean);
   document.title = `${story.title || "Censored Expressions Story"} | Censored Expressions`;
   storyRoot.innerHTML = `
@@ -108,7 +118,7 @@ function renderStory(story = {}) {
     </div>
     <figure class="news-lab-article-image">
       <img src="${escapeHtml(safeUrl(image.primary || image.fallback || "/assets/newsroom-hero.png"))}" data-fallback-src="${escapeHtml(safeUrl(image.fallback || "/assets/newsroom-hero.png"))}" alt="${escapeHtml(image.alt || "")}" />
-      <figcaption>${escapeHtml(image.credit || "")}</figcaption>
+      ${imageCredit ? `<figcaption>${escapeHtml(imageCredit)}</figcaption>` : ""}
     </figure>
     <section class="news-lab-article-body">
       ${paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("")}
