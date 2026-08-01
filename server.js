@@ -3317,14 +3317,28 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const productivitySummary = newsLabProductivitySummary(productivity);
   const approval = readJsonFile(newsLabArticleApprovalIntelligenceFile, defaultNewsLabArticleApprovalIntelligence()) || defaultNewsLabArticleApprovalIntelligence();
   const apiPerformance = readJsonFile(apiEndpointPerformanceFile, defaultApiEndpointPerformance()) || defaultApiEndpointPerformance();
+  const workerStatus = readJsonFile(newsLabWorkerStatusFile, {}) || {};
   const currentCycle = approval.currentCycle || {};
   const recovery = approval.recoveryOutput || {};
   const topBlockers = Array.isArray(approval.topBlockers) ? approval.topBlockers : [];
   const hour = productivitySummary.lastHour || {};
+  const recentCycles = Array.isArray(productivitySummary.recentCycles) ? productivitySummary.recentCycles : [];
+  const lastMetrics = workerStatus.lastMetrics || workerStatus.metrics || {};
   const reviewed = Number(currentCycle.editorialReviewed || hour.editorialReviews || 0);
   const firstPassApproved = Number(currentCycle.firstPassApproved || hour.approvedArticles || 0);
   const finalApproved = Number(currentCycle.finalApproved || hour.approvedArticles || 0);
   const finalBlocked = Number(currentCycle.finalBlocked || hour.rejectedDrafts || 0);
+  const visiblePublished = Number(lastMetrics.publicStoryCount || currentCycle.publishedShelfCount || 0);
+  const sourceStories = Number(lastMetrics.sourceStoryCount || hour.sourceStoriesCollected || 0);
+  const attemptedCount = Number(lastMetrics.attemptedCount || currentCycle.generatedCandidates || reviewed || 0);
+  const buildMs = Number(lastMetrics.buildMs || recentCycles.slice(-1)[0]?.publicationLatencyMs || 0);
+  const recentPublished = Number(hour.publishedArticles || 0);
+  const cpuMsPerVisibleArticle = Math.round(buildMs / Math.max(1, visiblePublished || finalApproved || recentPublished || 1));
+  const cpuMsPerNewPublishedArticle = Math.round(buildMs / Math.max(1, recentPublished || finalApproved || 1));
+  const candidatesPerPublishedArticle = Number((attemptedCount / Math.max(1, finalApproved || recentPublished || 1)).toFixed(2));
+  const sourcesPerPublishedArticle = Number((sourceStories / Math.max(1, finalApproved || recentPublished || 1)).toFixed(2));
+  const workerBudgetMs = Number(lastMetrics.productionBudgetMs || workerStatus.cycleMs || 0);
+  const budgetOverrun = workerBudgetMs > 0 && buildMs > workerBudgetMs;
   const headlineRewritePressure = productionIntelligenceBlockerCount(topBlockers, /headline|title/i);
   const evidencePressure = productionIntelligenceBlockerCount(topBlockers, /body|context|evidence|reporting|source|dossier|thin/i);
   const duplicateEffort = productionIntelligenceBlockerCount(topBlockers, /duplicate|same-event|repeat/i) + Number(hour.skippedCycles || 0);
@@ -3368,6 +3382,27 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       averageRepairPasses,
       headlineRewriteRate,
       dossierFailureRate
+    },
+    publicationEfficiencyDashboard: {
+      visiblePublishedArticles: visiblePublished,
+      sourceStories,
+      attemptedCandidates: attemptedCount,
+      finalApproved,
+      recentNewPublishedArticles: recentPublished,
+      buildMs,
+      workerBudgetMs,
+      budgetOverrun,
+      cpuMsPerVisibleArticle,
+      cpuMsPerNewPublishedArticle,
+      candidatesPerPublishedArticle,
+      sourcesPerPublishedArticle,
+      firstPassPublicationRate: productionIntelligenceRate(firstPassApproved, reviewed),
+      finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
+      primaryOptimizationMetric: "first-pass publication rate and CPU milliseconds per newly visible article",
+      interpretation: budgetOverrun
+        ? "The worker exceeded its production budget; reduce repeated repair/rebuild work before increasing collection."
+        : "The worker stayed within the measured budget; optimize acceptance and prepared-cache work before adding more processing.",
+      rule: "The Brain should optimize for published articles per unit of work, not raw candidates processed."
     },
     unnecessaryWork: {
       repairFrequency,
@@ -4077,8 +4112,21 @@ function newsLabWriterReadinessProof(story = {}) {
   const capacityReady = readinessContract.readyForWriter !== false && readinessContract.readinessTier !== "HOLD_FOR_EVIDENCE";
   const minimumFacts = articleFormat === "breaking-brief" ? 2 : 3;
   const readyForFirstDraft = knownFactCount >= minimumFacts && sourceCount >= 1 && editorialMemoryApplied && capacityReady;
+  const readinessScore = clampScore(
+    Math.min(30, knownFactCount * 10)
+    + Math.min(22, sourceCount * 8)
+    + Math.min(10, timelineCount * 3)
+    + Math.min(16, evidenceScore / 5)
+    + (capacityReady ? 10 : 0)
+    + (editorialMemoryApplied ? 8 : 0)
+    + (lexiconApplied ? 2 : 0)
+    + (historicalReasoningApplied ? 2 : 0)
+    - Math.min(14, contradictionCount * 4)
+  );
   return {
     readyForFirstDraft,
+    readinessScore,
+    readinessGate: readinessScore >= (articleFormat === "breaking-brief" ? 58 : 72) && readyForFirstDraft ? "ready-to-write" : "needs-dossier-evidence",
     readinessTier: readinessContract.readinessTier || story.articleCapacityTier || "unknown",
     articleFormat,
     knownFactCount,
@@ -4096,7 +4144,7 @@ function newsLabWriterReadinessProof(story = {}) {
       !capacityReady ? "needs-evidence-supported-article-capacity" : "",
       !editorialMemoryApplied ? "needs-editorial-memory-before-writing" : ""
     ].filter(Boolean),
-    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, evidence-supported article capacity, known facts, source context, Editorial Memory, and applicable Lexicon/Historical guidance."
+    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, evidence-supported article capacity, known facts, source context, Editorial Memory, and applicable Lexicon/Historical guidance. Headline generation comes after this readiness proof and completed Writer Reasoning, not from raw feed headlines."
   };
 }
 function newsLabApprovalLifecycleIssueList(story = {}, extraIssues = []) {
@@ -43701,7 +43749,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
       newsLabLifecycleStage("RSS Collected", "Collector", newsLabLifecycleStageStatus(sourceInputStories.length > 0), sourceInputStories.length ? 100 : 0, { sourceInputStories: sourceInputStories.length }, sourceInputStories.length ? "" : "no-source-input-stories", "Collector must fetch tab-specific source material before clustering."),
       newsLabLifecycleStage("Evidence Collected", "Evidence Engine", newsLabLifecycleStageStatus(sourceCount > 0), Math.min(100, sourceCount * 24 + knownFacts * 8), { sourceCount, knownFacts, fullReadCount: Number(story.articleReadDepth?.fullReadCount || story.storyDossier?.evidence?.fullReadCount || 0) }, sourceCount ? "" : "missing-source-evidence", "Add source context or mark needs-dossier-evidence before writing."),
       newsLabLifecycleStage("Story Dossier Built", "Story Dossier Builder", newsLabLifecycleStageStatus(Boolean(story.storyDossier), Boolean(story.writerDossierInput)), dossierPercent, { knownFacts, sourcePool: Number(story.storyDossier?.sourcePool?.length || 0), confidence, storyId: story.storyDossier?.storyId || story.id || "" }, story.storyDossier ? "" : "missing-story-dossier", "Build one canonical event dossier before Writer, Headline, Image, and Editor run."),
-      newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read dossier, editorial memory, lexicon/historical guidance, and prevention rules before drafting."),
+      newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readinessScore || (writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22)), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read dossier, editorial memory, lexicon/historical guidance, and prevention rules before drafting. If readinessGate is needs-dossier-evidence, return upstream instead of generating headline/prose from weak fragments."),
       newsLabLifecycleStage("Draft Generated", "Article Writer", newsLabLifecycleStageStatus(draftLengthPassed, draftLengthAttention), Math.min(100, Math.round(bodyLength / 10)), { paragraphs: paragraphCount, bodyLength, articleFormat: writerReadiness.articleFormat, readinessTier: writerReadiness.readinessTier }, draftLengthPassed ? "" : (supportedBrief ? "brief-body-too-thin" : "draft-body-too-thin"), "Generate only the article format supported by the locked dossier capacity; do not stretch a brief dossier into a full article."),
       newsLabLifecycleStage("Headline Generated", "Headline Generator", newsLabLifecycleStageStatus(Boolean(headlineReview.passed), Boolean((headlineReview.issues || []).length === 0 && story.title)), headlineReview.passed ? 100 : Math.max(20, 100 - (headlineReview.issues || []).length * 25), { title: story.title || "", headlineIssues: headlineReview.issues || [], headlineAudit: story.headlineAudit || null }, headlineReview.passed ? "" : (headlineReview.issues || ["headline-validation-failed"])[0], "Rebuild headline from final dossier/article identity using actor + action + consequence."),
       newsLabLifecycleStage("Self Review", "Draft Optimization Engine", story.editorialCoach ? (story.editorialCoach.passed ? "passed" : "attention") : "not-recorded", story.editorialCoach ? (story.editorialCoach.passed ? 100 : 55) : 0, { editorialCoach: story.editorialCoach || null, preventionMemory: story.publicationPreventionMemory || null }, story.editorialCoach?.passed === false ? "self-review-found-issues" : "", "Draft Optimization should repair automatic language/headline/context issues before Editor."),
@@ -45211,6 +45259,16 @@ function isAdminRequest(request) {
     return requestTokens.some(requestToken => validTokens.includes(requestToken));
   }
   return isLocalRequest(request);
+}
+
+function requireOwnerAdmin(request, response) {
+  if (isAdminRequest(request)) return true;
+  sendPrivateJson(response, 403, {
+    ok: false,
+    error: "Owner access required.",
+    rule: "Owner-only runtime endpoints must return a controlled 403 instead of throwing a missing authorization helper error."
+  });
+  return false;
 }
 
 async function feedDiagnostics() {
