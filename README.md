@@ -155,6 +155,7 @@ News Lab can use licensed image APIs without storing keys in source code.
 
 - Set `CE_NEWS_LAB_LIVE_IMAGES=true` to enable live image search.
 - Set `PEXELS_API_KEY` to use Pexels.
+- Set `UNSPLASH_ACCESS_KEY` to use Unsplash as an additional licensed/search-provider lane. Unsplash API images must keep photographer and Unsplash attribution.
 - Set `PIXABAY_API_KEY` to use Pixabay as a licensed fallback provider.
 - Story objects record `imageProvenance` with source, creator, license, retrieval time, original query, source URL, and photo ID.
 

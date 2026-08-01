@@ -39,6 +39,7 @@ OWNER_ADMIN_TOKEN=your-private-owner-token
 NEWSLETTER_ADMIN_TOKEN=your-private-owner-token
 OPENAI_API_KEY=your-openai-key
 PEXELS_API_KEY=your-pexels-key
+UNSPLASH_ACCESS_KEY=your-unsplash-access-key
 PIXABAY_API_KEY=your-pixabay-key
 CE_NEWS_LAB_LIVE_IMAGES=true
 CE_NEWS_LAB_WORKER_LIVE_IMAGES=true

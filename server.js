@@ -194,6 +194,7 @@ const openAiModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const openAiApiKey = process.env.OPENAI_API_KEY || "";
 const pexelsApiKey = process.env.PEXELS_API_KEY || "";
 const pixabayApiKey = process.env.PIXABAY_API_KEY || "";
+const unsplashAccessKey = process.env.UNSPLASH_ACCESS_KEY || "";
 const newsDataApiKey = process.env.NEWSDATA_API_KEY || "";
 const newsLabLiveImageSearch = process.env.CE_NEWS_LAB_LIVE_IMAGES === "true";
 const serverContractVersion = "20260613-site-runtime-freshness-v2";
@@ -5511,6 +5512,8 @@ function patchDirectionMarkdown(proposal = {}) {
   const list = values => (Array.isArray(values) && values.length)
     ? values.map(value => `- ${String(value || "").trim()}`).join("\n")
     : "- Not provided";
+  const diagnosticThinking = proposal.diagnosticThinking || proposal.rootCauseAnalysis || {};
+  const diagnosticLine = (label, value, fallback = "Not classified") => `- ${label}: ${String(value || fallback).trim()}`;
   const patchOps = normalizePatchOperations(proposal.filePatches || proposal.patchOperations || []);
   const structured = patchOps.length
     ? `\n\n## Structured Patch Operations\n\`\`\`json\n${JSON.stringify(patchOps, null, 2)}\n\`\`\``
@@ -5533,6 +5536,23 @@ function patchDirectionMarkdown(proposal = {}) {
     "",
     "## Root Cause",
     proposal.rootCause || "No root cause supplied.",
+    "",
+    "## Diagnostic Thinking",
+    diagnosticLine("Failure Layer", proposal.failureLayer || diagnosticThinking.failureLayer),
+    diagnosticLine("Shared or Isolated", proposal.sharedOrIsolated || diagnosticThinking.sharedOrIsolated),
+    diagnosticLine("Affected Subsystems", (proposal.affectedSubsystems || diagnosticThinking.affectedSubsystems || []).join(", "), "Not provided"),
+    diagnosticLine("Probable Root Cause", diagnosticThinking.probableRootCause || proposal.rootCause, "No probable root cause supplied"),
+    diagnosticLine("Confidence", diagnosticThinking.confidence !== undefined ? `${diagnosticThinking.confidence}%` : proposal.confidence),
+    diagnosticLine("Expected Downstream Effect", proposal.expectedDownstreamEffect || diagnosticThinking.expectedDownstreamEffect, "Not provided"),
+    diagnosticLine("Highest-Leverage Reason", proposal.highestLeverageReason || diagnosticThinking.highestLeverageReason, "Not provided"),
+    "",
+    "## Who / What / When / Where / Why / How",
+    diagnosticLine("Who is affected", diagnosticThinking.who),
+    diagnosticLine("What changes", diagnosticThinking.what),
+    diagnosticLine("When it takes effect", diagnosticThinking.when),
+    diagnosticLine("Where to apply it", diagnosticThinking.where),
+    diagnosticLine("Why this is needed", diagnosticThinking.why),
+    diagnosticLine("How it supports goals", diagnosticThinking.how),
     "",
     "## Requested Fix",
     proposal.proposedFix || proposal.proposedPatch || "No proposed fix supplied.",
@@ -5975,6 +5995,13 @@ function savePatchProposal(input = {}) {
     verificationPlan,
     rollbackPlan,
     expectedOutcome: String(input.expectedOutcome || "").trim(),
+    failureLayer: String(input.failureLayer || input.rootCauseAnalysis?.failureLayer || input.diagnosticThinking?.failureLayer || "").trim(),
+    sharedOrIsolated: String(input.sharedOrIsolated || input.rootCauseAnalysis?.sharedOrIsolated || input.diagnosticThinking?.sharedOrIsolated || "").trim(),
+    affectedSubsystems: normalizeStringList(input.affectedSubsystems || input.rootCauseAnalysis?.affectedSubsystems || input.diagnosticThinking?.affectedSubsystems || [], 20),
+    expectedDownstreamEffect: String(input.expectedDownstreamEffect || input.rootCauseAnalysis?.expectedDownstreamEffect || input.diagnosticThinking?.expectedDownstreamEffect || "").trim(),
+    highestLeverageReason: String(input.highestLeverageReason || input.rootCauseAnalysis?.highestLeverageReason || input.diagnosticThinking?.highestLeverageReason || "").trim(),
+    rootCauseAnalysis: input.rootCauseAnalysis || null,
+    diagnosticThinking: input.diagnosticThinking || input.rootCauseAnalysis || null,
     resultMetric: input.resultMetric || {},
     codexInstruction: String(input.codexInstruction || (structuring.teachingNeeded
       ? "The Brain could not safely generate structured filePatches from this diagnosis yet. Codex/GitHub should teach the missing exact file path, find text, replacement text, or create/write operation."
@@ -6043,6 +6070,13 @@ function savePatchProposal(input = {}) {
       repeatedSignalCount: Number(existing.repeatedSignalCount || 1) + 1,
       trigger: record.trigger,
       resultMetric: record.resultMetric,
+      failureLayer: record.failureLayer || existing.failureLayer || "",
+      sharedOrIsolated: record.sharedOrIsolated || existing.sharedOrIsolated || "",
+      affectedSubsystems: record.affectedSubsystems?.length ? record.affectedSubsystems : existing.affectedSubsystems || [],
+      expectedDownstreamEffect: record.expectedDownstreamEffect || existing.expectedDownstreamEffect || "",
+      highestLeverageReason: record.highestLeverageReason || existing.highestLeverageReason || "",
+      rootCauseAnalysis: record.rootCauseAnalysis || existing.rootCauseAnalysis || null,
+      diagnosticThinking: record.diagnosticThinking || existing.diagnosticThinking || null,
       filePatches: record.filePatches.length ? record.filePatches : existing.filePatches,
       patchStructuring: record.patchStructuring?.structured ? record.patchStructuring : existing.patchStructuring || record.patchStructuring,
       verificationPlan: record.verificationPlan.length ? record.verificationPlan : existing.verificationPlan,
@@ -9671,7 +9705,7 @@ function frameworkContinuousOptimizerSnapshot(memory = learningMemory(), diagnos
   const firstPassRate = editorialReviews ? Number(((finalApproved / editorialReviews) * 100).toFixed(1)) : 0;
   const visibleStories = Array.isArray(publishedPayload.ownedStories) ? publishedPayload.ownedStories.length : 0;
   const imageSummary = imageWorker.summary || {};
-  const imageConfigured = Boolean(imageWorker.config?.liveImageSearch && imageWorker.config?.hasPexelsKey && imageWorker.config?.hasPixabayKey);
+  const imageConfigured = Boolean(imageWorker.config?.liveImageSearch && (imageWorker.config?.hasPexelsKey || imageWorker.config?.hasPixabayKey || imageWorker.config?.hasUnsplashKey));
   const imageImprovement = Number(imageSummary.upgraded || 0) + Number(imageSummary.generatedImageAssetsPromoted || 0);
   const slowEndpointMs = Number(worstEndpoint?.maxMs || worstEndpoint?.avgMs || 0);
   const performanceScore = clampScore(100 - Math.min(55, slowEndpointMs / 1200) - Number(apiPerformance.totals?.slowRequests || 0) * 2);
@@ -11262,7 +11296,227 @@ async function executeSubsystemTeachingRedeploy(memory = learningMemory(), analy
   return { teachingRecords, redeployActions };
 }
 
+function subsystemGapEvidenceText(item = {}) {
+  return [
+    item.key,
+    item.name,
+    item.status,
+    item.health,
+    item.readiness,
+    ...(Array.isArray(item.evidence) ? item.evidence : []),
+    ...(Array.isArray(item.missingCapabilities) ? item.missingCapabilities : []),
+    ...(Array.isArray(item.requiredCapabilities) ? item.requiredCapabilities : [])
+  ].filter(value => value !== undefined && value !== null).join(" ").toLowerCase();
+}
+
+function classifySubsystemGapFailureLayer(item = {}) {
+  const text = subsystemGapEvidenceText(item);
+  if (/deployment hook returned http 404|deploy hook|deployment hook|render_deploy_hook|deploy.*404/.test(text)) return "Deployment";
+  if (/coveragefloor|coveragegap|strongestuniquesources|needs-more-coverage|story count|tab coverage|dossier-ready|qualified stories|coverage bottleneck/.test(text)) return "Shared Pipeline";
+  if (/dossier|evidence|source context|verified fact|context blocker|cluster|event clustering/.test(text)) return "Dossier";
+  if (/headline|title|slug|topic mismatch|word salad/.test(text)) return "Headline";
+  if (/writer|reasoning|draft|lead|body/.test(text)) return "Writer";
+  if (/editor|approval|rejection|validator|quality gate/.test(text)) return "Editor";
+  if (/api|endpoint|cache|sync|timeout|latency|cpu|memory|readiness|performance/.test(text)) return "Infrastructure";
+  if (/layout|display|ui|css|owner desk|frontend/.test(text)) return "UI";
+  return "Subsystem";
+}
+
+function buildDiagnosticThinking(input = {}) {
+  const affectedSubsystems = normalizeStringList(input.affectedSubsystems || [], 20);
+  const failureLayer = String(input.failureLayer || "Subsystem").trim();
+  const sharedOrIsolated = String(input.sharedOrIsolated || "isolated").trim();
+  const probableRootCause = String(input.probableRootCause || input.rootCause || "The Framework has not isolated a deeper root cause yet.").trim();
+  return {
+    failureLayer,
+    sharedOrIsolated,
+    affectedSubsystems,
+    probableRootCause,
+    confidence: Math.round(clampScore(Number(input.confidence ?? 58))),
+    expectedDownstreamEffect: String(input.expectedDownstreamEffect || "The affected workflow should produce fewer repeat failures after the fix is verified.").trim(),
+    highestLeverageReason: String(input.highestLeverageReason || "This targets the point in the workflow most likely to reduce repeated downstream work.").trim(),
+    who: String(input.who || (affectedSubsystems.length ? `${affectedSubsystems.join(", ")} and any downstream systems depending on their output.` : "The subsystem that raised the gap and its downstream consumers.")).trim(),
+    what: String(input.what || "Apply a bounded code or workflow change that addresses the classified failure layer.").trim(),
+    when: String(input.when || "After owner approval and verification; runtime behavior should change on the next subsystem cycle/deployment.").trim(),
+    where: String(input.where || "Apply at the earliest shared pipeline stage that can prevent the failure before downstream systems repeat it.").trim(),
+    why: String(input.why || probableRootCause).trim(),
+    how: String(input.how || "Measure before/after readiness, proposal count, approval flow, and proof-log verification so the Brain learns the prevention rule.").trim()
+  };
+}
+
+function recentDeploymentHookFailureDetected() {
+  try {
+    const proposals = readJsonFile(frameworkPatchProposalFile, []);
+    const recent = (Array.isArray(proposals) ? proposals : []).slice(-25);
+    return recent.some(item => /deployment hook returned http 404|deploy hook.*404/i.test([
+      item.rootCause,
+      item.proposedFix,
+      item.laymanDescription,
+      item.expectedOutcome,
+      ...(Array.isArray(item.verificationPlan) ? item.verificationPlan : []),
+      ...(Array.isArray(item.tags) ? item.tags : [])
+    ].filter(Boolean).join(" ")));
+  } catch {
+    return false;
+  }
+}
+
+function sharedRootCauseDiagnosisForSubsystemGaps(gaps = []) {
+  const eligible = (Array.isArray(gaps) ? gaps : [])
+    .filter(item => item && !(item.teachingNeeded && Number(item.readiness || 0) >= 45 && !item.missingCapabilities?.length))
+    .map(item => ({
+      item,
+      text: subsystemGapEvidenceText(item),
+      failureLayer: classifySubsystemGapFailureLayer(item)
+    }));
+  const deploymentItems = eligible.filter(entry => entry.failureLayer === "Deployment");
+  if (deploymentItems.length >= 1 || recentDeploymentHookFailureDetected()) {
+    const affectedSubsystems = normalizeStringList(deploymentItems.map(entry => entry.item.name || entry.item.key).filter(Boolean), 20);
+    return buildDiagnosticThinking({
+      failureLayer: "Deployment",
+      sharedOrIsolated: "shared",
+      affectedSubsystems: affectedSubsystems.length ? affectedSubsystems : ["Subsystem Brain", "Patch Deployment", "Production Intelligence"],
+      probableRootCause: "Multiple subsystem proposals are reaching a deployment step that reports HTTP 404, so the failure is the shared deployment hook/path rather than the individual subsystem readiness gap.",
+      confidence: deploymentItems.length ? 88 : 74,
+      expectedDownstreamEffect: "Subsystem proposals stop multiplying while deployment is broken; the Framework focuses on restoring the shared deployment path first.",
+      highestLeverageReason: "A broken deployment hook prevents every approved patch from taking effect, so fixing it unlocks all downstream subsystem improvements.",
+      who: "All patch-producing subsystems, the deployment executor, Owner Desk approval flow, and public site improvement cycles.",
+      what: "Suppress duplicate subsystem proposals during deployment-hook failure and create one infrastructure/deployment proposal instead.",
+      when: "Immediately during subsystem capability cycles when deployment 404 evidence appears.",
+      where: "Production Intelligence root-cause layer before individual subsystem patch generation.",
+      why: "A deployment 404 is shared infrastructure evidence, not proof that Business, Technology, Politics, or any other tab each needs separate code patches.",
+      how: "Classify deployment failures as shared, route one proposal to deployment/infrastructure, and require proof that the hook works before resuming subsystem-specific patch generation."
+    });
+  }
+
+  const coverageItems = eligible.filter(entry => entry.failureLayer === "Shared Pipeline" || /coveragefloor|coveragegap|strongestuniquesources|needs-more-coverage|dossier-ready/.test(entry.text));
+  if (coverageItems.length >= 3) {
+    const affectedSubsystems = normalizeStringList(coverageItems.map(entry => entry.item.name || entry.item.key).filter(Boolean), 20);
+    return buildDiagnosticThinking({
+      failureLayer: "Shared Pipeline",
+      sharedOrIsolated: "shared",
+      affectedSubsystems,
+      probableRootCause: "Three or more subsystems show similar coverage-floor/source-depth evidence, which points to a shared upstream weakness in source normalization, event clustering, sub-dossier separation, or Story Dossier readiness rather than isolated tab failures.",
+      confidence: 86,
+      expectedDownstreamEffect: "More tab workers should receive dossier-ready candidates, reducing repeat patch proposals and increasing first-pass article publication across categories.",
+      highestLeverageReason: "Improving the shared event/dossier pipeline benefits every weak category at once, while isolated tab patches would repeat the same work.",
+      who: `${affectedSubsystems.join(", ")} plus Writer, Editor, Publisher, and public article tabs.`,
+      what: "Fix the shared coverage pipeline so tab collectors produce category-specific, source-supported, dossier-ready candidates before editor review.",
+      when: "Before the next article build or subsystem patch cycle creates more isolated tab proposals.",
+      where: "Source Normalization -> Event Clustering -> Sub Dossier -> Story Dossier readiness gate.",
+      why: "The common metrics originate before article writing, so the intervention belongs upstream of individual subsystem behavior.",
+      how: "Detect common coverage evidence, create one shared root-cause proposal, and verify improvement through tab dossier-ready counts, source diversity, first-pass approvals, and visible public articles."
+    });
+  }
+
+  const grouped = eligible.reduce((groups, entry) => {
+    groups[entry.failureLayer] = groups[entry.failureLayer] || [];
+    groups[entry.failureLayer].push(entry);
+    return groups;
+  }, {});
+  const repeated = Object.entries(grouped)
+    .filter(([layer, items]) => layer !== "Subsystem" && items.length >= 3)
+    .sort((a, b) => b[1].length - a[1].length)[0];
+  if (repeated) {
+    const [failureLayer, items] = repeated;
+    const affectedSubsystems = normalizeStringList(items.map(entry => entry.item.name || entry.item.key).filter(Boolean), 20);
+    return buildDiagnosticThinking({
+      failureLayer,
+      sharedOrIsolated: "shared",
+      affectedSubsystems,
+      probableRootCause: `Multiple subsystems are failing in the same ${failureLayer} layer, so the Brain should diagnose the shared pipeline stage before creating isolated subsystem patches.`,
+      confidence: 78,
+      expectedDownstreamEffect: `A single ${failureLayer} fix should reduce repeated failures across ${affectedSubsystems.length} subsystem(s).`,
+      highestLeverageReason: "Repeated same-layer failures are more likely a shared workflow weakness than several unrelated subsystem defects.",
+      who: `${affectedSubsystems.join(", ")} and downstream publication systems.`,
+      what: `Route one shared ${failureLayer} improvement proposal before isolated subsystem fixes.`,
+      when: "During the current subsystem capability cycle.",
+      where: `The common ${failureLayer} workflow layer.`,
+      why: "Subsystem-local patches would treat symptoms while leaving the repeated same-layer cause active.",
+      how: "Classify the repeated layer, create one shared proposal, and resume isolated proposals only if the shared fix does not improve the next cycle."
+    });
+  }
+  return null;
+}
+
+function proposeSharedPipelineCodeRevision(diagnosis = {}, reason = "shared-root-cause") {
+  const failureLayer = String(diagnosis.failureLayer || "Shared Pipeline").trim();
+  const affectedSubsystems = normalizeStringList(diagnosis.affectedSubsystems || [], 20);
+  const isDeployment = failureLayer === "Deployment";
+  const title = isDeployment
+    ? "Fix shared deployment hook failure before subsystem patch generation"
+    : failureLayer === "Shared Pipeline"
+      ? "Fix shared article coverage bottleneck before tab-specific patches"
+      : `Fix shared ${failureLayer} root cause before isolated subsystem patches`;
+  const proposedFix = isDeployment
+    ? "Update the Production Intelligence/Subsystem Brain path so deployment hook HTTP 404 is classified as shared infrastructure failure, suppresses duplicate subsystem patch proposals, and verifies the deployment hook before marking subsystem work complete."
+    : "Update the Production Intelligence root-cause path so repeated same-layer subsystem gaps are routed to the shared pipeline stage first, especially Source Normalization, Event Clustering, Sub Dossier, and Story Dossier readiness before Writer/Editor work.";
+  return savePatchProposal({
+    source: "production-intelligence-root-cause",
+    title,
+    trigger: {
+      reason,
+      failureLayer,
+      sharedOrIsolated: "shared",
+      affectedSubsystems,
+      evidence: diagnosis.probableRootCause || diagnosis.why || ""
+    },
+    rootCause: diagnosis.probableRootCause || "Repeated subsystem gaps point to a shared root cause.",
+    proposedFix,
+    laymanDescription: `The Brain detected that ${affectedSubsystems.length || "multiple"} subsystem gaps share the same ${failureLayer} failure layer. It should fix the shared cause before creating more isolated subsystem patches.`,
+    affectedFiles: ["server.js"],
+    patchType: "shared-root-cause-code-revision",
+    dedupeKey: `shared-root-cause:${failureLayer}:${affectedSubsystems.sort().join("|") || "framework"}`,
+    patchPlan: [
+      "Classify the failure layer before proposing subsystem code changes.",
+      "Determine whether the failure is shared or isolated.",
+      "If shared, suppress duplicate subsystem proposals and create one higher-leverage Production Intelligence proposal.",
+      "Record who/what/when/where/why/how so the Brain learns how to diagnose similar failures.",
+      "Verify the next subsystem cycle produces fewer duplicate symptom-level proposals."
+    ],
+    proposedPatch: "Owner approval required. After approval, the Brain should apply a bounded root-cause routing change instead of repeating subsystem-local patches.",
+    verificationPlan: [
+      "Run node --check server.js.",
+      "Run /api/subsystems/run and confirm repeated same-layer gaps produce one shared-root-cause proposal.",
+      "Confirm deployment-hook HTTP 404 creates one Deployment/Infrastructure proposal instead of multiple tab proposals.",
+      "Confirm framework proof log records the shared-vs-isolated diagnosis and expected downstream effect."
+    ],
+    rollbackPlan: "Revert only the Production Intelligence root-cause routing change if subsystem proposal generation stops reporting genuine isolated issues.",
+    expectedOutcome: diagnosis.expectedDownstreamEffect || "Duplicate subsystem proposals decrease while shared root causes are fixed earlier.",
+    failureLayer,
+    sharedOrIsolated: "shared",
+    affectedSubsystems,
+    rootCauseAnalysis: diagnosis,
+    diagnosticThinking: diagnosis,
+    expectedDownstreamEffect: diagnosis.expectedDownstreamEffect,
+    highestLeverageReason: diagnosis.highestLeverageReason,
+    resultMetric: {
+      failureLayer,
+      shared: true,
+      affectedSubsystemCount: affectedSubsystems.length,
+      confidence: diagnosis.confidence || 0
+    },
+    tags: ["production-intelligence", "root-cause", "shared-pipeline", "patch-proposal", failureLayer.toLowerCase().replace(/[^a-z0-9]+/g, "-")].filter(Boolean)
+  });
+}
+
 function proposeSubsystemCodeRevision(item = {}, reason = "subsystem-capability-gap") {
+  const failureLayer = classifySubsystemGapFailureLayer(item);
+  const diagnosticThinking = buildDiagnosticThinking({
+    failureLayer,
+    sharedOrIsolated: "isolated",
+    affectedSubsystems: [item.name || item.key || "Unknown subsystem"],
+    probableRootCause: `${item.name} subsystem readiness is ${item.readiness}. Evidence: ${(item.evidence || []).join("; ")}. Missing capabilities: ${(item.missingCapabilities || []).join(", ") || "none explicitly detected"}.`,
+    confidence: Number(item.readiness || 0) < 35 ? 72 : 62,
+    expectedDownstreamEffect: `${item.name} readiness should improve without changing unrelated subsystem behavior.`,
+    highestLeverageReason: "The evidence does not currently show three or more similar same-layer subsystem failures, so a bounded isolated patch is safer.",
+    who: `${item.name} and downstream systems that depend on its output.`,
+    what: `Revise only the ${item.name} code path tied to ${failureLayer}.`,
+    when: "After owner approval and syntax/endpoint verification.",
+    where: (item.codeSurface || ["server.js"]).join(", "),
+    why: `${item.name} is below readiness expectations and no shared upstream cause was strong enough to suppress isolated patching.`,
+    how: "Use a bounded subsystem patch, verify readiness, and store the lesson so future cycles can avoid the same isolated failure type."
+  });
   return savePatchProposal({
     source: "subsystem-brain-manager",
     title: `Revise ${item.name} subsystem behavior`,
@@ -11273,7 +11527,7 @@ function proposeSubsystemCodeRevision(item = {}, reason = "subsystem-capability-
       readiness: item.readiness,
       missingCapabilities: item.missingCapabilities || []
     },
-    rootCause: `${item.name} subsystem readiness is ${item.readiness}. Evidence: ${(item.evidence || []).join("; ")}. Missing capabilities: ${(item.missingCapabilities || []).join(", ") || "none explicitly detected"}.`,
+    rootCause: `${diagnosticThinking.probableRootCause} Failure Layer: ${failureLayer}. Shared or isolated: isolated.`,
     proposedFix: `Update the subsystem code path so ${item.name} can better perform: ${(item.requiredCapabilities || []).join(", ")}.`,
     laymanDescription: `The Brain believes the ${item.name} subsystem needs a code-level revision before it can fully handle its assigned responsibility. This proposal asks for owner approval before any code changes are applied.`,
     affectedFiles: item.codeSurface || ["server.js"],
@@ -11295,6 +11549,13 @@ function proposeSubsystemCodeRevision(item = {}, reason = "subsystem-capability-
     ],
     rollbackPlan: `Revert only the ${item.name} subsystem change if readiness, endpoint behavior, or public site behavior regresses.`,
     expectedOutcome: `${item.name} readiness improves and the Brain has clearer evidence for future subsystem tasking.`,
+    failureLayer,
+    sharedOrIsolated: "isolated",
+    affectedSubsystems: [item.name || item.key].filter(Boolean),
+    diagnosticThinking,
+    rootCauseAnalysis: diagnosticThinking,
+    expectedDownstreamEffect: diagnosticThinking.expectedDownstreamEffect,
+    highestLeverageReason: diagnosticThinking.highestLeverageReason,
     resultMetric: {
       readiness: item.readiness,
       missingCapabilityCount: (item.missingCapabilities || []).length,
@@ -11321,19 +11582,26 @@ async function runSubsystemBrainCycle(input = {}) {
     analysis
   });
   const proposals = [];
+  const eligibleGaps = (analysis.gaps || [])
+    .filter(item => !(item.teachingNeeded && Number(item.readiness || 0) >= 45 && !item.missingCapabilities?.length));
+  const sharedRootCause = sharedRootCauseDiagnosisForSubsystemGaps(eligibleGaps);
   if (input.proposePatches !== false) {
-    analysis.gaps
-      .filter(item => !(item.teachingNeeded && Number(item.readiness || 0) >= 45 && !item.missingCapabilities?.length))
-      .slice(0, 3)
-      .forEach(item => {
-      proposals.push(proposeSubsystemCodeRevision(item, input.reason || "subsystem-cycle"));
-    });
+    if (sharedRootCause?.sharedOrIsolated === "shared") {
+      proposals.push(proposeSharedPipelineCodeRevision(sharedRootCause, input.reason || "subsystem-cycle"));
+    } else {
+      eligibleGaps
+        .slice(0, 3)
+        .forEach(item => {
+          proposals.push(proposeSubsystemCodeRevision(item, input.reason || "subsystem-cycle"));
+        });
+    }
   }
   saveLearningMemory(memory);
   return {
     analysis,
     record,
     proposals,
+    sharedRootCause,
     improvementActions,
     teachingRecords: teachingResult.teachingRecords,
     redeployActions: teachingResult.redeployActions
@@ -11671,22 +11939,31 @@ async function executeMetaExecutionAction(candidate = {}, context = {}) {
       diagnostics: context.diagnostics || null,
       analysis
     });
-    const proposals = analysis.gaps.slice(0, 3).map(item => proposeSubsystemCodeRevision(item, "meta-execution-subsystem-capability-cycle"));
+    const eligibleGaps = (analysis.gaps || [])
+      .filter(item => !(item.teachingNeeded && Number(item.readiness || 0) >= 45 && !item.missingCapabilities?.length));
+    const sharedRootCause = sharedRootCauseDiagnosisForSubsystemGaps(eligibleGaps);
+    const proposals = sharedRootCause?.sharedOrIsolated === "shared"
+      ? [proposeSharedPipelineCodeRevision(sharedRootCause, "meta-execution-subsystem-capability-cycle")]
+      : eligibleGaps.slice(0, 3).map(item => proposeSubsystemCodeRevision(item, "meta-execution-subsystem-capability-cycle"));
     const afterMetric = {
       subsystemCycleCount: (memory.subsystemCycles || []).length,
       patchProposalCount: readPatchProposals(1000).length,
       gapCount: record.gapCount,
       proposalCount: proposals.length,
-      averageReadiness: record.resultMetric.averageReadiness
+      averageReadiness: record.resultMetric.averageReadiness,
+      sharedRootCauseDetected: Boolean(sharedRootCause?.sharedOrIsolated === "shared"),
+      sharedFailureLayer: sharedRootCause?.failureLayer || ""
     };
     return saveFrameworkActionLogEntry({
       ...base,
       status: proposals.length ? "subsystem-cycle-saved-with-patch-proposals" : "subsystem-cycle-saved",
       verified: afterMetric.subsystemCycleCount > beforeMetric.subsystemCycleCount,
-      message: `Meta Execution ran Brain subsystem management, found ${record.gapCount} gap(s), and created ${proposals.length} subsystem patch proposal(s).`,
+      message: sharedRootCause?.sharedOrIsolated === "shared"
+        ? `Meta Execution ran Brain subsystem management, found ${record.gapCount} gap(s), and created one shared ${sharedRootCause.failureLayer} root-cause proposal instead of duplicate subsystem patches.`
+        : `Meta Execution ran Brain subsystem management, found ${record.gapCount} gap(s), and created ${proposals.length} subsystem patch proposal(s).`,
       beforeMetric,
       afterMetric,
-      details: { record, proposals: proposals.map(proposal => ({ id: proposal.id, title: proposal.title, status: proposal.status })) },
+      details: { record, sharedRootCause, proposals: proposals.map(proposal => ({ id: proposal.id, title: proposal.title, status: proposal.status })) },
       durationMs: Date.now() - started
     });
   }
@@ -14822,14 +15099,17 @@ function newsLabImageEditorFindings(record = {}, lane = "news-lab") {
   if (image.license === "Pixabay" && !/Image by .+ via Pixabay/i.test(image.credit || "")) {
     findings.push(editorFinding("image-missing-credit", lane, "image.credit", imageText, "Show creator credit for the selected Pixabay image.", "high"));
   }
+  if (image.license === "Unsplash" && !/Photo by .+ on Unsplash/i.test(image.credit || "")) {
+    findings.push(editorFinding("image-missing-credit", lane, "image.credit", imageText, "Show photographer and Unsplash credit for the selected Unsplash image.", "high"));
+  }
   const storyTerms = typeof newsLabImageArticleTerms === "function" ? newsLabImageArticleTerms(record) : [];
   const imageHaystack = `${image.alt || ""} ${image.query || ""} ${(image.relevance?.matchedTerms || []).join(" ")}`.toLowerCase();
   const matchedTermCount = storyTerms.filter(term => imageHaystack.includes(term)).length;
   const relevanceScore = Number(image.relevance?.score || 0);
-  if ((image.license === "Pexels" || image.license === "Pixabay") && relevanceScore > 0 && relevanceScore < 4) {
+  if ((image.license === "Pexels" || image.license === "Pixabay" || image.license === "Unsplash") && relevanceScore > 0 && relevanceScore < 4) {
     findings.push(editorFinding("image-low-relevance", lane, "image.relevance", imageText, "Reject low-scoring licensed image matches and try a more specific query.", "medium"));
   }
-  if ((image.license === "Pexels" || image.license === "Pixabay") && storyTerms.length >= 4 && matchedTermCount === 0 && !newsLabCategoryImageMatches(record, image)) {
+  if ((image.license === "Pexels" || image.license === "Pixabay" || image.license === "Unsplash") && storyTerms.length >= 4 && matchedTermCount === 0 && !newsLabCategoryImageMatches(record, image)) {
     findings.push(editorFinding("image-topic-mismatch", lane, "image.alt", imageText, "Choose an image whose alt text/query matches the story category or concrete story terms.", "medium"));
   }
   return findings;
@@ -23753,7 +24033,7 @@ function newsLabAcquireReplacementImageForRepair(story = {}, beforeIssues = []) 
   const normalized = newsLabNormalizeStoryImage(story, null);
   const sourceText = `${normalized?.source || ""} ${normalized?.license || ""} ${normalized?.provenance?.source || ""}`;
   const imageText = `${normalized?.primary || ""} ${normalized?.fallback || ""} ${normalized?.alt || ""} ${normalized?.query || ""}`;
-  const approvedProvider = /Pexels|Pixabay|CE-generated|Pexels local asset/i.test(sourceText);
+  const approvedProvider = /Pexels|Pixabay|Unsplash|CE-generated|Pexels local asset/i.test(sourceText);
   const fallbackLike = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|placeholder/i.test(`${sourceText} ${imageText}`);
   const imageFindings = technicalEditorFindings({ ...story, image: normalized }, "news-lab").filter(finding => /image/i.test(finding.code || finding.message || ""));
   const accepted = approvedProvider && !fallbackLike && imageFindings.length === 0;
@@ -23764,7 +24044,7 @@ function newsLabAcquireReplacementImageForRepair(story = {}, beforeIssues = []) 
     query: normalized?.query || newsLabImageForStory(story)?.query || story.title || "news reporting",
     reason: beforeIssues.filter(issue => /image/i.test(issue)).join(", ") || "image-repair-required",
     status: accepted ? "replacement-image-attached" : "needs-provider-or-generated-image",
-    providers: [pexelsApiKey ? "Pexels" : "Pexels key missing", pixabayApiKey ? "Pixabay" : "Pixabay key missing", "CE-generated image brief"],
+    providers: [pexelsApiKey ? "Pexels" : "Pexels key missing", unsplashAccessKey ? "Unsplash" : "Unsplash key missing", pixabayApiKey ? "Pixabay" : "Pixabay key missing", "CE-generated image brief"],
     guard: "Replacement image must match story topic and carry approved provenance before it clears image validation."
   };
   return {
@@ -31480,9 +31760,9 @@ function startNewsLabImageWorkerProcess(reason = "scheduled-image-improvement") 
     stdio: ["ignore", "ignore", "ignore", "ipc"]
   });
   runtimeState.newsLabImageWorkerProcess = child;
-  writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "worker-started", lastReason: reason, workerPid: child.pid || 0, startedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
+  writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "worker-started", lastReason: reason, workerPid: child.pid || 0, startedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasUnsplashKey: Boolean(unsplashAccessKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
   child.on("exit", (code, signal) => {
-    writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "worker-exited", lastReason: reason, workerPid: child.pid || 0, exitCode: code === null || code === undefined ? "" : String(code), exitSignal: signal || "", finishedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
+    writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "worker-exited", lastReason: reason, workerPid: child.pid || 0, exitCode: code === null || code === undefined ? "" : String(code), exitSignal: signal || "", finishedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasUnsplashKey: Boolean(unsplashAccessKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
   });
   return true;
 }
@@ -33312,6 +33592,104 @@ function pixabayPhotoScore(photo = {}, query = "", story = {}, usedPhotoIds = ne
   return queryScore + storyScore + exactPhraseBonus + (photo?.largeImageURL ? 1 : 0) - duplicatePenalty;
 }
 
+function unsplashPhotoScore(photo = {}, query = "", story = {}, usedPhotoIds = new Set()) {
+  const haystack = [
+    photo.alt_description,
+    photo.description,
+    photo.user?.name,
+    photo.user?.username,
+    ...(Array.isArray(photo.tags) ? photo.tags.map(tag => tag.title || tag.source?.title || "") : [])
+  ].filter(Boolean).join(" ").toLowerCase();
+  const storyCategory = newsLabCategory(story);
+  const photoId = String(photo.id || photo.links?.html || photo.urls?.regular || "");
+  if (/(wedding|bride|groom|cake|recipe|fashion model|makeup|bedroom|bathroom|spa|romantic|dating)/.test(haystack)
+    && /court|legal|police|crime|politic|war|military|government|newsroom|diplomacy|shooting|crash/.test(`${query} ${story.title || ""}`.toLowerCase())) {
+    return -20;
+  }
+  if (storyCategory === "sports" && !/(sport|stadium|field|court|ball|player|team|match|game|golf|tennis|soccer|baseball|basketball|football|athlete)/.test(haystack)) return -8;
+  if (storyCategory === "local" && /landscape|mountain|forest|beach|wedding|food/.test(haystack) && /police|crime|crash|store|city|weather/.test(`${query} ${story.title || ""}`.toLowerCase())) return -8;
+  const queryWords = query
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(word => word.length >= 4);
+  const storyWords = [...new Set([...newsLabImageArticleTerms(story), ...newsLabTerms(story)])].slice(0, 18);
+  const queryScore = queryWords.reduce((score, word) => score + (haystack.includes(word) ? 2 : 0), 0);
+  const storyScore = storyWords.reduce((score, word) => score + (haystack.includes(word) ? 2 : 0), 0);
+  const exactPhraseBonus = query && haystack.includes(query.toLowerCase()) ? 4 : 0;
+  const duplicatePenalty = usedPhotoIds.has(`unsplash:${photoId}`) ? 12 : 0;
+  return queryScore + storyScore + exactPhraseBonus + (photo?.urls?.regular ? 1 : 0) - duplicatePenalty;
+}
+
+async function unsplashImageForStory(story = {}, image = {}, usedPhotoIds = new Set()) {
+  if ((isNewsLabWorkerOnce && newsLabWorkerOnceDisableLiveImages) || !unsplashAccessKey || !newsLabLiveImageSearch) return image;
+  const queries = [...newsLabImageQueryTerms(story), image.query || ""].filter(Boolean);
+  for (const query of queries) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4500);
+    try {
+      const response = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=landscape&content_filter=high&per_page=15`, {
+        headers: {
+          Authorization: `Client-ID ${unsplashAccessKey}`,
+          "Accept-Version": "v1"
+        },
+        signal: controller.signal
+      });
+      if (!response.ok) continue;
+      const payload = await response.json();
+      const photos = (payload?.results || []).filter(photo => photo?.urls?.regular);
+      if (!photos.length) continue;
+      const ranked = photos
+        .map(photo => ({ photo, score: unsplashPhotoScore(photo, query, story, usedPhotoIds) }))
+        .filter(item => item.score >= 4)
+        .sort((a, b) => b.score - a.score);
+      const photo = ranked[0]?.photo;
+      if (!photo) continue;
+      const photoId = String(photo.id || photo.links?.html || photo.urls?.regular || "");
+      if (photoId) usedPhotoIds.add(`unsplash:${photoId}`);
+      const retrievedAt = new Date().toISOString();
+      const photographer = photo.user?.name || photo.user?.username || "Unsplash contributor";
+      const sourceUrl = photo.links?.html || "";
+      return {
+        primary: photo.urls.regular,
+        fallback: image.fallback || "/assets/newsroom-hero.png",
+        alt: photo.alt_description || photo.description || image.alt || query,
+        credit: `Photo by ${photographer} on Unsplash`,
+        creditUrl: photo.user?.links?.html || sourceUrl,
+        query,
+        source: "Unsplash",
+        photographer,
+        license: "Unsplash",
+        retrievedAt,
+        originalQuery: query,
+        sourceUrl,
+        photoId,
+        provenance: newsLabImageProvenance({
+          source: "Unsplash",
+          photographer,
+          license: "Unsplash",
+          retrievedAt,
+          originalQuery: query,
+          sourceUrl,
+          photoId,
+          auditNote: "Selected by News Lab image subsystem from Unsplash API using story-specific query terms. Unsplash API images must retain photographer and Unsplash attribution and use returned CDN image URLs."
+        }),
+        relevance: {
+          query,
+          score: ranked[0].score,
+          matchedTerms: newsLabImageArticleTerms(story).filter(term => `${photo.alt_description || ""} ${photo.description || ""} ${(photo.tags || []).map(tag => tag.title || "").join(" ")}`.toLowerCase().includes(term)).slice(0, 8),
+          reason: "Selected from story-specific Unsplash search terms and de-duplicated against this page."
+        }
+      };
+    } catch {
+      // Try the next, more general query.
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+  return image;
+}
+
 async function pixabayImageForStory(story = {}, image = {}, usedPhotoIds = new Set()) {
   if ((isNewsLabWorkerOnce && newsLabWorkerOnceDisableLiveImages) || !pixabayApiKey || !newsLabLiveImageSearch) return image;
   const queries = [...newsLabImageQueryTerms(story), image.query || ""].filter(Boolean);
@@ -33438,6 +33816,8 @@ async function pexelsImageForStory(story = {}, image = {}, usedPhotoIds = new Se
       }
     }
   }
+  const unsplashCandidate = await unsplashImageForStory(story, image, usedPhotoIds);
+  if (newsLabImageIdentity(unsplashCandidate) !== newsLabImageIdentity(image)) return unsplashCandidate;
   return pixabayImageForStory(story, image, usedPhotoIds);
 }
 
@@ -33471,7 +33851,7 @@ function newsLabImageSafety(image = {}) {
   const license = String(image.license || image.provenance?.license || "");
   const source = String(image.source || image.provenance?.source || "");
   const imagePath = String(image.primary || image.url || image.provenance?.sourceUrl || "");
-  const safeLicensed = /^(pexels|pixabay)$/i.test(license) && /pexels|pixabay/i.test(source);
+  const safeLicensed = /^(pexels|pixabay|unsplash)$/i.test(license) && /pexels|pixabay|unsplash/i.test(source);
   const safeLocalPexels = /^Pexels$/i.test(license) && /Pexels local asset/i.test(source);
   const safeCeGenerated = /^CE-generated$/i.test(license)
     && /CE generated editorial image/i.test(source)
@@ -33802,7 +34182,7 @@ function newsLabImageWorkerLearningRecord(audit = {}) {
       ...imageIntelligence,
       updatedAt: new Date().toISOString(),
       principle: "Use licensed visual candidates as a behind-the-scenes promotion step, not as a blocker for article publication.",
-      activeRule: "Compare Pexels and Pixabay first. Use NewsData/source images only when rights-review is explicitly enabled. Queue CE-generated image briefs from Story Dossier facts when stock images are too generic. Promote only images with provenance, credit, relevance, duplicate checks, and generated-asset review.",
+      activeRule: "Compare Pexels, Unsplash, and Pixabay first. Use NewsData/source images only when rights-review is explicitly enabled. Queue CE-generated image briefs from Story Dossier facts when stock images are too generic. Promote only images with provenance, credit, relevance, duplicate checks, and generated-asset review.",
       lastPass: {
         reviewed: audit.summary?.reviewed || 0,
         upgraded: audit.summary?.upgraded || 0,
@@ -33831,6 +34211,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     sourceImageCandidates: 0,
     liveSearchCandidates: 0,
     pexelsMatches: 0,
+    unsplashMatches: 0,
     pixabayMatches: 0,
     placeholderImages: 0,
     fallbacks: 0
@@ -33863,6 +34244,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       const liveSourceText = `${liveCandidate.source || ""} ${liveCandidate.license || ""}`;
       imageDiagnostics.liveSearchCandidates += 1;
       if (/pexels/i.test(liveSourceText)) imageDiagnostics.pexelsMatches += 1;
+      if (/unsplash/i.test(liveSourceText)) imageDiagnostics.unsplashMatches += 1;
       if (/pixabay/i.test(liveSourceText)) imageDiagnostics.pixabayMatches += 1;
       candidates.push({ image: liveCandidate, source: liveCandidate.source || "live-image-search" });
     }
@@ -33883,7 +34265,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     const publishedImageNeedsRepair = Boolean(story.imagePublicationStatus?.needsRepair || !newsLabPublicImageReady(story) || currentBlockingFindings.length);
     if (currentIsPlaceholder) imageDiagnostics.placeholderImages += 1;
     if (currentIsPlaceholder || beforeScore < 24 || publishedImageNeedsRepair) imageDiagnostics.storiesNeedingImages += 1;
-    const bestIsLiveLicensed = /^(Pexels|Pixabay)$/i.test(best?.image?.license || "") && /Pexels|Pixabay/i.test(best?.image?.source || "");
+    const bestIsLiveLicensed = /^(Pexels|Pixabay|Unsplash)$/i.test(best?.image?.license || "") && /Pexels|Pixabay|Unsplash/i.test(best?.image?.source || "");
     const promoteThreshold = publishedImageNeedsRepair && bestIsLiveLicensed ? Math.max(16, Math.min(24, beforeScore + 2)) : currentIsPlaceholder && bestIsLiveLicensed ? 18 : Math.max(28, beforeScore + 4);
     const shouldPromote = Boolean(best && bestIdentity && bestIdentity !== currentIdentity && best.score >= promoteThreshold && !blockingFindings.length);
     if (shouldPromote) {
@@ -33969,13 +34351,14 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     startedAt,
     finishedAt: new Date().toISOString(),
     policy: {
-      copyright: "Pexels and Pixabay are preferred. NewsData/source images remain disabled unless CE_NEWS_LAB_ALLOW_SOURCE_IMAGES=true confirms separate rights review.",
+      copyright: "Pexels, Unsplash, and Pixabay are preferred licensed/search-provider lanes. Unsplash API images must keep photographer/Unsplash attribution and returned image URLs. NewsData/source images remain disabled unless CE_NEWS_LAB_ALLOW_SOURCE_IMAGES=true confirms separate rights review.",
       generatedImages: "CE-generated image briefs may be queued from article descriptions, but generated assets are not public until reviewed and stored with provenance.",
       articleSafety: "Articles remain published during image review; image improvements are field-only updates."
     },
     config: {
       liveImageSearch: newsLabLiveImageSearch,
       hasPexelsKey: Boolean(pexelsApiKey),
+      hasUnsplashKey: Boolean(unsplashAccessKey),
       hasPixabayKey: Boolean(pixabayApiKey),
       allowSourceImages: /^true$/i.test(String(process.env.CE_NEWS_LAB_ALLOW_SOURCE_IMAGES || "")),
       lookupTimeoutMs: Math.max(800, Number(process.env.CE_NEWS_LAB_IMAGE_LOOKUP_MS || 2200)),
@@ -49298,17 +49681,17 @@ if (isSiteScheduledContentWorkerProcess) {
     }
   }, 60000);
 } else if (isNewsLabImageWorkerProcess) {
-  console.log(`[image-worker] config liveImages=${newsLabLiveImageSearch} hasPexelsKey=${Boolean(pexelsApiKey)} hasPixabayKey=${Boolean(pixabayApiKey)} hasLocalPexelsAssets=${publicAssetExists("/assets/pexels/newsroom-general.jpg")}`);
+  console.log(`[image-worker] config liveImages=${newsLabLiveImageSearch} hasPexelsKey=${Boolean(pexelsApiKey)} hasUnsplashKey=${Boolean(unsplashAccessKey)} hasPixabayKey=${Boolean(pixabayApiKey)} hasLocalPexelsAssets=${publicAssetExists("/assets/pexels/newsroom-general.jpg")}`);
   ensureDataFiles();
   const reason = process.env.CE_NEWS_LAB_IMAGE_WORKER_REASON || "manual-one-shot-image-improvement";
-  writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "running", lastReason: reason, startedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
+  writeJsonFile(newsLabImageWorkerStatusFile, { active: true, lastStatus: "running", lastReason: reason, startedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasUnsplashKey: Boolean(unsplashAccessKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
   runNewsLabImageImprovementPass(reason)
     .then(audit => {
       console.log(JSON.stringify({ status: "completed", summary: audit.summary }, null, 2));
       process.exit(0);
     })
     .catch(error => {
-      writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "failed", lastReason: reason, lastError: error.message || String(error), finishedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
+      writeJsonFile(newsLabImageWorkerStatusFile, { active: false, lastStatus: "failed", lastReason: reason, lastError: error.message || String(error), finishedAt: new Date().toISOString(), config: { liveImageSearch: newsLabLiveImageSearch, hasPexelsKey: Boolean(pexelsApiKey), hasUnsplashKey: Boolean(unsplashAccessKey), hasPixabayKey: Boolean(pixabayApiKey), hasLocalPexelsAssets: publicAssetExists("/assets/pexels/newsroom-general.jpg") } });
       console.error(error.stack || error.message || String(error));
       process.exit(1);
     });
