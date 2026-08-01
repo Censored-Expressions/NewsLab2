@@ -1304,6 +1304,68 @@ h3 {
 .owner-maturity-card[data-status="strong"] {
   border-color: rgba(60, 200, 120, 0.48);
 }
+
+.owner-production-panel {
+  overflow: hidden;
+}
+
+.owner-production-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: stretch;
+}
+
+.owner-production-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #080808;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.owner-production-card span,
+.owner-production-card strong,
+.owner-production-card p {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.owner-production-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.owner-production-card strong {
+  display: block;
+  margin-top: 7px;
+  color: white;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.1;
+}
+
+.owner-production-card p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.owner-production-card--rejection span,
+.owner-production-card--route span {
+  color: #f2f2f2;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.owner-production-card--rejection {
+  border-color: rgba(215, 25, 32, 0.32);
+}
 .owner-subsystem-tabs {
   display: flex;
   flex-wrap: wrap;

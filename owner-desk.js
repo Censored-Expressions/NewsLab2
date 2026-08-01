@@ -408,6 +408,16 @@ function renderProductionIntelligence(payload = {}) {
   const topRejections = Array.isArray(editorial.topRejectionReasons) ? editorial.topRejectionReasons : (Array.isArray(funnel.topRejectionReasons) ? funnel.topRejectionReasons : []);
   const firstPassRate = Math.round(Number(current.firstPassPublicationRate || 0) * 100);
   const finalRate = Math.round(Number(current.finalApprovalRate || 0) * 100);
+  const compactCode = value => {
+    const raw = String(value || "REJECTION");
+    const words = raw
+      .replace(/^([A-Z]+_){1,2}/, "")
+      .replace(/_/g, " ")
+      .toLowerCase()
+      .replace(/\b\w/g, letter => letter.toUpperCase())
+      .trim();
+    return words.length > 34 ? `${words.slice(0, 31).trim()}...` : words || "Rejection";
+  };
   ownerProductionRate.textContent = `${firstPassRate}%`;
   ownerProductionSummary.innerHTML = `
     <p>${escapeHtml(payload.primaryGoal || "Increase First-Pass Publication Rate.")}</p>
@@ -429,28 +439,28 @@ function renderProductionIntelligence(payload = {}) {
     ["Stop Point", escapeHtml(lifecycleStop.stage || "unknown"), escapeHtml(lifecycleStop.reason || "waiting for trace")]
   ];
   const routeHtml = routing.slice(0, 4).map(item => `
-    <article>
-      <span>${escapeHtml(item.code || "REPAIR")}</span>
+    <article class="owner-production-card owner-production-card--route">
+      <span title="${escapeHtml(item.code || "REPAIR")}">${escapeHtml(compactCode(item.code || "REPAIR"))}</span>
       <strong>${escapeHtml(item.repairScope || "targeted")}</strong>
       <p>${escapeHtml(item.count ?? 0)} recent blockers</p>
     </article>
   `).join("");
   const funnelHtml = stageRows.slice(0, 8).map(item => `
-    <article>
+    <article class="owner-production-card owner-production-card--funnel">
       <span>${escapeHtml(item.stage || "Stage")}</span>
       <strong>${escapeHtml(item.count ?? 0)}</strong>
       <p>${escapeHtml(`${item.percentRemaining ?? 0}% remaining`)}</p>
     </article>
   `).join("");
   const rejectionHtml = topRejections.slice(0, 6).map(item => `
-    <article>
-      <span>${escapeHtml(item.failureCode || "REJECTION")}</span>
+    <article class="owner-production-card owner-production-card--rejection">
+      <span title="${escapeHtml(item.failureCode || "REJECTION")}">${escapeHtml(compactCode(item.failureCode || "REJECTION"))}</span>
       <strong>${escapeHtml(item.count ?? 0)}</strong>
       <p>top rejection reason</p>
     </article>
   `).join("");
   ownerProductionGrid.innerHTML = cards.map(([label, value, detail]) => `
-    <article>
+    <article class="owner-production-card owner-production-card--metric">
       <span>${escapeHtml(label)}</span>
       <strong>${value}</strong>
       <p>${detail}</p>
