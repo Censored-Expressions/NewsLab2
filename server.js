@@ -28530,6 +28530,8 @@ function newsLabBuildUsefulnessPreEditorIssues(story = {}) {
   const issues = new Set();
   if (story.canonicalStoryIdentity && story.canonicalStoryIdentity.ready === false) issues.add("canonical-story-identity-not-ready");
   if (story.writerReasoning && story.writerReasoning.readyForDraft === false) issues.add("writer-reasoning-not-ready");
+  if (story.writerReasoningPlan?.readiness && story.writerReasoningPlan.readiness.ready === false) issues.add("writer-reasoning-plan-not-ready");
+  if (story.writerReasoningVerification && story.writerReasoningVerification.passed === false) issues.add("writer-reasoning-plan-alignment-failed");
   const publicIssues = typeof newsLabPublicArticleIssues === "function" ? newsLabPublicArticleIssues(story) : [];
   publicIssues
     .filter(issue => /summary-repeats-body|headline-word-salad|headline-lead-topic-mismatch|headline-editor-needs-rewrite|generic-weak-headline|title-looks-truncated|headline-source-no-overlap|semantic-title-source-mismatch|publisher-headline-too-close|coach-copied-headline-risk|incomplete-sentence-detected|paragraph-topic-contamination|article-body-topic-drift|image-topic-mismatch|process-language|placeholder-guidance|copied-or-noisy|body-too-short|body-needs-intro-body-ending|missing-reporting-context/i.test(issue))
@@ -40768,6 +40770,202 @@ function newsLabWriterReasoningProof(story = {}, dossierInput = null, context = 
   };
 }
 
+function newsLabBuildWriterReasoningPlan(story = {}, dossierInput = null, context = {}) {
+  const dossier = dossierInput || story.storyDossier || {};
+  const identity = context.canonicalStoryIdentity || story.canonicalStoryIdentity || newsLabCanonicalStoryIdentity(story, dossier, context);
+  const readiness = context.dossierReadiness || story.evidenceSupportedArticleCapacity || dossier.dossierLock?.readiness || dossier.dossierBuilder?.readinessContract || {};
+  const articleFormat = readiness.articleFormat || story.articleFormat || "standard-article";
+  const promotedFacts = [
+    ...(story.writerDossierInput?.knownFacts || []),
+    ...(dossier.writerInput?.directWritingFacts || []),
+    ...(dossier.knownFacts || []),
+    ...(dossier.agreement?.sharedClaims || [])
+  ].map(newsLabCleanDossierFactSentence)
+    .filter(Boolean)
+    .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.78) === index)
+    .slice(0, articleFormat === "breaking-brief" ? 5 : articleFormat === "deep-article" ? 12 : 8);
+  const factRecords = promotedFacts.map((statement, index) => ({
+    factId: `fact_${index + 1}`,
+    statement,
+    sourceId: (dossier.sourcePool || story.sources || [])[index % Math.max(1, (dossier.sourcePool || story.sources || []).length)]?.url || "",
+    writingEligible: true
+  }));
+  const sourceRecords = [
+    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
+    ...(Array.isArray(story.sources) ? story.sources : [])
+  ].filter(Boolean);
+  const uncertainty = [
+    ...(story.writerDossierInput?.unknownFacts || []),
+    ...(dossier.unknownFacts || []),
+    ...(dossier.stillUnknown || [])
+  ].filter(Boolean).slice(0, 6);
+  const disputedFacts = [
+    ...(dossier.contradictions || []),
+    ...(dossier.disagreement?.sourceSpecificClaims || []).map(item => item.claim || "")
+  ].filter(Boolean).slice(0, 6);
+  const attributionPlan = factRecords.slice(0, Math.max(1, Math.min(4, sourceRecords.length || factRecords.length))).map((fact, index) => {
+    const source = sourceRecords[index % Math.max(1, sourceRecords.length)] || {};
+    return {
+      factId: fact.factId,
+      sourceId: source.url || source.source || source.title || `source_${index + 1}`,
+      attributionText: source.source || source.name || "available reporting",
+      required: index < 2 || /official|court|filing|agency|police|statement/i.test(`${source.source || ""} ${fact.statement}`)
+    };
+  });
+  const minimumFacts = articleFormat === "breaking-brief" ? 2 : articleFormat === "deep-article" ? 5 : 3;
+  const paragraphPlan = articleFormat === "breaking-brief"
+    ? [
+        { role: "lead", factsAllowed: ["fact_1"], purpose: "State the verified development and primary actor without analysis." },
+        { role: "evidence", factsAllowed: ["fact_2", "fact_3"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Add direct attribution and the clearest supporting detail." },
+        { role: "unknowns", factsAllowed: ["fact_1"], purpose: "Name what remains unknown or the next confirmed update." }
+      ]
+    : [
+        { role: "lead", factsAllowed: ["fact_1"], purpose: "State the verified development." },
+        { role: "evidence", factsAllowed: ["fact_2", "fact_3"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Show the evidence and attribution behind the lead." },
+        { role: "context", factsAllowed: ["fact_3", "fact_4"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Explain why the development matters without speculation." },
+        { role: "timeline", factsAllowed: ["fact_4", "fact_5"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Place the development in sequence when timeline facts exist." },
+        { role: "next-step", factsAllowed: ["fact_1"], purpose: "Close with the next confirmed step or unresolved fact." }
+      ].slice(0, articleFormat === "deep-article" ? 6 : 5);
+  const blockers = [];
+  if (!identity.ready) blockers.push(...(identity.readinessIssues || ["story-identity-not-ready"]));
+  if (!identity.primaryActor || /^officials$/i.test(identity.primaryActor)) blockers.push("missing-primary-actor");
+  if (!identity.action) blockers.push("missing-primary-action");
+  if (factRecords.length < minimumFacts) blockers.push(articleFormat === "breaking-brief" ? "needs-two-verified-facts-for-brief" : "needs-more-verified-facts");
+  if (!attributionPlan.length) blockers.push("missing-attribution-plan");
+  if (!paragraphPlan.length || paragraphPlan.some(paragraph => !paragraph.factsAllowed?.length)) blockers.push("missing-article-structure");
+  const readinessReady = blockers.length === 0;
+  return {
+    active: true,
+    version: "20260801-writer-reasoning-plan-v1",
+    generatedAt: new Date().toISOString(),
+    eventId: identity.eventId || dossier.eventId || dossier.storyId || story.eventId || "",
+    articleFormat,
+    primaryActor: identity.primaryActor || "",
+    primaryAction: identity.action || "",
+    verifiedConsequence: identity.consequence || "",
+    whatHappened: identity.primaryEvent || dossier.whatHappened || "",
+    verifiedFacts: factRecords,
+    uncertainFacts: uncertainty,
+    disputedFacts,
+    attributionPlan,
+    whyItMatters: [
+      newsLabTrimSentence(identity.consequence || dossier.historicalContext || story.contextEngine?.topicSummary || story.summary || "", 220)
+    ].filter(Boolean),
+    necessaryContext: [
+      dossier.historicalContext,
+      dossier.historicalContextEngine?.suggestedContextParagraph,
+      story.contextEngine?.topicSummary
+    ].filter(Boolean).slice(0, 4),
+    prohibitedInferences: [
+      ...uncertainty.map(item => `Do not state as confirmed: ${item}`),
+      ...disputedFacts.map(item => `Attribute or qualify disputed claim: ${item}`)
+    ].slice(0, 8),
+    paragraphPlan,
+    headlineInputs: {
+      actor: identity.primaryActor || "",
+      action: identity.action || "",
+      consequence: identity.consequence || ""
+    },
+    readiness: {
+      ready: readinessReady,
+      blockers: [...new Set(blockers)],
+      warnings: [
+        articleFormat === "breaking-brief" ? "brief-lane-use-confirmed-facts-only" : "",
+        disputedFacts.length ? "qualify-disputed-claims" : "",
+        uncertainty.length ? "include-unknowns-or-next-step" : ""
+      ].filter(Boolean)
+    },
+    rule: "Writer Reasoning is a pre-draft plan. The body must be built from promoted dossier facts assigned to paragraph roles, not from raw RSS/source fragments."
+  };
+}
+
+function newsLabWriteFromReasoningPlan({ dossier = {}, identity = {}, reasoningPlan = {}, representative = {}, supporting = [], facts = [] } = {}) {
+  if (!reasoningPlan?.readiness?.ready) return [];
+  const factMap = new Map((reasoningPlan.verifiedFacts || []).map(fact => [fact.factId, fact.statement]));
+  const sourceNames = [
+    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
+    ...(Array.isArray(representative.sources) ? representative.sources : [])
+  ].map(source => source.source || source.name || source.title || "").filter(Boolean);
+  const attributionName = reasoningPlan.attributionPlan?.find(item => item.attributionText)?.attributionText || sourceNames[0] || "available reporting";
+  const paragraphs = (reasoningPlan.paragraphPlan || []).map(plan => {
+    const allowedFacts = (plan.factsAllowed || []).map(id => factMap.get(id)).filter(Boolean);
+    const primaryFact = allowedFacts[0] || reasoningPlan.whatHappened || dossier.whatHappened || facts[0] || "";
+    if (plan.role === "lead") {
+      return newsLabWorkerRepairCompleteSentence(newsLabTrimSentence(primaryFact, 320), 360);
+    }
+    if (plan.role === "evidence") {
+      return newsLabWorkerRepairCompleteSentence(`${attributionName} identifies ${newsLabTrimSentence(primaryFact, 240).replace(/[.?!]$/, "")}${allowedFacts[1] ? `, while ${newsLabTrimSentence(allowedFacts[1], 220).replace(/[.?!]$/, "")}` : ""}.`, 520);
+    }
+    if (plan.role === "context") {
+      const context = reasoningPlan.necessaryContext?.[0] || reasoningPlan.whyItMatters?.[0] || allowedFacts[0] || "";
+      return context ? newsLabWorkerRepairCompleteSentence(newsLabTrimSentence(context, 360), 420) : "";
+    }
+    if (plan.role === "timeline") {
+      const timeline = (dossier.timeline || [])[0];
+      const line = timeline ? `${timeline.source || "The record"} places the development at ${timeline.at || "the latest reported point"}, tied to ${timeline.title || primaryFact}.` : primaryFact;
+      return newsLabWorkerRepairCompleteSentence(newsLabTrimSentence(line, 360), 420);
+    }
+    if (plan.role === "unknowns" || plan.role === "next-step") {
+      const unknown = reasoningPlan.uncertainFacts?.[0] || dossier.unknownFacts?.[0] || "Further reporting is expected to clarify the next confirmed step.";
+      return newsLabWorkerRepairCompleteSentence(newsLabTrimSentence(unknown, 300), 360);
+    }
+    return newsLabWorkerRepairCompleteSentence(newsLabTrimSentence(primaryFact, 320), 360);
+  }).filter(Boolean);
+  return newsLabDedupeArticleParagraphs(paragraphs, reasoningPlan.whatHappened || "").slice(0, reasoningPlan.articleFormat === "breaking-brief" ? 4 : 7);
+}
+
+function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) {
+  const body = Array.isArray(story.body) ? story.body : [];
+  const bodyText = body.join(" ");
+  const lead = body[0] || "";
+  const factStatements = (reasoningPlan.verifiedFacts || []).map(fact => fact.statement).filter(Boolean);
+  const usedFacts = factStatements.filter(fact => newsLabTextOverlap(bodyText, fact) >= 0.18);
+  const missingFacts = factStatements.filter(fact => !usedFacts.includes(fact)).slice(0, 5);
+  const prohibitedInferenceHits = (reasoningPlan.prohibitedInferences || [])
+    .filter(item => {
+      const target = String(item || "").replace(/^Do not state as confirmed:\s*/i, "").replace(/^Attribute or qualify disputed claim:\s*/i, "");
+      return target && newsLabTextOverlap(bodyText, target) >= 0.78 && !/\breported|according|said|stated|filing|records|official|source|alleged|appears|may\b/i.test(bodyText);
+    })
+    .slice(0, 5);
+  const paragraphAlignment = (reasoningPlan.paragraphPlan || []).map((plan, index) => {
+    const paragraph = body[index] || "";
+    const allowedFacts = (plan.factsAllowed || []).map(id => (reasoningPlan.verifiedFacts || []).find(fact => fact.factId === id)?.statement).filter(Boolean);
+    return {
+      role: plan.role,
+      paragraphIndex: index,
+      present: Boolean(paragraph),
+      aligned: Boolean(paragraph && (!allowedFacts.length || allowedFacts.some(fact => newsLabTextOverlap(paragraph, fact) >= 0.12))),
+      purpose: plan.purpose
+    };
+  });
+  const leadMatchesEvent = newsLabTextOverlap(lead, reasoningPlan.whatHappened || reasoningPlan.primaryActor || "") >= 0.08;
+  const attributionRequired = (reasoningPlan.attributionPlan || []).some(item => item.required);
+  const attributionPresent = !attributionRequired || /\breported|according|said|stated|filing|records|official|source|agency|court|police\b/i.test(bodyText);
+  const planCoverage = Number((usedFacts.length / Math.max(1, factStatements.length)).toFixed(2));
+  const alignmentRate = Number((paragraphAlignment.filter(row => row.aligned).length / Math.max(1, paragraphAlignment.length)).toFixed(2));
+  const passed = leadMatchesEvent && attributionPresent && planCoverage >= (reasoningPlan.articleFormat === "breaking-brief" ? 0.5 : 0.6) && alignmentRate >= 0.6 && !prohibitedInferenceHits.length;
+  return {
+    active: true,
+    verifiedAt: new Date().toISOString(),
+    passed,
+    planCoverage,
+    paragraphAlignmentRate: alignmentRate,
+    leadMatchesEvent,
+    attributionPresent,
+    unsupportedClaims: [],
+    missingFacts,
+    prohibitedInferenceHits,
+    paragraphAlignment,
+    targetedRepair: !passed ? newsLabTargetedRepairRouteFromIssues([
+      !leadMatchesEvent ? "weak-lead-plan-mismatch" : "",
+      !attributionPresent ? "missing-attribution-plan" : "",
+      planCoverage < 0.6 ? "plan-facts-not-used" : "",
+      prohibitedInferenceHits.length ? "prohibited-inference-detected" : ""
+    ].filter(Boolean)) : null,
+    rule: "After drafting, verify that the article followed the pre-draft reasoning plan before headline/editor review."
+  };
+}
+
 function newsLabTargetedRepairRouteFromIssues(issues = []) {
   const values = (Array.isArray(issues) ? issues : []).map(issue => String(issue || ""));
   if (values.some(issue => /story-identity|semantic-title-source|lead-topic|paragraph-topic|topic-drift|dossier-body/i.test(issue))) return { owner: "Story Dossier Builder", scope: "dossier-identity", action: "Rebuild one canonical event dossier, remove off-event fragments, then regenerate affected lead/body/headline sections." };
@@ -43416,6 +43614,59 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     dossierLock: storyDossier.dossierLock,
     readinessContract: dossierReadiness
   };
+  const canonicalStoryIdentity = newsLabCanonicalStoryIdentity({
+    ...representative,
+    storyDossier,
+    writerDossierInput,
+    sources
+  }, storyDossier, { representative, supporting, facts, cluster });
+  if (!canonicalStoryIdentity.ready) {
+    recordNewsLabDossierRecovery({
+      eventId: storyDossier.eventId || storyDossier.storyId || cluster.eventId || cluster.key || reportClusterKey(representative),
+      clusterId: cluster.key || cluster.eventId || storyDossier.storyId || reportClusterKey(representative),
+      title: representative.title || storyDossier.whatHappened || "",
+      category,
+      readinessClass: "NEEDS_IDENTITY_RESOLUTION",
+      blockingReasons: canonicalStoryIdentity.readinessIssues || ["canonical-story-identity-not-ready"],
+      missingEvidence: canonicalStoryIdentity.readinessIssues || ["canonical-story-identity-not-ready"],
+      acceptedSourceCount: sources.length,
+      rejectedSourceCount: Number(topicIsolation?.rejected?.length || 0),
+      factCount: facts.length,
+      acceptedSources: sources.map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
+      recommendedAction: "resolve-primary-actor-action-time-location",
+      nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      partialDossier: storyDossier,
+      preventionLesson: "Canonical story identity must be frozen before the Writer starts. Future drafts should resolve primary actor, action, time, and event ID before body generation."
+    });
+    return null;
+  }
+  const writerReasoningPlan = newsLabBuildWriterReasoningPlan({
+    ...representative,
+    storyDossier,
+    writerDossierInput,
+    sources,
+    canonicalStoryIdentity
+  }, storyDossier, { representative, supporting, facts, cluster, canonicalStoryIdentity, dossierReadiness });
+  if (!writerReasoningPlan.readiness.ready) {
+    recordNewsLabDossierRecovery({
+      eventId: storyDossier.eventId || storyDossier.storyId || cluster.eventId || cluster.key || reportClusterKey(representative),
+      clusterId: cluster.key || cluster.eventId || storyDossier.storyId || reportClusterKey(representative),
+      title: representative.title || storyDossier.whatHappened || "",
+      category,
+      readinessClass: "NEEDS_ENRICHMENT",
+      blockingReasons: writerReasoningPlan.readiness.blockers || ["writer-reasoning-plan-not-ready"],
+      missingEvidence: writerReasoningPlan.readiness.blockers || ["writer-reasoning-plan-not-ready"],
+      acceptedSourceCount: sources.length,
+      rejectedSourceCount: Number(topicIsolation?.rejected?.length || 0),
+      factCount: facts.length,
+      acceptedSources: sources.map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
+      recommendedAction: "extract-source-claims-and-promote-usable-facts",
+      nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      partialDossier: storyDossier,
+      preventionLesson: "Writer Reasoning must be a pre-draft plan with verified facts, attribution, paragraph purposes, and headline actor/action/consequence before any body prose is generated."
+    });
+    return null;
+  }
   const imageStoryContext = {
     ...representative,
     category,
@@ -43430,13 +43681,16 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     storyDossier,
     productionPlanner,
     writerDossierInput,
+    canonicalStoryIdentity,
+    writerReasoningPlan,
     writerDossierHandoff: cleanWriterHandoff.diagnostic,
     preDraftMemoryBrief,
     headlineMemoryBrief: newsLabAttachPreDraftMemory({ ...representative, storyDossier, evidenceEngine }, storyDossier, evidenceEngine).headlineMemoryBrief
   };
   const image = await boundedNewsLabImageForStory(imageStoryContext, newsLabImageForStory(imageStoryContext), usedPhotoIds);
 
-  let body = newsLabStraightBody({ representative, supporting, facts, dossier: storyDossier });
+  let body = newsLabWriteFromReasoningPlan({ representative, supporting, facts, dossier: storyDossier, identity: canonicalStoryIdentity, reasoningPlan: writerReasoningPlan });
+  if (!body.length) body = newsLabStraightBody({ representative, supporting, facts, dossier: storyDossier, canonicalStoryIdentity, writerReasoningPlan });
   body = newsLabConstrainBodyToDossierCapacity(body, dossierReadiness, storyDossier);
   if (!body.some(paragraph => /reported|official|source|statement|filing|agency|court|police|records/i.test(paragraph))) {
     body = newsLabDedupeArticleParagraphs([
@@ -43455,14 +43709,6 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     || (facts.length >= 1 && body.length >= 5 && bodyText.length >= 900));
   const articleCapacityTier = dossierReadiness.readinessTier || "HOLD_FOR_EVIDENCE";
   const articleFormat = dossierReadiness.articleFormat || (hasArticleDepth ? "standard-article" : "breaking-brief");
-  const canonicalStoryIdentity = newsLabCanonicalStoryIdentity({
-    ...representative,
-    storyDossier,
-    writerDossierInput,
-    body,
-    summary: body[0] || factLine,
-    sources
-  }, storyDossier, { representative, supporting, facts, cluster });
   const writerReasoning = newsLabWriterReasoningProof({
     ...representative,
     storyDossier,
@@ -43470,8 +43716,19 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     body,
     summary: body[0] || factLine,
     sources,
-    canonicalStoryIdentity
+    canonicalStoryIdentity,
+    writerReasoningPlan
   }, storyDossier, { representative, supporting, facts, cluster });
+  const writerReasoningVerification = newsLabVerifyDraftAgainstReasoningPlan({
+    ...representative,
+    storyDossier,
+    writerDossierInput,
+    body,
+    summary: body[0] || factLine,
+    sources,
+    canonicalStoryIdentity,
+    writerReasoningPlan
+  }, writerReasoningPlan);
   const eventSignature = cluster.eventSignature || newsLabEventSignature(allStories);
   const eventId = cluster.eventId || eventSignature.eventId || newsLabTopicKeyFromStories(allStories);
   const topicKey = eventId;
@@ -43490,6 +43747,8 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     productionPlanner,
     canonicalStoryIdentity,
     writerReasoning,
+    writerReasoningPlan,
+    writerReasoningVerification,
     preDraftMemoryBrief
   }, storyDossier, evidenceEngine, {
     writerLearning,
@@ -43586,6 +43845,8 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     writerDossierInput,
     canonicalStoryIdentity,
     writerReasoning,
+    writerReasoningPlan,
+    writerReasoningVerification,
     draftCoordinator: newsLabDraftCoordinator({
       title,
       summary: body[0] || factLine,
@@ -43595,6 +43856,8 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       writerDossierInput,
       canonicalStoryIdentity,
       writerReasoning,
+      writerReasoningPlan,
+      writerReasoningVerification,
       sources,
       image
     }, { representative, supporting, facts, cluster }),
@@ -44756,6 +45019,8 @@ async function buildNewsLabPayload(payload = {}) {
       const body = Array.isArray(story?.body) ? story.body : [];
       const bodyText = body.join(" ");
       const sourceCount = Array.isArray(story?.sources) ? story.sources.length : 0;
+      const writerReasoningPlanReady = Boolean(story?.writerReasoningPlan?.readiness?.ready);
+      const writerReasoningVerificationPassed = Boolean(story?.writerReasoningVerification?.passed);
       const lowValue = story ? newsLabLowValueSourceTopic(story) : false;
       const selectedForEditor = allOwnedStories.some(match =>
         (match.id && match.id === story?.id)
@@ -44767,6 +45032,8 @@ async function buildNewsLabPayload(payload = {}) {
       if (story && !title) dropReasons.push("missing-title");
       if (story && !sourceCount) dropReasons.push("missing-sources");
       if (story && bodyText.length < 420) dropReasons.push("body-too-short-for-editor-handoff");
+      if (story && story.writerReasoningPlan && !writerReasoningPlanReady) dropReasons.push("writer-reasoning-plan-not-ready");
+      if (story && story.writerReasoningVerification && !writerReasoningVerificationPassed) dropReasons.push("writer-reasoning-plan-alignment-failed");
       if (story && lowValue) dropReasons.push("low-value-source-topic");
       if (story && duplicate) dropReasons.push("duplicate-title-or-topic-key");
       if (story && !selectedForEditor && !dropReasons.length) dropReasons.push("not-selected-after-depth-or-backfill-ranking");
@@ -44778,6 +45045,8 @@ async function buildNewsLabPayload(payload = {}) {
         sourceCount,
         paragraphs: body.length,
         bodyLength: bodyText.length,
+        writerReasoningPlanReady,
+        writerReasoningVerificationPassed,
         hasArticleDepth: Boolean(story?.hasArticleDepth),
         lowValue,
         selectedForEditor,
@@ -44802,6 +45071,9 @@ async function buildNewsLabPayload(payload = {}) {
       generatedStoryCount: generatedStories.filter(Boolean).length,
       generatedWithSourceFallbackCount: generatedStoriesWithSourceFallback.length,
       sourceRecoveredCount: generatedStoriesWithSourceFallback.filter(story => story?.sourceRecovery?.applied).length,
+      writerReasoningPlansCreated: generatedStoriesWithSourceFallback.filter(story => story?.writerReasoningPlan).length,
+      writerReasoningPlansPassed: generatedStoriesWithSourceFallback.filter(story => story?.writerReasoningPlan?.readiness?.ready).length,
+      writerReasoningDraftVerificationsPassed: generatedStoriesWithSourceFallback.filter(story => story?.writerReasoningVerification?.passed).length,
       viableStoryCount: viableStories.length,
       fullDepthStoryCount: fullDepthStories.length,
       underfilledBackfillStoryCount: underfilledBackfillStories.length,
