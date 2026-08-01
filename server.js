@@ -18943,13 +18943,10 @@ function newsLabReportedStoryClusters(stories = []) {
   candidates.forEach(story => {
     const storyEventSignature = newsLabEventSignature([story]);
     let cluster = clusters.find(item =>
-      newsLabCategory(item.representative) === newsLabCategory(story)
-      && (
-        newsLabSameStory(item.representative, story)
-        || newsLabSameEventSignature(
-          { representative: item.representative, eventId: item.eventId, eventSignature: item.eventSignature },
-          { representative: story, eventId: storyEventSignature.eventId, eventSignature: storyEventSignature }
-        )
+      newsLabSameStory(item.representative, story)
+      || newsLabSameEventSignature(
+        { representative: item.representative, eventId: item.eventId, eventSignature: item.eventSignature },
+        { representative: story, eventId: storyEventSignature.eventId, eventSignature: storyEventSignature }
       )
     );
     if (!cluster) {
@@ -26833,7 +26830,7 @@ function newsLabPublicImageReady(story = {}) {
   const image = story.image || story.imageProvenance || {};
   const imageText = `${image.primary || ""} ${image.url || ""} ${image.src || ""} ${image.source || ""} ${image.license || ""} ${image.credit || ""} ${image.photographer || ""}`;
   const hasAsset = Boolean(image.primary || image.url || image.src || image.fallback);
-  const isApprovedSource = /pexels|pixabay|ce-generated|generated editorial image|local pexels/i.test(imageText);
+  const isApprovedSource = /pexels|pixabay|unsplash|ce-generated|generated editorial image|local pexels/i.test(imageText);
   const isFallback = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|temporary local image|ce fallback/i.test(imageText);
   const findings = newsLabImageEditorFindings({ ...story, image }, "news-lab").map(finding => finding.code || finding.message || "image-finding");
   const hasRequiredCredit = !findings.includes("image-missing-credit");
@@ -27262,6 +27259,8 @@ function newsLabStoryHasStrongSportsEvidence(value = "") {
 
 function newsLabCanonicalCategoryFromIdentity(story = {}) {
   const valid = value => newsLabSectionCategories.includes(String(value || "").toLowerCase()) ? String(value || "").toLowerCase() : "";
+  const semanticCategory = valid(story.categoryClassification?.semanticCategory);
+  const semanticConfidence = Number(story.categoryClassification?.confidence || 0);
   const identityText = [story.topicKey, story.eventId, story.storyId, story.id].filter(Boolean).join(" ").toLowerCase();
   const identityCategory = valid((identityText.match(/\b(world|politics|business|technology|sports|entertainment|local):(?:event|story|topic)\b/i) || [])[1]
     || (identityText.match(/news_lab_(world|politics|business|technology|sports|entertainment|local)[:_]/i) || [])[1]
@@ -27290,10 +27289,13 @@ function newsLabCanonicalCategoryFromIdentity(story = {}) {
   const guardedCollectorCategory = collectorCategory === "sports" && !sportsEvidenceStrong ? "" : collectorCategory;
   const guardedSourceCategory = sourceCategory === "sports" && !sportsEvidenceStrong ? "" : sourceCategory;
   const guardedExplicitCategory = explicitCategory === "sports" && !sportsEvidenceStrong ? "" : explicitCategory;
-  const category = guardedIdentityCategory || (story.collectorSubDossier?.role === "tab-writing-source" ? guardedCollectorCategory : "") || evidenceCategory || guardedSourceCategory || guardedExplicitCategory || "politics";
+  const guardedSemanticCategory = semanticCategory === "sports" && !sportsEvidenceStrong ? "" : semanticCategory;
+  const category = (semanticConfidence >= 0.72 ? guardedSemanticCategory : "") || guardedIdentityCategory || (story.collectorSubDossier?.role === "tab-writing-source" ? guardedCollectorCategory : "") || evidenceCategory || guardedSourceCategory || guardedExplicitCategory || "politics";
   const conflictingSignals = [...new Set([identityCategory, collectorCategory, evidenceCategory, sourceCategory, explicitCategory].filter(Boolean).filter(item => item !== category))];
   return {
     category,
+    semanticCategory,
+    semanticConfidence,
     identityCategory,
     collectorCategory,
     sourceCategory,
@@ -27305,6 +27307,117 @@ function newsLabCanonicalCategoryFromIdentity(story = {}) {
     rule: "Canonical category is decided before editor review from event/topic identity first, then tab-writing sub-dossier, then source/body evidence. Sports requires actual sports evidence; worker lane text alone cannot move a story into another public tab."
   };
 }
+
+function newsLabSemanticCategoryText(parts = {}) {
+  const dossier = parts.dossier || {};
+  const identity = parts.identity || {};
+  const representative = parts.representative || {};
+  const supporting = Array.isArray(parts.supporting) ? parts.supporting : [];
+  const cluster = parts.cluster || {};
+  return [
+    dossier.whatHappened,
+    dossier.whyItMatters,
+    dossier.historicalContext,
+    dossier.recommendedLeadAngle,
+    dossier.recommendedHeadlineDirection,
+    dossier.primaryEvent,
+    dossier.primaryNarrative,
+    ...(Array.isArray(dossier.knownFacts) ? dossier.knownFacts : []),
+    ...(Array.isArray(dossier.unknownFacts) ? dossier.unknownFacts : []),
+    ...(Array.isArray(dossier.timeline) ? dossier.timeline.flatMap(item => [item.title, item.summary, item.source]) : []),
+    ...(Array.isArray(dossier.people) ? dossier.people : []),
+    ...(Array.isArray(dossier.organizations) ? dossier.organizations : []),
+    ...(Array.isArray(dossier.locations) ? dossier.locations : []),
+    identity.primaryActor,
+    identity.primaryAction,
+    identity.primaryConsequence,
+    identity.primaryLocation,
+    identity.eventType,
+    representative.title,
+    representative.originalHeadline,
+    representative.summary,
+    representative.articleSummary,
+    representative.source,
+    ...(supporting || []).flatMap(story => [story.title, story.summary, story.articleSummary, story.source]),
+    ...(cluster.stories || []).slice(0, 8).flatMap(story => [story.title, story.summary, story.source])
+  ].filter(Boolean).join(" ");
+}
+
+function newsLabDossierSemanticCategoryClassification(options = {}) {
+  const valid = value => newsLabSectionCategories.includes(String(value || "").toLowerCase()) ? String(value || "").toLowerCase() : "";
+  const representative = options.representative || {};
+  const dossier = options.dossier || {};
+  const identity = options.identity || {};
+  const cluster = options.cluster || {};
+  const sourceCategoryHint = valid(newsLabCategory(representative)) || valid(options.currentCategory) || "politics";
+  const collectorCategory = valid(options.collectorCategory || representative.collectorCategory || representative.collectorSubDossier?.category || cluster.collectorCategory || cluster.category || sourceCategoryHint) || sourceCategoryHint;
+  const currentCategory = valid(options.currentCategory || sourceCategoryHint) || sourceCategoryHint;
+  const text = newsLabSemanticCategoryText(options).toLowerCase();
+  const scores = Object.fromEntries(newsLabSectionCategories.map(category => [category, 0]));
+  const reasons = [];
+  const add = (category, weight, reason) => {
+    const key = valid(category);
+    if (!key) return;
+    scores[key] = Number(scores[key] || 0) + Number(weight || 0);
+    if (reason) reasons.push(`${key}: ${reason}`);
+  };
+  add(sourceCategoryHint, 1.5, "source-category-hint");
+  add(collectorCategory, 1.25, "collector-category-hint");
+  add(currentCategory, 0.75, "current-assignment-hint");
+  const canonical = newsLabCanonicalCategoryFromIdentity({
+    ...representative,
+    category: currentCategory,
+    storyDossier: dossier,
+    sources: options.sources || options.supporting || []
+  });
+  add(canonical.category, 3.5, "canonical-category-authority");
+  const evidenceCategory = valid(newsLabEditorCategoryFromEvidence(text));
+  add(evidenceCategory, 5, "dossier-evidence-category");
+  const rules = [
+    ["sports", /\b(world cup|fifa|uefa|olympics|nfl|nba|wnba|mlb|nhl|ncaa|wimbledon|u\.s\. open|masters|super bowl|stanley cup|playoff|championship|tournament|finals|draft|score|scored|match|team|coach|player|athlete|goalkeeper|standings|roster|lineup|trade deadline)\b/g, 4],
+    ["entertainment", /\b(movie|film|music|album|song|artist|actor|actress|celebrity|hollywood|streaming|netflix|disney|concert|box office|trailer|television|festival|premiere|award|grammy|emmy|oscars|broadway|tour|fashion|pop culture|rapper|singer|director|studio)\b/g, 4],
+    ["business", /\b(market|markets|stock|stocks|shares|earnings|revenue|inflation|federal reserve|treasury|jobs report|housing market|mortgage|wall street|investors|retail sales|company|companies|merger|acquisition|tariff|bank|economy|economic|consumer prices|interest rates|oil|gold|index|futures)\b/g, 3.5],
+    ["technology", /\b(technology|artificial intelligence|\bai\b|a\.i\.|cybersecurity|data breach|software|startup|semiconductor|chipmaker|chips|platform|app|privacy|data center|openai|google|android|microsoft|xbox|apple|meta|tesla|techcrunch|the verge|wired)\b/g, 3.5],
+    ["politics", /\b(president|white house|congress|senate|house republicans|house democrats|election|campaign|governor|mayor|lawmakers|supreme court|federal judge|administration|republican|democrat|politics|policy|bill|voters|immigration|border|tax|tariff)\b/g, 3.25],
+    ["world", /\b(international|global|iran|israel|gaza|ukraine|russia|china|nato|united nations|war|ceasefire|embassy|prime minister|middle east|nuclear sites|peace talks|airstrikes|sanctions|foreign ministry|diplomacy|military|missile|lebanon|haiti|south africa)\b/g, 3.25],
+    ["local", /\b(weather|storm|forecast|heat advisory|rain|police|sheriff|shooting|crash|fire|killed|injured|charged|arrested|city|county|neighborhood|school board|community|outage|flood|road|traffic)\b/g, 2.75]
+  ];
+  rules.forEach(([category, pattern, weight]) => {
+    const matches = text.match(pattern) || [];
+    if (matches.length) add(category, Math.min(18, matches.length * weight), `${matches.length} semantic dossier signal${matches.length === 1 ? "" : "s"}`);
+  });
+  if (scores.sports && !newsLabStoryHasStrongSportsEvidence(text)) {
+    scores.sports = Math.min(scores.sports, 2);
+    reasons.push("sports: lowered because no strong sports evidence was found");
+  }
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const [topCategory, topScore] = sorted[0] || [currentCategory, 0];
+  const secondScore = Number(sorted[1]?.[1] || 0);
+  const semanticCategory = valid(topCategory) || currentCategory;
+  const confidence = topScore > 0
+    ? Number(Math.min(0.98, Math.max(0.5, 0.56 + ((topScore - secondScore) / Math.max(topScore, 1)) * 0.34 + Math.min(topScore, 30) / 300)).toFixed(2))
+    : 0.5;
+  const finalCategory = confidence >= 0.72 ? semanticCategory : currentCategory;
+  const secondaryCategories = sorted
+    .filter(([category, score]) => category !== finalCategory && score > 0 && score >= Math.max(3, topScore * 0.42))
+    .map(([category]) => category)
+    .slice(0, 3);
+  return {
+    sourceCategoryHint,
+    collectorCategory,
+    initialCategory: currentCategory,
+    semanticCategory: finalCategory,
+    suggestedSemanticCategory: semanticCategory,
+    secondaryCategories,
+    confidence,
+    scores,
+    reasons: reasons.slice(0, 12),
+    reclassified: finalCategory !== currentCategory,
+    publicTab: finalCategory,
+    rule: "Collector/source category is only a hint. Final public tab is classified after the Story Dossier has primary event evidence, canonical identity, source comparison, and narrative purpose."
+  };
+}
+
 function newsLabHardDuplicateEventKey(story = {}) {
   const rawText = [
     story.title,
@@ -34182,7 +34295,7 @@ function newsLabImageWorkerLearningRecord(audit = {}) {
       ...imageIntelligence,
       updatedAt: new Date().toISOString(),
       principle: "Use licensed visual candidates as a behind-the-scenes promotion step, not as a blocker for article publication.",
-      activeRule: "Compare Pexels, Unsplash, and Pixabay first. Use NewsData/source images only when rights-review is explicitly enabled. Queue CE-generated image briefs from Story Dossier facts when stock images are too generic. Promote only images with provenance, credit, relevance, duplicate checks, and generated-asset review.",
+      activeRule: "Compare Pexels, Unsplash, and Pixabay first. Use NewsData/source images only when rights-review is explicitly enabled. If the article is publishable and the remaining image is a generic CE fallback, use the built-in CE-generated image asset path immediately; otherwise queue generated-image briefs from Story Dossier facts for follow-up. Promote only images with provenance, credit, relevance, duplicate checks, and generated-asset review.",
       lastPass: {
         reviewed: audit.summary?.reviewed || 0,
         upgraded: audit.summary?.upgraded || 0,
@@ -34214,7 +34327,8 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     unsplashMatches: 0,
     pixabayMatches: 0,
     placeholderImages: 0,
-    fallbacks: 0
+    fallbacks: 0,
+    generatedFallbackAssets: 0
   };
   const generationQueueEnabled = process.env.CE_NEWS_LAB_GENERATED_IMAGE_QUEUE !== "false";
   const generatedImageQueueStories = [];
@@ -34288,7 +34402,6 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       upgraded += 1;
       auditItems.push({ storyId: story.id || "", title: story.title || "", status: "upgraded", beforeScore, afterScore: best.score, promoteThreshold, currentWasPlaceholder: currentIsPlaceholder, selectedSource: best.image.source || "", selectedLicense: best.image.license || "", query: best.image.query || best.image.originalQuery || "", photographer: best.image.photographer || "", findings: [] });
     } else {
-      nextStories.push(story);
       const currentImageTextForFallback = currentImageText;
       const shouldQueueGeneratedFallback = generationQueueEnabled
         && newsLabCompleteArticleStory(storyContext)
@@ -34298,6 +34411,36 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
           || blockingFindings.length > 0
           || /placeholder|local-placeholder|temporary local image/i.test(currentImageTextForFallback)
         );
+      const shouldGenerateImmediateFallback = shouldQueueGeneratedFallback
+        && process.env.CE_NEWS_LAB_GENERATED_IMAGE_ASSETS !== "false"
+        && currentIsPlaceholder
+        && (!best || blockingFindings.length > 0 || best.score < promoteThreshold);
+      if (shouldGenerateImmediateFallback) {
+        const brief = newsLabGeneratedImageBrief({
+          ...storyContext,
+          generatedImageFallbackReason: blockingFindings.map(finding => finding.code || finding.message || "image-editor-finding").join(", ") || "licensed-image-not-specific-enough"
+        });
+        const generated = newsLabWriteGeneratedImageAsset(brief, storyContext, `${reason}:immediate-generated-fallback`);
+        const generatedStory = {
+          ...story,
+          image: generated.image,
+          imageProvenance: generated.image.provenance,
+          imageImprovement: {
+            ...(story.imageImprovement || {}),
+            appliedAt: new Date().toISOString(),
+            reason: `${reason}:immediate-generated-fallback`,
+            beforeScore,
+            afterScore: Math.max(72, beforeScore + 35),
+            rule: "Image Intelligence used the built-in CE image generator immediately because licensed image search did not produce a suitable match and the public article otherwise would have kept a generic CE fallback."
+          }
+        };
+        nextStories.push(generatedStory);
+        upgraded += 1;
+        imageDiagnostics.generatedFallbackAssets += 1;
+        auditItems.push({ storyId: story.id || "", title: story.title || "", status: "generated-image-asset-promoted", beforeScore, afterScore: Math.max(72, beforeScore + 35), promoteThreshold, currentWasPlaceholder: currentIsPlaceholder, selectedSource: generated.image.source || "", selectedLicense: generated.image.license || "", query: generated.image.query || generated.image.originalQuery || "", photographer: generated.image.photographer || "", findings: [] });
+        continue;
+      }
+      nextStories.push(story);
       if (currentIsPlaceholder && !shouldPromote) imageDiagnostics.fallbacks += 1;
       if (shouldQueueGeneratedFallback) {
         generatedImageQueueStories.push({
@@ -34352,7 +34495,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     finishedAt: new Date().toISOString(),
     policy: {
       copyright: "Pexels, Unsplash, and Pixabay are preferred licensed/search-provider lanes. Unsplash API images must keep photographer/Unsplash attribution and returned image URLs. NewsData/source images remain disabled unless CE_NEWS_LAB_ALLOW_SOURCE_IMAGES=true confirms separate rights review.",
-      generatedImages: "CE-generated image briefs may be queued from article descriptions, but generated assets are not public until reviewed and stored with provenance.",
+      generatedImages: "CE-generated image briefs may be queued from article descriptions. When an article is already publishable and only has a generic CE fallback image, the built-in CE generated image asset may be created and promoted in the same worker pass after provenance and safety checks.",
       articleSafety: "Articles remain published during image review; image improvements are field-only updates."
     },
     config: {
@@ -43769,7 +43912,12 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     .filter(story => story?.collectorSubDossier)
     .filter(story => {
       const sub = story.collectorSubDossier || {};
-      if (sub.category !== representativeCategory && sub.category !== "top") return false;
+      const sameEventContext = newsLabSameStory(rawRepresentative, story)
+        || newsLabSameEventSignature(
+          { representative: rawRepresentative, eventId: cluster.eventId, eventSignature: cluster.eventSignature || newsLabEventSignature([rawRepresentative]) },
+          { representative: story, eventId: newsLabEventSignature([story]).eventId, eventSignature: newsLabEventSignature([story]) }
+        );
+      if (!sameEventContext && sub.category !== representativeCategory && sub.category !== "top") return false;
       return sub.role === "tab-writing-source" || sub.role === "tab-context-source";
     })
     .sort((a, b) => Number(b.collectorSubDossier?.role === "tab-writing-source") - Number(a.collectorSubDossier?.role === "tab-writing-source")
@@ -43828,7 +43976,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
   const allStories = [representative, ...supporting].filter(story => story.title || story.summary);
   const draftEligibility = cleanWriterHandoff.draftEligibility;
   let facts = cleanWriterHandoff.facts;
-  const category = newsLabCategory(representative);
+  let category = newsLabCategory(representative);
   const sources = [...new Map(allStories.map(story => [story.url || `${story.source}:${story.title}`, {
     title: story.title,
     source: story.source,
@@ -44023,6 +44171,24 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     });
     return null;
   }
+  const categoryClassification = newsLabDossierSemanticCategoryClassification({
+    dossier: storyDossier,
+    identity: canonicalStoryIdentity,
+    representative,
+    supporting,
+    sources,
+    cluster,
+    currentCategory: category,
+    collectorCategory: representativeCategory
+  });
+  category = categoryClassification.semanticCategory || category;
+  storyDossier.categoryClassification = categoryClassification;
+  storyDossier.categorySubDossierHandoff = {
+    ...(storyDossier.categorySubDossierHandoff || {}),
+    finalSemanticCategory: category,
+    categoryClassification,
+    rule: "Collector sub-dossiers pre-separate candidates, but the locked Story Dossier makes the final semantic public-tab decision before Writer/Headline/Editor."
+  };
   const writerReasoningPlan = newsLabBuildWriterReasoningPlan({
     ...representative,
     storyDossier,
@@ -44189,7 +44355,10 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       rule: "News Lab headlines are generated after the CE Media article body is written. The finished article and dossier are the headline evidence; RSS/source headlines are stored as provenance, not used as the headline source."
     },
     category,
-    categoryLabel: category === "world" ? "World" : category === "local" ? "Local" : category === "sports" ? "Sports" : category === "politics" ? "Politics" : category === "business" ? "Business" : category === "technology" ? "Technology" : category === "entertainment" ? "Entertainment" : "Top News",
+    categoryLabel: newsLabCategoryLabel(category),
+    categoryClassification,
+    originalCategory: representativeCategory,
+    secondaryCategories: categoryClassification.secondaryCategories || [],
     matter: "",
     summary: body[0] || factLine,
     body,
@@ -44235,6 +44404,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       summary: body[0] || factLine,
       body,
       category,
+      categoryClassification,
       storyDossier,
       writerDossierInput,
       canonicalStoryIdentity,
@@ -44538,7 +44708,79 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     });    return null;
   }
   dossier = newsLabLockDossierForWriting(dossier, workerSliceDossierReadiness, { eventId: dossier.eventId || dossier.storyId });
-  let body = newsLabStraightBody({ representative, supporting, facts, dossier });
+  const workerCategoryClassification = newsLabDossierSemanticCategoryClassification({
+    dossier,
+    representative,
+    supporting,
+    sources: sourceCandidates,
+    cluster,
+    currentCategory: representativeCategory,
+    collectorCategory: representativeCategory
+  });
+  const finalWorkerCategory = workerCategoryClassification.semanticCategory || representativeCategory;
+  dossier.categoryClassification = workerCategoryClassification;
+  const workerCanonicalStoryIdentity = newsLabCanonicalStoryIdentity({
+    ...representative,
+    category: finalWorkerCategory,
+    storyDossier: dossier,
+    sources: sourceCandidates
+  }, dossier, { representative, supporting, facts, cluster });
+  if (!workerCanonicalStoryIdentity.ready) {
+    recordNewsLabDossierRecovery({
+      eventId: dossier.eventId || dossier.storyId || cluster.eventId || cluster.key || reportClusterKey(representative),
+      clusterId: cluster.key || cluster.eventId || dossier.storyId || reportClusterKey(representative),
+      title: representative.title || dossier.whatHappened || "",
+      category: finalWorkerCategory,
+      readinessClass: "NEEDS_IDENTITY_RESOLUTION",
+      blockingReasons: workerCanonicalStoryIdentity.readinessIssues || ["worker-slice-canonical-identity-not-ready"],
+      missingEvidence: workerCanonicalStoryIdentity.readinessIssues || ["worker-slice-canonical-identity-not-ready"],
+      acceptedSourceCount: sourceCandidates.length,
+      rejectedSourceCount: Number(cleanWriterHandoff.diagnostic?.rejectedMixedTopicCount || 0),
+      factCount: facts.length,
+      acceptedSources: sourceCandidates.map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
+      recommendedAction: "resolve-primary-actor-action-consequence-before-worker-slice-writing",
+      nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      partialDossier: dossier,
+      preventionLesson: "Timed worker slices must not bypass canonical identity. Collector/Sub-Dossier should provide enough actor/action/consequence evidence before the Writer receives a compact article lane."
+    });
+    return null;
+  }
+  const workerReasoningPlan = newsLabBuildWriterReasoningPlan({
+    ...representative,
+    category: finalWorkerCategory,
+    storyDossier: dossier,
+    sources: sourceCandidates,
+    canonicalStoryIdentity: workerCanonicalStoryIdentity
+  }, dossier, { representative, supporting, facts, cluster, canonicalStoryIdentity: workerCanonicalStoryIdentity, dossierReadiness: workerSliceDossierReadiness });
+  if (!workerReasoningPlan.readiness.ready) {
+    recordNewsLabDossierRecovery({
+      eventId: dossier.eventId || dossier.storyId || cluster.eventId || cluster.key || reportClusterKey(representative),
+      clusterId: cluster.key || cluster.eventId || dossier.storyId || reportClusterKey(representative),
+      title: representative.title || dossier.whatHappened || "",
+      category: finalWorkerCategory,
+      readinessClass: "NEEDS_WRITER_REASONING",
+      blockingReasons: workerReasoningPlan.readiness.blockers || ["worker-slice-reasoning-plan-not-ready"],
+      missingEvidence: workerReasoningPlan.readiness.blockers || ["worker-slice-reasoning-plan-not-ready"],
+      acceptedSourceCount: sourceCandidates.length,
+      rejectedSourceCount: Number(cleanWriterHandoff.diagnostic?.rejectedMixedTopicCount || 0),
+      factCount: facts.length,
+      acceptedSources: sourceCandidates.map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
+      recommendedAction: "promote-dossier-facts-attribution-and-paragraph-plan-before-writing",
+      nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      partialDossier: dossier,
+      preventionLesson: "Worker slices must build a pre-draft Writer Reasoning plan. If the plan lacks facts, attribution, actor/action, or paragraph purposes, the Dossier Builder enriches first instead of creating repair work."
+    });
+    return null;
+  }
+  let body = newsLabWriteFromReasoningPlan({
+    representative,
+    supporting,
+    facts,
+    dossier,
+    identity: workerCanonicalStoryIdentity,
+    reasoningPlan: workerReasoningPlan
+  });
+  if (!Array.isArray(body) || body.join(" ").length < 360) body = newsLabStraightBody({ representative, supporting, facts, dossier, canonicalStoryIdentity: workerCanonicalStoryIdentity, writerReasoningPlan: workerReasoningPlan });
   if (!Array.isArray(body) || body.join(" ").length < 520) {
     const detailFacts = newsLabDetailList(facts, 0, 8, 260);
     body = newsLabDedupeArticleParagraphs([
@@ -44559,14 +44801,29 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     || facts[0]
     || representative.summary
     || representative.title;
+  const workerReasoningVerification = newsLabVerifyDraftAgainstReasoningPlan({
+    ...representative,
+    storyDossier: dossier,
+    body,
+    summary,
+    sources: sourceCandidates,
+    canonicalStoryIdentity: workerCanonicalStoryIdentity,
+    writerReasoningPlan: workerReasoningPlan
+  }, workerReasoningPlan);
   const baseStory = {
     title: representative.title || summary,
     originalHeadline: representative.title || "",
     summary,
     articleSummary: bodyText,
     body,
-    category: representativeCategory,
+    category: finalWorkerCategory,
+    originalCategory: representativeCategory,
+    categoryClassification: workerCategoryClassification,
+    secondaryCategories: workerCategoryClassification.secondaryCategories || [],
     storyDossier: dossier,
+    canonicalStoryIdentity: workerCanonicalStoryIdentity,
+    writerReasoningPlan: workerReasoningPlan,
+    writerReasoningVerification: workerReasoningVerification,
     sources: sourceCandidates,
     popularity: {
       uniqueSourceCount: Math.max(1, new Set(sourceCandidates.map(source => source.source || source.name || source.url || source.title)).size),
@@ -44575,16 +44832,16 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       eventSourceArticleCount: Number(cluster.eventSourceArticleCount || sourceCandidates.length || 1)
     }
   };
-  const titleSeed = newsLabSelectPassingHeadline(baseStory, newsLabHardRewriteCeHeadline(baseStory, index));
+  const titleSeed = newsLabHeadlineFromCompletedArticle(baseStory, index) || newsLabSelectPassingHeadline(baseStory, newsLabHardRewriteCeHeadline(baseStory, index));
   const title = newsLabEnsureOwnedHeadline(titleSeed || newsLabHardRewriteCeHeadline(baseStory, index), baseStory, index);
-  const image = newsLabNormalizeStoryImage({ ...baseStory, title, category: representativeCategory }, representative.image);
+  const image = newsLabNormalizeStoryImage({ ...baseStory, title, category: finalWorkerCategory }, representative.image);
   return enforceNewsLabEditorCategory({
     ...baseStory,
-    id: `news_lab_worker_slice_${representativeCategory}_${index}_${safeFileSlug(title).slice(0, 52)}`,
+    id: `news_lab_worker_slice_${finalWorkerCategory}_${index}_${safeFileSlug(title).slice(0, 52)}`,
     eventId: cluster.eventId || cluster.key || reportClusterKey(representative),
     topicKey: cluster.eventId || cluster.key || representative.url || title,
     title,
-    categoryLabel: newsLabCategoryLabel(representativeCategory),
+    categoryLabel: newsLabCategoryLabel(finalWorkerCategory),
     matter: "",
     hasArticleDepth: workerSliceDossierReadiness.readyForStandardArticle && bodyText.length >= 520 && body.length >= 4,
     articleCapacityTier: workerSliceDossierReadiness.readinessTier,
@@ -44603,6 +44860,14 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       updateRule: "One-shot worker finish mode preserves compact story slices only after a clean single-event dossier handoff."
     },
     writerDossierHandoff: cleanWriterHandoff.diagnostic,
+    headlineAudit: {
+      sourceHeadline: representative.title || "",
+      candidateHeadline: titleSeed || "",
+      finalHeadline: title,
+      similarity: Number(newsLabTextOverlap(title, representative.title || "").toFixed(2)),
+      action: "worker-slice-body-first-owned-headline",
+      rule: "Timed worker headlines are generated after the compact body and Writer Reasoning plan, using actor/action/consequence from the locked dossier rather than source titles."
+    },
     sourceAgreement: {
       agreement: sourceCandidates.length >= 3 ? 72 : 52,
       disagreement: 0,

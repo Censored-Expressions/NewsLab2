@@ -276,7 +276,10 @@ function workerArticlePipelineSummary() {
       unchanged: Number(imageStatus.summary?.unchanged || imageStatus.unchanged || 0),
       queuedGeneratedBriefs: Number(imageStatus.summary?.generatedImageBriefsQueued || 0),
       addedGeneratedBriefs: Number(imageStatus.summary?.generatedImageBriefsAdded || 0),
-      needsAttention: !(imageStatus.generatedAt || imageStatus.updatedAt || imageStatus.finishedAt || imageStatus.startedAt) || Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0) <= 0
+      generatedFallbackAssets: Number(imageStatus.summary?.generatedFallbackAssets || 0),
+      publicStoriesNeedingImage: workerImageCatchupNeedCount(),
+      protectedCatchupEnabled: process.env.CE_IMAGE_WORKER_PROTECTED_CATCHUP !== "false",
+      needsAttention: !(imageStatus.generatedAt || imageStatus.updatedAt || imageStatus.finishedAt || imageStatus.startedAt) || Number(imageStatus.summary?.upgraded || imageStatus.upgraded || 0) <= 0 || workerImageCatchupNeedCount() > 0
     },
     diagnosis: stories.length < 20 || Number(currentCycle.finalBlocked || 0) > Number(currentCycle.finalApproved || 0)
       ? "article-output-attention"
@@ -325,6 +328,35 @@ function workerPublicTabCounts() {
     recordWorkerEvent({ type: "collector-priority-count-error", error: error.message || String(error) });
   }
   return counts;
+}
+
+function workerPublishedStories() {
+  const cache = readJson(path.join(dataDir, "news-lab-api-response-cache.json"), null);
+  const cachedStories = Array.isArray(cache?.responses?.all?.ownedStories) ? cache.responses.all.ownedStories : [];
+  const payload = readJson(path.join(dataDir, "news-lab-published-payload.json"), null);
+  const payloadStories = Array.isArray(payload?.ownedStories) ? payload.ownedStories : [];
+  return cachedStories.length ? cachedStories : payloadStories;
+}
+
+function workerStoryNeedsImage(story = {}) {
+  const image = story.image || {};
+  const evidence = [
+    image.primary,
+    image.fallback,
+    image.url,
+    image.source,
+    image.license,
+    image.provenance?.source,
+    image.provenance?.license,
+    story.imageProvenance?.source,
+    story.imageProvenance?.license
+  ].filter(Boolean).join(" ").toLowerCase();
+  return !evidence
+    || /assets\/logo|logo\.png|ce image|local fallback|placeholder|generic newsroom|fallback ce|censored expressions/i.test(evidence);
+}
+
+function workerImageCatchupNeedCount() {
+  return workerPublishedStories().filter(workerStoryNeedsImage).length;
 }
 
 function workerUnderfilledCollectorCategories(target = 7) {
@@ -691,8 +723,8 @@ function spawnRole(name, env = {}, options = {}) {
   return child;
 }
 
-function spawnOneShot(name, env = {}) {
-  if (oneShotsDeferred(name)) return null;
+function spawnOneShot(name, env = {}, options = {}) {
+  if (!options.protectedFromPressure && oneShotsDeferred(name)) return null;
   const activeOneShots = [...oneShotChildren.values()].filter(child => child.exitCode === null && !child.killed).length;
   if (oneShotChildren.has(name)) {
     console.log(`[worker] skipped one-shot ${name}: already running`);
@@ -831,10 +863,20 @@ function runEvolution(reason = "worker-orchestrator-scheduled-evolution") {
 }
 
 function runImagePass(reason = "worker-orchestrator-scheduled-image-pass") {
+  const needCount = workerImageCatchupNeedCount();
+  const protectedFromPressure = needCount > 0 && process.env.CE_IMAGE_WORKER_PROTECTED_CATCHUP !== "false";
+  if (protectedFromPressure) {
+    recordWorkerEvent({
+      type: "protected-image-catchup",
+      reason,
+      needCount,
+      rule: "Published articles with fallback images keep an image-improvement attachment alive so image repair cannot be postponed indefinitely by runtime pressure."
+    });
+  }
   spawnOneShot("image-improvement", {
     CE_NEWS_LAB_IMAGE_WORKER: "1",
-    CE_NEWS_LAB_IMAGE_WORKER_REASON: reason
-  });
+    CE_NEWS_LAB_IMAGE_WORKER_REASON: protectedFromPressure ? `${reason}:protected-fallback-image-catchup` : reason
+  }, { protectedFromPressure });
 }
 
 setTimeout(() => runDistillation("worker-orchestrator-startup-distillation"), Math.max(10 * 60 * 1000, Number(process.env.CE_KNOWLEDGE_DISTILLATION_STARTUP_DELAY_MS || 30 * 60 * 1000)));
@@ -855,7 +897,7 @@ setInterval(() => {
   const articlePipeline = workerArticlePipelineSummary();
   const blockerSummary = (articlePipeline.topBlockers || []).slice(0, 3).map(item => `${item.reason}:${item.count}`).join("|") || "none";
   const tabSummary = Object.entries(articlePipeline.tabCounts || {}).map(([key, value]) => `${key}:${value}`).join("|") || "none";
-  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/unsplash:${articlePipeline.imageStatus.hasUnsplashKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
+  console.log(`[worker] heartbeat activeRoles=${children.size} activeCollectors=${activeCollectorNames().join(",") || "none"} categories=${categories.join(",")} sync=${syncState.enabled ? syncState.lastStatus : "disabled"} hasUrl=${syncState.hasUrl} hasToken=${syncState.hasToken} accepted=${syncState.acceptedKeys.join(",") || "none"} public=${articlePipeline.publicStoryCount} tabs=${tabSummary} firstPass=${articlePipeline.firstPassApproved} finalApproved=${articlePipeline.finalApproved} blocked=${articlePipeline.finalBlocked} blockers=${blockerSummary} repairPassed=${articlePipeline.repairPassed} repairHealth=${articlePipeline.repairHealth} image=${articlePipeline.imageStatus.status}/live:${articlePipeline.imageStatus.liveImageSearch}/pexels:${articlePipeline.imageStatus.hasPexelsKey}/unsplash:${articlePipeline.imageStatus.hasUnsplashKey}/pixabay:${articlePipeline.imageStatus.hasPixabayKey}/upgraded:${articlePipeline.imageStatus.upgraded}/generated:${articlePipeline.imageStatus.generatedFallbackAssets}/queued:${articlePipeline.imageStatus.queuedGeneratedBriefs}/needs:${articlePipeline.imageStatus.publicStoriesNeedingImage} buildMs=${articlePipeline.buildMs} status=${articlePipeline.productionStatus}`);
 }, 60 * 1000);
 
 
