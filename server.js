@@ -3291,6 +3291,64 @@ function productionIntelligenceWriterReasoningTemplate() {
     rule: "The Writer drafts from Story Dossier + Writer Reasoning + active prevention rules, not raw feed text."
   };
 }
+
+function productionIntelligenceStageEfficiency({ hour = {}, currentCycle = {}, lastMetrics = {}, reviewed = 0, finalApproved = 0, visiblePublished = 0 } = {}) {
+  const collected = Number(lastMetrics.sourceStoryCount || hour.sourceStoriesCollected || 0);
+  const clusters = Number(lastMetrics.storyClusterCount || hour.storyClusters || currentCycle.generatedCandidates || reviewed || 0);
+  const dossiers = Number(lastMetrics.dossierCount || hour.dossiersCompleted || clusters || 0);
+  const drafts = Number(lastMetrics.attemptedCount || currentCycle.generatedCandidates || reviewed || 0);
+  const firstPass = Number(currentCycle.firstPassApproved || hour.approvedArticles || 0);
+  const repaired = Number(hour.preEditorRepairedDrafts || currentCycle.approvalRecoveryAttempted || 0);
+  const published = Math.max(0, Number(visiblePublished || currentCycle.publishedShelfCount || hour.publishedArticles || 0));
+  const ratio = (from, to) => productionIntelligenceRate(to, Math.max(1, from));
+  const rows = [
+    { stage: "Collection", input: collected, output: clusters, efficiency: ratio(collected, clusters), target: "Collect unique same-event inputs, not raw volume." },
+    { stage: "Clustering", input: clusters, output: dossiers, efficiency: ratio(clusters, dossiers), target: "Merge by canonical event before category assignment." },
+    { stage: "Dossier", input: dossiers, output: drafts, efficiency: ratio(dossiers, drafts), target: "Only complete or clearly developing dossiers reach Writer." },
+    { stage: "Writer Reasoning", input: drafts, output: reviewed, efficiency: ratio(drafts, reviewed), target: "Every draft proves actor, action, facts, unknowns, attribution, and paragraph plan." },
+    { stage: "First-Pass Editor", input: reviewed, output: firstPass, efficiency: ratio(reviewed, firstPass), target: "Raise first-pass approvals by preventing known failure classes upstream." },
+    { stage: "Repair Recovery", input: Math.max(1, repaired), output: Math.max(0, finalApproved - firstPass), efficiency: productionIntelligenceRate(Math.max(0, finalApproved - firstPass), Math.max(1, repaired)), target: "Repair only failed component, resubmit, and measure recovery." },
+    { stage: "Publication", input: finalApproved, output: published, efficiency: ratio(finalApproved, published), target: "Count only durable visible public articles as published." }
+  ];
+  const weakest = rows
+    .filter(row => row.input > 0)
+    .sort((a, b) => a.efficiency - b.efficiency)[0] || rows[0];
+  return {
+    rows,
+    weakestStage: weakest,
+    rule: "Production Intelligence optimizes the whole article lifecycle by finding the earliest stage where useful work stops becoming visible public articles."
+  };
+}
+
+function productionIntelligenceSharedWorkflowDiagnosis(stageEfficiency = {}, blockers = []) {
+  const taxonomy = productionIntelligenceTaxonomy(blockers);
+  const topClass = taxonomy[0] || {};
+  const weakStage = stageEfficiency.weakestStage || {};
+  const shared = taxonomy.length >= 2 && Number(topClass.count || 0) >= 3;
+  let likelySharedCause = "none-detected";
+  let interventionLayer = weakStage.stage || "Production Intelligence";
+  if (/headline/i.test(String(topClass.code || ""))) {
+    likelySharedCause = "headline-generated-without-locked-dossier-and-reasoning-inputs";
+    interventionLayer = "Writer Reasoning + Headline Generator";
+  } else if (/DOSSIER|SOURCE|TOPIC/i.test(String(topClass.code || ""))) {
+    likelySharedCause = "dossier-or-event-identity-not-complete-before-writing";
+    interventionLayer = "Story Curator + Story Dossier Builder";
+  } else if (/IMAGE/i.test(String(topClass.code || ""))) {
+    likelySharedCause = "image-dossier-work-starved-or-detached-from-story-object";
+    interventionLayer = "Image Intelligence";
+  } else if (Number(weakStage.efficiency || 1) < 0.35) {
+    likelySharedCause = `${String(weakStage.stage || "workflow").toLowerCase().replace(/\s+/g, "-")}-efficiency-drop`;
+  }
+  return {
+    shared,
+    weakestStage: weakStage.stage || "",
+    topFailureClass: topClass.code || "",
+    likelySharedCause,
+    interventionLayer,
+    rule: "When multiple failures share a signature, patch the earliest common workflow layer instead of generating separate Business/Technology/Politics fixes."
+  };
+}
+
 function productionIntelligencePreventionRules(blockers = []) {
   const rules = [];
   const addRule = (id, appliesTo, preventBy, detection) => {
@@ -3347,6 +3405,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const repairFrequency = Number(hour.preEditorRepairedDrafts || 0) + Number(currentCycle.approvalRecoveryAttempted || 0) + Number(recovery.repairAttempted || 0);
   const repeatedReasoning = Number(recovery.resubmitted || 0) + Math.max(0, Number(repairFrequency || 0) - Number(recovery.repairSuccessful || currentCycle.approvalRecoveryResolved || 0));
   const failureTaxonomy = productionIntelligenceTaxonomy(topBlockers);
+  const stageEfficiency = productionIntelligenceStageEfficiency({ hour, currentCycle, lastMetrics, reviewed, finalApproved, visiblePublished });
+  const sharedWorkflowDiagnosis = productionIntelligenceSharedWorkflowDiagnosis(stageEfficiency, topBlockers);
   const publishedAfterRepair = Number(currentCycle.approvalRecoveryResolved || recovery.approved || recovery.published || 0);
   const draftsCompleted = reviewed;
   const averageRepairPasses = productionIntelligenceRate(repairFrequency, Math.max(1, finalApproved + finalBlocked));
@@ -3366,11 +3426,26 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   ].sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
   const selected = candidates.find(item => Number(item.score || 0) > 0) || candidates[0];
   const report = {
-    version: "20260728-production-intelligence-v1",
+    version: "20260801-production-intelligence-v2",
     updatedAt: new Date().toISOString(),
     reason,
-    purpose: "Answer what caused unnecessary production work today and choose one bounded measurable improvement.",
-    primaryGoal: "Increase First-Pass Publication Rate.",
+    purpose: "Produce the highest-quality public article with the fewest possible computational steps by finding where useful work stops becoming visible articles.",
+    primaryGoal: "Increase First-Pass Publication Rate while lowering CPU, memory, repair loops, and latency per verified-visible public article.",
+    masterSubsystem: {
+      name: "Production Intelligence",
+      owns: [
+        "collection efficiency",
+        "cluster efficiency",
+        "dossier efficiency",
+        "reasoning efficiency",
+        "writing efficiency",
+        "headline efficiency",
+        "editorial efficiency",
+        "repair efficiency",
+        "publication efficiency"
+      ],
+      decisionRule: "Optimize the earliest shared workflow bottleneck before patching individual tabs or downstream symptoms."
+    },
     current: {
       firstPassPublicationRate: productionIntelligenceRate(firstPassApproved, reviewed),
       finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
@@ -3384,6 +3459,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       headlineRewriteRate,
       dossierFailureRate
     },
+    stageEfficiency,
+    sharedWorkflowDiagnosis,
     publicationEfficiencyDashboard: {
       visiblePublishedArticles: visiblePublished,
       sourceStories,
@@ -3397,6 +3474,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       cpuMsPerNewPublishedArticle,
       candidatesPerPublishedArticle,
       sourcesPerPublishedArticle,
+      repairLoopsPerArticle: Number((repairFrequency / Math.max(1, finalApproved || recentPublished || 1)).toFixed(2)),
+      repeatedReasoningPerArticle: Number((repeatedReasoning / Math.max(1, finalApproved || recentPublished || 1)).toFixed(2)),
       firstPassPublicationRate: productionIntelligenceRate(firstPassApproved, reviewed),
       finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
       primaryOptimizationMetric: "first-pass publication rate and CPU milliseconds per newly visible article",
@@ -3418,10 +3497,14 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       failureTaxonomy
     },
     boundedImprovementProposal: {
-      subsystem: selected.subsystem,
-      cause: selected.cause,
-      action: selected.action,
-      expectedOutcome: selected.expectedOutcome,
+      subsystem: sharedWorkflowDiagnosis.shared ? sharedWorkflowDiagnosis.interventionLayer : selected.subsystem,
+      cause: sharedWorkflowDiagnosis.shared ? sharedWorkflowDiagnosis.likelySharedCause : selected.cause,
+      action: sharedWorkflowDiagnosis.shared
+        ? `Repair the shared ${sharedWorkflowDiagnosis.interventionLayer} layer before creating isolated tab proposals; verify improvement through ${stageEfficiency.weakestStage?.stage || "stage"} efficiency, first-pass approval, and visible-public count.`
+        : selected.action,
+      expectedOutcome: sharedWorkflowDiagnosis.shared
+        ? "Reduce duplicate subsystem fixes, raise first-pass publication rate, and lower repair loops per visible article by fixing the earliest common production cause."
+        : selected.expectedOutcome,
       measurement: "Compare firstPassPublicationRate, finalApprovalRate, repairFrequency, repeatedReasoning, and highQualityPublishedArticlesPerHour after the next production window.",
       risk: "bounded-low-to-medium; changes should affect prevention, routing, or caching before standards are loosened."
     },
@@ -3432,7 +3515,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
     learningSignal: {
       upstream: "Collector and Dossier Builder should prevent mixed/thin events before Writer work starts.",
       downstream: "Publishing Editor and Validator should repair safe issues, resubmit, and write generalized prevention rules instead of exact-string lessons.",
-      behavioralQuestion: "What did the Writer do differently this cycle because of prior failures?"
+      behavioralQuestion: "What did the Writer do differently this cycle because of prior failures?",
+      optimizationQuestion: "Which computation did not contribute to a verified-visible article, and how can the Framework avoid or compress that work next cycle?"
     }
   };
   writeJsonFile(productionIntelligenceFile, report);

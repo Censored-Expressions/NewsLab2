@@ -396,6 +396,10 @@ function renderProductionIntelligence(payload = {}) {
   const current = payload.current || {};
   const waste = payload.unnecessaryWork || {};
   const proposal = payload.boundedImprovementProposal || {};
+  const efficiency = payload.publicationEfficiencyDashboard || {};
+  const stageEfficiency = payload.stageEfficiency || {};
+  const weakestStage = stageEfficiency.weakestStage || {};
+  const sharedWorkflow = payload.sharedWorkflowDiagnosis || {};
   const routing = Array.isArray(payload.targetedRepairRouting) ? payload.targetedRepairRouting : [];
   const observability = payload.observability || {};
   const publishing = observability.publishing || {};
@@ -423,11 +427,17 @@ function renderProductionIntelligence(payload = {}) {
     <p>${escapeHtml(payload.primaryGoal || "Increase First-Pass Publication Rate.")}</p>
     <p><strong>${escapeHtml(proposal.subsystem || proposal.target || "Production Intelligence")}</strong>: ${escapeHtml(proposal.action || "No bounded improvement selected yet.")}</p>
     <p>${escapeHtml(proposal.expectedOutcome || proposal.measurement || "Measure the next production window before promoting changes.")}</p>
+    <p>${escapeHtml(`Weakest stage: ${weakestStage.stage || "unknown"}; shared cause: ${sharedWorkflow.likelySharedCause || "none detected"}.`)}</p>
     <p>${escapeHtml(`Visible: ${publishing.activeBoardStories ?? publishing.visibleStories ?? 0}; cache: ${publishing.publicCache?.freshness?.label || "unknown"}; action tasks: ${actionQueue.active ?? 0}.`)}</p>
   `;
   const cards = [
     ["First-Pass", `${firstPassRate}%`, `${escapeHtml(current.publishedFirstPass ?? current.firstPassApproved ?? 0)} first-pass approvals`],
     ["Final Approval", `${finalRate}%`, `${escapeHtml(current.finalApproved ?? 0)} final approvals`],
+    ["CPU / Article", escapeHtml(efficiency.cpuMsPerNewPublishedArticle ?? "n/a"), "ms per newly visible article"],
+    ["Candidates / Article", escapeHtml(efficiency.candidatesPerPublishedArticle ?? "n/a"), "lower is better"],
+    ["Repair Loops / Article", escapeHtml(efficiency.repairLoopsPerArticle ?? current.averageRepairPasses ?? 0), "target below 1.5"],
+    ["Weakest Stage", escapeHtml(weakestStage.stage || "unknown"), `${Math.round(Number(weakestStage.efficiency || 0) * 100)}% efficiency`],
+    ["Shared Cause", escapeHtml(sharedWorkflow.interventionLayer || "none"), escapeHtml(sharedWorkflow.shared ? "fix shared workflow first" : "isolated/monitor")],
     ["Repairs", escapeHtml(waste.repairFrequency ?? 0), "repair attempts this window"],
     ["Headline Pressure", escapeHtml(waste.headlineRewritePressure ?? 0), "headline/title blockers"],
     ["Dossier Pressure", escapeHtml(waste.evidenceOrDossierPressure ?? 0), "evidence/body/context blockers"],

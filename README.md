@@ -185,6 +185,23 @@ The backend also has a private learning memory that works without an outside AI 
 
 ## AI Framework Architecture
 
+The Censored Expressions AI Framework is now documented as a broader **Framework Operating System**. News Lab is one application running on that operating system, alongside Creator Desk, Newsletter, Market Pulse, Owner Desk, and future products.
+
+The Framework OS sequence is:
+
+```text
+Input
+  -> Knowledge
+  -> Reasoning
+  -> Execution
+  -> Verification
+  -> Optimization
+  -> Learning
+  -> Governance
+```
+
+See `AI_FRAMEWORK_OPERATING_SYSTEM.md` for the full model. Its primary objective is to produce the highest-quality public output with the fewest possible computational steps. For News Lab, that means verified visible articles. For Creator Desk, it means original editorials. For Newsletter, it means coherent weekly issues.
+
 The private Framework is organized into a defined decision system:
 
 1. Observation Intake: collects feed data, visitor search interest, owner feedback, diagnostics, code-change lessons, deployment lessons, and self-review results.
