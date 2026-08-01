@@ -193,6 +193,7 @@ The Framework OS sequence is:
 Input
   -> Knowledge
   -> Reasoning
+  -> Coordination
   -> Execution
   -> Verification
   -> Optimization
@@ -201,6 +202,32 @@ Input
 ```
 
 See `AI_FRAMEWORK_OPERATING_SYSTEM.md` for the full model. Its primary objective is to produce the highest-quality public output with the fewest possible computational steps. For News Lab, that means verified visible articles. For Creator Desk, it means original editorials. For Newsletter, it means coherent weekly issues.
+
+See `AI_FRAMEWORK_PHASE_1_ARCHITECTURE_AUDIT.md` for the architecture-only Phase 1 audit. Its main conclusion is that the Framework vision is coherent, but Version 3 should consolidate runtime behavior around one Framework Coordinator, one unified workflow, one canonical dossier, and Production Intelligence above applications.
+
+See `AI_FRAMEWORK_PHASE_2_PRODUCTION_PIPELINE_AUDIT.md` for the production pipeline audit. It walks the path from RSS to Website, identifies what enters and leaves every stage, separates necessary retries from wasteful retries, and calls out the need to distinguish current-cycle stories from preserved public shelf stories.
+
+See `AI_FRAMEWORK_PHASE_3_STORY_DOSSIER_ENGINE.md` for the Story Dossier Engine contract. It defines how the Framework turns fragmented source reporting into a canonical event dossier with evidence traceability, readiness gates, recovery, version history, image intelligence, writer handoff, editorial integration, and long-term story memory.
+
+See `AI_FRAMEWORK_PHASE_4_WRITER_REASONING_ENGINE.md` for the Writer Reasoning Engine contract. It defines how the Framework thinks before writing by turning a locked dossier into a reasoning graph, evidence map, uncertainty model, narrative blueprint, paragraph plan, headline reasoning, and verified outline before prose generation begins.
+
+See `AI_FRAMEWORK_PHASE_5_EDITORIAL_INTELLIGENCE_ENGINE.md` for the Editorial Intelligence Engine contract. It defines how the Framework turns review into a continuously learning quality system with approval prediction, rejection intelligence, targeted repair, editorial memory, pattern discovery, confidence scoring, and future failure prevention.
+
+See `AI_FRAMEWORK_PHASE_6_PRODUCTION_INTELLIGENCE_EFFICIENCY_AUDIT.md` for the Production Intelligence and Operational Efficiency audit. It defines how the Framework measures useful public output per unit of work, including collection efficiency, dossier efficiency, writer efficiency, editorial efficiency, runtime efficiency, knowledge efficiency, reasoning efficiency, and public inventory protection.
+
+See `AI_FRAMEWORK_PHASE_7_LEARNING_ARCHITECTURE.md` for the governed Learning Architecture. It defines how the Framework turns experience into verified reusable knowledge through Search Learning, Article Memory, Operational Memory, Adaptive Learning, Diagnostic Learning, Pattern Learning, Capability Promotion, and knowledge distillation.
+
+See `AI_FRAMEWORK_PHASE_8_FRAMEWORK_GOVERNANCE_MANUAL.md` for the Framework Governance Manual. It defines the rulebook for authority, trust levels, permissions, owner approval, bounded execution, rollback, verification, audit logging, risk assessment, change management, learning governance, incident response, and governance metrics.
+
+See `AI_FRAMEWORK_PHASE_9_IMAGE_INTELLIGENCE_ENGINE.md` for the Image Intelligence Engine. It defines how the Framework discovers, verifies, licenses, ranks, selects, documents, and learns from images across News Lab, Creator Desk, newsletters, social media, and future multimedia products.
+
+See `AI_FRAMEWORK_PHASE_10_PERFORMANCE_ENGINEERING.md` for the Performance Engineering guide. It defines how the Framework is engineered for speed, scalability, efficiency, reliability, lower CPU and memory per public output, better worker behavior, faster APIs, and safer synchronization.
+
+See `AI_FRAMEWORK_PHASE_11_COMMERCIALIZATION.md` for the Commercialization plan. It defines how the Framework can become a secure, scalable commercial platform through deployment models, multi-tenancy, licensing, SaaS operations, onboarding, security, integrations, customer success, and marketplace strategy.
+
+See `AI_FRAMEWORK_PHASE_12_PATENT_IP_PORTFOLIO.md` for the Patent and Intellectual Property Portfolio. It defines how the Framework continuously documents invention candidates, technical effects, implementation evidence, trade secrets, claim strategy, prior-art research, filing packages, and commercialization opportunities.
+
+See `AI_FRAMEWORK_PHASE_13_FRAMEWORK_OS_INTEGRATION.md` for the Framework OS Integration plan. It defines how Projects 1-12 become one operating framework through shared engines, standard project lifecycles, explicit integration contracts, framework-wide metrics, release gates, application adapters, and the integration-first rule.
 
 The private Framework is organized into a defined decision system:
 

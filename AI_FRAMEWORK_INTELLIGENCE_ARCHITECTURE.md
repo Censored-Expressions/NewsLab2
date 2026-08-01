@@ -12,6 +12,7 @@ The next architecture layer is the **Framework Operating System**. News Lab, Cre
 Input
   -> Knowledge
   -> Reasoning
+  -> Coordination
   -> Execution
   -> Verification
   -> Optimization
@@ -19,7 +20,9 @@ Input
   -> Governance
 ```
 
-See `AI_FRAMEWORK_OPERATING_SYSTEM.md` for the operating model, V2 capability priorities, Production Intelligence mandate, and Framework Core vs Application Adapter boundary.
+See `AI_FRAMEWORK_OPERATING_SYSTEM.md` for the operating model, Framework Coordinator, V2 capability priorities, Production Intelligence mandate, and Framework Core vs Application Adapter boundary.
+
+The key Version 3 architectural correction is that intelligence modules should not become independent brains. They are reasoning modules coordinated by the Framework Coordinator.
 
 ## Intelligence Lanes
 
@@ -30,6 +33,7 @@ See `AI_FRAMEWORK_OPERATING_SYSTEM.md` for the operating model, V2 capability pr
 | News Lab Intelligence | Compare source coverage, detect agreement and contradiction, build timelines, score confidence, and update stories as evidence changes. | Source count, agreement ratio, contradiction count, timeline event count, confidence score, article completeness score. | News Lab becomes an intelligence workspace that creates fact-based CE Media stories from cross-source reporting. |
 | Production Intelligence | Optimize the production process itself by finding where useful work stops becoming verified public output. | CPU per visible article, memory per visible article, repair loops/article, first-pass publication rate, recovered publication rate, publication latency, weakest stage. | The Brain improves output quality and speed by reducing unnecessary work instead of simply processing more candidates. |
 | Root Cause Intelligence | Detect shared upstream causes across multiple weak subsystems before creating isolated fixes. | Shared failure signatures, affected subsystem count, earliest failing layer, duplicate patch suppression, verified downstream improvement. | Business, Technology, Politics, or other lanes stop receiving separate patches when one shared intake/dossier/verification cause explains the weakness. |
+| Framework Coordinator | Decide ownership, sequencing, waiting, repair routing, and shared-cause suppression across every application. | Orphaned tasks, duplicate proposals suppressed, issue owner clarity, cross-subsystem wait states, governance handoff count, workflow completion rate. | The Brain stops letting multiple systems run competing workflows and routes every issue through one operating sequence. |
 | Predictive Brain | Forecast degrading site or Framework conditions before they become visible failures. | Trend delta, repeated early warnings, latency slope, readiness drop, stale cache age, source instability, content-quality regression. | The Brain moves from reactive repair to proactive prevention. |
 | Cross-Application Framework | Separate Framework Core from site-specific adapters so the same Brain can manage other applications or business systems. | Adapter count, reusable engine coverage, app-specific dependency map, governance boundary clarity, portable lesson count. | The Framework becomes a reusable orchestration platform instead of a site-only feature. |
 
@@ -43,6 +47,39 @@ The Framework should be separated into two conceptual layers:
 | Application Adapter | App-specific files, routes, data models, content lanes, visual surfaces, deployment rules, and business objectives. | Censored Expressions feed pages, Creator Desk, Newsletter, News Lab, merch shop, ad placements. |
 
 The Core should never depend on a single site layout. The adapter teaches the Core what an application needs. The Core decides how to monitor, improve, and verify that application.
+
+## Coordination Rule
+
+Every intelligence lane must report its finding to the Framework Coordinator before execution. The Coordinator decides:
+
+1. Whether the issue is isolated or shared.
+2. Whether the issue belongs to Framework Core or an application adapter.
+3. Which subsystem owns the next action.
+4. Which subsystem should wait.
+5. Whether repair, enrichment, verification, optimization, learning, or owner approval is required.
+6. Whether the action should affect one application or become a reusable Framework capability.
+
+This keeps Production Intelligence, Writer Reasoning, Editorial Intelligence, Image Intelligence, Repair Intelligence, and Diagnostic Intelligence from becoming separate workflows.
+
+## Canonical Knowledge Object Rule
+
+The canonical event dossier is the center of application intelligence.
+
+For News Lab, the Story Dossier should feed:
+
+- Writer.
+- Headline Generator.
+- Publishing Editor.
+- Validator.
+- Image Dossier.
+- Newsletter.
+- Creator Desk.
+- Search.
+- Owner Desk.
+- Analytics.
+- Future recommendations and alerts.
+
+The article is an output. The dossier is the source of truth.
 
 ## Decision Quality Metrics
 
@@ -61,11 +98,12 @@ Every intelligence lane should report:
 When the Brain sees a weak score, it should not only record the issue. It should:
 
 1. Identify the exact lane and failing evidence.
-2. Decide whether the fix is runtime adjustment, content rewrite, source isolation, prediction rule, or code patch.
-3. Execute bounded approved actions when safe.
-4. Request owner approval for code changes or higher-risk changes.
-5. Verify the result with the same metric that triggered the action.
-6. Save the outcome as reusable memory for the next application.
+2. Send the issue through the Framework Coordinator.
+3. Decide whether the fix is runtime adjustment, content rewrite, source isolation, prediction rule, code patch, or application-adapter change.
+4. Execute bounded approved actions when safe.
+5. Request owner approval for code changes or higher-risk changes.
+6. Verify the result with the same metric that triggered the action.
+7. Save the outcome as reusable memory for the next application.
 
 ## Commercial/IP Direction
 

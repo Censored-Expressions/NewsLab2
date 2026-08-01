@@ -14,6 +14,7 @@ For News Lab, that means a verified, visible public article. For Creator Desk, i
 Input
   -> Knowledge
   -> Reasoning
+  -> Coordination
   -> Execution
   -> Verification
   -> Optimization
@@ -23,6 +24,8 @@ Input
 
 Each application plugs into this sequence through an adapter. The Framework OS provides the reusable intelligence, memory, governance, and optimization layers.
 
+Coordination is the traffic-control layer. It decides which subsystem acts, which subsystem waits, which subsystem owns an issue, whether another subsystem is already solving it, and whether a shared upstream cause should suppress duplicate downstream patches.
+
 ## Framework OS Layers
 
 | Layer | Responsibility | News Lab Example |
@@ -30,6 +33,7 @@ Each application plugs into this sequence through an adapter. The Framework OS p
 | Input | Gather signals without treating them as final truth. | RSS, NewsData, collector workers, source reads, market feeds. |
 | Knowledge | Convert inputs into structured knowledge objects. | Story Dossier, sub-dossiers, source registry, knowledge graph, image dossier. |
 | Reasoning | Decide what the knowledge means before execution. | Canonical event, verified facts, unknown facts, attribution plan, headline inputs. |
+| Coordination | Route work through one Framework workflow instead of many independent pipelines. | Decide whether Collector, Dossier, Writer, Image Worker, Publisher, or Repair Intelligence owns the next action. |
 | Execution | Produce the application output from approved reasoning. | Article body, headline, image selection, Creator Desk post, newsletter section. |
 | Verification | Test output against standards before and after release. | Editor, validator, image license guard, public API visibility check. |
 | Optimization | Reduce unnecessary work while preserving quality. | Production Intelligence, CPU per visible article, repair loops/article. |
@@ -47,6 +51,52 @@ Each application plugs into this sequence through an adapter. The Framework OS p
 
 The Core should not depend on a single website page, content type, or data layout. The adapter translates product needs into Framework OS tasks.
 
+## Framework Coordinator
+
+The Framework Coordinator is the missing operating layer between Reasoning and Execution.
+
+It owns these decisions:
+
+- Which subsystem should act next.
+- Which subsystem should wait because another layer is resolving the shared cause.
+- Whether a failure is isolated or shared across multiple applications/subsystems.
+- Whether an issue belongs to the Framework Core or an application adapter.
+- Whether the canonical knowledge object is ready for execution.
+- Whether repair is safe, whether evidence is missing, or whether owner approval is required.
+- Whether the current work should continue, pause, merge, update, or be abandoned.
+
+The Coordinator prevents the Framework from becoming a collection of independent brains. Production Intelligence, Writer Reasoning, Editorial Intelligence, Image Intelligence, Repair Intelligence, and Diagnostic Intelligence remain reasoning modules. They do not independently own the whole workflow.
+
+```text
+Framework Coordinator
+  -> receives signals from reasoning modules
+  -> identifies shared or isolated cause
+  -> assigns owner subsystem
+  -> checks governance boundary
+  -> authorizes execution or hold
+  -> sends outcome to verification, optimization, and learning
+```
+
+## Unified Workflow Rule
+
+There should be one Framework workflow. Applications may adapt it, but they should not create competing workflows.
+
+```text
+Application Adapter
+  -> Framework Coordinator
+  -> Input
+  -> Knowledge
+  -> Reasoning
+  -> Coordination
+  -> Execution
+  -> Verification
+  -> Optimization
+  -> Learning
+  -> Governance
+```
+
+News Lab, Creator Desk, Newsletter, Market Pulse, Sports Intelligence, and future products should plug into this same sequence. Application-specific workers should only collect, transform, or render application data. They should not own Framework memory, governance, learning, diagnostics, optimization, or root-cause policy.
+
 ## News Lab As An Application
 
 News Lab should consume Framework OS services rather than reimplement them independently.
@@ -56,6 +106,7 @@ News Lab Adapter
   -> Input: collectors and source leads
   -> Knowledge: Story Dossier and Image Dossier
   -> Reasoning: Writer Reasoning Plan
+  -> Coordination: Framework Coordinator assigns next owner and prevents duplicate patching
   -> Execution: article body, headline, image
   -> Verification: editor, validator, public visibility
   -> Optimization: production efficiency
@@ -64,6 +115,30 @@ News Lab Adapter
 ```
 
 The Story Dossier is the application knowledge object. It must become the single source of truth for Writer, Headline Generator, Editor, Image Intelligence, Newsletter, Creator Desk, Search, Owner Desk, analytics, and future applications.
+
+The canonical event is more important than the article. Articles, newsletters, creator posts, images, alerts, search results, analytics, and updates are outputs created from the same canonical event dossier.
+
+See `AI_FRAMEWORK_PHASE_3_STORY_DOSSIER_ENGINE.md` for the Story Dossier Engine contract. It defines evidence intake, normalization, entity extraction, event detection, evidence clustering, canonical story building, readiness gates, recovery, version history, and dossier memory.
+
+See `AI_FRAMEWORK_PHASE_4_WRITER_REASONING_ENGINE.md` for the Writer Reasoning Engine contract. It defines the pre-writing cognitive layer that converts a locked Story Dossier into a reasoning graph, evidence map, narrative blueprint, paragraph plan, attribution plan, headline reasoning, and verified writing outline.
+
+See `AI_FRAMEWORK_PHASE_5_EDITORIAL_INTELLIGENCE_ENGINE.md` for the Editorial Intelligence Engine contract. It defines the continuously learning quality system that predicts approval, detects issues, plans targeted repair, verifies improvements, stores editorial memory, and prevents repeated failures.
+
+See `AI_FRAMEWORK_PHASE_6_PRODUCTION_INTELLIGENCE_EFFICIENCY_AUDIT.md` for the Production Intelligence and Operational Efficiency audit. It defines efficiency per public output, value conversion rates, CPU/memory/API/file-read cost per visible article, repair-loop targets, knowledge efficiency, reasoning usefulness, and daily bounded optimization reporting.
+
+See `AI_FRAMEWORK_PHASE_7_LEARNING_ARCHITECTURE.md` for the governed Learning Architecture. It defines Search Learning, Article Memory, Operational Memory, Adaptive Learning, Diagnostic Learning, Pattern Learning, Capability Promotion, knowledge distillation, learning constraints, and promotion rules.
+
+See `AI_FRAMEWORK_PHASE_8_FRAMEWORK_GOVERNANCE_MANUAL.md` for the Framework Governance Manual. It defines authority, trust levels, permissions, owner approval, bounded execution, rollback, verification, audit, risk assessment, change management, learning governance, incident response, and governance metrics.
+
+See `AI_FRAMEWORK_PHASE_9_IMAGE_INTELLIGENCE_ENGINE.md` for the Image Intelligence Engine. It defines visual intent extraction, source routing, provider adapters, image context verification, licensing intelligence, image ranking, confidence scoring, AI-image governance, accessibility, Image Dossiers, and post-publication image repair.
+
+See `AI_FRAMEWORK_PHASE_10_PERFORMANCE_ENGINEERING.md` for the Performance Engineering guide. It defines CPU, memory, I/O, cache, payload, JSON, API, worker, synchronization, database, compression, large-file, benchmarking, monitoring, and self-optimization standards.
+
+See `AI_FRAMEWORK_PHASE_11_COMMERCIALIZATION.md` for the Commercialization plan. It defines deployment models, multi-tenancy, licensing, SaaS operations, onboarding, industry adaptation, pricing, security, integrations, customer success, marketplace, and business operations.
+
+See `AI_FRAMEWORK_PHASE_12_PATENT_IP_PORTFOLIO.md` for the Patent and Intellectual Property Portfolio. It defines invention detection, master invention registers, disclosure packages, trade-secret tracking, claim strategy, prior-art logs, implementation evidence archives, provisional filing packages, and IP commercialization strategy.
+
+See `AI_FRAMEWORK_PHASE_13_FRAMEWORK_OS_INTEGRATION.md` for the Framework OS Integration plan. It defines Project 13 as the system integrator, with shared engines, standard project lifecycle, cross-project contracts, framework-wide metrics, integration gates, release gates, application adapters, and the integration-first rule.
 
 ## V2 Capability Priorities
 
@@ -78,7 +153,7 @@ The Story Dossier is the application knowledge object. It must become the single
 
 ## Production Intelligence Mandate
 
-Production Intelligence is the Framework OS optimizer. It answers:
+Production Intelligence is the Framework OS optimizer. It sits above applications, not inside News Lab. It answers:
 
 ```text
 What prevented a high-quality first-pass public output?
@@ -109,6 +184,14 @@ It should measure:
 
 The goal is not maximum processing. The goal is maximum verified public value per unit of work.
 
+Production Intelligence should optimize the Framework workflow itself:
+
+- Detect unnecessary work.
+- Identify the earliest shared failure layer.
+- Suppress duplicate subsystem patches when a shared root cause exists.
+- Recommend one bounded intervention.
+- Measure whether the intervention improved public value per unit of work.
+
 ## Governance Rule
 
 Subsystems may observe, diagnose, propose, repair within assigned bounds, and learn. They do not outrank the Framework OS.
@@ -124,11 +207,37 @@ The Framework OS decides:
 - Whether learning becomes permanent memory.
 - Whether owner approval is required.
 
+## V3 Consolidation Roadmap
+
+Version 3 should focus on architectural consolidation rather than adding many new subsystems.
+
+```text
+Production Intelligence
+  -> Framework Coordinator
+  -> Unified Workflow
+  -> Reasoning First
+  -> Shared Memory
+  -> Canonical Dossier
+  -> Application Adapters
+```
+
+The consolidation goal is to move ownership out of News Lab and into Framework Core services:
+
+| Current Drift | Target Ownership |
+| --- | --- |
+| News Lab owns learning behavior. | Learning Engine owns learning; News Lab contributes examples. |
+| News Lab owns optimization. | Production Intelligence owns optimization across all applications. |
+| News Lab owns diagnostics. | Diagnostic/Verification Engine owns diagnostics. |
+| Repair logic acts as its own workflow. | Coordinator routes repair through the unified workflow. |
+| Dossier supports articles. | Canonical Dossier powers all downstream outputs. |
+| Multiple intelligence modules behave independently. | Brain coordinates reasoning modules through one workflow. |
+
 ## Architectural Direction
 
 The long-term codebase should move from one large application file toward reusable domain-neutral services:
 
 - Dossier Engine.
+- Framework Coordinator.
 - Workflow Engine.
 - Reasoning Engine.
 - Learning Engine.
