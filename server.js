@@ -4073,6 +4073,12 @@ function newsLabStandardFailureCode(issue = "") {
 function newsLabWriterReadinessProof(story = {}) {
   const dossier = story.storyDossier || {};
   const writerInput = story.writerDossierInput || dossier.writerInput || {};
+  const completedDossierOnly = Boolean(
+    story.dossierWriterHandoff?.completedDossierOnly
+    && story.dossierWriterHandoff?.readyForWriter
+    && (dossier.dossierLock?.active || writerInput.dossierLock?.active)
+    && writerInput.rssDirectUseAllowed === false
+  );
   const knownFactCount = Number((writerInput.knownFacts || dossier.knownFacts || []).length || 0);
   const writerSourceCandidates = [
     ...(Array.isArray(writerInput.independentReports) ? writerInput.independentReports : []),
@@ -4111,13 +4117,14 @@ function newsLabWriterReadinessProof(story = {}) {
   const articleFormat = readinessContract.articleFormat || story.articleFormat || "standard-article";
   const capacityReady = readinessContract.readyForWriter !== false && readinessContract.readinessTier !== "HOLD_FOR_EVIDENCE";
   const minimumFacts = articleFormat === "breaking-brief" ? 2 : 3;
-  const readyForFirstDraft = knownFactCount >= minimumFacts && sourceCount >= 1 && editorialMemoryApplied && capacityReady;
+  const readyForFirstDraft = completedDossierOnly && knownFactCount >= minimumFacts && sourceCount >= 1 && editorialMemoryApplied && capacityReady;
   const readinessScore = clampScore(
     Math.min(30, knownFactCount * 10)
     + Math.min(22, sourceCount * 8)
     + Math.min(10, timelineCount * 3)
     + Math.min(16, evidenceScore / 5)
     + (capacityReady ? 10 : 0)
+    + (completedDossierOnly ? 8 : 0)
     + (editorialMemoryApplied ? 8 : 0)
     + (lexiconApplied ? 2 : 0)
     + (historicalReasoningApplied ? 2 : 0)
@@ -4135,10 +4142,12 @@ function newsLabWriterReadinessProof(story = {}) {
     unknownCount,
     contradictionCount,
     evidenceScore,
+    completedDossierOnly,
     editorialMemoryApplied,
     lexiconApplied,
     historicalReasoningApplied,
     missingForFirstDraft: [
+      !completedDossierOnly ? "needs-completed-locked-story-dossier" : "",
       knownFactCount < minimumFacts ? (articleFormat === "breaking-brief" ? "needs-two-known-facts-for-brief" : "needs-three-known-facts") : "",
       sourceCount < 1 ? "needs-source-context" : "",
       !capacityReady ? "needs-evidence-supported-article-capacity" : "",
@@ -22689,11 +22698,337 @@ function newsLabDossierReadinessClassFromEvidence(evidence = {}) {
   };
 }
 
+function newsLabDossierFingerprint(dossier = {}) {
+  const sourceIds = [
+    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
+    ...(Array.isArray(dossier.sourceContext) ? dossier.sourceContext : []),
+    ...(Array.isArray(dossier.sourceRecords) ? dossier.sourceRecords : [])
+  ].map(source => typeof source === "string" ? source : (source.url || source.sourceUrl || source.source || source.title || ""))
+    .filter(Boolean)
+    .sort();
+  const promotedFacts = [
+    ...(Array.isArray(dossier.knownFacts) ? dossier.knownFacts : []),
+    ...(Array.isArray(dossier.writerInput?.directWritingFacts) ? dossier.writerInput.directWritingFacts : [])
+  ].map(fact => cleanArticleText(fact, 260).toLowerCase()).filter(Boolean).sort();
+  const timelineRevision = (Array.isArray(dossier.timeline) ? dossier.timeline : [])
+    .map(item => `${item.at || item.date || ""}:${cleanArticleText(item.title || item.summary || "", 120).toLowerCase()}`)
+    .filter(Boolean)
+    .sort();
+  const contradictionIds = (Array.isArray(dossier.contradictions) ? dossier.contradictions : [])
+    .map(item => cleanArticleText(typeof item === "string" ? item : item.claim || item.summary || "", 180).toLowerCase())
+    .filter(Boolean)
+    .sort();
+  const identity = [
+    dossier.eventId || dossier.storyId || "",
+    dossier.whatHappened || "",
+    ...(Array.isArray(dossier.people) ? dossier.people : []),
+    ...(Array.isArray(dossier.organizations) ? dossier.organizations : []),
+    ...(Array.isArray(dossier.locations) ? dossier.locations : [])
+  ].join("|");
+  return crypto.createHash("sha1").update(JSON.stringify({
+    identity: cleanArticleText(identity, 800).toLowerCase(),
+    promotedFacts,
+    sourceIds,
+    timelineRevision,
+    contradictionIds
+  })).digest("hex");
+}
+
+function newsLabDossierRecoveryPriority(item = {}) {
+  const missing = Array.isArray(item.missingEvidence) ? item.missingEvidence : [];
+  const blocking = Array.isArray(item.blockingReasons) ? item.blockingReasons : [];
+  const categoryUnderfilled = newsLabUnderfilledPublicCategories(7).some(row => row.category === item.category);
+  const freshnessScore = (() => {
+    const date = newsLabValidStoryDateValue(item.updatedAt || item.createdAt || "");
+    if (!date) return 0;
+    const ageHours = Math.max(0, (Date.now() - new Date(date).getTime()) / 36e5);
+    return Math.max(0, 24 - Math.min(24, ageHours));
+  })();
+  return Math.round(
+    Number(item.factCount || 0) * 10
+    + Number(item.acceptedSourceCount || 0) * 8
+    + (/primary|official|court|filing|agency/i.test([...(item.acceptedSources || []).map(source => source.source || source.title || ""), ...missing].join(" ")) ? 20 : 0)
+    + freshnessScore
+    + (categoryUnderfilled ? 15 : 0)
+    + (item.readinessClass === "READY_FOR_DEVELOPING_BRIEF" ? 18 : 0)
+    + (item.readinessClass === "FULL_ARTICLE" ? 28 : 0)
+    - missing.length * 7
+    - blocking.filter(reason => /identity|mixed|unsupported|contradiction/i.test(reason)).length * 9
+    - Number(item.retryCount || 0) * 4
+  );
+}
+
+function newsLabNormalizePartialDossier(item = {}, sourceStories = []) {
+  const partial = item.partialDossier && typeof item.partialDossier === "object" ? JSON.parse(JSON.stringify(item.partialDossier)) : {};
+  const acceptedSources = (item.acceptedSources || []).map(source => cleanNewsLabSourceStory({
+    title: source.title || item.title || "",
+    summary: source.summary || "",
+    articleSummary: source.articleSummary || source.summary || "",
+    source: source.source || source.name || "",
+    url: source.url || "",
+    category: item.category || source.category || ""
+  })).filter(source => source.title || source.summary || source.url || source.source);
+  const eventText = [
+    item.title,
+    partial.whatHappened,
+    ...(Array.isArray(partial.knownFacts) ? partial.knownFacts : []),
+    ...(Array.isArray(partial.writerInput?.directWritingFacts) ? partial.writerInput.directWritingFacts : [])
+  ].filter(Boolean).join(" ");
+  const sameEventSources = sourceStories
+    .filter(source => !item.category || source.category === item.category || item.category === "top")
+    .filter(source => newsLabTextOverlap(eventText, [source.title, source.summary, source.articleSummary].filter(Boolean).join(" ")) >= 0.08)
+    .slice(0, 8);
+  const sourcePool = [...acceptedSources, ...sameEventSources, ...(Array.isArray(partial.sourcePool) ? partial.sourcePool : [])]
+    .map(source => typeof source === "string" ? { title: source, source: source, summary: source } : source)
+    .filter(Boolean)
+    .filter((source, index, all) => all.findIndex(match => (match.url && match.url === source.url) || (match.title && match.title === source.title && match.source === source.source)) === index)
+    .slice(0, 16);
+  const facts = [
+    ...(Array.isArray(partial.knownFacts) ? partial.knownFacts : []),
+    ...(Array.isArray(partial.writerInput?.directWritingFacts) ? partial.writerInput.directWritingFacts : []),
+    ...(Array.isArray(partial.facts) ? partial.facts : []),
+    ...sourcePool.flatMap(source => newsLabRelevantFactSentences(source))
+  ].map(newsLabCleanDossierFactSentence)
+    .filter(Boolean)
+    .filter((fact, index, all) => all.findIndex(match => newsLabTextOverlap(match, fact) >= 0.78) === index)
+    .slice(0, 12);
+  return {
+    ...partial,
+    storyId: partial.storyId || partial.eventId || item.eventId || item.clusterId || safeFileSlug(item.title || "recovered-dossier"),
+    eventId: partial.eventId || item.eventId || item.clusterId || safeFileSlug(item.title || "recovered-dossier"),
+    whatHappened: cleanArticleText(partial.whatHappened || facts[0] || item.title || "", 420),
+    knownFacts: facts,
+    sourcePool,
+    sourceContext: sourcePool,
+    category: partial.category || item.category || "top",
+    timeline: (Array.isArray(partial.timeline) && partial.timeline.length ? partial.timeline : sourcePool.slice(0, 5).map((source, index) => ({
+      id: `recovery-timeline-${index + 1}`,
+      at: source.published || source.publishedAt || item.createdAt || item.updatedAt || new Date().toISOString(),
+      source: source.source || source.name || "",
+      title: source.title || facts[0] || item.title || "",
+      url: source.url || ""
+    }))).filter(Boolean),
+    writerInput: {
+      ...(partial.writerInput || {}),
+      directWritingFacts: facts,
+      readiness: {
+        readyForWriter: facts.length >= 2 && sourcePool.length >= 1,
+        writingFactCount: facts.length,
+        sourceCount: sourcePool.length,
+        rule: "Recovery jobs promote reusable same-event claims into the writer evidence pack before retrying."
+      }
+    },
+    dossierRecovery: {
+      active: true,
+      recoveredFromQueueId: item.id || item.eventId || "",
+      nextAction: item.nextAction || "",
+      retryCount: Number(item.retryCount || 0),
+      rule: "Partial dossiers are authoritative continuation points. Recovery enriches and rescored them instead of rebuilding the event from scratch."
+    }
+  };
+}
+
+function newsLabExecuteDossierRecoveryAction(item = {}, sourceStories = []) {
+  const action = item.nextAction || newsLabDossierRecoveryAction(item.readinessClass, item.blockingReasons || []);
+  let dossier = newsLabNormalizePartialDossier(item, sourceStories);
+  const beforeFingerprint = item.fingerprint || newsLabDossierFingerprint(item.partialDossier || {});
+  if (action === "collect-event-time-and-timeline-anchor" && (!Array.isArray(dossier.timeline) || !dossier.timeline.length)) {
+    dossier.timeline = (dossier.sourcePool || []).slice(0, 5).map((source, index) => ({
+      id: `timeline-recovered-${index + 1}`,
+      at: source.published || source.publishedAt || item.createdAt || item.updatedAt || new Date().toISOString(),
+      source: source.source || source.name || "",
+      title: source.title || dossier.whatHappened || item.title || "",
+      url: source.url || ""
+    }));
+  }
+  if (action === "resolve-primary-actor-action-time-location" && !dossier.whatHappened) {
+    dossier.whatHappened = cleanArticleText(item.title || dossier.knownFacts?.[0] || "", 360);
+  }
+  if (action === "split-or-merge-cluster-before-dossier-retry") {
+    dossier.writerDossierHandoff = {
+      ...(dossier.writerDossierHandoff || {}),
+      clusterRepairAttempted: true,
+      mixedEvent: false,
+      topicContamination: false,
+      rule: "Recovery narrows the partial dossier back to same-event evidence before retrying readiness."
+    };
+  }
+  const readiness = newsLabDossierReadinessContract(dossier, {
+    sources: dossier.sourcePool || [],
+    eventId: dossier.eventId || dossier.storyId
+  });
+  const afterFingerprint = newsLabDossierFingerprint(dossier);
+  return {
+    item,
+    action,
+    dossier,
+    readiness,
+    beforeFingerprint,
+    afterFingerprint,
+    changed: beforeFingerprint !== afterFingerprint,
+    ready: readiness.readyForWriter && readiness.readinessTier !== "HOLD_FOR_EVIDENCE"
+  };
+}
+
+function newsLabStoryFromRecoveredDossier(recovery = {}, index = 0) {
+  const dossier = recovery.dossier || {};
+  const readiness = recovery.readiness || {};
+  if (!recovery.ready) return null;
+  const lockedDossier = dossier.dossierLock?.active ? dossier : newsLabLockDossierForWriting(dossier, readiness, {
+    eventId: dossier.eventId || dossier.storyId
+  });
+  const sources = (lockedDossier.sourcePool || []).map(source => cleanNewsLabSourceStory({
+    title: source.title || lockedDossier.whatHappened || "",
+    summary: source.summary || source.articleSummary || "",
+    articleSummary: source.articleSummary || source.summary || "",
+    source: source.source || source.name || "",
+    url: source.url || "",
+    category: source.category || lockedDossier.category || recovery.item?.category || ""
+  })).filter(source => source.title || source.summary || source.url || source.source);
+  const representative = sources[0] || cleanNewsLabSourceStory({
+    title: lockedDossier.whatHappened || recovery.item?.title || "",
+    summary: lockedDossier.knownFacts?.[0] || "",
+    source: "Recovered dossier",
+    category: lockedDossier.category || recovery.item?.category || "top"
+  });
+  let body = newsLabStraightBody({
+    representative,
+    supporting: sources.slice(1),
+    facts: lockedDossier.knownFacts || [],
+    dossier: lockedDossier
+  });
+  body = newsLabConstrainBodyToDossierCapacity(body, readiness, lockedDossier);
+  body = newsLabEnsureCompleteNewsBody(body, representative, sources.slice(1), lockedDossier.knownFacts || [])
+    .filter(paragraph => !newsLabIsMetaOnlyParagraph(paragraph))
+    .slice(0, readiness.articleFormat === "breaking-brief" ? 4 : 7);
+  if (body.join(" ").length < (readiness.articleFormat === "breaking-brief" ? 220 : 360)) return null;
+  const category = lockedDossier.category || recovery.item?.category || newsLabCategory(representative);
+  const baseStory = {
+    title: lockedDossier.whatHappened || recovery.item?.title || "",
+    originalHeadline: recovery.item?.title || "",
+    summary: body[0] || lockedDossier.knownFacts?.[0] || "",
+    articleSummary: body.join(" "),
+    body,
+    category,
+    storyDossier: lockedDossier,
+    sources,
+    writerDossierInput: newsLabWriterDossierInput(lockedDossier, { story: representative }),
+    evidenceSupportedArticleCapacity: readiness,
+    articleCapacityTier: readiness.readinessTier,
+    articleFormat: readiness.articleFormat,
+    recoveredDossierPublicationLane: {
+      active: true,
+      action: recovery.action,
+      readinessClass: readiness.readinessClass,
+      beforeFingerprint: recovery.beforeFingerprint,
+      afterFingerprint: recovery.afterFingerprint,
+      changed: recovery.changed,
+      rule: "Recovered dossiers that pass integrity are routed into the article lane as briefs or full articles according to depth capacity."
+    }
+  };
+  const title = newsLabSelectPassingHeadline(baseStory, newsLabEventHeadlineFromDossier(baseStory) || newsLabHeadlineFromCompletedArticle(baseStory, index) || baseStory.title);
+  return enforceNewsLabEditorCategory({
+    ...baseStory,
+    id: `news_lab_recovered_${category}_${index}_${safeFileSlug(title || baseStory.title).slice(0, 52)}`,
+    eventId: lockedDossier.eventId || lockedDossier.storyId || recovery.item?.eventId || recovery.item?.id || "",
+    topicKey: lockedDossier.eventId || lockedDossier.storyId || recovery.item?.eventId || title || baseStory.title,
+    title: newsLabEnsureOwnedHeadline(title || baseStory.title, baseStory, index),
+    categoryLabel: newsLabCategoryLabel(category),
+    image: newsLabNormalizeStoryImage(baseStory, representative.image),
+    publicationLane: readiness.articleFormat === "breaking-brief" ? "developing-brief" : "standard-or-deep-article"
+  });
+}
+
+function newsLabRunBoundedDossierRecoveryPhase(sourceStories = [], options = {}) {
+  const queue = readJsonFile(newsLabDossierRecoveryQueueFile, null) || defaultNewsLabDossierRecoveryQueue();
+  const limit = Math.max(0, Number(options.limit || process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_LIMIT || 3));
+  if (!limit) return { generatedAt: new Date().toISOString(), attempted: 0, promotedStories: [], metrics: {} };
+  const started = Date.now();
+  const budgetMs = Math.max(500, Number(options.budgetMs || process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_BUDGET_MS || 8000));
+  const candidates = (queue.active || [])
+    .filter(item => item && item.state !== "learning-only")
+    .filter(item => !item.nextRetryAt || new Date(item.nextRetryAt).getTime() <= Date.now())
+    .map(item => ({ ...item, priorityScore: newsLabDossierRecoveryPriority(item) }))
+    .sort((a, b) => b.priorityScore - a.priorityScore)
+    .slice(0, limit * 3);
+  const attempted = [];
+  const promotedStories = [];
+  const transitions = [];
+  for (const item of candidates) {
+    if (attempted.length >= limit || Date.now() - started >= budgetMs) break;
+    const recovery = newsLabExecuteDossierRecoveryAction(item, sourceStories);
+    attempted.push(recovery);
+    const story = newsLabStoryFromRecoveredDossier(recovery, attempted.length - 1);
+    if (story) promotedStories.push(story);
+    transitions.push({
+      at: new Date().toISOString(),
+      eventId: item.eventId || item.id || "",
+      action: recovery.action,
+      priorityScore: item.priorityScore,
+      changed: recovery.changed,
+      ready: recovery.ready,
+      readinessTier: recovery.readiness.readinessTier,
+      articleFormat: recovery.readiness.articleFormat,
+      promoted: Boolean(story),
+      beforeFingerprint: recovery.beforeFingerprint,
+      afterFingerprint: recovery.afterFingerprint
+    });
+  }
+  const active = (queue.active || []).map(item => {
+    const transition = transitions.find(row => row.eventId === (item.eventId || item.id || ""));
+    if (!transition) return item;
+    return {
+      ...item,
+      fingerprint: transition.afterFingerprint || item.fingerprint,
+      previousFingerprint: transition.beforeFingerprint || item.previousFingerprint,
+      retryCount: Number(item.retryCount || 0) + 1,
+      state: transition.promoted ? "promoted-to-editor-candidate" : transition.ready ? "ready-route" : transition.changed ? "needs-recovery" : "unchanged-held",
+      nextRetryAt: transition.promoted ? null : new Date(Date.now() + (transition.changed ? 10 : 30) * 60 * 1000).toISOString(),
+      lastRecoveryAction: transition.action,
+      updatedAt: transition.at
+    };
+  });
+  const metrics = {
+    attempted: attempted.length,
+    promoted: promotedStories.length,
+    unchanged: transitions.filter(row => !row.changed).length,
+    readyAfterRecovery: transitions.filter(row => row.ready).length,
+    elapsedMs: Date.now() - started,
+    budgetMs,
+    briefReady: transitions.filter(row => row.articleFormat === "breaking-brief").length,
+    standardReady: transitions.filter(row => row.readinessTier === "READY_FOR_STANDARD_ARTICLE" || row.readinessTier === "READY_FOR_DEEP_ARTICLE").length
+  };
+  writeJsonFile(newsLabDossierRecoveryQueueFile, {
+    ...queue,
+    updatedAt: new Date().toISOString(),
+    active,
+    executableRecovery: {
+      ...(queue.executableRecovery || {}),
+      latest: { generatedAt: new Date().toISOString(), metrics, transitions },
+      totals: {
+        attempted: Number(queue.executableRecovery?.totals?.attempted || 0) + metrics.attempted,
+        promoted: Number(queue.executableRecovery?.totals?.promoted || 0) + metrics.promoted,
+        unchanged: Number(queue.executableRecovery?.totals?.unchanged || 0) + metrics.unchanged
+      },
+      rule: "Recovery classifications are executable workflow routes. Bounded recovery prioritizes closest-to-publication dossiers and does not rerun unchanged fingerprints indefinitely."
+    }
+  });
+  return {
+    generatedAt: new Date().toISOString(),
+    attempted: attempted.length,
+    promotedStories,
+    metrics,
+    transitions
+  };
+}
+
 function recordNewsLabDossierRecovery(record = {}) {
   const queue = readJsonFile(newsLabDossierRecoveryQueueFile, null) || defaultNewsLabDossierRecoveryQueue();
   const now = new Date().toISOString();
   const readinessClass = record.readinessClass || "NEEDS_ENRICHMENT";
   const eventId = String(record.eventId || record.clusterId || record.storyId || record.title || crypto.randomUUID()).slice(0, 220);
+  const fingerprint = newsLabDossierFingerprint(record.partialDossier || {});
+  const existing = (queue.active || []).find(item => item.id === eventId || item.eventId === eventId || item.clusterId === (record.clusterId || eventId));
   const compact = {
     id: eventId,
     eventId,
@@ -22712,13 +23047,17 @@ function recordNewsLabDossierRecovery(record = {}) {
     rejectedSources: (record.rejectedSources || []).slice(0, 6),
     partialDossier: record.partialDossier || null,
     nextAction: record.recommendedAction || newsLabDossierRecoveryAction(readinessClass, record.blockingReasons || []),
-    retryCount: Number(record.retryCount || 0),
+    fingerprint,
+    unchangedSinceLastRecovery: Boolean(existing?.fingerprint && existing.fingerprint === fingerprint),
+    priorityScore: 0,
+    retryCount: Number(record.retryCount || existing?.retryCount || 0),
     nextRetryAt: record.nextRetryAt || null,
     state: ["FULL_ARTICLE", "READY_FOR_DEVELOPING_BRIEF"].includes(readinessClass) ? "ready-route" : readinessClass === "REJECTED" ? "learning-only" : "needs-recovery",
     updatedAt: now,
     createdAt: record.createdAt || now,
     preventionLesson: record.preventionLesson || "Collector, Cluster, and Dossier Builder should prevent this failure class before Writer handoff by separating same-event facts, resolving identity, and choosing brief format when evidence is thin."
   };
+  compact.priorityScore = newsLabDossierRecoveryPriority(compact);
   const compactTitleKey = cleanArticleText(compact.title || "", 220).toLowerCase();
   const active = [compact, ...(queue.active || []).filter(item => {
     if (item.id === compact.id || item.eventId === compact.eventId || item.clusterId === compact.clusterId) return false;
@@ -23588,6 +23927,59 @@ function newsLabCleanRepairHeadlineCandidate(candidate = "") {
 }
 
 function newsLabEventHeadlineFromDossier(story = {}) {
+  const dossier = story.storyDossier || {};
+  const structuredActor = cleanArticleText(
+    dossier.primaryActor
+    || dossier.canonicalEvent?.primaryActor
+    || dossier.storyIdentity?.primaryActor
+    || dossier.writerInput?.storyDNA?.primaryActor
+    || dossier.storyIntelligenceDossier?.storyDNA?.primaryActor
+    || [...(dossier.people || []), ...(dossier.organizations || []), ...(dossier.whoIsInvolved || [])][0]
+    || "",
+    80
+  );
+  const structuredAction = cleanArticleText(
+    dossier.verifiedAction
+    || dossier.canonicalEvent?.verifiedAction
+    || dossier.storyIdentity?.verifiedAction
+    || dossier.writerInput?.storyDNA?.verifiedAction
+    || dossier.storyIntelligenceDossier?.storyDNA?.verifiedAction
+    || newsLabActionPhraseFromText([dossier.whatHappened, ...(dossier.knownFacts || [])].filter(Boolean).join(" "), newsLabCategory(story)),
+    80
+  );
+  const structuredConsequence = cleanArticleText(
+    dossier.verifiedConsequence
+    || dossier.canonicalEvent?.verifiedConsequence
+    || dossier.storyIdentity?.verifiedConsequence
+    || dossier.consequence
+    || dossier.whyItMatters
+    || dossier.writerInput?.storyDNA?.verifiedConsequence
+    || dossier.storyIntelligenceDossier?.storyDNA?.verifiedConsequence
+    || "",
+    90
+  );
+  const structuredLocation = cleanArticleText(
+    dossier.location
+    || dossier.canonicalEvent?.location
+    || dossier.storyIdentity?.location
+    || (Array.isArray(dossier.locations) ? dossier.locations[0] : ""),
+    60
+  );
+  const consequenceWords = structuredConsequence
+    .split(/\s+/)
+    .filter(word => !/^(the|a|an|and|or|but|with|from|that|this|after|before|amid|over)$/i.test(word))
+    .slice(0, 5)
+    .join(" ");
+  const structuredCandidates = [
+    [structuredActor, structuredAction, consequenceWords].filter(Boolean).join(" "),
+    [structuredActor, structuredAction, structuredLocation && !structuredActor.toLowerCase().includes(structuredLocation.toLowerCase()) ? structuredLocation : ""].filter(Boolean).join(" "),
+    [structuredActor, structuredAction].filter(Boolean).join(" ")
+  ]
+    .map(candidate => newsLabCleanPublicHeadlineText(newsLabTitleCase(candidate)).replace(/[,.!?;:]+$/g, "").trim())
+    .filter(candidate => candidate.split(/\s+/).length >= 4)
+    .filter(candidate => !newsLabSecondPassHeadlineFatal(candidate))
+    .filter(candidate => newsLabHeadlineEditor(candidate, { ...story, title: candidate }).passed);
+  if (structuredCandidates.length) return structuredCandidates[0];
   const text = [
     story.title,
     story.originalHeadline,
@@ -26667,6 +27059,7 @@ function newsLabHardDuplicateEventKey(story = {}) {
 }
 
 function newsLabNormalizeCategoryBeforeEditor(story = {}) {
+  story = newsLabEnsureWriterDossierHandoff(story);
   const authority = newsLabCanonicalCategoryFromIdentity(story);
   const assignedCategory = String(story.category || "top").toLowerCase();
   const finalCategory = authority.category;
@@ -28177,8 +28570,37 @@ function newsLabDraftOptimizationCleanParagraphs(story = {}) {
 function newsLabDraftOptimizationEngine(story = {}, index = 0) {
   const startedAt = new Date().toISOString();
   const beforeIssues = newsLabBuildUsefulnessPreEditorIssues(story);
-  let repaired = newsLabSanitizePublicNewsCopy(story);
+  let repaired = newsLabEnsureWriterDossierHandoff(newsLabSanitizePublicNewsCopy(story));
   const actions = [];
+
+  if (repaired.writerBlockedByDossier?.blocked) {
+    const afterIssues = [
+      ...new Set([
+        ...beforeIssues,
+        ...(repaired.writerBlockedByDossier.reasons || []),
+        "needs-completed-story-dossier"
+      ])
+    ];
+    return {
+      ...repaired,
+      draftOptimizationEngine: {
+        active: true,
+        optimizedAt: new Date().toISOString(),
+        startedAt,
+        beforeIssues,
+        afterIssues,
+        correctedIssues: [],
+        actions: ["returned-incomplete-dossier-to-story-dossier-builder-before-editor"],
+        readyForPublishingEditor: false,
+        nextStage: "Story Dossier Builder",
+        rule: "Draft Optimization may not polish an article that was not written from a completed locked Story Dossier. The responsible system must expand the dossier before writing resumes."
+      },
+      approvalPreventionLesson: {
+        ...(repaired.approvalPreventionLesson || {}),
+        dossierOnlyWriterGate: "Avoid first-pass rejection by completing and locking the Story Dossier before Writer, Headline Builder, Draft Optimization, or Publishing Editor runs."
+      }
+    };
+  }
 
   const cleanedBody = newsLabDraftOptimizationCleanParagraphs(repaired);
   if (cleanedBody.length && newsLabTextOverlap(cleanedBody.join(" "), (repaired.body || []).join(" ")) < 0.98) {
@@ -36502,7 +36924,81 @@ function newsLabWriterDossierInput(storyDossier = {}, intelligenceInputs = {}) {
 }
 
 function newsLabEnsureWriterDossierHandoff(story = {}) {
-  const writerDossierInput = story.writerDossierInput || newsLabWriterDossierInput(story.storyDossier || {});
+  const sourceDossier = story.storyDossier && typeof story.storyDossier === "object" ? story.storyDossier : null;
+  const hasStructuredDossier = Boolean(sourceDossier && (
+    sourceDossier.whatHappened
+    || sourceDossier.eventId
+    || sourceDossier.storyId
+    || sourceDossier.writerInput
+    || (Array.isArray(sourceDossier.knownFacts) && sourceDossier.knownFacts.length)
+    || (Array.isArray(sourceDossier.sourcePool) && sourceDossier.sourcePool.length)
+  ));
+  let dossierReadiness = hasStructuredDossier
+    ? newsLabDossierReadinessContract(sourceDossier, {
+        representative: story,
+        sources: Array.isArray(story.sources) ? story.sources : [],
+        eventId: sourceDossier.eventId || sourceDossier.storyId || story.eventId || story.id || story.topicKey || ""
+      })
+    : {
+        version: "20260801-dossier-only-writer-gate",
+        readyForWriter: false,
+        readinessClass: "hold-for-dossier-evidence",
+        readinessTier: "HOLD_FOR_EVIDENCE",
+        articleFormat: "hold",
+        score: 0,
+        missing: ["needs-completed-story-dossier"],
+        blockingReasons: ["needs-completed-story-dossier"],
+        missingEvidence: ["needs-completed-story-dossier"],
+        recommendedAction: "build-story-dossier-before-writing",
+        decision: "hold-for-dossier-evidence"
+      };
+  const dossierReadyForWriter = Boolean(dossierReadiness.readyForWriter && dossierReadiness.readinessTier !== "HOLD_FOR_EVIDENCE");
+  const lockedDossier = hasStructuredDossier && dossierReadyForWriter
+    ? (sourceDossier.dossierLock?.active ? sourceDossier : newsLabLockDossierForWriting(sourceDossier, dossierReadiness, {
+        eventId: sourceDossier.eventId || sourceDossier.storyId || story.eventId || story.id || story.topicKey || ""
+      }))
+    : sourceDossier;
+  const writerDossierInput = dossierReadyForWriter
+    ? {
+        ...newsLabWriterDossierInput(lockedDossier || {}, {
+          story,
+          evidenceEngine: story.evidenceEngine || lockedDossier?.evidenceEngine || {},
+          knowledgeGraph: story.knowledgeGraph || lockedDossier?.knowledgeGraph || {},
+          entityMemory: story.entityMemory || lockedDossier?.entityMemory || {},
+          productionPlanner: lockedDossier?.productionPlanner || lockedDossier?.writerInput?.productionPlanner || null
+        }),
+        centralKnowledgeObject: true,
+        completedDossierOnly: true,
+        sourcePolicy: "completed-story-dossier-only",
+        rssDirectUseAllowed: false,
+        dossierLock: lockedDossier?.dossierLock || null,
+        readinessContract: dossierReadiness
+      }
+    : null;
+  const blockedByDossier = !dossierReadyForWriter;
+  const blockedReasons = [
+    ...(Array.isArray(dossierReadiness.blockingReasons) ? dossierReadiness.blockingReasons : []),
+    ...(Array.isArray(dossierReadiness.missing) ? dossierReadiness.missing : []),
+    blockedByDossier && !hasStructuredDossier ? "needs-completed-story-dossier" : "",
+    blockedByDossier && hasStructuredDossier ? "needs-dossier-evidence" : ""
+  ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
+  const qualityGate = blockedByDossier
+    ? {
+        ...(story.qualityGate || {}),
+        remainingIssues: [
+          ...new Set([
+            ...((story.qualityGate && Array.isArray(story.qualityGate.remainingIssues)) ? story.qualityGate.remainingIssues : []),
+            ...blockedReasons
+          ])
+        ],
+        dossierOnlyWriterGate: {
+          passed: false,
+          checkedAt: new Date().toISOString(),
+          reason: blockedReasons[0] || "needs-dossier-evidence",
+          nextStage: "Story Dossier Builder"
+        }
+      }
+    : story.qualityGate;
   const learningApplicationProof = {
     active: true,
     measuredAt: new Date().toISOString(),
@@ -36518,7 +37014,7 @@ function newsLabEnsureWriterDossierHandoff(story = {}) {
   };
   const existingWorkflow = story.writingWorkflow || {};
   const stages = Array.isArray(existingWorkflow.stages) ? [...existingWorkflow.stages] : [];
-  const handoffStage = newsLabWorkflowStage("Dossier To Writer Handoff", writerDossierInput?.knownFacts?.length ? "complete" : "needs-structured-dossier", writerDossierInput?.writingBoundary || "Writer needs a structured dossier input before drafting.", {
+  const handoffStage = newsLabWorkflowStage("Dossier To Writer Handoff", dossierReadyForWriter ? "complete" : "needs-completed-story-dossier", writerDossierInput?.writingBoundary || "Writer needs a completed, locked Story Dossier before drafting; RSS/feed fragments must return to Evidence and Dossier instead.", {
     officialStatements: Number(writerDossierInput?.officialStatements?.length || 0),
     independentReports: Number(writerDossierInput?.independentReports?.length || 0),
     timelineItems: Number(writerDossierInput?.timeline?.length || 0),
@@ -36538,7 +37034,30 @@ function newsLabEnsureWriterDossierHandoff(story = {}) {
     : [handoffStage, ...filteredStages];
   return {
     ...story,
+    storyDossier: lockedDossier || story.storyDossier,
     writerDossierInput,
+    dossierWriterHandoff: {
+      active: true,
+      centralKnowledgeObject: true,
+      completedDossierOnly: true,
+      readyForWriter: dossierReadyForWriter,
+      readinessScore: Number(dossierReadiness.score || 0),
+      readinessTier: dossierReadiness.readinessTier || "unknown",
+      articleFormat: dossierReadiness.articleFormat || "unknown",
+      blockedReasons,
+      nextStage: dossierReadyForWriter ? "Article Writer" : "Story Dossier Builder",
+      rule: "The Writer never consumes RSS directly. Collection can use RSS/feed data, but drafting starts only from a completed locked Story Dossier."
+    },
+    writerBlockedByDossier: blockedByDossier ? {
+      blocked: true,
+      blockedAt: new Date().toISOString(),
+      reasons: blockedReasons,
+      responsibleSystem: "Story Dossier Builder",
+      signalTo: ["Collector", "Sub Dossier", "Evidence Engine", "Story Dossier Builder", "Article Writer"],
+      fix: "Expand the same-event dossier with verified facts, source context, timeline, and a writer evidence pack before prose generation.",
+      preventionLesson: "Future drafts must check dossier readiness and route incomplete/mixed events back upstream before the Writer or Headline Builder runs."
+    } : null,
+    qualityGate,
     learningApplicationProof,
     sourcePolicy: "RSS feeds and publisher links are collection/provenance inputs. The public article must be written from the structured Story Dossier and use original Censored Expressions wording with licensed image provenance.",
     writingWorkflow: {
@@ -43933,6 +44452,38 @@ async function buildNewsLabPayload(payload = {}) {
       });
     }
   }
+  const dossierRecoveryPhase = newsLabRunBoundedDossierRecoveryPhase(globalSourceStories, {
+    limit: workerFinishMode ? Number(process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_LIMIT || 3) : Number(process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_LIMIT || 2),
+    budgetMs: workerFinishMode ? Number(process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_BUDGET_MS || 8000) : Number(process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_BUDGET_MS || 5000)
+  });
+  if (dossierRecoveryPhase.promotedStories.length) {
+    generatedStories = [
+      ...generatedStories,
+      ...dossierRecoveryPhase.promotedStories
+    ];
+    saveFrameworkLearningProofEntry({
+      category: "news-lab-dossier-recovery-executable",
+      event: "Dossier recovery queue promoted held dossiers into editor-reviewable candidates.",
+      plainEnglish: "The Brain did not wait for another generic collection cycle. It executed targeted dossier recovery, rescored readiness, and moved viable recovered dossiers into the article pipeline.",
+      realWorldData: {
+        attempted: dossierRecoveryPhase.metrics.attempted,
+        promoted: dossierRecoveryPhase.metrics.promoted,
+        briefReady: dossierRecoveryPhase.metrics.briefReady,
+        standardReady: dossierRecoveryPhase.metrics.standardReady,
+        elapsedMs: dossierRecoveryPhase.metrics.elapsedMs
+      },
+      decisionMeasurement: {
+        responsibleSystem: "Story Dossier Builder / Dossier Recovery Worker",
+        fix: "Route held dossiers through executable recovery actions and promote only ready dossiers to the writer/editor lane.",
+        prevent: "Future held dossiers must carry a fingerprint, priority score, next action, and readiness rerun before another writing attempt."
+      },
+      proceduralMemory: {
+        futureUse: "When source collection is healthy but public articles stall, run the bounded dossier recovery lane before increasing collector count.",
+        interventionNeeded: false
+      },
+      tags: ["news-lab", "story-dossier", "article-publication", "recovery"]
+    });
+  }
   if (workerFinishMode) {
     writeNewsLabWorkerStatus({
       active: true,
@@ -43942,6 +44493,8 @@ async function buildNewsLabPayload(payload = {}) {
       metrics: {
         writingClusterCount: writingClusters.length,
         generatedStoryCount: generatedStories.filter(Boolean).length,
+        dossierRecoveryAttempted: dossierRecoveryPhase.metrics.attempted,
+        dossierRecoveryPromoted: dossierRecoveryPhase.metrics.promoted,
         elapsedMs: Date.now() - started,
         skippedFullBuilder: true
       }
@@ -44255,6 +44808,16 @@ async function buildNewsLabPayload(payload = {}) {
       generalBackfillStoryCount: generalBackfillStories.length,
       editorInputStoryCount: allOwnedStories.length,
       qualityGateReviewedCount: 0,
+      dossierRecoveryPhase: {
+        attempted: Number(dossierRecoveryPhase.metrics?.attempted || 0),
+        promoted: Number(dossierRecoveryPhase.metrics?.promoted || 0),
+        unchanged: Number(dossierRecoveryPhase.metrics?.unchanged || 0),
+        readyAfterRecovery: Number(dossierRecoveryPhase.metrics?.readyAfterRecovery || 0),
+        briefReady: Number(dossierRecoveryPhase.metrics?.briefReady || 0),
+        standardReady: Number(dossierRecoveryPhase.metrics?.standardReady || 0),
+        elapsedMs: Number(dossierRecoveryPhase.metrics?.elapsedMs || 0),
+        rule: "Dossier conversion is measured separately from dossier completion: recovery attempts, recovered-to-ready, brief-ready, standard-ready, and promoted editor candidates."
+      },
       buildUsefulnessPreEditor: buildUsefulnessPreEditorPass.diagnostics,
       dropReasonCounts,
       sampleDroppedStories: generatedRows.filter(row => !row.selectedForEditor).slice(0, 12),
