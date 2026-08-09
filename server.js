@@ -28056,30 +28056,34 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
   else if (/\bdelta\b/.test(lower) && /flight|airbus|midway|firework/.test(lower)) actor = "Delta Flight";
   const action = (() => {
     if (/\b(suspends?|drops? out|ends? campaign|withdraws?)\b/.test(lower)) return "Ends";
-    if (/\b(loses?|lost|upheld|appeal|fine|ruling)\b/.test(lower)) return "Faces";
+    if (/\b(loses?|lost)\b/.test(lower) && /\b(appeal|fine|case|ruling)\b/.test(lower)) return "Loses";
+    if (/\b(upheld|appeal|fine|ruling)\b/.test(lower)) return "Faces";
     if (/\b(wins?|beats?|advances?|clinches?|scores?|defeats?)\b/.test(lower)) return "Advances";
-    if (/\b(strikes?|attacks?|missile|drone|war|ceasefire|military)\b/.test(lower)) return "Raises";
-    if (/\b(signs?|passes?|approves?|blocks?|allows?|rules?|orders?)\b/.test(lower)) return "Moves";
-    if (/\b(heat|storm|flood|fire|outage|warning|watch|evacuation)\b/.test(lower)) return "Brings";
-    if (/\b(stock|market|shares|earnings|housing|jobs|economy|tariff|inflation)\b/.test(lower)) return "Draws";
+    if (/\b(strikes?|attacks?|missile|drone|war|ceasefire|military)\b/.test(lower)) return /\b(strikes?|attacks?)\b/.test(lower) ? "Strikes" : "Alters";
+    if (/\b(signs?|passes?|approves?)\b/.test(lower)) return "Approves";
+    if (/\b(blocks?|allows?|rules?|orders?)\b/.test(lower)) return "Rules On";
+    if (/\b(heat|storm|flood|fire|outage|warning|watch|evacuation)\b/.test(lower)) return "Forces";
+    if (/\b(stock|shares|earnings)\b/.test(lower)) return /\bhits?|jumps?|rises?|drops?|falls?\b/.test(lower) ? "Moves" : "Faces";
+    if (/\b(housing|jobs|economy|tariff|inflation)\b/.test(lower)) return "Shapes";
     if (/\b(ai|technology|cyber|software|app|data|privacy|chip|nasa|spacex)\b/.test(lower)) return "Faces";
-    return "Adds";
+    return "Updates";
   })();
   const consequence = (() => {
     if (/google|android|european union|antitrust|fine|appeal/.test(lower)) return "EU Android Fine";
     if (/morocco|netherlands|shootout|world cup/.test(lower)) return "After Shootout Win";
     if (/campaign|senate|primary|election/.test(lower)) return "Senate Primary Shift";
     if (/delta|flight|airbus|midway|firework/.test(lower)) return "New Airport Safety Questions";
-    if (/trump/.test(lower) && /(market|economy|tariff|jobs|stock|housing)/.test(lower)) return "New Market Scrutiny";
-    if (category === "sports") return "Competitive Stakes";
-    if (category === "world") return "International Response";
-    if (category === "politics") return "Public Decision";
-    if (category === "business") return "Market Scrutiny";
-    if (category === "technology") return "Technology Scrutiny";
-    if (category === "entertainment") return "Public Attention";
-    if (category === "local") return "Local Response";
+    if (/trump/.test(lower) && /(market|economy|tariff|jobs|stock|housing)/.test(lower)) return "Economic Policy Debate";
+    if (/\b(stock|shares|earnings|market)\b/.test(lower)) return "In Market Trading";
+    if (/\b(storm|flood|fire|outage|warning|watch|evacuation)\b/.test(lower)) return "Emergency Response";
+    if (/\b(strikes?|attacks?|missile|drone|war|ceasefire|military)\b/.test(lower)) return "Security Timeline";
+    if (/\b(signs?|passes?|approves?|bill|funding|policy)\b/.test(lower)) return "Policy Measure";
+    if (category === "sports") return "Tournament Picture";
+    if (category === "technology") return "Technology Case";
+    if (category === "entertainment") return "Entertainment Story";
     return "Confirmed Developments";
   })();
+  const finalHeadline = newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(`${actor} ${action} ${consequence}`.replace(/\s+/g, " ")).replace(/[,;:.!?]+$/g, "").trim());
   return {
     who: actor,
     whatHappened: cleanArticleText(dossier.whatHappened || (Array.isArray(story.body) ? story.body[0] : "") || story.summary || "", 260),
@@ -28088,7 +28092,8 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
     consequence,
     bestVerb: action,
     forbiddenCopiedPhrases: sourcePhrases,
-    finalHeadline: newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(`${actor} ${action} ${consequence}`).replace(/[,;:.!?]+$/g, "").trim())
+    constitution: newsLabHeadlineConstitutionCheck(finalHeadline, story),
+    finalHeadline
   };
 }
 
@@ -37340,6 +37345,69 @@ function newsLabHeadlineForbiddenFiller(title = "") {
   return /\b(draws public attention|draws new attention|draws new questions|raises new questions|brings new questions|comes into focus|moves into focus|adds new verified details|develops with new confirmed details|changes the picture|changes public release plans|changes international response|moves toward public decision|raises security questions|draws culture spotlight|faces technology review|faces new market pressure|draws new political scrutiny|brings official response|triggers local response|prompts local response|brings emergency response|moves through court|sets new policy fight|reshapes tournament picture|heads into decisive finish|advances in tournament test)\b/i.test(title);
 }
 
+function newsLabHeadlineConstitutionCheck(title = "", story = {}) {
+  const { cleanTitle, words, actionIndex, subjectWords } = newsLabHeadlineWordProfile(title);
+  const issues = [];
+  const storyText = [
+    story.originalHeadline,
+    story.summary,
+    story.articleSummary,
+    story.lead,
+    ...(story.storyDossier?.knownFacts || []),
+    story.storyDossier?.whatHappened,
+    story.storyUnderstanding?.answers?.whatHappened,
+    story.storyUnderstanding?.answers?.whatChanged,
+    ...(Array.isArray(story.body) ? story.body : [])
+  ].filter(Boolean).join(" ");
+  const lowerEvidence = storyText.toLowerCase();
+  const weakActor = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Today|Tomorrow|Yesterday|Global|Huge|What|Why|How|This|That|These|Those|It|The|U\.s|U\.S\.|US|News|Story|Report|Reports|Coverage|Video|Pictures|Officials|Sources|Local|World|Politics|Business|Sports|Technology|Entertainment)$/i;
+  const vagueConsequence = /\b(Raises|Draws|Brings|Prompts|Triggers|Changes|Adds|Faces)\s+(International Response|Local Response|Public Response|Public Attention|Public Decision|Market Scrutiny|Technology Scrutiny|Industry Review|Culture Spotlight|Competitive Stakes|Security Questions|Policy Fight|Government Fight|New Questions)\b/i;
+  const forcedConsequence = /\b(Raises|Draws|Brings|Prompts|Triggers|Changes|Adds|Faces)\s+(International|Local|Public|Market|Technology|Industry|Culture|Competitive|Security|Policy|Government)\s+(Response|Attention|Decision|Scrutiny|Review|Spotlight|Stakes|Questions|Fight)\b/i;
+  const malformedPossessiveActor = /\b[A-Z][A-Za-z0-9.-]*'s\s+(Raises|Draws|Brings|Prompts|Triggers|Changes|Adds|Faces|Moves)\b/;
+  const doubleVerb = /\b(Hits|Touts|Warns|Says|Reports|Scores|Wins|Beats|Loses|Faces|Draws|Raises|Moves|Changes|Adds|Brings)\s+(Draws|Raises|Moves|Changes|Adds|Brings|Faces|Prompts|Triggers)\b/i;
+  const actor = subjectWords.join(" ");
+  const action = actionIndex >= 0 ? words[actionIndex] : "";
+  const objectWords = actionIndex >= 0 ? words.slice(actionIndex + 1) : [];
+  if (!cleanTitle) issues.push("headline-empty");
+  if (words.length < 4) issues.push("headline-too-thin");
+  if (words.length > 14) issues.push("headline-too-long");
+  if (actionIndex < 1) issues.push("headline-constitution-missing-action");
+  if (!actor || weakActor.test(actor) || subjectWords.some(word => weakActor.test(word))) issues.push("headline-constitution-weak-actor");
+  if (actionIndex >= 1 && objectWords.length < 1) issues.push("headline-constitution-missing-object");
+  if (malformedPossessiveActor.test(cleanTitle)) issues.push("headline-constitution-malformed-actor");
+  if (doubleVerb.test(cleanTitle)) issues.push("headline-constitution-double-action");
+  if (vagueConsequence.test(cleanTitle) || forcedConsequence.test(cleanTitle)) issues.push("headline-constitution-vague-forced-consequence");
+  if (/\b(Raises|Draws|Brings|Prompts|Triggers|Changes|Adds|Faces)\s+(International Response|Local Response|Public Attention|Market Scrutiny)\b/i.test(cleanTitle)) issues.push("headline-word-salad");
+  const actorTerms = newsLabTermSet(actor);
+  const objectTerms = newsLabTermSet(objectWords.join(" "));
+  const evidenceTerms = newsLabTermSet(storyText);
+  const actorOverlap = [...actorTerms].filter(term => evidenceTerms.has(term)).length;
+  const objectOverlap = [...objectTerms].filter(term => evidenceTerms.has(term)).length;
+  const entityOverlap = storyNamedEntities({ title: cleanTitle, summary: cleanTitle })
+    .some(entity => new Set(storyNamedEntities({ title: storyText, summary: storyText })).has(entity));
+  if (storyText && actorTerms.size && actorOverlap === 0 && !entityOverlap) issues.push("headline-constitution-actor-not-supported");
+  if (storyText && objectTerms.size >= 2 && objectOverlap === 0) issues.push("headline-constitution-object-not-supported");
+  if (forcedConsequence.test(cleanTitle) && !lowerEvidence.includes(cleanTitle.toLowerCase())) issues.push("headline-constitution-consequence-not-supported");
+  return {
+    passed: issues.length === 0,
+    issues: [...new Set(issues)],
+    checks: {
+      accuracy: !issues.some(issue => /not-supported|consequence/.test(issue)),
+      actorIdentified: Boolean(actor && !weakActor.test(actor)),
+      actionIdentified: actionIndex >= 1,
+      objectOrSubject: objectWords.length >= 1,
+      semanticCompleteness: !issues.some(issue => /weak-actor|missing-action|missing-object|malformed|double-action|word-salad/.test(issue)),
+      evidenceSupport: !issues.some(issue => /not-supported/.test(issue)),
+      grammar: !issues.some(issue => /malformed|double-action|word-salad/.test(issue)),
+      wordCount: words.length
+    },
+    actor,
+    action,
+    object: objectWords.join(" "),
+    rule: "A News Lab headline must make semantic sense on its own: supported actor plus meaningful action plus supported subject/object. Consequence is optional and must never be invented as filler."
+  };
+}
+
 function newsLabHeadlineWordProfile(title = "") {
   const cleanTitle = newsLabTitleCase(cleanArticleText(title || "", 140)).replace(/[,.!?;:]+$/g, "").trim();
   const words = cleanTitle.split(/\s+/).filter(Boolean);
@@ -37369,6 +37437,8 @@ function newsLabHeadlineQualityCheck(title = "", story = {}) {
   const { cleanTitle, words, actionIndex, subjectWords } = newsLabHeadlineWordProfile(title);
   const issues = [];
   const category = newsLabHeadlineCategory(cleanTitle, story);
+  const constitution = newsLabHeadlineConstitutionCheck(cleanTitle, story);
+  constitution.issues.forEach(issue => issues.push(issue));
   const storyText = [
     story.originalHeadline,
     story.summary,
@@ -37417,12 +37487,14 @@ function newsLabHeadlineQualityCheck(title = "", story = {}) {
     subject: subjectWords.join(" "),
     sharedTerms,
     sharedEntity,
+    constitution,
     principles: [
       "clear-accurate",
       "concise",
       "active-voice",
       "specific",
       "timely",
+      "semantic-completeness",
       "balanced"
     ]
   };
