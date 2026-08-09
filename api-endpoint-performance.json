@@ -1,0 +1,340 @@
+{
+  "version": "20260727-api-endpoint-profiler-v1",
+  "updatedAt": "2026-08-09T03:00:51.766Z",
+  "purpose": "Measure endpoint duration, file read time, JSON parse time, response size, and total elapsed time so sync timeouts and 502s can be traced to exact API paths.",
+  "totals": {
+    "requests": 4,
+    "slowRequests": 3
+  },
+  "endpoints": {
+    "GET /api/learning": {
+      "requests": 2,
+      "slowRequests": 1,
+      "totalMs": 2168,
+      "maxMs": 2156,
+      "totalFileReadMs": 1332,
+      "totalJsonParseMs": 383,
+      "totalResponseBytes": 3084766,
+      "lastStatusCode": 200,
+      "lastSeenAt": "2026-07-28T13:09:43.256Z",
+      "avgMs": 1084,
+      "avgFileReadMs": 666,
+      "avgJsonParseMs": 191.5,
+      "avgResponseBytes": 1542383
+    },
+    "GET /api/owner-brain-state": {
+      "requests": 1,
+      "slowRequests": 1,
+      "totalMs": 15492,
+      "maxMs": 15492,
+      "totalFileReadMs": 1840,
+      "totalJsonParseMs": 471,
+      "totalResponseBytes": 95812,
+      "lastStatusCode": 200,
+      "lastSeenAt": "2026-07-28T13:10:18.952Z",
+      "avgMs": 15492,
+      "avgFileReadMs": 1840,
+      "avgJsonParseMs": 471,
+      "avgResponseBytes": 95812
+    },
+    "GET /api/news-lab": {
+      "requests": 1,
+      "slowRequests": 1,
+      "totalMs": 5460,
+      "maxMs": 5460,
+      "totalFileReadMs": 685,
+      "totalJsonParseMs": 50,
+      "totalResponseBytes": 284151,
+      "lastStatusCode": 200,
+      "lastSeenAt": "2026-08-09T03:00:51.766Z",
+      "avgMs": 5460,
+      "avgFileReadMs": 685,
+      "avgJsonParseMs": 50,
+      "avgResponseBytes": 284151
+    }
+  },
+  "recent": [
+    {
+      "id": "1fb0cfc45d2e",
+      "endpoint": "GET /api/news-lab",
+      "method": "GET",
+      "path": "/api/news-lab",
+      "startedAt": "2026-08-09T03:00:46.306Z",
+      "finishedAt": "2026-08-09T03:00:51.766Z",
+      "statusCode": 200,
+      "requestStart": "2026-08-09T03:00:46.306Z",
+      "processingDurationMs": 5460,
+      "fileReadMs": 685,
+      "jsonParseMs": 50,
+      "jsonSerializeMs": 0,
+      "fileReadCount": 33,
+      "jsonParseCount": 33,
+      "responseSizeBytes": 284151,
+      "totalElapsedMs": 5460,
+      "slowFiles": [
+        {
+          "file": "editorial-learning.json",
+          "readMs": 155,
+          "parseMs": 31,
+          "bytes": 10413259,
+          "ok": true
+        },
+        {
+          "file": "news-lab-productivity.json",
+          "readMs": 56,
+          "parseMs": 1,
+          "bytes": 197630,
+          "ok": true
+        },
+        {
+          "file": "politics.json",
+          "readMs": 43,
+          "parseMs": 1,
+          "bytes": 245955,
+          "ok": true
+        },
+        {
+          "file": "business.json",
+          "readMs": 43,
+          "parseMs": 1,
+          "bytes": 218537,
+          "ok": true
+        },
+        {
+          "file": "top.json",
+          "readMs": 41,
+          "parseMs": 2,
+          "bytes": 240164,
+          "ok": true
+        },
+        {
+          "file": "local.json",
+          "readMs": 42,
+          "parseMs": 1,
+          "bytes": 327297,
+          "ok": true
+        },
+        {
+          "file": "world.json",
+          "readMs": 38,
+          "parseMs": 1,
+          "bytes": 292134,
+          "ok": true
+        },
+        {
+          "file": "news-lab-worker-status.json",
+          "readMs": 38,
+          "parseMs": 0,
+          "bytes": 25590,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "af6dc79e0850",
+      "endpoint": "GET /api/owner-brain-state",
+      "method": "GET",
+      "path": "/api/owner-brain-state",
+      "startedAt": "2026-07-28T13:10:03.460Z",
+      "finishedAt": "2026-07-28T13:10:18.952Z",
+      "statusCode": 200,
+      "requestStart": "2026-07-28T13:10:03.460Z",
+      "processingDurationMs": 15492,
+      "fileReadMs": 1840,
+      "jsonParseMs": 471,
+      "jsonSerializeMs": 0,
+      "fileReadCount": 556,
+      "jsonParseCount": 554,
+      "responseSizeBytes": 95812,
+      "totalElapsedMs": 15492,
+      "slowFiles": [
+        {
+          "file": "framework-action-log.json",
+          "readMs": 871,
+          "parseMs": 339,
+          "bytes": 111674103,
+          "ok": true
+        },
+        {
+          "file": "editorial-learning.json",
+          "readMs": 122,
+          "parseMs": 34,
+          "bytes": 10325264,
+          "ok": true
+        },
+        {
+          "file": "newsletters.json",
+          "readMs": 81,
+          "parseMs": 21,
+          "bytes": 7598280,
+          "ok": true
+        },
+        {
+          "file": "top.json",
+          "readMs": 55,
+          "parseMs": 0,
+          "bytes": 245328,
+          "ok": true
+        },
+        {
+          "file": "framework-learning-proof-log.json",
+          "readMs": 31,
+          "parseMs": 22,
+          "bytes": 6509307,
+          "ok": true
+        },
+        {
+          "file": "news-lab-knowledge-graph.json",
+          "readMs": 43,
+          "parseMs": 6,
+          "bytes": 1705208,
+          "ok": true
+        },
+        {
+          "file": "adaptive-weight-proof-log.json",
+          "readMs": 31,
+          "parseMs": 18,
+          "bytes": 3201905,
+          "ok": true
+        },
+        {
+          "file": "news-lab-rescued-approved-shelf.json",
+          "readMs": 42,
+          "parseMs": 5,
+          "bytes": 1627295,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "bec30eb0111d",
+      "endpoint": "GET /api/learning",
+      "method": "GET",
+      "path": "/api/learning",
+      "startedAt": "2026-07-28T13:09:43.244Z",
+      "finishedAt": "2026-07-28T13:09:43.256Z",
+      "statusCode": 200,
+      "requestStart": "2026-07-28T13:09:43.244Z",
+      "processingDurationMs": 12,
+      "fileReadMs": 0,
+      "jsonParseMs": 0,
+      "jsonSerializeMs": 8,
+      "fileReadCount": 0,
+      "jsonParseCount": 0,
+      "responseSizeBytes": 1542463,
+      "totalElapsedMs": 12,
+      "slowFiles": []
+    },
+    {
+      "id": "35efbf510cf5",
+      "endpoint": "GET /api/learning",
+      "method": "GET",
+      "path": "/api/learning",
+      "startedAt": "2026-07-28T13:09:40.073Z",
+      "finishedAt": "2026-07-28T13:09:42.229Z",
+      "statusCode": 200,
+      "requestStart": "2026-07-28T13:09:40.073Z",
+      "processingDurationMs": 2156,
+      "fileReadMs": 1332,
+      "jsonParseMs": 383,
+      "jsonSerializeMs": 9,
+      "fileReadCount": 81,
+      "jsonParseCount": 81,
+      "responseSizeBytes": 1542303,
+      "totalElapsedMs": 2156,
+      "slowFiles": [
+        {
+          "file": "framework-action-log.json",
+          "readMs": 841,
+          "parseMs": 323,
+          "bytes": 111674103,
+          "ok": true
+        },
+        {
+          "file": "editorial-learning.json",
+          "readMs": 157,
+          "parseMs": 30,
+          "bytes": 10325264,
+          "ok": true
+        },
+        {
+          "file": "framework-learning-proof-log.json",
+          "readMs": 92,
+          "parseMs": 18,
+          "bytes": 6509307,
+          "ok": true
+        },
+        {
+          "file": "daily-article-memory.json",
+          "readMs": 59,
+          "parseMs": 3,
+          "bytes": 2062055,
+          "ok": true
+        },
+        {
+          "file": "article-intelligence.json",
+          "readMs": 56,
+          "parseMs": 1,
+          "bytes": 292618,
+          "ok": true
+        },
+        {
+          "file": "adaptive-weight-proof-log.json",
+          "readMs": 48,
+          "parseMs": 7,
+          "bytes": 3201905,
+          "ok": true
+        },
+        {
+          "file": "framework-code-patch-proposals.json",
+          "readMs": 42,
+          "parseMs": 1,
+          "bytes": 595177,
+          "ok": true
+        },
+        {
+          "file": "search-learning.json",
+          "readMs": 35,
+          "parseMs": 0,
+          "bytes": 13989,
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "slowestEndpoints": [
+    {
+      "endpoint": "GET /api/owner-brain-state",
+      "avgMs": 15492,
+      "maxMs": 15492,
+      "requests": 1,
+      "slowRequests": 1,
+      "avgFileReadMs": 1840,
+      "avgJsonParseMs": 471,
+      "avgResponseBytes": 95812,
+      "lastSeenAt": "2026-07-28T13:10:18.952Z"
+    },
+    {
+      "endpoint": "GET /api/news-lab",
+      "avgMs": 5460,
+      "maxMs": 5460,
+      "requests": 1,
+      "slowRequests": 1,
+      "avgFileReadMs": 685,
+      "avgJsonParseMs": 50,
+      "avgResponseBytes": 284151,
+      "lastSeenAt": "2026-08-09T03:00:51.766Z"
+    },
+    {
+      "endpoint": "GET /api/learning",
+      "avgMs": 1084,
+      "maxMs": 2156,
+      "requests": 2,
+      "slowRequests": 1,
+      "avgFileReadMs": 666,
+      "avgJsonParseMs": 191.5,
+      "avgResponseBytes": 1542383,
+      "lastSeenAt": "2026-07-28T13:09:43.256Z"
+    }
+  ]
+}

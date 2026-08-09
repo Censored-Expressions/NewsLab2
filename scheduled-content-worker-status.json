@@ -1,47 +1,51 @@
-﻿{
-    "version":  "20260729-scheduled-content-autonomy-v1",
-    "generatedAt":  "2026-07-29T12:31:58.5964239Z",
-    "active":  true,
-    "lastStatus":  "completed",
-    "pid":  19104,
-    "roles":  [
-                  "maintenance",
-                  "creator-desk",
-                  "newsletter",
-                  "market-snapshot"
-              ],
-    "creatorDesk":  {
-                        "status":  "published",
-                        "stale":  false,
-                        "dayId":  "2026-07-29",
-                        "currentDayPresent":  true,
-                        "latestDayId":  "2026-07-29",
-                        "latestGeneratedAt":  "2026-07-29T12:24:30.237Z",
-                        "shouldRunNow":  false,
-                        "staleHours":  26,
-                        "lastAttemptAt":  "2026-07-29T12:23:31.300Z",
-                        "reason":  "stale-catchup",
-                        "beforeCount":  29,
-                        "afterCount":  30,
-                        "lastSuccessAt":  "2026-07-29T12:24:30.237Z"
-                    },
-    "newsletter":  {
-                       "status":  "published",
-                       "stale":  false,
-                       "weekId":  "2026-07-18",
-                       "currentWeekPresent":  true,
-                       "latestWeekId":  "2026-07-18",
-                       "latestGeneratedAt":  "2026-07-29T12:22:54.961Z",
-                       "latestSentAt":  "2026-07-29T12:22:57.936Z",
-                       "shouldRunNow":  false,
-                       "shouldCatchUpNow":  true,
-                       "skipped":  true
-                   },
-    "learning":  {
-                     "rule":  "Creator Desk and Newsletter are primary product lanes. If they miss a schedule window, the scheduled-content worker must catch up, record why, and sync the generated files."
-                 },
-    "startedAt":  "2026-07-29T12:23:31.293Z",
-    "lastReason":  "scheduled-content-startup-catchup",
-    "heartbeatAt":  "2026-07-29T12:24:27.470Z",
-    "finishedAt":  "2026-07-29T12:23:31.319Z"
+{
+  "version": "20260729-scheduled-content-autonomy-v1",
+  "generatedAt": "2026-08-09T03:00:52.147Z",
+  "active": true,
+  "lastStatus": "running",
+  "pid": 26040,
+  "roles": [
+    "maintenance",
+    "creator-desk",
+    "newsletter",
+    "market-snapshot"
+  ],
+  "creatorDesk": {
+    "status": "in-progress",
+    "stale": true,
+    "dayId": "2026-08-08",
+    "currentDayPresent": false,
+    "latestDayId": "2026-07-29",
+    "latestGeneratedAt": "2026-07-29T12:24:30.237Z",
+    "shouldRunNow": true,
+    "staleHours": 26,
+    "lastAttemptAt": "2026-08-09T03:00:52.137Z",
+    "reason": "stale-catchup",
+    "beforeCount": 30,
+    "afterCount": 30,
+    "lastSuccessAt": "",
+    "error": ""
+  },
+  "newsletter": {
+    "status": "attempting",
+    "stale": true,
+    "weekId": "2026-08-01",
+    "currentWeekPresent": false,
+    "latestWeekId": "2026-07-18",
+    "latestGeneratedAt": "2026-07-29T12:22:54.961Z",
+    "latestSentAt": "2026-07-29T12:22:57.936Z",
+    "shouldRunNow": true,
+    "shouldCatchUpNow": true,
+    "skipped": true,
+    "lastAttemptAt": "2026-08-09T03:00:52.147Z",
+    "reason": "web-fallback-startup-catchup"
+  },
+  "learning": {
+    "rule": "Creator Desk and Newsletter are primary product lanes. If they miss a schedule window, the scheduled-content worker must catch up, record why, and sync the generated files."
+  },
+  "startedAt": "2026-08-09T03:00:52.129Z",
+  "lastReason": "web-fallback-startup-catchup",
+  "heartbeatAt": "2026-07-29T12:24:27.470Z",
+  "finishedAt": "2026-07-29T12:23:31.319Z",
+  "rule": "The public web process runs only the lightweight scheduled content fallback so Creator Desk and Newsletter posts are not missed if the separate worker is unavailable or not syncing."
 }

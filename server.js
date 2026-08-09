@@ -32638,6 +32638,188 @@ function readPreparedNewsLabApiPayload(category = "") {
   };
 }
 
+const newsLabPublicMemoryCache = new Map();
+const newsLabPublicMemoryCacheStats = {
+  hits: 0,
+  staleHits: 0,
+  misses: 0,
+  diskReadsAvoided: 0,
+  jsonReadsAvoided: 0,
+  rebuildsQueued: 0,
+  singleFlightSkips: 0,
+  bytesServedFromCache: 0,
+  lastRefreshQueuedAt: "",
+  lastReason: ""
+};
+let newsLabPublicCacheRefreshQueued = false;
+
+function newsLabPublicCacheCategory(category = "") {
+  return String(category || "all").toLowerCase().trim() || "all";
+}
+
+function newsLabPublicMemoryCacheTtl() {
+  return Math.max(1000, Number(process.env.CE_NEWS_LAB_PUBLIC_CACHE_FRESH_MS || 10 * 1000));
+}
+
+function newsLabPublicMemoryCacheStaleMs() {
+  return Math.max(newsLabPublicMemoryCacheTtl(), Number(process.env.CE_NEWS_LAB_PUBLIC_CACHE_STALE_MS || 2 * 60 * 1000));
+}
+
+function newsLabPublicCacheHeaders(state = "fresh") {
+  return {
+    "cache-control": "public, max-age=10, s-maxage=30, stale-while-revalidate=120, stale-if-error=600",
+    "x-ce-cache": state
+  };
+}
+
+function newsLabPublicCacheSignature() {
+  try {
+    const prepared = fs.existsSync(newsLabApiResponseCacheFile) ? fs.statSync(newsLabApiResponseCacheFile) : null;
+    const published = fs.existsSync(newsLabPublishedPayloadFile) ? fs.statSync(newsLabPublishedPayloadFile) : null;
+    return [
+      prepared ? `${Math.round(prepared.mtimeMs)}:${prepared.size}` : "no-prepared",
+      published ? `${Math.round(published.mtimeMs)}:${published.size}` : "no-published"
+    ].join("|");
+  } catch {
+    return "unknown";
+  }
+}
+
+function queueNewsLabPublicCacheRefresh(reason = "public-news-lab-cache-stale") {
+  if (newsLabPublicCacheRefreshQueued) {
+    newsLabPublicMemoryCacheStats.singleFlightSkips += 1;
+    return false;
+  }
+  newsLabPublicCacheRefreshQueued = true;
+  newsLabPublicMemoryCacheStats.rebuildsQueued += 1;
+  newsLabPublicMemoryCacheStats.lastRefreshQueuedAt = new Date().toISOString();
+  newsLabPublicMemoryCacheStats.lastReason = reason;
+  setTimeout(() => {
+    try {
+      startNewsLabApiResponseWorkerProcess(reason);
+    } catch (error) {
+      runtimeState.lastError = `News Lab public cache refresh failed: ${error.message || error}`;
+    } finally {
+      setTimeout(() => {
+        newsLabPublicCacheRefreshQueued = false;
+      }, Math.max(1000, Number(process.env.CE_NEWS_LAB_PUBLIC_CACHE_SINGLE_FLIGHT_MS || 30 * 1000)));
+    }
+  }, 0);
+  return true;
+}
+
+function buildNewsLabPublicMemoryPayload(category = "", mode = "memory-cache-build") {
+  const requested = newsLabPublicCacheCategory(category);
+  const preparedPayload = readPreparedNewsLabApiPayload(requested);
+  const preparedMinimum = requested === "top" ? Math.min(7, newsLabTopNewsLimit) : 1;
+  if (preparedPayload && Number(preparedPayload.ownedStories?.length || 0) >= preparedMinimum) {
+    return {
+      ...preparedPayload,
+      apiResponseWorker: {
+        ...(preparedPayload.apiResponseWorker || {}),
+        active: true,
+        mode,
+        cacheSource: "prepared-api-cache",
+        skippedLargePublishedPayloadRead: true,
+        rule: "Public News Lab responses are built once from the compact prepared cache and served from memory until publication/cache revision changes."
+      }
+    };
+  }
+  const durablePayload = readJsonFile(newsLabPublishedPayloadFile, null);
+  if (durablePayload && Array.isArray(durablePayload.ownedStories) && durablePayload.ownedStories.length) {
+    return newsLabFastPublishedApiPayload({
+      ...durablePayload,
+      apiResponseWorker: {
+        active: true,
+        mode,
+        cacheSource: "durable-published-fallback",
+        rule: "Prepared cache was missing or underfilled, so memory cache used the durable published shelf and queued a prepared-cache rebuild."
+      }
+    }, requested);
+  }
+  return null;
+}
+
+function getNewsLabPublicMemoryCache(category = "") {
+  const requested = newsLabPublicCacheCategory(category);
+  const key = `news-lab:public:v4:${requested}`;
+  const now = Date.now();
+  const signature = newsLabPublicCacheSignature();
+  const cached = newsLabPublicMemoryCache.get(key);
+  if (cached && cached.signature === signature && now < cached.freshUntil) {
+    newsLabPublicMemoryCacheStats.hits += 1;
+    newsLabPublicMemoryCacheStats.diskReadsAvoided += 1;
+    newsLabPublicMemoryCacheStats.jsonReadsAvoided += 1;
+    newsLabPublicMemoryCacheStats.bytesServedFromCache += Number(cached.bytes || 0);
+    return { ...cached, state: "fresh-hit" };
+  }
+  if (cached && cached.signature === signature && now < cached.staleUntil) {
+    newsLabPublicMemoryCacheStats.staleHits += 1;
+    newsLabPublicMemoryCacheStats.diskReadsAvoided += 1;
+    newsLabPublicMemoryCacheStats.jsonReadsAvoided += 1;
+    newsLabPublicMemoryCacheStats.bytesServedFromCache += Number(cached.bytes || 0);
+    queueNewsLabPublicCacheRefresh("public-news-lab-memory-cache-stale-while-revalidate");
+    return { ...cached, state: "stale-hit" };
+  }
+  newsLabPublicMemoryCacheStats.misses += 1;
+  const payload = buildNewsLabPublicMemoryPayload(requested, "memory-cache-rebuild");
+  if (!payload) {
+    queueNewsLabPublicCacheRefresh("public-news-lab-memory-cache-miss");
+    return null;
+  }
+  const body = JSON.stringify({
+    ...payload,
+    publicCache: {
+      key,
+      state: cached ? "refreshed-after-expiry" : "cold-build",
+      signature,
+      freshMs: newsLabPublicMemoryCacheTtl(),
+      staleMs: newsLabPublicMemoryCacheStaleMs(),
+      rule: "Serve public News Lab snapshots from process memory; rebuild only after publication/cache revision changes or freshness expires."
+    }
+  });
+  const entry = {
+    key,
+    category: requested,
+    signature,
+    payload,
+    body,
+    bytes: Buffer.byteLength(body, "utf8"),
+    builtAt: new Date().toISOString(),
+    freshUntil: now + newsLabPublicMemoryCacheTtl(),
+    staleUntil: now + newsLabPublicMemoryCacheStaleMs(),
+    state: "miss-built"
+  };
+  newsLabPublicMemoryCache.set(key, entry);
+  queueNewsLabPublicCacheRefresh(cached ? "public-news-lab-memory-cache-refreshed-background-check" : "public-news-lab-memory-cache-cold-background-check");
+  return entry;
+}
+
+function newsLabPublicCacheMetrics() {
+  const entries = [...newsLabPublicMemoryCache.values()].map(entry => ({
+    key: entry.key,
+    category: entry.category,
+    bytes: entry.bytes,
+    builtAt: entry.builtAt,
+    freshForMs: Math.max(0, Number(entry.freshUntil || 0) - Date.now()),
+    staleForMs: Math.max(0, Number(entry.staleUntil || 0) - Date.now())
+  }));
+  const requests = Math.max(1, Number(newsLabPublicMemoryCacheStats.hits || 0) + Number(newsLabPublicMemoryCacheStats.staleHits || 0) + Number(newsLabPublicMemoryCacheStats.misses || 0));
+  return {
+    generatedAt: new Date().toISOString(),
+    subsystem: "Public News Lab Cache",
+    layers: ["process-memory", "prepared-json-file", "edge-browser-cache-headers"],
+    stats: {
+      ...newsLabPublicMemoryCacheStats,
+      hitRate: Number((((newsLabPublicMemoryCacheStats.hits + newsLabPublicMemoryCacheStats.staleHits) / requests) * 100).toFixed(1)),
+      entryCount: entries.length,
+      totalBytesCached: entries.reduce((sum, entry) => sum + Number(entry.bytes || 0), 0)
+    },
+    entries,
+    rule: "If the underlying evidence or revision has not changed, do not compute the same public News Lab answer again."
+  };
+}
+
 
 function newsLabPublicStoryFromApprovedStoryObject(record = {}) {
   const snapshot = record.snapshot && typeof record.snapshot === "object" ? record.snapshot : {};
@@ -49783,6 +49965,16 @@ function sendNoStoreJson(response, statusCode, payload) {
   response.end(body);
 }
 
+function sendCachedJsonBody(response, statusCode, body, headers = {}) {
+  const text = String(body || "{}");
+  apiProfilerRecordResponse(statusCode, text, 0);
+  response.writeHead(statusCode, securityHeaders({
+    "content-type": "application/json; charset=utf-8",
+    ...headers
+  }));
+  response.end(text);
+}
+
 function sendPrivateJson(response, statusCode, payload) {
   const serializeStarted = apiProfilerNow();
   const body = JSON.stringify(payload);
@@ -50894,6 +51086,12 @@ function sendFile(response, filePath) {
     if (path.basename(filePath) === "owner-desk.html" || path.basename(filePath) === "owner-desk.js") {
       headers["cache-control"] = "no-store";
       headers["x-robots-tag"] = "noindex, nofollow, noarchive";
+    } else if (filePath.includes(`${path.sep}assets${path.sep}generated-news-lab${path.sep}`)) {
+      headers["cache-control"] = "public, max-age=86400, s-maxage=604800, immutable";
+    } else if (filePath.includes(`${path.sep}assets${path.sep}`) || [".css", ".js", ".png", ".jpg", ".jpeg", ".webp", ".svg", ".webmanifest"].includes(ext)) {
+      headers["cache-control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800";
+    } else if (ext === ".html") {
+      headers["cache-control"] = "public, max-age=30, s-maxage=120, stale-while-revalidate=600";
     }
     if (ext === ".pdf") {
       headers["content-disposition"] = `attachment; filename="${path.basename(filePath)}"`;
@@ -51087,6 +51285,18 @@ const server = http.createServer(async (request, response) => {
       generatedAt: new Date().toISOString(),
       newsLabProductivity: newsLabProductivitySummary(),
       backgroundWriter: newsLabProductionLoopStatus()
+    });
+    return;
+  }
+
+  if (url.pathname === "/api/cache-metrics") {
+    if (!isAdminRequest(request)) {
+      sendPrivateNotFound(response);
+      return;
+    }
+    sendPrivateJson(response, 200, {
+      generatedAt: new Date().toISOString(),
+      publicNewsLab: newsLabPublicCacheMetrics()
     });
     return;
   }
@@ -51351,6 +51561,13 @@ const server = http.createServer(async (request, response) => {
       const forceDeep = url.searchParams.has("deep");
       const forceManualRebuild = url.searchParams.has("refresh");
       const category = url.searchParams.get("category");
+      if (!forceDeep && !forceManualRebuild) {
+        const memoryCached = getNewsLabPublicMemoryCache(category);
+        if (memoryCached?.body) {
+          sendCachedJsonBody(response, 200, memoryCached.body, newsLabPublicCacheHeaders(memoryCached.state));
+          return;
+        }
+      }
       if (!forceDeep && !forceManualRebuild) {
         const requestedCategory = String(category || "all").toLowerCase().trim() || "all";
         const preparedPayloadCandidate = readPreparedNewsLabApiPayload(category);
