@@ -1,9 +1,9 @@
 {
   "version": "20260729-scheduled-content-autonomy-v1",
-  "generatedAt": "2026-08-09T03:00:52.147Z",
+  "generatedAt": "2026-08-09T03:44:33.105Z",
   "active": true,
   "lastStatus": "running",
-  "pid": 26040,
+  "pid": 47904,
   "roles": [
     "maintenance",
     "creator-desk",
@@ -19,7 +19,7 @@
     "latestGeneratedAt": "2026-07-29T12:24:30.237Z",
     "shouldRunNow": true,
     "staleHours": 26,
-    "lastAttemptAt": "2026-08-09T03:00:52.137Z",
+    "lastAttemptAt": "2026-08-09T03:44:33.085Z",
     "reason": "stale-catchup",
     "beforeCount": 30,
     "afterCount": 30,
@@ -37,13 +37,13 @@
     "shouldRunNow": true,
     "shouldCatchUpNow": true,
     "skipped": true,
-    "lastAttemptAt": "2026-08-09T03:00:52.147Z",
+    "lastAttemptAt": "2026-08-09T03:44:33.105Z",
     "reason": "web-fallback-startup-catchup"
   },
   "learning": {
     "rule": "Creator Desk and Newsletter are primary product lanes. If they miss a schedule window, the scheduled-content worker must catch up, record why, and sync the generated files."
   },
-  "startedAt": "2026-08-09T03:00:52.129Z",
+  "startedAt": "2026-08-09T03:44:33.072Z",
   "lastReason": "web-fallback-startup-catchup",
   "heartbeatAt": "2026-07-29T12:24:27.470Z",
   "finishedAt": "2026-07-29T12:23:31.319Z",

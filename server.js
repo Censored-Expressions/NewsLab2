@@ -1963,8 +1963,23 @@ function compactNewsLabPublishedPayload(value) {
       }
     };
   }
+  const compactOwnedStories = (boardReady.ownedStories || []).map(compactNewsLabPublicStory);
+  const compactArchiveStories = (boardReady.searchableArchiveStories || []).map(compactNewsLabPublicStory);
+  const freshness = newsLabPublicFreshnessReport({
+    ...boardReady,
+    ownedStories: compactOwnedStories,
+    searchableArchiveStories: compactArchiveStories,
+    payloadWrittenAt: new Date().toISOString()
+  });
   return {
     generatedAt: boardReady.generatedAt || new Date().toISOString(),
+    payloadWrittenAt: freshness.payloadWrittenAt,
+    latestArticleCreatedAt: freshness.latestArticleCreatedAt,
+    latestArticleUpdatedAt: freshness.latestArticleUpdatedAt,
+    latestDossierRevisionAt: freshness.latestDossierRevisionAt,
+    latestPublicChangeAt: freshness.latestPublicChangeAt,
+    canonicalWorkflowVersion: newsLabCanonicalWorkflowVersion,
+    canonicalWorkflowGate: freshness.gate,
     status: boardReady.status || "published",
     purpose: boardReady.purpose || "Publish original Censored Expressions news tiles.",
     policy: boardReady.policy || undefined,
@@ -1981,9 +1996,9 @@ function compactNewsLabPublishedPayload(value) {
     imageImprovementPolicy: boardReady.imageImprovementPolicy || undefined,
     publicShelfWriteFloor: boardReady.publicShelfWriteFloor || undefined,
     workerFinishModePersisted: boardReady.workerFinishModePersisted || undefined,
-    savedAt: boardReady.savedAt || new Date().toISOString(),
-    ownedStories: (boardReady.ownedStories || []).map(compactNewsLabPublicStory),
-    searchableArchiveStories: (boardReady.searchableArchiveStories || []).map(compactNewsLabPublicStory)
+    savedAt: boardReady.savedAt || freshness.payloadWrittenAt,
+    ownedStories: compactOwnedStories,
+    searchableArchiveStories: compactArchiveStories
   };
 }
 function writeJsonFile(filePath, value) {
@@ -2248,6 +2263,279 @@ function writeSportsIntelligenceStore(store = {}) {
   };
   writeJsonFile(sportsIntelligenceFile, next);
   return next;
+}
+
+function sportsSlug(value = "") {
+  return cleanArticleText(value, 160).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "market";
+}
+
+function sportsCanonicalLeague(query = "") {
+  const text = String(query || "").toLowerCase();
+  if (/\bnba|celtics|knicks|lakers|warriors|bulls|mavericks|bucks|heat|suns|nuggets|sixers|76ers\b/.test(text)) return { sport: "Basketball", league: "NBA" };
+  if (/\bnfl|chiefs|cowboys|eagles|ravens|bills|bengals|packers|steelers|patriots|giants|jets\b/.test(text)) return { sport: "Football", league: "NFL" };
+  if (/\bmlb|yankees|mets|dodgers|cubs|red sox|braves|astros|phillies|orioles|cardinals|moneyline|runs\b/.test(text)) return { sport: "Baseball", league: "MLB" };
+  if (/\bnhl|rangers|bruins|leafs|oilers|panthers|lightning|penguins|hurricanes|goals\b/.test(text)) return { sport: "Hockey", league: "NHL" };
+  return { sport: "Sports", league: "Unknown" };
+}
+
+function sportsCanonicalMarketType(query = "") {
+  const text = String(query || "").toLowerCase();
+  if (/\b(points|rebounds|assists|yards|touchdowns|strikeouts|hits|saves|goals|player prop|prop)\b/.test(text)) return "player_prop";
+  if (/\b(over|under|total|o\/u)\b/.test(text)) return "total";
+  if (/[+-]\s*\d+(\.\d+)?/.test(text) || /\b(spread|run line|puck line|line)\b/.test(text)) return "spread";
+  if (/\b(moneyline|ml|winner|win)\b/.test(text)) return "moneyline";
+  return "moneyline";
+}
+
+function sportsExtractMarketLine(query = "") {
+  const text = String(query || "").toLowerCase();
+  const total = text.match(/\b(?:over|under|o\/u)\s*([0-9]+(?:\.[0-9]+)?)/);
+  if (total) return Number(total[1]);
+  const spread = text.match(/([+-])\s*([0-9]+(?:\.[0-9]+)?)/);
+  if (spread) return Number(`${spread[1]}${spread[2]}`);
+  const prop = text.match(/\b([0-9]+(?:\.[0-9]+)?)\s*(?:points|rebounds|assists|yards|touchdowns|strikeouts|hits|saves|goals)\b/);
+  return prop ? Number(prop[1]) : null;
+}
+
+function sportsExtractParticipants(query = "") {
+  const raw = cleanArticleText(query, 180);
+  const versus = raw.match(/^(.+?)\s+(?:vs\.?|v\.?|versus|at|@)\s+(.+?)(?:\s+(?:moneyline|ml|spread|over|under|total|[+-]\d).*)?$/i);
+  if (versus) return [versus[1], versus[2]].map(item => cleanArticleText(item, 60)).filter(Boolean);
+  const stop = /\b(moneyline|ml|spread|total|over|under|points|rebounds|assists|yards|strikeouts|touchdowns|goals|runs)\b/i;
+  const cleaned = raw.split(stop)[0].replace(/[+-]\s*\d+(\.\d+)?/g, "").trim();
+  return cleaned ? [cleanArticleText(cleaned, 80)] : [];
+}
+
+function sportsNormalizeMarketQuery(query = "") {
+  const cleanedQuery = cleanArticleText(query || "", 180);
+  const leagueInfo = sportsCanonicalLeague(cleanedQuery);
+  const marketType = sportsCanonicalMarketType(cleanedQuery);
+  const line = sportsExtractMarketLine(cleanedQuery);
+  const participants = sportsExtractParticipants(cleanedQuery);
+  const participant = participants[0] || cleanArticleText(cleanedQuery.split(/\s+/).slice(0, 3).join(" "), 60) || "Selection";
+  const opponent = participants[1] || "";
+  const dateKey = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const eventSlug = sportsSlug([leagueInfo.league, participants.join("-") || cleanedQuery, marketType, line == null ? "" : line].join("-"));
+  return {
+    query: cleanedQuery,
+    sport: leagueInfo.sport,
+    league: leagueInfo.league,
+    eventId: `${sportsSlug(leagueInfo.league)}_${dateKey}_${eventSlug}`,
+    event: opponent ? `${participant} vs ${opponent}` : participant,
+    marketType,
+    participant,
+    opponent,
+    line,
+    period: "full_game"
+  };
+}
+
+function sportsMarketOfferBook(baseOdds = -110, index = 0) {
+  const bookNames = ["Consensus Book A", "Consensus Book B", "Consensus Book C", "Opening Market"];
+  const offsets = [0, -6, 7, 12];
+  return {
+    sportsbook: bookNames[index] || `Market ${index + 1}`,
+    americanOdds: Number(baseOdds) + (offsets[index] || 0),
+    opposingAmericanOdds: Number(baseOdds) < 0 ? 100 + Math.abs(offsets[index] || 0) : -120 - Math.abs(offsets[index] || 0),
+    status: index === 3 ? "opening reference" : "sample normalized offer"
+  };
+}
+
+function sportsBaseOddsForMarket(marketType = "moneyline") {
+  if (marketType === "moneyline") return -125;
+  if (marketType === "total") return -108;
+  if (marketType === "player_prop") return -115;
+  return -110;
+}
+
+function sportsMatchedPrediction(normalized = {}, store = {}) {
+  const predictions = Array.isArray(store.predictions) ? store.predictions : [];
+  const queryKey = sportsSlug(`${normalized.event} ${normalized.marketType} ${normalized.participant}`);
+  return predictions.find(prediction => {
+    const predictionKey = sportsSlug(`${prediction.event} ${prediction.marketType} ${prediction.selection}`);
+    return predictionKey.includes(sportsSlug(normalized.participant)) || queryKey.includes(sportsSlug(prediction.selection || prediction.event || ""));
+  }) || null;
+}
+
+function sportsAverage(values = []) {
+  const numbers = values.map(Number).filter(Number.isFinite);
+  return numbers.length ? numbers.reduce((sum, value) => sum + value, 0) / numbers.length : null;
+}
+
+function sportsConfidenceLabel(score = 0) {
+  if (score >= 0.82) return "High";
+  if (score >= 0.64) return "Moderate";
+  if (score >= 0.48) return "Low";
+  return "High Uncertainty";
+}
+
+function sportsBuildEvidenceBuckets(normalized = {}, matched = null) {
+  const supports = matched?.supportingFactors?.length ? matched.supportingFactors : [
+    "Market can be compared against a no-vig consensus before any modeled edge is shown.",
+    "The event and market were normalized into a canonical structure for repeatable tracking."
+  ];
+  const opposes = matched?.opposingFactors?.length ? matched.opposingFactors : [
+    "Lineup, injury, weather, and late market movement have not been connected to a licensed live feed yet."
+  ];
+  const unknown = [
+    "Official injury/status updates",
+    "Confirmed opening line from a licensed odds provider",
+    "Venue and weather effects when relevant",
+    "Historical matchup comps"
+  ];
+  return {
+    supportsBet: sportsFactorList(supports),
+    opposesBet: sportsFactorList(opposes),
+    neutral: [`Market type: ${normalized.marketType}`, `Period: ${normalized.period}`],
+    unknown,
+    staleData: ["Live sportsbook and official stats providers are not connected in this local prototype."],
+    conflictingData: []
+  };
+}
+
+function sportsMarketReasoningAdjustments(normalized = {}, evidenceBuckets = {}, matched = null) {
+  const marketSpecific = {
+    moneyline: "Moneyline reasoning should focus on win probability, starters, injuries, form, travel/rest, venue, and matchup strength.",
+    spread: "Spread reasoning should focus on margin distribution, pace, matchup pressure, injuries, and backdoor-cover risk.",
+    total: "Total reasoning should focus on scoring environment, pace, weather, pitcher/goaltender/quarterback context, and offensive efficiency.",
+    player_prop: "Player prop reasoning should focus on role, minutes/snaps/usage, matchup, injury context, pace, and historical opportunity."
+  };
+  return [
+    {
+      factor: "Market prior",
+      direction: "baseline",
+      relevance: "Uses the no-vig consensus as the starting point, not as the final answer.",
+      confidence: "moderate",
+      expectedImpact: "anchors projection"
+    },
+    {
+      factor: "Market-type logic",
+      direction: "context",
+      relevance: marketSpecific[normalized.marketType] || marketSpecific.moneyline,
+      confidence: "moderate",
+      expectedImpact: "prevents one-size-fits-all reasoning"
+    },
+    {
+      factor: "Local calibration history",
+      direction: matched ? "available" : "missing",
+      relevance: matched ? "A frozen local forecast exists for a related market." : "No matching settled local forecast exists yet, so confidence must stay separate from probability.",
+      confidence: matched ? "moderate" : "low",
+      expectedImpact: matched ? "raises evidence quality" : "limits confidence"
+    },
+    {
+      factor: "Evidence completeness",
+      direction: evidenceBuckets.unknown?.length ? "limited" : "complete",
+      relevance: `${evidenceBuckets.unknown?.length || 0} evidence families remain unconnected.`,
+      confidence: evidenceBuckets.unknown?.length ? "low" : "high",
+      expectedImpact: "caps confidence until live providers are connected"
+    }
+  ];
+}
+
+function sportsBuildMarketDossier(query = "", store = readSportsIntelligenceStore()) {
+  const normalized = sportsNormalizeMarketQuery(query);
+  const matched = sportsMatchedPrediction(normalized, store);
+  const baseOdds = Number(matched?.americanOdds || sportsBaseOddsForMarket(normalized.marketType));
+  const offers = [0, 1, 2, 3].map(index => {
+    const offer = sportsMarketOfferBook(baseOdds, index);
+    const raw = sportsAmericanOddsToProbability(offer.americanOdds);
+    const fair = sportsNoVigProbability(offer.americanOdds, offer.opposingAmericanOdds);
+    return {
+      ...offer,
+      rawImpliedProbability: raw,
+      fairMarketProbability: fair,
+      fairMarketProbabilityPercent: sportsPercent(fair),
+      rawImpliedProbabilityPercent: sportsPercent(raw)
+    };
+  });
+  const consensusProbability = sportsAverage(offers.map(offer => offer.fairMarketProbability));
+  const evidenceBuckets = sportsBuildEvidenceBuckets(normalized, matched);
+  const confidenceScore = Math.max(0.28, Math.min(0.86,
+    (matched ? 0.18 : 0)
+    + (consensusProbability == null ? 0.18 : 0.42)
+    + Math.min(0.16, (offers.length || 0) * 0.035)
+    + (matched?.dataQuality || matched?.dataQualityScore || 0) * 0.2
+  ));
+  const modelProbability = matched?.modelProbability != null
+    ? Number(matched.modelProbability)
+    : Math.max(0.05, Math.min(0.95, Number(consensusProbability || 0.5) + (normalized.marketType === "moneyline" ? 0.015 : 0)));
+  const bestOffer = [...offers].sort((a, b) => Math.abs((modelProbability - (b.fairMarketProbability || 0)) || 0) - Math.abs((modelProbability - (a.fairMarketProbability || 0)) || 0))[0] || offers[0];
+  const edge = bestOffer?.fairMarketProbability == null ? null : modelProbability - bestOffer.fairMarketProbability;
+  const classification = sportsEdgeClassification(edge, sportsConfidenceLabel(confidenceScore), confidenceScore);
+  return {
+    id: `sports_dossier_${crypto.createHash("sha1").update(`${normalized.eventId}|${normalized.marketType}|${normalized.participant}|${normalized.line || ""}`).digest("hex").slice(0, 14)}`,
+    generatedAt: new Date().toISOString(),
+    version: "20260808-sports-market-dossier-v2",
+    dataMode: "local prototype with sample normalized offers; connect licensed odds/stat/injury/weather providers before public betting-market use",
+    analyticsBoundary: {
+      noWagering: true,
+      noPaymentHandling: true,
+      noBetPlacement: true,
+      note: "This is informational probability analysis and calibration infrastructure, not gambling advice."
+    },
+    marketIdentity: normalized,
+    currentOdds: {
+      offers,
+      bestAvailableOffer: bestOffer,
+      consensusFairProbability: consensusProbability,
+      consensusFairProbabilityPercent: sportsPercent(consensusProbability),
+      openingReference: offers.find(offer => offer.status === "opening reference") || null,
+      lineMovement: matched?.lineMovement || "Opening and current line movement require a licensed odds provider."
+    },
+    betDossier: {
+      eventIdentity: {
+        eventId: normalized.eventId,
+        event: normalized.event,
+        sport: normalized.sport,
+        league: normalized.league
+      },
+      marketIdentity: normalized,
+      evidenceFamilies: ["sportsbook markets", "local calibration history", "team/player statistics", "injuries", "rest/travel", "weather/venue", "news", "historical comps", "market dispersion"],
+      missingProviderFamilies: ["licensed odds aggregator", "official injury feed", "official stats feed", "weather provider", "historical results database"],
+      marketDispersion: {
+        booksCompared: offers.length,
+        fairProbabilityRangePercent: {
+          low: sportsPercent(Math.min(...offers.map(offer => offer.fairMarketProbability).filter(Number.isFinite))),
+          high: sportsPercent(Math.max(...offers.map(offer => offer.fairMarketProbability).filter(Number.isFinite)))
+        }
+      }
+    },
+    evidenceBuckets,
+    sportsUnderstanding: {
+      visitorQuestion: normalized.query,
+      centralMarket: `${normalized.event} / ${normalized.marketType}${normalized.line == null ? "" : ` ${normalized.line}`}`,
+      sourceRole: "ESPN and similar sources should inform stats/news/injuries; sportsbook prices should come from licensed odds aggregators.",
+      confidence: sportsConfidenceLabel(confidenceScore),
+      confidenceScore: sportsPercent(confidenceScore)
+    },
+    sportsReasoning: {
+      rule: "Start with market prior, adjust with verified sports evidence, keep confidence separate from probability, then compare modeled probability to available prices.",
+      adjustments: sportsMarketReasoningAdjustments(normalized, evidenceBuckets, matched),
+      disagreementWarning: consensusProbability != null && Math.abs(modelProbability - consensusProbability) > 0.15
+        ? "Modeled probability differs from market consensus by more than 15 points; require stronger evidence before escalating confidence."
+        : ""
+    },
+    probabilityModel: {
+      marketPriorProbability: consensusProbability,
+      marketPriorProbabilityPercent: sportsPercent(consensusProbability),
+      modeledProbability: modelProbability,
+      modeledProbabilityPercent: sportsPercent(modelProbability),
+      edgeVsBestOffer: edge,
+      edgeVsBestOfferPoints: edge == null ? null : Number((edge * 100).toFixed(2)),
+      confidence: sportsConfidenceLabel(confidenceScore),
+      confidenceScore: sportsPercent(confidenceScore),
+      classification
+    },
+    calibration: {
+      currentPerformance: store.performance || defaultSportsPerformance(),
+      futureRule: "Every saved recommendation must freeze model probability and later score against actual outcome using Brier score and hit-rate buckets."
+    },
+    visitorAnalysis: {
+      headline: `${normalized.event} ${normalized.marketType.replace(/_/g, " ")} dossier`,
+      summary: `The Framework normalized "${normalized.query}" into a canonical ${normalized.marketType} market, compared sample offers to a no-vig consensus, separated probability from confidence, and identified missing evidence before any public recommendation would be allowed.`,
+      nextBestStep: "Connect licensed odds, official stats, injury, weather, and schedule providers so this dossier moves from prototype analysis to real-time market intelligence."
+    }
+  };
 }
 
 function defaultKnowledgeDistillationPolicy() {
@@ -3272,6 +3560,133 @@ function newsLabObservabilityFreshness(value = "") {
   };
 }
 
+const newsLabCanonicalWorkflowVersion = process.env.CE_NEWS_LAB_WORKFLOW_VERSION || "news-v4";
+
+function newsLabStoryTimestampValue(story = {}) {
+  return story.latestPublicChangeAt
+    || story.latestDossierRevisionAt
+    || story.lastUpdatedAt
+    || story.updatedAt
+    || story.publishedAt
+    || story.originalPublishedAt
+    || story.generatedAt
+    || story.savedAt
+    || "";
+}
+
+function newsLabLatestStoryTimestamp(stories = []) {
+  return stories
+    .map(newsLabStoryTimestampValue)
+    .filter(Boolean)
+    .sort((a, b) => Date.parse(b || "") - Date.parse(a || ""))[0] || "";
+}
+
+function newsLabStoryWorkflowLineage(story = {}) {
+  const canonical = story.canonicalDossierIntelligence || story.canonicalIntelligence || story.storyDossier?.canonicalDossierIntelligence || null;
+  const understanding = story.storyUnderstanding || canonical?.storyUnderstanding || story.storyDossier?.storyUnderstanding || null;
+  const reasoning = story.writerReasoningPlan || story.writerReasoning || story.storyDossier?.writerReasoningPlan || canonical?.writerReasoningPlan || null;
+  const lock = story.dossierLock || story.storyDossier?.dossierLock || canonical?.dossierLock || null;
+  const revisionId = story.dossierRevisionId || lock?.revisionId || canonical?.revision?.id || "";
+  const workflowVersion = story.workflowVersion || story.publicationWorkflowVersion || canonical?.workflowVersion || story.storyDossier?.workflowVersion || "";
+  return {
+    workflowVersion,
+    canonicalDossier: Boolean(canonical),
+    storyUnderstanding: Boolean(understanding),
+    writerReasoningPlan: Boolean(reasoning),
+    dossierLock: Boolean(lock),
+    dossierRevisionId: revisionId,
+    newsV4Ready: Boolean(
+      (workflowVersion === newsLabCanonicalWorkflowVersion || canonical)
+      && understanding
+      && reasoning
+      && (lock || revisionId)
+    )
+  };
+}
+
+function newsLabPublicFreshnessReport(payload = {}) {
+  const ownedStories = Array.isArray(payload.ownedStories) ? payload.ownedStories : [];
+  const archiveStories = Array.isArray(payload.searchableArchiveStories) ? payload.searchableArchiveStories : [];
+  const allStories = [...ownedStories, ...archiveStories];
+  const latestArticleCreatedAt = newsLabLatestStoryTimestamp(allStories.map(story => ({ generatedAt: story.generatedAt, publishedAt: story.publishedAt, originalPublishedAt: story.originalPublishedAt, savedAt: story.savedAt })));
+  const latestArticleUpdatedAt = newsLabLatestStoryTimestamp(allStories);
+  const latestDossierRevisionAt = newsLabLatestStoryTimestamp(allStories.map(story => ({
+    latestDossierRevisionAt: story.latestDossierRevisionAt
+      || story.storyDossier?.latestDossierRevisionAt
+      || story.canonicalDossierIntelligence?.revision?.createdAt
+      || story.storyDossier?.dossierLock?.createdAt
+      || ""
+  })));
+  const latestPublicChangeAt = newsLabLatestStoryTimestamp(allStories.map(story => ({
+    latestPublicChangeAt: story.latestPublicChangeAt || story.updatedAt || story.lastUpdatedAt || story.savedAt || story.generatedAt || ""
+  })));
+  const payloadWrittenAt = payload.payloadWrittenAt || payload.savedAt || "";
+  const payloadGeneratedAt = payload.generatedAt || "";
+  const lineage = allStories.map(newsLabStoryWorkflowLineage);
+  const canonicalReadyCount = lineage.filter(item => item.newsV4Ready).length;
+  const legacyCount = Math.max(0, allStories.length - canonicalReadyCount);
+  return {
+    workflowVersion: newsLabCanonicalWorkflowVersion,
+    payloadWrittenAt,
+    payloadGeneratedAt,
+    latestArticleCreatedAt,
+    latestArticleUpdatedAt,
+    latestDossierRevisionAt,
+    latestPublicChangeAt,
+    payloadWrittenFreshness: newsLabObservabilityFreshness(payloadWrittenAt),
+    articleFreshness: newsLabObservabilityFreshness(latestArticleUpdatedAt || latestArticleCreatedAt),
+    publicChangeFreshness: newsLabObservabilityFreshness(latestPublicChangeAt),
+    counts: {
+      ownedStories: ownedStories.length,
+      searchableArchiveStories: archiveStories.length,
+      canonicalReadyStories: canonicalReadyCount,
+      legacyStories: legacyCount
+    },
+    gate: {
+      newsV4Ready: Boolean(allStories.length && canonicalReadyCount === allStories.length),
+      readyPercent: allStories.length ? Number(((canonicalReadyCount / allStories.length) * 100).toFixed(1)) : 0,
+      rule: "File write freshness is not article freshness. New operational metrics should count only stories with canonical dossier, Story Understanding, Writer Reasoning plan, and dossier lock/revision lineage."
+    }
+  };
+}
+
+function newsLabRuntimeHotStateReport() {
+  const hotFiles = [
+    ["storyObjects", newsLabStoryObjectsFile],
+    ["headlineRepairQueue", newsLabHeadlineRepairQueueFile],
+    ["approvalRecoveryQueue", newsLabApprovalRecoveryQueueFile],
+    ["editorialLearning", learningFile],
+    ["frameworkActionLog", frameworkActionLogFile],
+    ["articleLifecycleTrace", newsLabArticleLifecycleTraceFile]
+  ].map(([key, filePath]) => {
+    let length = 0;
+    let lastWriteTime = "";
+    try {
+      const stat = fs.statSync(filePath);
+      length = stat.size;
+      lastWriteTime = new Date(stat.mtimeMs).toISOString();
+    } catch {}
+    return {
+      key,
+      file: path.basename(filePath),
+      bytes: length,
+      mb: Number((length / (1024 * 1024)).toFixed(2)),
+      lastWriteTime,
+      hotStateRisk: length > 25 * 1024 * 1024 ? "high" : length > 10 * 1024 * 1024 ? "medium" : "normal"
+    };
+  });
+  const highRisk = hotFiles.filter(item => item.hotStateRisk === "high");
+  return {
+    generatedAt: new Date().toISOString(),
+    files: hotFiles,
+    highRiskCount: highRisk.length,
+    recommendation: highRisk.length
+      ? "Archive completed/failed queue history and migrate story objects, dossiers, claims, lifecycle events, and repair attempts out of hot JSON into a database-backed store."
+      : "Current hot JSON state is within the local prototype threshold.",
+    rule: "ACTIVE queues stay hot; completed, denied, failed-final, and historical attempts belong in archive/database storage."
+  };
+}
+
 function buildNewsLabObservabilityReport(reason = "api-request") {
   const generatedAt = new Date().toISOString();
   const persistedWorker = readJsonFile(newsLabObservabilityFile, defaultNewsLabObservability()) || defaultNewsLabObservability();
@@ -3291,6 +3706,8 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   const collectorSummary = newsLabCollectorWorkerStatusSummary();
   const payload = readNewsLabPublishedPayload() || { ownedStories: [] };
   const publicCacheFreshness = newsLabObservabilityFreshness(payload.generatedAt || payload.savedAt || "");
+  const publicFreshness = newsLabPublicFreshnessReport(payload);
+  const hotState = newsLabRuntimeHotStateReport();
   const visibleStories = Array.isArray(payload.ownedStories) ? payload.ownedStories.length : 0;
   const activePayload = newsLabApplyCurrentBoardPolicy({ ownedStories: payload.ownedStories || [] });
   const activeStories = Array.isArray(activePayload.ownedStories) ? activePayload.ownedStories : [];
@@ -3331,6 +3748,10 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
   if (!workers.orchestrator.freshness.fresh) findings.push("background worker orchestrator heartbeat is stale or missing");
   if (collectorSummary.underfilledCategories?.length) findings.push(`underfilled tabs: ${collectorSummary.underfilledCategories.join(", ")}`);
   if (publicCacheFreshness.ageMs !== null && publicCacheFreshness.ageMs > 12 * 60 * 60 * 1000) findings.push(`public News Lab cache is stale: ${publicCacheFreshness.label}`);
+  if (publicFreshness.articleFreshness.ageMs !== null && publicFreshness.articleFreshness.ageMs > 12 * 60 * 60 * 1000) findings.push(`latest public article is stale: ${publicFreshness.articleFreshness.label}`);
+  if (publicFreshness.payloadWrittenFreshness.fresh && publicFreshness.articleFreshness.ageMs !== null && publicFreshness.articleFreshness.ageMs > 12 * 60 * 60 * 1000) findings.push("payload file was written recently but article inventory is stale");
+  if (!publicFreshness.gate.newsV4Ready && publicFreshness.counts.ownedStories + publicFreshness.counts.searchableArchiveStories > 0) findings.push(`canonical workflow cutover incomplete: ${publicFreshness.gate.readyPercent}% news-v4 ready`);
+  if (hotState.highRiskCount > 0) findings.push(`${hotState.highRiskCount} hot JSON state file(s) exceed 25 MB and should be archived or database-backed`);
   if (Number(eventLifecycle.summary?.pendingVisibility || 0) > 0) findings.push(`${eventLifecycle.summary.pendingVisibility} event(s) are persisted but not verified visible`);
   if (Number(eventLifecycle.summary?.staleEvents || 0) > 0) findings.push(`${eventLifecycle.summary.staleEvents} event lifecycle record(s) are stale or overdue for refresh`);
   if (approvalRate && approvalRate < 20) findings.push(`low editorial approval rate: ${approvalRate}%`);
@@ -3414,7 +3835,14 @@ function buildNewsLabObservabilityReport(reason = "api-request") {
         freshness: publicCacheFreshness,
         stale: Boolean(publicCacheFreshness.ageMs !== null && publicCacheFreshness.ageMs > 12 * 60 * 60 * 1000)
       },
+      freshness: publicFreshness,
       publicationFunnelDashboard: approval.publicationFunnelDashboard || approvalActionPlan.publicationFunnelDashboard || null
+    },
+    cutover: {
+      canonicalWorkflowVersion: newsLabCanonicalWorkflowVersion,
+      publicFreshness,
+      hotState,
+      migrationRule: "Legacy story objects may remain archived, but new operational metrics and new publication work should require canonical dossier, Story Understanding, Writer Reasoning plan, and dossier revision lineage."
     },
     health: {
       status: findings.length ? "attention" : "ok",
@@ -53131,6 +53559,25 @@ const server = http.createServer(async (request, response) => {
 
   if (url.pathname === "/api/sports-intelligence" && request.method === "GET") {
     sendJson(response, 200, readSportsIntelligenceStore());
+    return;
+  }
+
+  if (url.pathname === "/api/sports-intelligence/search" && request.method === "GET") {
+    const query = cleanArticleText(url.searchParams.get("q") || "", 180);
+    if (!query) {
+      sendJson(response, 400, { ok: false, error: "Provide a sports market search query." });
+      return;
+    }
+    const store = readSportsIntelligenceStore();
+    const dossier = sportsBuildMarketDossier(query, store);
+    sendJson(response, 200, {
+      ok: true,
+      generatedAt: new Date().toISOString(),
+      query,
+      results: [dossier],
+      dataStatus: dossier.dataMode,
+      boundaries: dossier.analyticsBoundary
+    });
     return;
   }
 

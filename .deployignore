@@ -13,6 +13,15 @@ data/creator-desk-pending.json
 data/creator-desk.log
 data/daily-article-memory.json
 data/daily-article-memory.full-backup-*.json
+data/news-lab-story-objects.json
+data/approval-recovery-queue.json
+data/headline-repair-queue.json
+data/framework-action-log.json
+data/framework-action-log.json.*.tmp
+data/news-lab-article-lifecycle-trace.json
+data/editorial-learning.json
+data/adaptive-weight-proof-log.json
+data/framework-learning-proof-log.json
 memory-backups/
 # Runtime history/backups are not deployment inputs
 data/content-rewrite-backups/

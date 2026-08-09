@@ -43,9 +43,23 @@
     .factor-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .factor-grid ul { margin: 8px 0 0; padding-left: 18px; color: #ddd; }
     .settle-row { display:flex; flex-wrap:wrap; gap:8px; margin-top: 12px; }
+    .sports-search { display:grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-top: 12px; }
+    .sports-search input {
+      width: 100%; box-sizing: border-box; border-radius: 6px; border: 1px solid rgba(255,255,255,.18);
+      background: #050505; color: #fff; padding: 12px; font: inherit;
+    }
+    .dossier-panel { display:grid; gap: 14px; margin-top: 14px; }
+    .dossier-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    .dossier-table th, .dossier-table td { text-align: left; border-bottom: 1px solid rgba(255,255,255,.1); padding: 9px 7px; }
+    .dossier-table th { color:#aaa; font-size:.75rem; text-transform:uppercase; }
+    .dossier-columns { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .dossier-box { border: 1px solid rgba(255,255,255,.1); border-radius: 6px; padding: 12px; background: rgba(255,255,255,.03); }
+    .dossier-box h3 { margin: 0 0 8px; font-size: .95rem; }
+    .dossier-box ul { margin: 0; padding-left: 18px; color:#ddd; }
     @media (max-width: 900px) {
-      .sports-grid, .prediction-measures, .factor-grid { grid-template-columns: 1fr; }
+      .sports-grid, .prediction-measures, .factor-grid, .dossier-columns { grid-template-columns: 1fr; }
       .sports-form { grid-template-columns: 1fr; }
+      .sports-search { grid-template-columns: 1fr; }
       .sports-span-2, .sports-span-4 { grid-column: span 1; }
       .sports-header { display: block; }
     }
@@ -65,7 +79,17 @@
     <section class="sports-grid" id="sportsStats"></section>
 
     <section class="sports-panel">
-      <h2>Add Local Forecast</h2>
+      <h2>Sports Market Dossier</h2>
+      <p class="sports-muted">Search an event, team, player prop, spread, total, or moneyline. The Brain normalizes the market, separates probability from confidence, and explains the evidence before anything is saved for calibration.</p>
+      <form class="sports-search" id="sportsSearchForm">
+        <input id="sportsSearchInput" name="q" placeholder="Try: Celtics vs Knicks, Yankees moneyline, Chiefs -3.5, Over 8.5 runs">
+        <button class="sports-button" type="submit">Build Dossier</button>
+      </form>
+      <div class="dossier-panel" id="sportsDossierPanel"></div>
+    </section>
+
+    <section class="sports-panel">
+      <h2>Local Calibration Lab</h2>
       <p class="sports-muted">Freeze a forecast before the event starts. Settlement later scores the original probability without changing it.</p>
       <form class="sports-form" id="predictionForm">
         <label>Sport<input name="sport" value="MLB"></label>

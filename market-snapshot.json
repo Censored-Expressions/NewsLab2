@@ -1,6 +1,6 @@
 {
   "version": "20260718-market-snapshot-v3",
-  "generatedAt": "2026-08-09T03:00:44.158Z",
+  "generatedAt": "2026-08-09T03:44:25.056Z",
   "status": "live-or-delayed-market-data",
   "source": "Yahoo Finance chart endpoint",
   "sourceNote": "Market data may be delayed. Market Pulse includes major indexes, currently traded futures, gold/oil futures, and the top market-cap watchlist.",
@@ -13,7 +13,7 @@
     "refreshMs": 60000,
     "cacheMs": 60000,
     "active": true,
-    "lastStartedAt": "2026-08-09T03:00:42.991Z",
+    "lastStartedAt": "2026-08-09T03:44:24.068Z",
     "lastFinishedAt": "",
     "lastStatus": "running",
     "lastReason": "startup-market-refresh",
@@ -26,14 +26,14 @@
       "url": "https://www.cnbc.com/markets/",
       "source": "CNBC",
       "type": "market-news",
-      "published": "2026-08-09T03:00:44.164Z"
+      "published": "2026-08-09T03:44:25.062Z"
     },
     {
       "title": "Markets: Wall Street and business headlines",
       "url": "https://www.marketwatch.com/markets",
       "source": "MarketWatch",
       "type": "market-news",
-      "published": "2026-08-09T03:00:44.164Z"
+      "published": "2026-08-09T03:44:25.062Z"
     }
   ],
   "indexes": [

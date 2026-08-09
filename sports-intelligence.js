@@ -1,6 +1,9 @@
 const statsEl = document.getElementById("sportsStats");
 const listEl = document.getElementById("predictionList");
 const form = document.getElementById("predictionForm");
+const searchForm = document.getElementById("sportsSearchForm");
+const searchInput = document.getElementById("sportsSearchInput");
+const dossierPanel = document.getElementById("sportsDossierPanel");
 
 const pct = value => Number.isFinite(Number(value)) ? `${Number(value).toFixed(1)}%` : "N/A";
 const prob = value => Number.isFinite(Number(value)) ? `${(Number(value) * 100).toFixed(1)}%` : "N/A";
@@ -10,6 +13,13 @@ const odds = value => {
   if (!Number.isFinite(n)) return "N/A";
   return n > 0 ? `+${n}` : `${n}`;
 };
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  "\"": "&quot;",
+  "'": "&#39;"
+})[char]);
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -18,6 +28,68 @@ async function api(path, options = {}) {
   });
   if (!response.ok) throw new Error(`Request failed: ${response.status}`);
   return response.json();
+}
+
+function renderDossierList(title, items = []) {
+  const safeItems = Array.isArray(items) && items.length ? items : ["No evidence recorded yet."];
+  return `
+    <div class="dossier-box">
+      <h3>${escapeHtml(title)}</h3>
+      <ul>${safeItems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </div>
+  `;
+}
+
+function renderDossier(dossier = {}) {
+  const model = dossier.probabilityModel || {};
+  const oddsInfo = dossier.currentOdds || {};
+  const market = dossier.marketIdentity || {};
+  const offers = oddsInfo.offers || [];
+  const evidence = dossier.evidenceBuckets || {};
+  const reasoning = dossier.sportsReasoning || {};
+  return `
+    <article class="prediction-card">
+      <div class="prediction-head">
+        <div>
+          <h3>${escapeHtml(dossier.visitorAnalysis?.headline || "Sports market dossier")}</h3>
+          <p class="sports-muted">${escapeHtml(market.league || "Unknown")} / ${escapeHtml(market.marketType || "market")} / ${escapeHtml(dossier.dataMode || "")}</p>
+        </div>
+        <span class="pill ${String(model.classification || "").includes("NEGATIVE") || String(model.classification || "").includes("UNCERTAINTY") ? "warn" : "good"}">${escapeHtml(model.classification || "UNRATED")}</span>
+      </div>
+      <div class="prediction-measures">
+        <div class="measure"><span>CE Probability</span><strong>${prob(model.modeledProbability)}</strong></div>
+        <div class="measure"><span>Consensus</span><strong>${prob(model.marketPriorProbability)}</strong></div>
+        <div class="measure"><span>Edge</span><strong>${edge(model.edgeVsBestOfferPoints)}</strong></div>
+        <div class="measure"><span>Confidence</span><strong>${escapeHtml(model.confidence || "N/A")}</strong></div>
+        <div class="measure"><span>Books Compared</span><strong>${offers.length}</strong></div>
+      </div>
+      <p class="sports-muted">${escapeHtml(dossier.visitorAnalysis?.summary || "")}</p>
+      <table class="dossier-table">
+        <thead><tr><th>Sportsbook</th><th>Odds</th><th>No-vig</th><th>Status</th></tr></thead>
+        <tbody>
+          ${offers.map(offer => `
+            <tr>
+              <td>${escapeHtml(offer.sportsbook)}</td>
+              <td>${odds(offer.americanOdds)}</td>
+              <td>${prob(offer.fairMarketProbability)}</td>
+              <td>${escapeHtml(offer.status)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+      <div class="dossier-columns">
+        ${renderDossierList("Supports Bet", evidence.supportsBet)}
+        ${renderDossierList("Opposes Bet", evidence.opposesBet)}
+        ${renderDossierList("Unknown / Needed", evidence.unknown)}
+      </div>
+      <div class="dossier-columns">
+        ${renderDossierList("Reasoning Adjustments", (reasoning.adjustments || []).map(item => `${item.factor}: ${item.relevance}`))}
+        ${renderDossierList("Stale Data", evidence.staleData)}
+        ${renderDossierList("Conflicting Data", evidence.conflictingData)}
+      </div>
+      <p class="sports-muted">${escapeHtml(dossier.visitorAnalysis?.nextBestStep || "")}</p>
+    </article>
+  `;
 }
 
 function renderStats(performance = {}) {
@@ -96,6 +168,20 @@ function render(store) {
     : `<p class="sports-muted">No forecasts saved yet. Add one above or use the sample values from the planning notes.</p>`;
 }
 
+async function runSportsSearch(query) {
+  if (!dossierPanel) return;
+  dossierPanel.innerHTML = `<p class="sports-muted">Building market dossier...</p>`;
+  try {
+    const result = await api(`/api/sports-intelligence/search?q=${encodeURIComponent(query)}`);
+    const dossiers = result.results || [];
+    dossierPanel.innerHTML = dossiers.length
+      ? dossiers.map(renderDossier).join("")
+      : `<p class="sports-muted">No dossier could be built for that search.</p>`;
+  } catch (error) {
+    dossierPanel.innerHTML = `<p class="sports-muted">${escapeHtml(error.message || "Unable to build sports dossier.")}</p>`;
+  }
+}
+
 async function load() {
   try {
     const store = await api("/api/sports-intelligence");
@@ -127,6 +213,13 @@ form?.addEventListener("submit", async event => {
   }
 });
 
+searchForm?.addEventListener("submit", async event => {
+  event.preventDefault();
+  const query = searchInput?.value?.trim();
+  if (!query) return;
+  await runSportsSearch(query);
+});
+
 document.addEventListener("click", async event => {
   const button = event.target.closest("[data-settle]");
   if (!button) return;
@@ -145,3 +238,10 @@ document.addEventListener("click", async event => {
 });
 
 load();
+
+if (searchInput && !searchInput.value) {
+  searchInput.value = "Yankees moneyline";
+}
+if (searchInput?.value) {
+  runSportsSearch(searchInput.value);
+}
