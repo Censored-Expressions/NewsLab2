@@ -1,0 +1,99 @@
+{
+  "status": "implemented",
+  "version": "20260806-event-first-dossier-contract-v1",
+  "updatedAt": "2026-08-06T00:00:00.000Z",
+  "governingRule": "Do not lower the number of publishable events. Lower contaminated or premature drafts.",
+  "pipeline": [
+    "sources",
+    "event-identity",
+    "same-event-clustering",
+    "canonical-dossier",
+    "dossier-integrity-check",
+    "article-depth-selection",
+    "writer-reasoning-plan",
+    "draft",
+    "headline-from-locked-event",
+    "editor",
+    "publish"
+  ],
+  "implementedControls": {
+    "eventFirstClustering": {
+      "enabled": true,
+      "contract": [
+        "primaryActor",
+        "primaryAction",
+        "eventObject",
+        "eventTimeWindow",
+        "location",
+        "eventStatus",
+        "verifiedConsequence"
+      ],
+      "rule": "Sources merge only when actor, action, time window, and object or consequence substantially agree. Category and keyword overlap are supporting signals only."
+    },
+    "contaminationAssessment": {
+      "enabled": true,
+      "fields": [
+        "contaminationScore",
+        "eventCoherence",
+        "conflictingEventIds",
+        "readyForWriting"
+      ],
+      "routing": {
+        "coherenceAtLeastPoint80": "continue",
+        "coherencePoint60ToPoint79": "split-or-repair-cluster",
+        "coherenceBelowPoint60": "do-not-draft"
+      }
+    },
+    "mixedClusterSplitting": {
+      "enabled": true,
+      "rule": "Mixed clusters are split into separate canonical event dossiers instead of being rejected as a single poisoned draft."
+    },
+    "canonicalFactLedger": {
+      "enabled": true,
+      "fields": [
+        "factId",
+        "statement",
+        "actor",
+        "action",
+        "object",
+        "time",
+        "sourceIds",
+        "independentSourceCount",
+        "verificationStatus",
+        "writingEligible",
+        "eventId"
+      ],
+      "writerRule": "Writer uses only writingEligible fact IDs from the locked dossier."
+    },
+    "integrityVsDepth": {
+      "enabled": true,
+      "integrityRule": "Integrity determines whether the story is safe to write.",
+      "depthRule": "Depth determines whether the output should be a developing brief, standard article, or deeper article."
+    },
+    "dossierLocking": {
+      "enabled": true,
+      "rule": "Writer reasoning, body, headline, image, editor, and publisher reference the same locked dossier revision."
+    },
+    "headlineFromLockedEvent": {
+      "enabled": true,
+      "rule": "Headline candidates begin with locked actor, action, and consequence fields and must agree with the dossier and lead."
+    },
+    "semanticCategoryAfterDossier": {
+      "enabled": true,
+      "rule": "Collector and feed categories remain hints. Final semantic category comes from the completed canonical event dossier."
+    }
+  },
+  "newMetrics": [
+    "eventCoherenceRate",
+    "dossierContaminationRate",
+    "clusterSplitYield",
+    "dossierIntegrityPassRate",
+    "briefReadyRate",
+    "standardReadyRate",
+    "headlineDossierAgreement",
+    "factToDraftTraceability",
+    "dossierToFirstPassRate",
+    "cpuPerReadyDossier"
+  ],
+  "expectedOutcome": "More coherent publishable dossiers, fewer contaminated drafts, fewer headline-source mismatches, fewer headline-lead mismatches, less topic drift, and lower repair-loop pressure without shrinking public output."
+}

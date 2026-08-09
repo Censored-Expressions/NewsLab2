@@ -1,0 +1,91 @@
+{
+  "version": "20260806-framework-os-understanding-layer-v1",
+  "status": "implemented",
+  "generatedAt": "2026-08-06T00:00:00.000Z",
+  "purpose": "Promote Understanding into a permanent Framework OS layer between Knowledge and Reasoning so the Framework decides what evidence means before it decides what to do.",
+  "coreSequence": [
+    "Knowledge",
+    "Understanding",
+    "Reasoning",
+    "Execution",
+    "Verification",
+    "Optimization",
+    "Learning"
+  ],
+  "fullOperatingSequence": [
+    "Input",
+    "Knowledge",
+    "Understanding",
+    "Reasoning",
+    "Coordination",
+    "Execution",
+    "Verification",
+    "Optimization",
+    "Learning",
+    "Governance"
+  ],
+  "layerContract": {
+    "knowledge": "What the Framework knows: dossiers, source registries, claim ledgers, entity graphs, timelines, and memory records.",
+    "understanding": "What the evidence means: event answers, evidence maps, misunderstanding risks, prohibited inferences, emphasis guidance, and background boundaries.",
+    "reasoning": "What decisions follow from that understanding: paragraph plan, attribution plan, repair route, headline inputs, and execution contract.",
+    "execution": "Turning approved decisions into outputs: article, headline, image, newsletter, creator post, code patch, or operational action.",
+    "verification": "Proof that the output matches the approved understanding and publication standards.",
+    "optimization": "Measured reduction of unnecessary work without lowering quality.",
+    "learning": "Distilled lessons, behavior changes, prevention rules, and confidence updates."
+  },
+  "implemented": [
+    {
+      "area": "Framework OS module",
+      "files": [
+        "framework/os/framework-os-contract.js",
+        "framework/os/index.js"
+      ],
+      "effect": "Adds a reusable operating-system contract that makes Understanding an explicit shared layer instead of an implicit drafting behavior."
+    },
+    {
+      "area": "Story Dossier subsystem",
+      "files": [
+        "framework/dossier/intelligence/build-story-understanding.js",
+        "framework/dossier/index.js",
+        "framework/dossier/schemas/dossier.schema.js"
+      ],
+      "effect": "Turns the locked canonical dossier into a Story Understanding object before Writer Reasoning."
+    },
+    {
+      "area": "News Lab runtime",
+      "files": [
+        "server.js"
+      ],
+      "effect": "Adds Story Understanding to canonical dossier intelligence, compact public story records, writer input references, lifecycle tracing, pipeline stage metrics, and capability scoring."
+    },
+    {
+      "area": "Framework documentation",
+      "files": [
+        "AI_FRAMEWORK_OPERATING_SYSTEM.md",
+        "AI_FRAMEWORK_INTELLIGENCE_ARCHITECTURE.md",
+        "AI_FRAMEWORK_PHASE_13_FRAMEWORK_OS_INTEGRATION.md",
+        "README.md"
+      ],
+      "effect": "Updates the Framework OS architecture from Knowledge -> Reasoning -> Execution to Knowledge -> Understanding -> Reasoning -> Execution -> Verification -> Optimization -> Learning."
+    },
+    {
+      "area": "Priority planning",
+      "files": [
+        "data/framework-four-project-priority-plan.json",
+        "data/high-impact-capability-plan.json"
+      ],
+      "effect": "Adds Project 1B - Story Understanding Engine as the bridge between Canonical Story Dossier and Writer Reasoning."
+    }
+  ],
+  "learning": {
+    "problemClass": "reasoning-reconstructs-meaning-from-incomplete-knowledge",
+    "preventionRule": "Reasoning, writing, image selection, newsletter generation, Creator Desk output, repair, and publication must consume an Understanding object derived from the canonical knowledge object whenever the task depends on event meaning.",
+    "repairRule": "If Understanding is incomplete or misaligned, return to Knowledge/Dossier enrichment rather than allowing downstream systems to guess, rewrite generically, or publish from weak context.",
+    "expectedOutcome": "Fewer story-identity mismatches, fewer headline/lead mismatches, less generic writing, fewer repair loops, and higher first-pass publication."
+  },
+  "verification": {
+    "serverSyntax": "node --check server.js",
+    "jsonValidation": "framework priority JSON files parse successfully",
+    "moduleLoad": "require('./framework/os') and require('./framework/dossier') load successfully"
+  }
+}

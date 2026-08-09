@@ -1,0 +1,69 @@
+{
+  "status": "implemented",
+  "version": "20260806-dossier-recovery-intelligence-v1",
+  "updatedAt": "2026-08-06T00:00:00.000Z",
+  "problem": "The recovery queue could retain thin partialDossier records that lost canonical event intelligence between cycles.",
+  "implemented": {
+    "frameworkDossierSubsystem": {
+      "path": "framework/dossier",
+      "contains": [
+        "schemas",
+        "intake",
+        "clustering",
+        "intelligence",
+        "readiness",
+        "recovery",
+        "persistence",
+        "observability"
+      ]
+    },
+    "fullRecoverySnapshot": {
+      "enabled": true,
+      "retains": [
+        "dossierId",
+        "eventId",
+        "revision",
+        "dossierRevisionId",
+        "canonicalEventSignature",
+        "factLedger",
+        "timeline",
+        "entities",
+        "contradictions",
+        "knownUnknowns",
+        "sourceRegistry",
+        "categoryClassification",
+        "readiness",
+        "imageInstructions",
+        "writerContract",
+        "canonicalDossierIntelligence",
+        "recoveryRequirements",
+        "fingerprint"
+      ],
+      "rule": "Recovery adds missing intelligence to a preserved dossier snapshot instead of rebuilding from representative/facts/sourceCount."
+    },
+    "canonicalFactLedgerMandatory": {
+      "enabled": true,
+      "rule": "If a held dossier does not already carry a fact ledger, recovery builds one with fact IDs, event ID, source provenance, verification status, and writing eligibility."
+    },
+    "intraSourceEventSegmentation": {
+      "enabled": true,
+      "rule": "Roundup or multi-topic source items preserve source:event_segment records before clustering/recovery so one source cannot contaminate the dossier."
+    }
+  },
+  "brainLearning": {
+    "lesson": "A held dossier is not a discarded draft. It is a continuation point for canonical intelligence.",
+    "prevention": "Before Writer handoff, preserve event identity, fact IDs, source provenance, readiness, and recovery requirements so the next cycle can enrich the dossier instead of rediscovering it.",
+    "ownerSubsystem": "Story Dossier Builder",
+    "signalsTo": [
+      "Collector",
+      "Sub-Dossier",
+      "Event Clusterer",
+      "Evidence Engine",
+      "Writer Reasoning",
+      "Headline Generator",
+      "Image Intelligence",
+      "Publishing Editor",
+      "Recovery Worker"
+    ]
+  }
+}

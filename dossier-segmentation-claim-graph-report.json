@@ -1,0 +1,53 @@
+{
+  "version": "20260806-dossier-segmentation-claim-graph-v1",
+  "status": "implemented",
+  "generatedAt": "2026-08-06T00:00:00.000Z",
+  "purpose": "Make the Story Dossier act as the canonical intelligence object before clustering, writing, repair, image selection, and publication.",
+  "implemented": [
+    {
+      "capability": "Intra-source event segmentation before clustering",
+      "code": "newsLabExpandStoriesWithIntraSourceSegments",
+      "effect": "Multi-event source items are split into event-segment source records before event clustering so one mixed feed item cannot contaminate a canonical dossier."
+    },
+    {
+      "capability": "Evidence-backed event identity fields",
+      "code": "newsLabEvidenceBackedEventField",
+      "effect": "Actor, action, object, time, location, consequence, and status now carry confidence, source IDs, independent source count, and evidence status."
+    },
+    {
+      "capability": "Claim graph",
+      "code": "newsLabBuildCanonicalFactLedger.claimGraph",
+      "effect": "Raw claims, normalized claims, corroborated facts, disputed facts, contextual facts, and prohibited inferences are separated before Writer Reasoning."
+    },
+    {
+      "capability": "Coherence analysis",
+      "code": "newsLabEventCoherenceAssessment.coherenceAnalysis",
+      "effect": "Cluster readiness now measures actor consistency, action compatibility, timeline compatibility, object/consequence consistency, semantic similarity, contradiction severity, and competing event centers."
+    },
+    {
+      "capability": "Immutable dossier revision hash",
+      "code": "newsLabLockDossierForWriting.revisionHash",
+      "effect": "Downstream systems can reference the exact locked dossier revision used for Writer, Headline, Image, Editor, Newsletter, Creator Desk, and Publisher work."
+    },
+    {
+      "capability": "Executable Writer Reasoning contract",
+      "code": "newsLabBuildWriterReasoningPlan.executableContract",
+      "effect": "The Writer receives allowed fact IDs, required attributions, prohibited claims, known unknowns, paragraph plan, no-generic-fallback policy, and sentence-to-fact mapping requirements before drafting."
+    },
+    {
+      "capability": "Modular dossier subsystem extension",
+      "code": "framework/dossier",
+      "effect": "The reusable dossier subsystem now exposes event segmentation, claim graph construction, evidence-backed event signatures, coherence diagnostics, and revision hashing."
+    }
+  ],
+  "learning": {
+    "problemClass": "dossier-contamination-and-thin-recovery-state",
+    "avoidanceRule": "Do not allow a source roundup or mixed source document to enter event clustering as one story. Segment first, then cluster canonical events.",
+    "repairRule": "If a dossier lacks evidence or has competing event centers, route it back to evidence/dossier expansion instead of drafting generic prose.",
+    "writerRule": "The Writer consumes the locked dossier contract and may not draft a standard or deep article without allowed fact IDs and attribution requirements."
+  },
+  "verification": {
+    "serverSyntax": "node --check server.js",
+    "dossierModuleLoad": "require('./framework/dossier') exposes segmentSourceEvents, buildClaimGraph, and hashDossierRevision"
+  }
+}

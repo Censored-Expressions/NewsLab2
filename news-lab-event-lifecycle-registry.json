@@ -1,0 +1,389 @@
+{
+  "version": "20260730-event-lifecycle-v1",
+  "updatedAt": "2026-08-09T01:46:27.150Z",
+  "eventCount": 6,
+  "events": {
+    "technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh": {
+      "eventId": "technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh",
+      "title": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
+      "category": "business",
+      "canonicalIdentity": {
+        "actor": "",
+        "action": "",
+        "location": "",
+        "eventTime": "2026-07-30T15:45:36.000Z"
+      },
+      "status": "published-monitoring",
+      "firstSeenAt": "2026-07-30T15:45:36.000Z",
+      "lastEvidenceAt": "2026-07-30T16:35:15.911Z",
+      "lastPublishedAt": "2026-07-30T15:45:36.000Z",
+      "currentDossierRevision": 1,
+      "currentArticleRevision": 1,
+      "dossierLock": null,
+      "articleIds": [
+        "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm"
+      ],
+      "sourceIds": [],
+      "sourceCount": 0,
+      "knownFacts": [],
+      "unknownFacts": [],
+      "contradictionCount": 0,
+      "materialChanges": [],
+      "latestMaterialChange": {
+        "changeClass": "no-material-change",
+        "action": "keep-existing-article",
+        "newFacts": [],
+        "sourceDelta": 0,
+        "contradictionCount": 0,
+        "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+      },
+      "freshnessClass": "market-developing",
+      "nextRefreshAt": "2026-07-30T22:46:30.471Z",
+      "staleAfterMs": 600000,
+      "publicVisibility": {
+        "verifiedVisible": true,
+        "checkedAt": "2026-07-30T22:36:30.399Z",
+        "cacheGeneratedAt": "2026-07-30T22:36:30.217Z",
+        "rule": "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      "lifecycleRule": "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    },
+    "world:event:trump-patriot-ukraine-signals-support-production-president": {
+      "eventId": "world:event:trump-patriot-ukraine-signals-support-production-president",
+      "title": "Trump Justifies Alters Diplomatic Stakes",
+      "category": "world",
+      "canonicalIdentity": {
+        "actor": "",
+        "action": "Trump Justifies $2 Billion Made as President With Inaccurate Claims.",
+        "location": "",
+        "eventTime": "2026-07-30T15:35:50.000Z"
+      },
+      "status": "published-monitoring",
+      "firstSeenAt": "2026-07-30T15:35:50.000Z",
+      "lastEvidenceAt": "2026-07-30T16:35:15.389Z",
+      "lastPublishedAt": "2026-07-30T15:35:50.000Z",
+      "currentDossierRevision": 1,
+      "currentArticleRevision": 1,
+      "dossierLock": null,
+      "articleIds": [
+        "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4"
+      ],
+      "sourceIds": [],
+      "sourceCount": 0,
+      "knownFacts": [],
+      "unknownFacts": [],
+      "contradictionCount": 0,
+      "materialChanges": [],
+      "latestMaterialChange": {
+        "changeClass": "no-material-change",
+        "action": "keep-existing-article",
+        "newFacts": [],
+        "sourceDelta": 0,
+        "contradictionCount": 0,
+        "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+      },
+      "freshnessClass": "market-current",
+      "nextRefreshAt": "2026-07-30T23:06:30.471Z",
+      "staleAfterMs": 1800000,
+      "publicVisibility": {
+        "verifiedVisible": true,
+        "checkedAt": "2026-07-30T22:36:30.399Z",
+        "cacheGeneratedAt": "2026-07-30T22:36:30.217Z",
+        "rule": "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      "lifecycleRule": "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    },
+    "technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model": {
+      "eventId": "technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model",
+      "title": "Google Deepmind's Moves Markets",
+      "category": "technology",
+      "canonicalIdentity": {
+        "actor": "",
+        "action": "",
+        "location": "",
+        "eventTime": "2026-07-30T15:04:22.000Z"
+      },
+      "status": "published-monitoring",
+      "firstSeenAt": "2026-07-30T15:04:22.000Z",
+      "lastEvidenceAt": "2026-07-30T16:35:15.260Z",
+      "lastPublishedAt": "2026-07-30T15:04:22.000Z",
+      "currentDossierRevision": 1,
+      "currentArticleRevision": 1,
+      "dossierLock": null,
+      "articleIds": [
+        "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-"
+      ],
+      "sourceIds": [],
+      "sourceCount": 0,
+      "knownFacts": [],
+      "unknownFacts": [],
+      "contradictionCount": 0,
+      "materialChanges": [],
+      "latestMaterialChange": {
+        "changeClass": "no-material-change",
+        "action": "keep-existing-article",
+        "newFacts": [],
+        "sourceDelta": 0,
+        "contradictionCount": 0,
+        "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+      },
+      "freshnessClass": "market-developing",
+      "nextRefreshAt": "2026-07-30T22:46:30.471Z",
+      "staleAfterMs": 600000,
+      "publicVisibility": {
+        "verifiedVisible": true,
+        "checkedAt": "2026-07-30T22:36:30.399Z",
+        "cacheGeneratedAt": "2026-07-30T22:36:30.217Z",
+        "rule": "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      "lifecycleRule": "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    },
+    "world:event:are-iran-ukraine-caspian-sea-wars-getting-tangled-tehran": {
+      "eventId": "world:event:are-iran-ukraine-caspian-sea-wars-getting-tangled-tehran",
+      "title": "U.S. Strikes Iran as Hormuz Tensions Rise",
+      "category": "world",
+      "canonicalIdentity": {
+        "actor": "",
+        "action": "",
+        "location": "",
+        "eventTime": "2026-07-30T19:47:57.650Z"
+      },
+      "status": "published-monitoring",
+      "firstSeenAt": "2026-07-30T19:47:57.650Z",
+      "lastEvidenceAt": "2026-07-30T19:47:57.650Z",
+      "lastPublishedAt": "2026-07-30T19:47:57.650Z",
+      "currentDossierRevision": 1,
+      "currentArticleRevision": 1,
+      "dossierLock": null,
+      "articleIds": [
+        "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise"
+      ],
+      "sourceIds": [],
+      "sourceCount": 0,
+      "knownFacts": [],
+      "unknownFacts": [],
+      "contradictionCount": 0,
+      "materialChanges": [],
+      "latestMaterialChange": {
+        "changeClass": "no-material-change",
+        "action": "keep-existing-article",
+        "newFacts": [],
+        "sourceDelta": 0,
+        "contradictionCount": 0,
+        "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+      },
+      "freshnessClass": "stable",
+      "nextRefreshAt": "2026-07-31T04:36:30.471Z",
+      "staleAfterMs": 21600000,
+      "publicVisibility": {
+        "verifiedVisible": true,
+        "checkedAt": "2026-07-30T22:36:30.399Z",
+        "cacheGeneratedAt": "2026-07-30T22:36:30.217Z",
+        "rule": "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      "lifecycleRule": "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    },
+    "politics:event:trump-blanche-s-senate-pull-nomination-until-critics": {
+      "eventId": "politics:event:trump-blanche-s-senate-pull-nomination-until-critics",
+      "title": "Todd Blanche Nomination Faces Senate Delay",
+      "category": "politics",
+      "canonicalIdentity": {
+        "actor": "",
+        "action": "Cornyn said he isn't prepared to vote \"yes\" without an agreement.",
+        "location": "",
+        "eventTime": "2026-07-30T21:40:58.442Z"
+      },
+      "status": "published-monitoring",
+      "firstSeenAt": "2026-07-30T21:40:58.442Z",
+      "lastEvidenceAt": "2026-07-30T21:42:00.598Z",
+      "lastPublishedAt": "2026-07-30T21:40:58.442Z",
+      "currentDossierRevision": 1,
+      "currentArticleRevision": 1,
+      "dossierLock": null,
+      "articleIds": [
+        "news_lab_worker_slice_politics_2_todd-blanche-nomination-faces-senate-delay",
+        "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay"
+      ],
+      "sourceIds": [],
+      "sourceCount": 0,
+      "knownFacts": [],
+      "unknownFacts": [],
+      "contradictionCount": 0,
+      "materialChanges": [],
+      "latestMaterialChange": {
+        "changeClass": "no-material-change",
+        "action": "keep-existing-article",
+        "newFacts": [],
+        "sourceDelta": 0,
+        "contradictionCount": 0,
+        "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+      },
+      "freshnessClass": "breaking",
+      "nextRefreshAt": "2026-07-30T22:41:30.470Z",
+      "staleAfterMs": 300000,
+      "publicVisibility": {
+        "verifiedVisible": true,
+        "checkedAt": "2026-07-30T22:36:30.399Z",
+        "cacheGeneratedAt": "2026-07-30T22:36:30.217Z",
+        "rule": "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      "lifecycleRule": "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    },
+    "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals": {
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "category": "politics",
+      "canonicalIdentity": {
+        "actor": "",
+        "action": "",
+        "location": "",
+        "eventTime": "2026-07-30T22:20:35.635Z"
+      },
+      "status": "published-monitoring",
+      "firstSeenAt": "2026-07-30T22:20:35.635Z",
+      "lastEvidenceAt": "2026-07-30T22:20:35.635Z",
+      "lastPublishedAt": "2026-07-30T22:20:35.635Z",
+      "currentDossierRevision": 5,
+      "currentArticleRevision": 5,
+      "dossierLock": null,
+      "articleIds": [
+        "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc"
+      ],
+      "sourceIds": [],
+      "sourceCount": 0,
+      "knownFacts": [],
+      "unknownFacts": [],
+      "contradictionCount": 0,
+      "materialChanges": [
+        {
+          "at": "2026-07-30T22:21:20.544Z",
+          "changeClass": "major-verified-development",
+          "action": "create-or-update-article-revision",
+          "newFacts": [],
+          "sourceDelta": 0,
+          "contradictionCount": 0,
+          "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+        },
+        {
+          "at": "2026-07-30T22:27:38.236Z",
+          "changeClass": "major-verified-development",
+          "action": "create-or-update-article-revision",
+          "newFacts": [],
+          "sourceDelta": 0,
+          "contradictionCount": 0,
+          "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+        },
+        {
+          "at": "2026-07-30T22:29:18.264Z",
+          "changeClass": "major-verified-development",
+          "action": "create-or-update-article-revision",
+          "newFacts": [],
+          "sourceDelta": 0,
+          "contradictionCount": 0,
+          "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+        },
+        {
+          "at": "2026-07-30T22:30:30.054Z",
+          "changeClass": "major-verified-development",
+          "action": "create-or-update-article-revision",
+          "newFacts": [],
+          "sourceDelta": 0,
+          "contradictionCount": 0,
+          "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+        },
+        {
+          "at": "2026-07-30T22:36:30.399Z",
+          "changeClass": "major-verified-development",
+          "action": "create-or-update-article-revision",
+          "newFacts": [],
+          "sourceDelta": 0,
+          "contradictionCount": 0,
+          "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+        }
+      ],
+      "latestMaterialChange": {
+        "changeClass": "major-verified-development",
+        "action": "create-or-update-article-revision",
+        "newFacts": [],
+        "sourceDelta": 0,
+        "contradictionCount": 0,
+        "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context."
+      },
+      "freshnessClass": "breaking",
+      "nextRefreshAt": "2026-07-30T22:41:30.403Z",
+      "staleAfterMs": 300000,
+      "publicVisibility": {
+        "verifiedVisible": true,
+        "checkedAt": "2026-07-30T22:36:30.399Z",
+        "cacheGeneratedAt": "2026-07-30T22:36:30.217Z",
+        "rule": "Events are not considered publicly complete until their article is verified in the prepared public API cache."
+      },
+      "lifecycleRule": "Detect event -> collect evidence -> validate dossier -> lock dossier revision -> publish/update -> verify public visibility -> monitor for meaningful changes."
+    }
+  },
+  "recentMaterialChanges": [
+    {
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "changeClass": "major-verified-development",
+      "action": "create-or-update-article-revision",
+      "newFacts": [],
+      "sourceDelta": 0,
+      "contradictionCount": 0,
+      "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context.",
+      "at": "2026-07-30T22:36:30.399Z"
+    },
+    {
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "changeClass": "major-verified-development",
+      "action": "create-or-update-article-revision",
+      "newFacts": [],
+      "sourceDelta": 0,
+      "contradictionCount": 0,
+      "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context.",
+      "at": "2026-07-30T22:30:30.054Z"
+    },
+    {
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "changeClass": "major-verified-development",
+      "action": "create-or-update-article-revision",
+      "newFacts": [],
+      "sourceDelta": 0,
+      "contradictionCount": 0,
+      "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context.",
+      "at": "2026-07-30T22:29:18.264Z"
+    },
+    {
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "changeClass": "major-verified-development",
+      "action": "create-or-update-article-revision",
+      "newFacts": [],
+      "sourceDelta": 0,
+      "contradictionCount": 0,
+      "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context.",
+      "at": "2026-07-30T22:27:38.236Z"
+    },
+    {
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "changeClass": "major-verified-development",
+      "action": "create-or-update-article-revision",
+      "newFacts": [],
+      "sourceDelta": 0,
+      "contradictionCount": 0,
+      "rule": "Compare new evidence against the last event record. Rewrite only for material developments; otherwise keep the article stable and update metadata/context.",
+      "at": "2026-07-30T22:21:20.544Z"
+    }
+  ],
+  "summary": {
+    "verifiedVisible": 6,
+    "pendingVisibility": 0,
+    "staleEvents": 6,
+    "overdueRefreshes": 0,
+    "materialChangesThisRun": 0
+  },
+  "rule": "Track canonical events, frozen dossier/article revisions, meaningful updates, freshness policy, and verified public visibility. Publishing is one lifecycle stage, not the end of the story."
+}

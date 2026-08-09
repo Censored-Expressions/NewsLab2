@@ -2,115 +2,57 @@
   "generatedAt": "2026-08-06T00:00:00.000Z",
   "version": "20260806-four-project-framework-priority-plan-v1",
   "purpose": "Concentrate engineering effort on the projects that turn the news site into a reusable Framework: canonical dossier, story understanding, writer reasoning, editorial prevention, and production efficiency.",
-  "overall": 57,
-  "topPriority": {
-    "key": "canonical-story-dossier",
-    "label": "Project 1 - Canonical Story Dossier",
-    "score": 49,
-    "impact": 100,
-    "evidence": [
-      "dossier-ready gating is now central",
-      "downstream failures still trace to weak or inconsistent structured information"
-    ],
-    "operatingRule": "Build one authoritative dossier consumed by News Lab, Creator Desk, Newsletter, Headline, Image, Editor, Search, and analytics lanes.",
-    "reasoningRule": "The dossier owns canonical event identity, evidence classes, source agreement, uncertainty, category, timeline, image brief, and writing strategy.",
-    "correctionRule": "If a downstream lane detects identity drift, topic contamination, weak evidence, or wrong category, return to the canonical dossier and repair the shared event object first.",
-    "executionRule": "Collectors and sub-dossiers pre-separate evidence, but only the locked canonical dossier can authorize Writer, Headline, Image, and Editor handoff.",
-    "verificationMetric": "Dossier-ready rate rises while article-body-topic-drift, mixed-source-topic, duplicate dossier builds, and wrong-tab placement decline.",
-    "nextAction": "Make every output lane read the same locked dossier object and record when it consumed that dossier.",
-    "priority": 81.6,
-    "status": "needs-focus"
-  },
+  "primaryObjective": "Produce the highest quality public article with the fewest possible computational steps.",
   "lanes": [
     {
       "key": "canonical-story-dossier",
       "label": "Project 1 - Canonical Story Dossier",
-      "score": 49,
-      "impact": 100,
-      "evidence": [
-        "dossier-ready gating is now central",
-        "downstream failures still trace to weak or inconsistent structured information"
-      ],
       "operatingRule": "Build one authoritative dossier consumed by News Lab, Creator Desk, Newsletter, Headline, Image, Editor, Search, and analytics lanes.",
       "reasoningRule": "The dossier owns canonical event identity, evidence classes, source agreement, uncertainty, category, timeline, image brief, and writing strategy.",
       "correctionRule": "If a downstream lane detects identity drift, topic contamination, weak evidence, or wrong category, return to the canonical dossier and repair the shared event object first.",
       "executionRule": "Collectors and sub-dossiers pre-separate evidence, but only the locked canonical dossier can authorize Writer, Headline, Image, and Editor handoff.",
       "verificationMetric": "Dossier-ready rate rises while article-body-topic-drift, mixed-source-topic, duplicate dossier builds, and wrong-tab placement decline.",
-      "nextAction": "Make every output lane read the same locked dossier object and record when it consumed that dossier.",
-      "priority": 81.6,
-      "status": "needs-focus"
+      "nextAction": "Make every output lane read the same locked dossier object and record when it consumed that dossier."
     },
     {
       "key": "story-understanding-engine",
       "label": "Project 1B - Story Understanding Engine",
-      "score": 45,
-      "impact": 100,
-      "evidence": [
-        "Story Understanding layer now exists",
-        "Writer Reasoning should consume meaning instead of reconstructing it"
-      ],
       "operatingRule": "Convert the locked canonical dossier into a meaning object before any reasoning, writing, image, newsletter, or Creator Desk output begins.",
       "reasoningRule": "Answer what happened, who acted, who was affected, what changed, why this is news, what remains unknown, what could be misunderstood, what evidence supports each claim, what must never be inferred, and what headline/lead should emphasize.",
       "correctionRule": "If understanding is incomplete, return to dossier/evidence enrichment instead of asking Writer Reasoning to reconstruct meaning from loose facts.",
       "executionRule": "Writer Reasoning consumes Story Understanding decision inputs and evidence maps before building a paragraph plan.",
       "verificationMetric": "storyUnderstandingReady, evidence-to-answer coverage, understandingAlignmentRate, and first-pass approvals increase while story-identity mismatch declines.",
-      "nextAction": "Make every output lane record storyUnderstandingId and verify output alignment to it.",
-      "priority": 81.4,
-      "status": "needs-focus"
+      "nextAction": "Make every output lane record storyUnderstandingId and verify output alignment to it."
     },
     {
       "key": "writer-reasoning-engine",
       "label": "Project 2 - Writer Reasoning Engine",
-      "score": 50,
-      "impact": 99,
-      "evidence": [
-        "Writer Reasoning plan now exists",
-        "strict standard/deep generic fallback prevention added"
-      ],
       "operatingRule": "The Writer is a reasoning engine first and a prose generator second.",
       "reasoningRule": "Before drafting, decide what follows from Story Understanding: attribution for each claim, paragraph purpose, article format, repair boundaries, and headline inputs.",
       "correctionRule": "If standard or deep writing cannot follow the reasoning plan, route to Writer Reasoning recovery instead of generic body fallback.",
       "executionRule": "Draft only from the locked dossier and pre-draft reasoning plan, then verify the body against the plan before headline/editor review.",
       "verificationMetric": "writerReasoningPlansPassed, writerReasoningDraftVerificationsPassed, first-pass approvals, and plan-facts-used increase.",
-      "nextAction": "Measure every draft by plan completeness, plan-body alignment, and whether it avoided generic fallback.",
-      "priority": 80.6,
-      "status": "needs-focus"
+      "nextAction": "Measure every draft by plan completeness, plan-body alignment, and whether it avoided generic fallback."
     },
     {
       "key": "editorial-intelligence",
       "label": "Project 3 - Editorial Intelligence",
-      "score": 42,
-      "impact": 98,
-      "evidence": [
-        "repeated rejection patterns continue",
-        "editorial memory needs stronger pre-draft application"
-      ],
       "operatingRule": "Editorial Intelligence prevents known failures before draft submission instead of merely repairing them after rejection.",
       "reasoningRule": "Convert repeated editor findings into class-level prevention rules for Dossier, Writer, Headline, Image, and Publisher lanes.",
       "correctionRule": "When the Editor rejects, create a full issue list, targeted repair route, resubmission path, and upstream prevention hook.",
       "executionRule": "Feed top rejection classes into pre-draft validation before the next Writer cycle, then verify whether the class declines.",
       "verificationMetric": "First-pass publication rises while repeated headline, context, incomplete sentence, image, and topic-drift findings decline.",
-      "nextAction": "Compile repeated editorial findings into one active prevention rule per failure class and attach each to the earliest responsible stage.",
-      "priority": 79.2,
-      "status": "needs-focus"
+      "nextAction": "Compile repeated editorial findings into one active prevention rule per failure class and attach each to the earliest responsible stage."
     },
     {
       "key": "production-intelligence",
       "label": "Project 4 - Production Intelligence",
-      "score": 58,
-      "impact": 97,
-      "evidence": [
-        "pipeline needs cost-per-visible-article metrics",
-        "duplicate work and repair loops remain core efficiency risks"
-      ],
       "operatingRule": "Optimize the cost and conversion of the whole pipeline, not raw activity.",
       "reasoningRule": "Ask what produced public value, what repeated work, what ran too early, what ran twice, and what should be done once for all lanes.",
       "correctionRule": "When multiple subsystems share the same failure signature, create one root-cause intervention at the earliest shared stage instead of separate subsystem patches.",
       "executionRule": "Measure CPU per verified-visible article, repair loops per article, duplicate dossier builds, duplicate reasoning, sync cost, cache hit rate, and public-cache conversion.",
       "verificationMetric": "CPU/article, repair loops/article, duplicate builds, sync timeout pressure, and time-to-visible article decline while visible article count rises.",
-      "nextAction": "Create a production efficiency window comparing collected -> dossier -> reasoned -> drafted -> approved -> verified-visible conversion and cost.",
-      "priority": 72.8,
-      "status": "needs-focus"
+      "nextAction": "Create a production efficiency window comparing collected -> dossier -> reasoned -> drafted -> approved -> verified-visible conversion and cost."
     }
   ],
   "executionOrder": [
@@ -120,7 +62,7 @@
     "Project 3 - Editorial Intelligence",
     "Project 4 - Production Intelligence"
   ],
-  "sharedVerificationRule": "Every high-impact improvement must name the metric it expects to improve, rerun after execution, and record whether the metric moved.",
+  "sharedVerificationRule": "Every improvement must name the metric it expects to improve, rerun after execution, and record whether the metric moved.",
   "rollbackRule": "If a change reduces public output, weakens editor gates, increases topic drift, or increases CPU per verified-visible article, revert or revise the change and preserve the lesson as a failed experiment.",
   "rule": "Do not scatter engineering effort across symptoms. Public article quality, throughput, CPU efficiency, first-pass approval, and commercial value improve fastest when these projects operate as one pipeline: Canonical Story Dossier -> Story Understanding Engine -> Writer Reasoning Engine -> Editorial Intelligence -> Production Intelligence."
 }

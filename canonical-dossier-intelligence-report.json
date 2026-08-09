@@ -1,0 +1,39 @@
+{
+  "status": "implemented",
+  "generatedAt": "2026-08-06T00:00:00.000Z",
+  "project": "Project 3 - Canonical Story Dossier",
+  "objective": "Elevate the Story Dossier from a writer aid into the versioned Canonical Intelligence Engine that controls downstream article production.",
+  "implementedCapabilities": [
+    {
+      "capability": "Canonical Dossier Intelligence Object",
+      "result": "Each locked dossier can now produce a versioned canonical intelligence object with event identity, evidence, timeline, entities, context, intelligence, publication planning, writer contract, and consumer contract."
+    },
+    {
+      "capability": "Dossier Revision Control",
+      "result": "Locked dossiers now expose a stable dossierRevisionId so Writer, Headline, Image, Editor, Repair, Newsletter, Creator Desk, and future lanes can reference the same event understanding."
+    },
+    {
+      "capability": "Writer Controlled By Dossier",
+      "result": "Writer Reasoning now consumes the canonical dossier revision and blocks standard/deep writing when the writer contract is not ready."
+    },
+    {
+      "capability": "Image Dossier Alignment",
+      "result": "Image Intelligence now draws actor/action/consequence/category/entity context from the canonical dossier when available instead of rebuilding visual context from loose article fields."
+    },
+    {
+      "capability": "Durable Payload Continuity",
+      "result": "Published payload compaction now preserves a compact canonical dossier reference and dossierRevisionId without exposing the full internal object through the viewer API."
+    }
+  ],
+  "preventionRule": {
+    "problem": "Downstream systems drift when Writer, Headline, Image, Editor, Repair, Newsletter, and Creator Desk each reconstruct story context independently.",
+    "fix": "Route every downstream system through the same locked canonical dossier revision.",
+    "avoidance": "Before drafting, editing, repairing, selecting an image, or producing derivative content, verify a canonical dossier revision exists and the relevant consumer records that revision.",
+    "learningSignal": "A future story identity mismatch should be treated as a failure to consume or honor the canonical dossier revision, not as an isolated headline or writer error."
+  },
+  "verification": {
+    "nodeCheck": "passed-local",
+    "publicApiSafety": "Viewer API continues to use slim public story objects and does not return the full canonical intelligence contract.",
+    "nextRuntimeCheck": "Confirm new stories include dossierRevisionId and imageDossier.canonicalIntelligenceRef.consumed=true after the next worker publication cycle."
+  }
+}

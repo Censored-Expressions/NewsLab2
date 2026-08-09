@@ -1,6 +1,6 @@
 {
   "version": "20260716-breaking-brief-followups-v1",
-  "updatedAt": "2026-07-23T17:24:47.779Z",
+  "updatedAt": "2026-08-09T01:46:02.030Z",
   "purpose": "Track verified breaking/developing briefs until a fuller CE Media article replaces the early version.",
   "totals": {
     "active": 1,
@@ -28,5 +28,5 @@
   ],
   "archived": [],
   "rule": "Partial early articles are allowed only as verified breaking briefs. They must stay in the follow-up queue until replaced by a full article or intentionally expired.",
-  "lastReason": "startup-api-response-cache"
+  "lastReason": "image-improvement-pass:codex-image-pipeline-compaction-bypass-verified:shelf-restored"
 }

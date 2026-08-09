@@ -1,14 +1,15 @@
 {
-  "version": "20260722-generated-image-queue-v1",
-  "updatedAt": "2026-07-23T15:48:20.685Z",
-  "reason": "clean-generated-image-queue-remove-process-language-and-word-salad",
+  "version": "20260808-generated-image-queue-v2",
+  "updatedAt": "2026-08-09T01:45:49.774Z",
+  "reason": "codex-image-pipeline-compaction-bypass-verified:generated-asset-promotion",
   "summary": {
-    "queuedItems": 10,
-    "addedThisPass": 12,
-    "pendingGeneration": 10,
+    "queuedItems": 15,
+    "addedThisPass": 0,
+    "pendingGeneration": 5,
     "readyForReview": 0,
     "approvedForPublication": 0,
-    "removedBadBriefs": 2
+    "retiredStaleJobsThisPass": 0,
+    "assetsPromotedThisPass": 0
   },
   "policy": {
     "publicUse": "Generated images remain behind the scenes until an actual file exists, provenance is attached, and the image editor approves it.",
@@ -22,7 +23,7 @@
       "category": "politics",
       "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Trump Economic Plan Advances Senate Primary Shift. Use these verified story details as visual guidance: Washington - A landmark housing bill automatically became law at 12 a.m. on Saturday after President Trump declined to sign it in protest of the Senate's inaction on an elections bill known as the SAVE America Act. Bipartisan housing bill becomes law after Trump refuses to sign it. The largest housing bill in years is now law without President Trump's signature. Ali Bauman reports on what the new housing law will do. Congress passes housing bill without Trump's signature. Relevant entities or places for abstract context only, without exact likenesses or logos: Trump, President Trump, Washington, Senate, SAVE America Act. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.051Z",
       "provenance": {
@@ -42,7 +43,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.051Z"
+      "refreshedAt": "2026-07-23T03:07:06.051Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_politics:event:republican-senator-lindsey-graham-graham-illness-died-sudden-south_0",
@@ -50,7 +53,7 @@
       "category": "politics",
       "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Sen. Lindsey Graham Dies at 71 After Sudden Illness. Use these verified story details as visual guidance: Republican senator served in Senate since 2003 and was sharp Trump critic before becoming one of his most loyal backers Lindsey Graham, a longtime US senator and key ally. Lindsey Graham, key ally of Donald Trump, has died after sudden illness, his office says. Senator Lindsey Graham, Republican of South Carolina, Dies at 71. Senator Lindsey Graham has died at 71 after a brief illness. Relevant entities or places for abstract context only, without exact likenesses or logos: Senate. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.051Z",
       "provenance": {
@@ -70,7 +73,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.051Z"
+      "refreshedAt": "2026-07-23T03:07:06.051Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_technology:walkthrough_20260717_u-s-ai-competition-concerns-grow-after-chinese-model-breakout_extra",
@@ -78,7 +83,7 @@
       "category": "world",
       "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: U.S. AI Competition Concerns Grow After Chinese Model Breakout. Use these verified story details as visual guidance: U.S. technology policy is facing renewed pressure as artificial intelligence competition with China becomes a larger part of the national economic and security debate. Reports reviewed by CE Media describe warnings that the United States could lose ground if Chinese AI models continue to advance while American companies and regulators move more slowly. The story matters for businesses because AI development now affects software spending, cybersecurity planning, education tools, productivity systems, and the way companies decide where to invest. Warnings about Chinese AI advances are putting renewed attention on U.S. technology policy, investment speed, and national competitiveness. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.055Z",
       "provenance": {
@@ -98,7 +103,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.055Z"
+      "refreshedAt": "2026-07-23T03:07:06.055Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_world:walkthrough_20260717_burnham-transition-puts-britain-s-foreign-role-under-review_0",
@@ -106,7 +113,7 @@
       "category": "sports",
       "prompt": "original sports news illustration with field, scoreboard, athletes in generic uniforms, and competition energy Story focus: Burnham Transition Puts Britain's Foreign Role Under Review. Use these verified story details as visual guidance: Britain is preparing for a leadership transition that is drawing international attention because the next prime minister will inherit questions about trade, defense, migration, energy, and the country?s relationship Reports reviewed by CE Media describe Andy Burnham moving from a major regional political role into national leadership. The first signs to watch are cabinet appointments, early diplomatic calls, statements on Ukraine and NATO, and any shift in tone toward the European Union. Britain's reported leadership change has put attention on how the next government will approach diplomacy, trade, security, and its relationship with Europe. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.056Z",
       "provenance": {
@@ -126,7 +133,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.056Z"
+      "refreshedAt": "2026-07-23T03:07:06.056Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_technology:walkthrough_20260717_ai-race-and-cybersecurity-stocks-drive-tech-market-focus_3",
@@ -134,7 +143,7 @@
       "category": "world",
       "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: AI Race and Cybersecurity Stocks Drive Tech Market Focus. Use these verified story details as visual guidance: Artificial intelligence competition and cybersecurity performance are shaping today?s technology coverage as investors and policymakers watch how U.S. companies respond to pressure from overseas competitors. Reports reviewed by CE Media point to two connected themes: concern that China could gain ground in artificial intelligence, and renewed market attention on companies tied to security software and enterprise systems. The technology story matters because AI development is no longer only a product race. It now affects national competitiveness, business investment, education tools, workplace software, and cybersecurity planning. Technology coverage is focusing on artificial intelligence competition, enterprise software pressure, and investor interest in cybersecurity companies. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.056Z",
       "provenance": {
@@ -154,7 +163,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.056Z"
+      "refreshedAt": "2026-07-23T03:07:06.056Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_politics:walkthrough_20260717_pentagon-press-escort-rule-returns-during-access-fight_1",
@@ -162,7 +173,7 @@
       "category": "politics",
       "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Pentagon Press Escort Rule Returns During Access Fight. Use these verified story details as visual guidance: A dispute over press access at the Pentagon is moving through court while the Defense Department?s escort requirement for reporters is temporarily back in place. The case centers on whether journalists visiting the Pentagon can be required to travel with escorts while reporting from the building. The legal fight is important because it sits at the intersection of security rules, government transparency, and the practical ability of reporters to do their work. A court ruling temporarily restored the Defense Department?s escort requirement for reporters visiting the Pentagon while a legal challenge continues. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.057Z",
       "provenance": {
@@ -182,7 +193,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.057Z"
+      "refreshedAt": "2026-07-23T03:07:06.057Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_sports:walkthrough_20260717_open-championship-round-brings-record-scores-at-royal-birkdale_4",
@@ -190,7 +203,7 @@
       "category": "local",
       "prompt": "original local news illustration with streets, city services, public safety, weather, or community setting Story focus: Open Championship Round Brings Record Scores at Royal Birkdale. Use these verified story details as visual guidance: The Open Championship moved deeper into its second round at Royal Birkdale with scoring performances that immediately changed the shape of the leaderboard. Reports from the tournament focused on Lucas Herbert and Sam Burns matching the major championship scoring record with rounds of 62. In a major championship, one low round can change both the standings and the strategy for everyone still chasing. The Open Championship produced major scoring headlines as players moved through the second round at Royal Birkdale. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.057Z",
       "provenance": {
@@ -210,7 +223,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.057Z"
+      "refreshedAt": "2026-07-23T03:07:06.057Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_entertainment:walkthrough_20260717_iko-uwais-crime-series-moves-forward-at-alcon-entertainment_5",
@@ -218,7 +233,7 @@
       "category": "entertainment",
       "prompt": "original culture news illustration with stage lighting, media production, audience, and entertainment context Story focus: Iko Uwais Crime Series Moves Forward at Alcon Entertainment. Use these verified story details as visual guidance: A new crime series built around Iko Uwais is moving forward in development, adding another project to the growing market for international action-driven television. The project, titled Jakarta, is described in entertainment coverage as a multi-generational family crime story in development at Alcon Entertainment. The series is notable because Uwais brings a global action audience from martial arts and crime films, while streaming and television buyers continue to look for stories that can travel across markets. A new multi-generational crime series titled Jakarta is in development with Iko Uwais attached to star and Albert Hughes involved creatively. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.057Z",
       "provenance": {
@@ -238,7 +253,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.057Z"
+      "refreshedAt": "2026-07-23T03:07:06.057Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_local:walkthrough_20260717_san-francisco-bay-boat-disaster-leaves-families-waiting-for-answers_6",
@@ -246,7 +263,7 @@
       "category": "local",
       "prompt": "original local news illustration with streets, city services, public safety, weather, or community setting Story focus: San Francisco Bay Boat Disaster Leaves Families Waiting for Answers. Use these verified story details as visual guidance: Families in the Bay Area are waiting for answers after a boating disaster near Alcatraz left confirmed deaths and others missing following a capsizing on San Francisco Bay. Local reporting identified victims and described relatives searching for information after the outing turned tragic. For residents, the most important facts are the number of people involved, when the boat capsized, how the search unfolded, and what officials say about remaining recovery or investigation work. Authorities and families are still dealing with the aftermath of a deadly San Francisco Bay boating disaster near Alcatraz. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.058Z",
       "provenance": {
@@ -266,7 +283,9 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.058Z"
+      "refreshedAt": "2026-07-23T03:07:06.058Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
     },
     {
       "storyId": "news_lab_business:walkthrough_20260717_truist-leans-on-digital-banking-to-deepen-customer-ties_2",
@@ -274,7 +293,7 @@
       "category": "local",
       "prompt": "original local news illustration with streets, city services, public safety, weather, or community setting Story focus: Truist Leans on Digital Banking to Deepen Customer Ties. Use these verified story details as visual guidance: Truist is putting more attention on digital banking as financial institutions compete to keep customers engaged across mobile apps, online tools, and traditional branch relationships. The strategy reflects a broader shift in banking. Customers increasingly expect faster account access, clearer financial tools, and fewer barriers between everyday transactions and longer-term planning. For banks, digital engagement is not just a convenience feature. It can influence deposits, lending relationships, customer retention, and the ability to offer services before customers leave for a competitor. Truist is emphasizing digital engagement as banks compete to keep customers connected across mobile, online, and branch services. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "pending-generation",
+      "status": "retired-story-not-current",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-07-23T03:07:06.058Z",
       "provenance": {
@@ -294,7 +313,564 @@
         "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
       },
       "queuedReason": "refresh-generated-image-briefs-dangling-fragment-fix",
-      "refreshedAt": "2026-07-23T03:07:06.058Z"
+      "refreshedAt": "2026-07-23T03:07:06.058Z",
+      "retiredAt": "2026-08-09T01:41:00.426Z",
+      "retiredReason": "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
+    },
+    {
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "title": "Google Deepmind Brings Gemini Robotics Into Physical Tasks",
+      "category": "technology",
+      "prompt": "original technology news illustration with devices, data patterns, infrastructure, and neutral newsroom lighting Story focus: Google Deepmind Brings Gemini Robotics Into Physical Tasks. Use these verified story details as visual guidance: Photo-Illustration: Darrell Jackson; Getty Images Save this story Save this story Google DeepMind just released a new version of its artificial intelligence model Gemini, and it can control a range of different The latest version of Google DeepMind's AI model includes a significant jump into physical AGI. But plopping AI into the real world comes with risks. Gemini Robotics 2 Brings Google's AI Into the Physical World. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "queued",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-08-09T01:36:46.734Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "imageStatus": "",
+        "retrievedAt": "2026-08-09T01:36:46.734Z",
+        "originalQuery": "Google Deepmind Brings Gemini Robotics Into Physical Tasks",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "jobId": "image_job_1786239406790_e161633c",
+      "eventId": "technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model",
+      "dossierRevision": "unversioned",
+      "dossierRevisionHash": "d42f87d5cc5adaf48885de5992807e57040dce2e",
+      "currentImageStatus": "ce-fallback-temporary",
+      "requiredAction": "licensed-search-then-generation",
+      "attempts": 0,
+      "priority": 50,
+      "imageDossier": {
+        "version": "20260801-image-dossier-v1",
+        "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+        "eventId": "technology:event:gemini-robotics-brings-google-s-into-physical-version-deepmind-model",
+        "canonicalIntelligenceRef": {
+          "id": "",
+          "dossierRevisionId": "",
+          "consumed": false,
+          "rule": "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+        },
+        "category": "technology",
+        "canonicalEvent": {
+          "actor": "Google Deepmind Brings Gemini Robotics Into Physical Tasks",
+          "action": "Photo-Illustration: Darrell Jackson; Getty Images Save this story Save this story Google DeepMind just released a new",
+          "consequence": "",
+          "summary": "Photo-Illustration: Darrell Jackson; Getty Images Save this story Save this story Google DeepMind just released a new version of its artificial intelligence model Gemini, and it can control a range of different robots—including humanoids",
+          "locations": [],
+          "entities": [
+            "Google Deepmind Brings Gemini Robotics Into Physical Tasks"
+          ]
+        },
+        "searchStrategy": {
+          "queryTerms": [
+            "google",
+            "deepmind",
+            "brings",
+            "gemini",
+            "robotics",
+            "into",
+            "physical",
+            "tasks",
+            "photo-illustration",
+            "darrell",
+            "jackson",
+            "getty"
+          ],
+          "preferredQueries": [
+            "artificial intelligence technology",
+            "software engineers office",
+            "cybersecurity technology",
+            "technology regulation",
+            "business technology office"
+          ],
+          "avoidTerms": [
+            "graphic injury",
+            "misleading portrait",
+            "unverified scene",
+            "specific private person without rights context"
+          ],
+          "relevanceRule": "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+        },
+        "licensePolicy": {
+          "preferred": [
+            "Pexels",
+            "Unsplash",
+            "Pixabay"
+          ],
+          "sourceImagesAllowed": false,
+          "generatedFallbackAllowed": true,
+          "requireCredit": true,
+          "requireProviderProvenance": true
+        },
+        "generatedFallbackBrief": {
+          "useWhen": "No licensed image passes relevance, credit, duplicate, and rights checks.",
+          "promptSeed": "technology. Photo-Illustration: Darrell Jackson; Getty Images Save this story Save this story Google DeepMind just released a new version of its artificial intelligence model Gemini, and it can control a range of different robots—including humanoids. Google Deepmind Brings Gemini Robotics Into Physical Tasks. Photo-Illustration: Darrell Jackson; Getty Images Save this story Save this story Google DeepMind just released a new",
+          "guardrail": "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+        },
+        "postPublicationRepair": {
+          "allowed": true,
+          "rule": "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+        }
+      },
+      "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
+      "queuedAt": "2026-08-09T01:36:46.790Z",
+      "refreshedAt": "",
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+    },
+    {
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "category": "politics",
+      "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche. Use these verified story details as visual guidance: Senate judiciary committee delays vote on Todd Blanche's nomination as attorney general Blanche, who holds the role on an acting basis, apparently lacks the votes of two Republican senators who want him to confirm Veteran medical adviser likely to face questions over disputed lab leak theory in investigation seen by scientists as vilification and harassment of 85-year-old Sign. Dr. Anthony Fauci's journal entries, published this week by a Republican senator, offer new details about how the administrations of Presidents Donald Trump and Joe Biden. Fauci to face Republican questions over Covid pandemic origins US politics live. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "queued",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-08-09T01:36:46.790Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "imageStatus": "",
+        "retrievedAt": "2026-08-09T01:36:46.790Z",
+        "originalQuery": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+      "dossierRevision": "unversioned",
+      "dossierRevisionHash": "391c82ca6c1ccab4543cad248b9cc35e3211a77a",
+      "currentImageStatus": "ce-fallback-temporary",
+      "requiredAction": "licensed-search-then-generation",
+      "attempts": 0,
+      "priority": 50,
+      "imageDossier": {
+        "version": "20260801-image-dossier-v1",
+        "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+        "eventId": "politics:event:covid-republican-dr-anthony-fauci-s-face-journal-questions-reveals",
+        "canonicalIntelligenceRef": {
+          "id": "",
+          "dossierRevisionId": "",
+          "consumed": false,
+          "rule": "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+        },
+        "category": "politics",
+        "canonicalEvent": {
+          "actor": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General",
+          "action": "Senate judiciary committee delays vote on Todd Blanche's nomination as attorney general Blanche, who holds the role on",
+          "consequence": "Fauci to face Republican questions over Covid pandemic origins – US politics live.",
+          "summary": "Senate judiciary committee delays vote on Todd Blanche's nomination as attorney general Blanche, who holds the role on an acting basis, apparently lacks the votes of two Republican senators who want him to confirm in writing that the",
+          "locations": [],
+          "entities": [
+            "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney"
+          ]
+        },
+        "searchStrategy": {
+          "queryTerms": [
+            "senate",
+            "judiciary",
+            "committee",
+            "delays",
+            "vote",
+            "todd",
+            "blanche",
+            "nomination",
+            "attorney",
+            "general",
+            "blanche",
+            "senate"
+          ],
+          "preferredQueries": [
+            "us capitol building",
+            "political press conference",
+            "voting ballot election",
+            "childcare classroom",
+            "school children classroom"
+          ],
+          "avoidTerms": [
+            "graphic injury",
+            "misleading portrait",
+            "unverified scene",
+            "specific private person without rights context"
+          ],
+          "relevanceRule": "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+        },
+        "licensePolicy": {
+          "preferred": [
+            "Pexels",
+            "Unsplash",
+            "Pixabay"
+          ],
+          "sourceImagesAllowed": false,
+          "generatedFallbackAllowed": true,
+          "requireCredit": true,
+          "requireProviderProvenance": true
+        },
+        "generatedFallbackBrief": {
+          "useWhen": "No licensed image passes relevance, credit, duplicate, and rights checks.",
+          "promptSeed": "politics. Senate judiciary committee delays vote on Todd Blanche's nomination as attorney general Blanche, who holds the role on an acting basis, apparently lacks the votes of two Republican senators who want him to confirm in writing that the. Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General. Senate judiciary committee delays vote on Todd Blanche's nomination as attorney general Blanche, who holds the role on. Fauci to face Republican questions over Covid pandemic origins – US politics live.",
+          "guardrail": "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+        },
+        "postPublicationRepair": {
+          "allowed": true,
+          "rule": "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+        }
+      },
+      "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
+      "queuedAt": "2026-08-09T01:36:46.792Z",
+      "refreshedAt": "",
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+    },
+    {
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "title": "Todd Blanche Nomination Faces Senate Delay",
+      "category": "politics",
+      "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Todd Blanche Nomination Faces Senate Delay. Use these verified story details as visual guidance: President Trump on Thursday said he has \"no objection\" to withdrawing Todd Blanche's nomination for attorney general until Republican Senators John Cornyn of Texas and Thom Tillis of North Carolina leave office President Trump said Todd Blanche will remain acting attorney general as a holdup on his nomination continues. Trump says he may pull Blanche's nomination until 2 Senate critics leave office. Cornyn said he isn't prepared to vote \"yes\" without an agreement. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "queued",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-08-09T01:36:46.792Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "imageStatus": "",
+        "retrievedAt": "2026-08-09T01:36:46.792Z",
+        "originalQuery": "Todd Blanche Nomination Faces Senate Delay",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "jobId": "image_job_1786239406793_97770475",
+      "eventId": "politics:event:trump-blanche-s-senate-pull-nomination-until-critics",
+      "dossierRevision": "unversioned",
+      "dossierRevisionHash": "cf284779df30b51456725a41f16d1fcccb92c93f",
+      "currentImageStatus": "ce-fallback-temporary",
+      "requiredAction": "licensed-search-then-generation",
+      "attempts": 0,
+      "priority": 50,
+      "imageDossier": {
+        "version": "20260801-image-dossier-v1",
+        "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+        "eventId": "politics:event:trump-blanche-s-senate-pull-nomination-until-critics",
+        "canonicalIntelligenceRef": {
+          "id": "",
+          "dossierRevisionId": "",
+          "consumed": false,
+          "rule": "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+        },
+        "category": "politics",
+        "canonicalEvent": {
+          "actor": "Todd Blanche Nomination Faces Senate Delay",
+          "action": "President Trump on Thursday said he has \"no objection\" to withdrawing Todd Blanche's nomination for attorney general",
+          "consequence": "Cornyn said he isn't prepared to vote \"yes\" without an agreement.",
+          "summary": "President Trump on Thursday said he has \"no objection\" to withdrawing Todd Blanche's nomination for attorney general until Republican Senators John Cornyn of Texas and Thom Tillis of North Carolina leave office in January, as their",
+          "locations": [],
+          "entities": [
+            "Todd Blanche Nomination Faces Senate Delay"
+          ]
+        },
+        "searchStrategy": {
+          "queryTerms": [
+            "todd",
+            "blanche",
+            "nomination",
+            "faces",
+            "senate",
+            "delay",
+            "president",
+            "trump",
+            "thursday",
+            "said",
+            "objection",
+            "withdrawing"
+          ],
+          "preferredQueries": [
+            "college baseball stadium",
+            "baseball pitcher mound",
+            "baseball championship game",
+            "us capitol building",
+            "political press conference"
+          ],
+          "avoidTerms": [
+            "graphic injury",
+            "misleading portrait",
+            "unverified scene",
+            "specific private person without rights context"
+          ],
+          "relevanceRule": "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+        },
+        "licensePolicy": {
+          "preferred": [
+            "Pexels",
+            "Unsplash",
+            "Pixabay"
+          ],
+          "sourceImagesAllowed": false,
+          "generatedFallbackAllowed": true,
+          "requireCredit": true,
+          "requireProviderProvenance": true
+        },
+        "generatedFallbackBrief": {
+          "useWhen": "No licensed image passes relevance, credit, duplicate, and rights checks.",
+          "promptSeed": "politics. President Trump on Thursday said he has \"no objection\" to withdrawing Todd Blanche's nomination for attorney general until Republican Senators John Cornyn of Texas and Thom Tillis of North Carolina leave office in January, as their. Todd Blanche Nomination Faces Senate Delay. President Trump on Thursday said he has \"no objection\" to withdrawing Todd Blanche's nomination for attorney general. Cornyn said he isn't prepared to vote \"yes\" without an agreement.",
+          "guardrail": "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+        },
+        "postPublicationRepair": {
+          "allowed": true,
+          "rule": "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+        }
+      },
+      "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
+      "queuedAt": "2026-08-09T01:36:46.795Z",
+      "refreshedAt": "",
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+    },
+    {
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "title": "U.S. Strikes Iran as Hormuz Tensions Rise",
+      "category": "world",
+      "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: U.S. Strikes Iran as Hormuz Tensions Rise. Use these verified story details as visual guidance: Tehran has threatened a response after a Ukrainian strike on an Iranian cargo ship in the Caspian Sea that Kyiv says was carrying weapons to Russia. Still, Ukraine says it wants to avoid escalation with Tehran. Are Iran and Ukraine wars getting tangled in Caspian Sea? The story focuses on the international development, the officials involved, the security stakes, and the next diplomatic or military step, especially the international actors, confirmed action, and next diplomatic Are Iran and Ukraine wars getting tangled in Caspian Sea? Ukraine has increasingly been targeting Russia-linked vessels [FILE: 2019] Image: PantherMedia/picture alliance A recent Ukrainian strike on an Iranian vessel Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "queued",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-08-09T01:36:46.796Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "imageStatus": "",
+        "retrievedAt": "2026-08-09T01:36:46.796Z",
+        "originalQuery": "U.S. Strikes Iran as Hormuz Tensions Rise",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "eventId": "world:event:are-iran-ukraine-caspian-sea-wars-getting-tangled-tehran",
+      "dossierRevision": "unversioned",
+      "dossierRevisionHash": "edef9491e48680ec8370647bbf8b527e9f15123a",
+      "currentImageStatus": "ce-fallback-temporary",
+      "requiredAction": "licensed-search-then-generation",
+      "attempts": 0,
+      "priority": 50,
+      "imageDossier": {
+        "version": "20260801-image-dossier-v1",
+        "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+        "eventId": "world:event:are-iran-ukraine-caspian-sea-wars-getting-tangled-tehran",
+        "canonicalIntelligenceRef": {
+          "id": "",
+          "dossierRevisionId": "",
+          "consumed": false,
+          "rule": "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+        },
+        "category": "world",
+        "canonicalEvent": {
+          "actor": "U.S. Strikes Iran as Hormuz Tensions Rise",
+          "action": "Tehran has threatened a response after a Ukrainian strike on an Iranian cargo ship in the Caspian Sea that Kyiv says",
+          "consequence": "The story focuses on the international development, the officials involved, the security stakes, and the next diplomatic or military step, especially the",
+          "summary": "Tehran has threatened a response after a Ukrainian strike on an Iranian cargo ship in the Caspian Sea that Kyiv says was carrying weapons to Russia. Still, Ukraine says it wants to avoid escalation with Tehran.",
+          "locations": [],
+          "entities": [
+            "U.S. Strikes Iran as Hormuz Tensions Rise"
+          ]
+        },
+        "searchStrategy": {
+          "queryTerms": [
+            "strikes",
+            "iran",
+            "hormuz",
+            "tensions",
+            "rise",
+            "tehran",
+            "threatened",
+            "response",
+            "after",
+            "ukrainian",
+            "strike",
+            "iranian"
+          ],
+          "preferredQueries": [
+            "international diplomacy meeting",
+            "military conflict news",
+            "government press conference",
+            "U.S. Strikes Iran Hormuz Tensions Rise",
+            "tehran caspian ukraine avoid cargo carrying"
+          ],
+          "avoidTerms": [
+            "graphic injury",
+            "misleading portrait",
+            "unverified scene",
+            "specific private person without rights context"
+          ],
+          "relevanceRule": "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+        },
+        "licensePolicy": {
+          "preferred": [
+            "Pexels",
+            "Unsplash",
+            "Pixabay"
+          ],
+          "sourceImagesAllowed": false,
+          "generatedFallbackAllowed": true,
+          "requireCredit": true,
+          "requireProviderProvenance": true
+        },
+        "generatedFallbackBrief": {
+          "useWhen": "No licensed image passes relevance, credit, duplicate, and rights checks.",
+          "promptSeed": "world. Tehran has threatened a response after a Ukrainian strike on an Iranian cargo ship in the Caspian Sea that Kyiv says was carrying weapons to Russia. Still, Ukraine says it wants to avoid escalation with Tehran.. U.S. Strikes Iran as Hormuz Tensions Rise. Tehran has threatened a response after a Ukrainian strike on an Iranian cargo ship in the Caspian Sea that Kyiv says. The story focuses on the international development, the officials involved, the security stakes, and the next diplomatic or military step, especially the",
+          "guardrail": "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+        },
+        "postPublicationRepair": {
+          "allowed": true,
+          "rule": "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+        }
+      },
+      "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
+      "queuedAt": "2026-08-09T01:36:46.797Z",
+      "refreshedAt": "",
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+    },
+    {
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "title": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
+      "category": "business",
+      "prompt": "original business news illustration with markets, charts, offices, and economic decision-making context Story focus: There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List. Use these verified story details as visual guidance: The story focuses on the announcement, the people involved, the schedule, and the audience or business response tied to the story, especially the people involved, the public response, and the next industry or legal step. There are fresh signs that fusion power startup Commonwealth Fusion Systems will list in the next two to three years. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "queued",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-08-09T01:36:46.797Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "imageStatus": "",
+        "retrievedAt": "2026-08-09T01:36:46.797Z",
+        "originalQuery": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "eventId": "technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh",
+      "dossierRevision": "unversioned",
+      "dossierRevisionHash": "51eb4e56b5e095f006587d135544866e1d1df2e4",
+      "currentImageStatus": "ce-fallback-temporary",
+      "requiredAction": "licensed-search-then-generation",
+      "attempts": 0,
+      "priority": 50,
+      "imageDossier": {
+        "version": "20260801-image-dossier-v1",
+        "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+        "eventId": "technology:event:when-commonwealth-fusion-systems-there-power-startup-public-fresh",
+        "canonicalIntelligenceRef": {
+          "id": "",
+          "dossierRevisionId": "",
+          "consumed": false,
+          "rule": "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+        },
+        "category": "business",
+        "canonicalEvent": {
+          "actor": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
+          "action": "",
+          "consequence": "The story focuses on the announcement, the people involved, the schedule, and the audience or business response tied to the story, especially the people",
+          "summary": "The story focuses on the announcement, the people involved, the schedule, and the audience or business response tied to the story, especially the people involved, the public response, and the next industry or legal step.",
+          "locations": [],
+          "entities": [
+            "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems"
+          ]
+        },
+        "searchStrategy": {
+          "queryTerms": [
+            "there",
+            "fresh",
+            "signs",
+            "fusion",
+            "power",
+            "startup",
+            "commonwealth",
+            "fusion",
+            "systems",
+            "list",
+            "focuses",
+            "announcement"
+          ],
+          "preferredQueries": [
+            "shopping mall storefront",
+            "retail store entrance",
+            "small business storefront",
+            "There Are Fresh Signs That Fusion Power",
+            "fusion business commonwealth fresh involved list"
+          ],
+          "avoidTerms": [
+            "graphic injury",
+            "misleading portrait",
+            "unverified scene",
+            "specific private person without rights context"
+          ],
+          "relevanceRule": "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+        },
+        "licensePolicy": {
+          "preferred": [
+            "Pexels",
+            "Unsplash",
+            "Pixabay"
+          ],
+          "sourceImagesAllowed": false,
+          "generatedFallbackAllowed": true,
+          "requireCredit": true,
+          "requireProviderProvenance": true
+        },
+        "generatedFallbackBrief": {
+          "useWhen": "No licensed image passes relevance, credit, duplicate, and rights checks.",
+          "promptSeed": "business. The story focuses on the announcement, the people involved, the schedule, and the audience or business response tied to the story, especially the people involved, the public response, and the next industry or legal step.. There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List. The story focuses on the announcement, the people involved, the schedule, and the audience or business response tied to the story, especially the people",
+          "guardrail": "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+        },
+        "postPublicationRepair": {
+          "allowed": true,
+          "rule": "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+        }
+      },
+      "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
+      "queuedAt": "2026-08-09T01:36:46.798Z",
+      "refreshedAt": "",
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
     }
   ]
 }

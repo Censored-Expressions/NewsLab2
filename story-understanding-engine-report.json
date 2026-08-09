@@ -1,0 +1,49 @@
+{
+  "version": "20260806-story-understanding-engine-v1",
+  "status": "implemented",
+  "generatedAt": "2026-08-06T00:00:00.000Z",
+  "purpose": "Insert Story Understanding between the canonical Story Dossier and Writer Reasoning so the Framework reasons from what the evidence means rather than reconstructing the story during drafting.",
+  "operatingModel": "Knowledge -> Understanding -> Reasoning -> Execution -> Verification -> Optimization -> Learning",
+  "implemented": [
+    {
+      "capability": "Story Understanding layer",
+      "code": "newsLabBuildStoryUnderstanding",
+      "effect": "Each locked canonical dossier now produces answers for what happened, who acted, who was affected, what changed, why the story is news, what is unknown, what readers may misunderstand, what evidence supports claims, what must not be inferred, headline emphasis, lead emphasis, background-only material, and unusable material."
+    },
+    {
+      "capability": "Dossier-owned understanding",
+      "code": "newsLabBuildCanonicalDossierIntelligence.storyUnderstanding",
+      "effect": "Story Understanding is attached to the canonical intelligence object and preserved through compact public/recovery records."
+    },
+    {
+      "capability": "Writer Reasoning consumes understanding",
+      "code": "newsLabBuildWriterReasoningPlan",
+      "effect": "Writer Reasoning now records storyUnderstandingId, consumes evidenceMap and decisionInputs, and converts approved understanding into an executable contract."
+    },
+    {
+      "capability": "Paragraph execution plan",
+      "code": "paragraphExecutionPlan",
+      "effect": "The Writer executes lead, evidence, context, timeline, and next-step roles from decision IDs and allowed fact IDs instead of drafting from loose paragraphs."
+    },
+    {
+      "capability": "Understanding alignment verification",
+      "code": "newsLabVerifyDraftAgainstReasoningPlan",
+      "effect": "Draft verification now measures whether the body remains aligned with Story Understanding and routes story-understanding-alignment-failed when it drifts."
+    },
+    {
+      "capability": "Reusable Framework OS module",
+      "code": "framework/dossier/intelligence/build-story-understanding.js",
+      "effect": "The modular dossier subsystem exposes buildStoryUnderstanding so other applications can consume the Knowledge -> Understanding -> Reasoning layer."
+    }
+  ],
+  "learning": {
+    "problemClass": "writer-reconstructs-story-during-drafting",
+    "avoidanceRule": "Do not allow Writer Reasoning to infer story meaning from raw RSS or loosely structured facts. Story Understanding must answer the meaning questions first.",
+    "repairRule": "If Story Understanding is not ready, route upstream to dossier/evidence enrichment instead of writing generic article prose.",
+    "publicationGoal": "Increase first-pass publication by making the Writer execute verified decisions from a locked understanding object."
+  },
+  "verification": {
+    "serverSyntax": "node --check server.js",
+    "moduleLoad": "require('./framework/dossier') exposes intelligence.buildStoryUnderstanding"
+  }
+}

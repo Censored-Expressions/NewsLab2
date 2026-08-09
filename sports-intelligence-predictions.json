@@ -1,0 +1,51 @@
+{
+  "version": "20260808-sports-intelligence-v1",
+  "updatedAt": "2026-08-08T00:00:00.000Z",
+  "regulatoryBoundary": "Analytics and forecasting only. No wagering, no payment handling, no bet placement, and no instruction to gamble.",
+  "predictions": [
+    {
+      "id": "sample_mlb_cubs_moneyline_baseline",
+      "sport": "MLB",
+      "league": "MLB",
+      "event": "Yankees at Cubs",
+      "marketType": "moneyline",
+      "selection": "Cubs",
+      "sportsbook": "Sample market",
+      "americanOdds": -155,
+      "opposingAmericanOdds": 135,
+      "rawMarketImpliedProbability": 0.6078,
+      "fairMarketProbability": 0.5852,
+      "modelProbability": 0.645,
+      "edgePoints": 5.98,
+      "confidence": "Moderate",
+      "dataQualityScore": 0.91,
+      "dataQualityPercent": 91,
+      "classification": "positive-edge-watchlist",
+      "supportingFactors": [
+        "Starting pitching edge",
+        "Bullpen rest advantage",
+        "Home-field run environment"
+      ],
+      "opposingFactors": [
+        "Lineup confirmation pending",
+        "Market movement should be rechecked before first pitch"
+      ],
+      "frozenAt": "2026-08-08T00:00:00.000Z",
+      "status": "open",
+      "outcome": null,
+      "brierScore": null,
+      "correct": null,
+      "modelVersion": "sports-intelligence-local-baseline-v1",
+      "notes": "Sample record for local calibration testing."
+    }
+  ],
+  "performance": {
+    "predictionCount": 1,
+    "settledCount": 0,
+    "accuracy": null,
+    "averageBrierScore": null,
+    "bySport": [],
+    "byMarket": [],
+    "calibrationBuckets": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "version": "20260806-writer-reasoning-enforcement-v1",
+  "generatedAt": "2026-08-06T00:00:00.000Z",
+  "scope": [
+    "Writer Reasoning",
+    "standard/deep article body generation",
+    "worker-slice body generation",
+    "canonical headline service"
+  ],
+  "rootCause": {
+    "summary": "Writer Reasoning existed as a pre-draft plan, but standard/deep articles could still silently fall back to generic body generation when the plan writer returned a thin or empty body. This allowed preventable reasoning failures to become downstream editorial and repair work.",
+    "layer": "Writer Reasoning / Article Writer",
+    "symptoms": [
+      "Plan exists but generic prose can be generated after plan failure.",
+      "Worker slices can replace thin plan-based prose with generic body paragraphs.",
+      "Headline creation has multiple parallel routes that can bypass the same canonical story identity."
+    ]
+  },
+  "changesApplied": [
+    {
+      "subsystem": "Writer Reasoning",
+      "change": "Added a strict plan-only gate for standard and deep articles.",
+      "effect": "If plan-based prose is missing, thin, or fails plan verification, the story returns to targeted Writer Reasoning recovery instead of silently falling back to generic writing."
+    },
+    {
+      "subsystem": "Dossier Recovery Queue",
+      "change": "Writer Reasoning failures now record NEEDS_WRITER_REASONING recovery entries with reason, blockers, body length, paragraph count, and prevention lesson.",
+      "effect": "The Brain can identify and repair the actual reasoning gap rather than treating the resulting draft as a generic editorial rejection."
+    },
+    {
+      "subsystem": "Headline Intelligence",
+      "change": "Added a canonical headline service used by the full builder and worker slices.",
+      "effect": "Headline candidates are selected from locked dossier, canonical identity, completed body, and Writer Reasoning evidence instead of allowing each path to invent a separate headline behavior."
+    }
+  ],
+  "preventionRule": "Standard and deep articles must pass through locked dossier -> Writer Reasoning plan -> plan-based body -> plan verification -> canonical headline service. If any step fails, return to targeted recovery before editor review; do not fall back to generic body generation.",
+  "expectedImpact": {
+    "firstPassPublication": "increase after generic fallback drafts are prevented",
+    "repairLoopsPerArticle": "decrease because standard/deep failures are recovered before editor review",
+    "headlineWordSalad": "decrease as full builder and worker slices share one canonical headline service",
+    "cpuPerVisibleArticle": "decrease by avoiding downstream repairs caused by plan/body mismatch"
+  },
+  "verification": {
+    "syntaxCheck": "passed",
+    "command": "node --check server.js",
+    "runtimeSignalsToWatch": [
+      "NEEDS_WRITER_REASONING recovery records should appear instead of weak standard/deep generic drafts.",
+      "writerReasoningDraftVerificationsPassed should rise for standard/deep articles that reach editor review.",
+      "headlineAudit.action should show canonical-headline-service or worker-slice-canonical-headline-service on new stories."
+    ]
+  }
+}

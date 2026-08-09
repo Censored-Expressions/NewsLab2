@@ -1,0 +1,82 @@
+{
+  "version": "20260806-story-dossier-efficiency-report-v1",
+  "generatedAt": "2026-08-06T00:00:00.000Z",
+  "project": "Project 3 - Story Dossier",
+  "scope": [
+    "clustering",
+    "dossier creation",
+    "dossier readiness",
+    "evidence weighting",
+    "category assignment",
+    "canonical events"
+  ],
+  "rootCause": {
+    "summary": "The system had the right dossier-first architecture, but weak or mixed evidence could still be admitted as writer-ready because long fragments were treated as usable facts and developing-brief readiness could override source/context blockers.",
+    "layer": "Story Dossier / Evidence Readiness",
+    "symptoms": [
+      "Owner Desk reported drafts generated while Dossiers Completed remained at zero.",
+      "Dossier recovery queue repeatedly showed needs-source-context and needs-two-unique-verified-facts.",
+      "Some stories bounced between READY_FOR_DEVELOPING_BRIEF and NEEDS_ENRICHMENT.",
+      "Editorial failures clustered around story identity, headline/body mismatch, missing context, and topic contamination."
+    ],
+    "notPrimaryCause": [
+      "Writer prose alone",
+      "headline generator alone",
+      "public cache display alone"
+    ]
+  },
+  "changesApplied": [
+    {
+      "subsystem": "Evidence Weighting",
+      "change": "Added event-anchor fact quality checks so a long sentence is not enough to become a writer fact.",
+      "prevents": [
+        "topic contamination",
+        "headline/source pileups",
+        "generic long fragments becoming article evidence"
+      ]
+    },
+    {
+      "subsystem": "Dossier Readiness",
+      "change": "Writer readiness now requires a ready evidence pack with at least two direct writing facts and source context.",
+      "prevents": [
+        "single-fact dossiers entering writing",
+        "thin source summaries becoming full articles",
+        "drafts generated before dossier completion"
+      ]
+    },
+    {
+      "subsystem": "Dossier Recovery Routing",
+      "change": "Developing-brief routing no longer overrides hard source/context/identity blockers.",
+      "prevents": [
+        "needs-source-context stories being routed into prose",
+        "needs-two-unique-verified-facts stories being treated as publishable briefs",
+        "mixed or unclear events becoming public articles"
+      ]
+    },
+    {
+      "subsystem": "Writer Reasoning",
+      "change": "Writer Reasoning now filters promoted facts through the same Dossier fact-quality gate before planning paragraphs.",
+      "prevents": [
+        "rejected dossier fragments being reintroduced during reasoning",
+        "plan/body mismatch",
+        "source-fragment leakage"
+      ]
+    }
+  ],
+  "preventionRule": "The Writer must consume only a locked, event-anchored Story Dossier. If the dossier lacks two usable direct writing facts, source context, clean single-event identity, or actor/action clarity, it must return to Evidence/Sub-Dossier enrichment instead of drafting.",
+  "expectedImpact": {
+    "firstPassPublication": "increase after weak drafts are prevented upstream",
+    "repairLoopsPerArticle": "decrease because preventable context and identity failures are held before writing",
+    "headlineBodyMismatch": "decrease because headline inputs will be built from a cleaner canonical event",
+    "cpuPerVisibleArticle": "decrease by avoiding drafts and repairs from weak dossiers"
+  },
+  "verification": {
+    "syntaxCheck": "passed",
+    "command": "node --check server.js",
+    "nextRuntimeCheck": [
+      "Owner Desk Dossiers Completed should rise above zero when workers run.",
+      "Dossier recovery queue should retain needs-source-context stories for enrichment instead of promoting them to developing briefs.",
+      "Article approval failures should show fewer story-identity-mismatch and headline-lead-topic-mismatch errors over new cycles."
+    ]
+  }
+}
