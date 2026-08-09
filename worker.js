@@ -70,17 +70,17 @@ const syncFileSpecs = [
 const syncPriority = {
   "news-lab-published-payload": 1,
   "news-lab-api-response-cache": 2,
-  "news-lab-worker-status": 3,
-  "news-lab-api-worker-status": 4,
-  "news-lab-observability": 5,
-  "news-lab-image-worker-status": 6,
-  "scheduled-content-worker-status": 7,
-  "news-lab-productivity": 8,
-  "news-lab-throughput-diagnostics": 9,
-  "article-approval-intelligence": 10,
-  "news-lab-stuck-rescue-worker-status": 11,
-  "creator-posts": 12,
-  "newsletters": 13
+  "creator-posts": 3,
+  "newsletters": 4,
+  "scheduled-content-worker-status": 5,
+  "news-lab-worker-status": 6,
+  "news-lab-api-worker-status": 7,
+  "news-lab-observability": 8,
+  "news-lab-image-worker-status": 9,
+  "news-lab-productivity": 10,
+  "news-lab-throughput-diagnostics": 11,
+  "article-approval-intelligence": 12,
+  "news-lab-stuck-rescue-worker-status": 13
 };
 
 const categories = String(process.env.CE_NEWS_LAB_WORKER_CATEGORIES || "top,world,politics,business,technology,sports,entertainment,local")

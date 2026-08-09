@@ -28,6 +28,19 @@ This service serves the public website and APIs. It should not run the heavy art
 
 This service runs collectors, article generation, repair, learning, image passes, and syncs finished payloads back to the Web Service.
 
+The worker also starts the scheduled Creator Desk / Newsletter lane. If you want to run that lane as its own smaller Render Background Worker, create a third worker from the same repository:
+
+### 3. Scheduled Content Worker Optional Split
+
+- Service type: Background Worker
+- Runtime: Node
+- Build command: `yarn` or `npm install`
+- Start command: `npm run worker:scheduled`
+- Required environment: same `CE_DATA_DIR`, `OWNER_ADMIN_TOKEN`, `NEWSLETTER_ADMIN_TOKEN`, `OPENAI_API_KEY`, `NEWSLETTER_WEBHOOK_URL`, and `NEWSLETTER_WEBHOOK_SECRET` values used by the main worker.
+- Expected log line: `Censored Expressions scheduled content worker running as pid ...`
+
+This worker handles the daily 9 PM Eastern Creator Desk editorial, weekly newsletter generation/delivery, catch-up retries, and status heartbeats.
+
 If the Background Worker log says `Censored Expressions web server running in web-only mode`, the worker is using the wrong start command. Change it to `yarn worker`.
 
 ## Required environment variables
@@ -56,6 +69,7 @@ CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT=1
 CE_WORKER_SYNC_THROTTLES_PRODUCTION=false
 CE_WORKER_SYNC_SLOW_MS=5000
 CE_CONTENT_LANE_EDITOR_ATTEMPTS=4
+CE_WEB_SCHEDULED_CONTENT_FALLBACK=true
 NEWSLETTER_WEBHOOK_URL=https://your-cloudflare-newsletter-worker.workers.dev
 NEWSLETTER_WEBHOOK_SECRET=use-the-same-secret-configured-in-cloudflare
 STRIPE_SECRET_KEY=your-stripe-secret-key
@@ -147,9 +161,16 @@ CE_WORKER_SYNC_SCHEDULED_RETRY_COUNT=1
 CE_WORKER_SYNC_THROTTLES_PRODUCTION=false
 CE_WORKER_SYNC_SLOW_MS=5000
 CE_CONTENT_LANE_EDITOR_ATTEMPTS=4
+CE_WEB_SCHEDULED_CONTENT_FALLBACK=true
 ```
 
-After deployment, check the Owner observability page. The worker sync row should show recent accepted keys such as `news-lab-published-payload` and `news-lab-api-response-cache`.
+After deployment, check the Owner observability page. The worker sync row should show recent accepted keys such as `news-lab-published-payload`, `news-lab-api-response-cache`, `creator-posts`, `newsletters`, and `scheduled-content-worker-status`.
+
+The public Web Service now also has a lightweight scheduled-content fallback. If the separate worker is unavailable, the Web Service can still run the Creator Desk and Newsletter schedules without enabling the heavy News Lab article-production loops. Disable this only if a dedicated scheduled worker is confirmed healthy:
+
+```text
+CE_WEB_SCHEDULED_CONTENT_FALLBACK=false
+```
 
 ## Embedded worker fallback
 

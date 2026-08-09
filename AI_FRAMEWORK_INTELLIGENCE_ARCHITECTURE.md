@@ -11,6 +11,7 @@ The next architecture layer is the **Framework Operating System**. News Lab, Cre
 ```text
 Input
   -> Knowledge
+  -> Understanding
   -> Reasoning
   -> Coordination
   -> Execution
@@ -31,6 +32,7 @@ The key Version 3 architectural correction is that intelligence modules should n
 | Editorial Intelligence | Produce original, topic-specific writing that connects facts and commentary naturally. | Topic match, repetition count, editor findings, source-fact coverage, remedy specificity, owner-feedback recurrence. | Creator Desk editorials become less generic, less repetitive, and more clearly tied to the selected facts. |
 | Feed Intelligence | Track per-source health, attribution, adaptive polling, quarantine, cache fallback, and source-specific recovery. | Error count by URL/domain/provider, slow-source events, cache-hit rate, quarantine count, refresh latency, recovery rate. | Feed Reliability stops treating feed health as one aggregate issue and makes targeted source-level decisions. |
 | News Lab Intelligence | Compare source coverage, detect agreement and contradiction, build timelines, score confidence, and update stories as evidence changes. | Source count, agreement ratio, contradiction count, timeline event count, confidence score, article completeness score. | News Lab becomes an intelligence workspace that creates fact-based CE Media stories from cross-source reporting. |
+| Understanding Intelligence | Convert canonical knowledge objects into meaning objects before reasoning or execution. | Understanding readiness, evidence-to-answer coverage, prohibited-inference coverage, misunderstanding risks, headline/lead emphasis alignment. | Writer Reasoning, Image Intelligence, Newsletter, and Creator Desk stop reconstructing meaning independently and consume the same validated understanding. |
 | Production Intelligence | Optimize the production process itself by finding where useful work stops becoming verified public output. | CPU per visible article, memory per visible article, repair loops/article, first-pass publication rate, recovered publication rate, publication latency, weakest stage. | The Brain improves output quality and speed by reducing unnecessary work instead of simply processing more candidates. |
 | Root Cause Intelligence | Detect shared upstream causes across multiple weak subsystems before creating isolated fixes. | Shared failure signatures, affected subsystem count, earliest failing layer, duplicate patch suppression, verified downstream improvement. | Business, Technology, Politics, or other lanes stop receiving separate patches when one shared intake/dossier/verification cause explains the weakness. |
 | Framework Coordinator | Decide ownership, sequencing, waiting, repair routing, and shared-cause suppression across every application. | Orphaned tasks, duplicate proposals suppressed, issue owner clarity, cross-subsystem wait states, governance handoff count, workflow completion rate. | The Brain stops letting multiple systems run competing workflows and routes every issue through one operating sequence. |
@@ -67,6 +69,7 @@ The canonical event dossier is the center of application intelligence.
 
 For News Lab, the Story Dossier should feed:
 
+- Story Understanding.
 - Writer.
 - Headline Generator.
 - Publishing Editor.
@@ -79,7 +82,7 @@ For News Lab, the Story Dossier should feed:
 - Analytics.
 - Future recommendations and alerts.
 
-The article is an output. The dossier is the source of truth.
+The article is an output. The dossier is the source of truth. Story Understanding is the bridge that explains what the dossier means before any downstream reasoning or execution begins.
 
 ## Decision Quality Metrics
 

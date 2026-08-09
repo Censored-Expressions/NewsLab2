@@ -192,6 +192,7 @@ The Framework OS sequence is:
 ```text
 Input
   -> Knowledge
+  -> Understanding
   -> Reasoning
   -> Coordination
   -> Execution

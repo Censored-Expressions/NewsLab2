@@ -15,6 +15,7 @@ The Framework OS follows a dependency chain:
 ```text
 Framework OS
   -> Knowledge
+  -> Understanding
   -> Reasoning
   -> Execution
   -> Verification
@@ -76,6 +77,13 @@ Framework OS
        -> Memory
        -> Context
        -> Dossiers
+
+  -> Understanding Engine
+       -> Meaning extraction
+       -> Evidence-to-answer mapping
+       -> Misunderstanding risk detection
+       -> Prohibited inference boundaries
+       -> Output emphasis guidance
 
   -> Reasoning Engine
        -> Planning

@@ -7,6 +7,7 @@
     "start": "node server.js",
     "start:web": "node server.js",
     "worker": "node worker.js",
+    "worker:scheduled": "CE_SITE_SCHEDULED_CONTENT_WORKER=1 node server.js",
     "start:combined": "CE_SERVER_START_WORKERS=true node server.js",
     "check": "node --check server.js && node --check worker.js && node --check news-lab.js && node --check news-lab-story.js && node --check news-analyzer.js && node --check app.js && node --check creator-desk.js && node --check newsletter.js && node --check owner-desk.js",
     "pexels:download": "node download-pexels-assets.js",

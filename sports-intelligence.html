@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sports Intelligence | Censored Expressions</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .sports-shell { max-width: 1180px; margin: 0 auto; padding: 32px 18px 64px; }
+    .sports-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .sports-header h1 { margin: 0; font-size: clamp(2rem, 4vw, 4.5rem); letter-spacing: 0; }
+    .sports-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .sports-panel, .sports-card { border: 1px solid rgba(255,255,255,.16); background: rgba(8,8,8,.92); border-radius: 8px; padding: 16px; }
+    .sports-panel { margin-bottom: 16px; }
+    .sports-card { display: grid; gap: 14px; }
+    .sports-card h2, .sports-panel h2 { margin: 0; font-size: 1.05rem; }
+    .sports-muted { color: #aaa; font-size: .95rem; line-height: 1.45; }
+    .sports-stat { display: grid; gap: 4px; }
+    .sports-stat strong { font-size: 1.75rem; }
+    .sports-label { color: #aaa; text-transform: uppercase; font-size: .72rem; letter-spacing: .04em; font-weight: 800; }
+    .sports-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .sports-form label { display: grid; gap: 5px; color: #ccc; font-size: .82rem; }
+    .sports-form input, .sports-form select, .sports-form textarea {
+      width: 100%; box-sizing: border-box; border-radius: 6px; border: 1px solid rgba(255,255,255,.18);
+      background: #050505; color: #fff; padding: 10px; font: inherit;
+    }
+    .sports-form textarea { min-height: 80px; resize: vertical; }
+    .sports-span-2 { grid-column: span 2; }
+    .sports-span-4 { grid-column: span 4; }
+    .sports-button { border: 1px solid rgba(255,255,255,.2); background: #e60012; color: white; border-radius: 6px; padding: 11px 14px; font-weight: 800; cursor: pointer; }
+    .sports-button.secondary { background: #111; }
+    .prediction-list { display: grid; gap: 12px; }
+    .prediction-card { border: 1px solid rgba(255,255,255,.14); border-radius: 8px; padding: 16px; background: #080808; }
+    .prediction-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .prediction-head h3 { margin: 0; font-size: 1.25rem; }
+    .pill { display: inline-flex; align-items: center; min-height: 28px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 0 10px; font-size: .78rem; font-weight: 800; white-space: nowrap; }
+    .pill.good { border-color: rgba(53, 214, 120, .55); color: #35d678; }
+    .pill.warn { border-color: rgba(255, 205, 86, .55); color: #ffcd56; }
+    .prediction-measures { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
+    .measure { border-top: 1px solid rgba(255,255,255,.1); padding-top: 10px; }
+    .measure span { display:block; color:#aaa; font-size:.78rem; }
+    .measure strong { display:block; margin-top:4px; font-size:1.05rem; }
+    .factor-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .factor-grid ul { margin: 8px 0 0; padding-left: 18px; color: #ddd; }
+    .settle-row { display:flex; flex-wrap:wrap; gap:8px; margin-top: 12px; }
+    @media (max-width: 900px) {
+      .sports-grid, .prediction-measures, .factor-grid { grid-template-columns: 1fr; }
+      .sports-form { grid-template-columns: 1fr; }
+      .sports-span-2, .sports-span-4 { grid-column: span 1; }
+      .sports-header { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sports-shell">
+    <div class="sports-header">
+      <div>
+        <p class="sports-label">Framework Lab</p>
+        <h1>Sports Intelligence</h1>
+        <p class="sports-muted">Analytics-only prototype for probability forecasts, market comparison, edge tracking, and outcome calibration.</p>
+      </div>
+      <a class="sports-button secondary" href="./news-lab.html">Back to News Lab</a>
+    </div>
+
+    <section class="sports-grid" id="sportsStats"></section>
+
+    <section class="sports-panel">
+      <h2>Add Local Forecast</h2>
+      <p class="sports-muted">Freeze a forecast before the event starts. Settlement later scores the original probability without changing it.</p>
+      <form class="sports-form" id="predictionForm">
+        <label>Sport<input name="sport" value="MLB"></label>
+        <label>League<input name="league" value="MLB"></label>
+        <label class="sports-span-2">Event<input name="event" placeholder="Yankees at Cubs"></label>
+        <label>Market<select name="marketType"><option>moneyline</option><option>run line</option><option>game total</option><option>player prop</option></select></label>
+        <label>Selection<input name="selection" placeholder="Cubs"></label>
+        <label>Odds<input name="americanOdds" type="number" placeholder="-155"></label>
+        <label>Opposing Odds<input name="opposingAmericanOdds" type="number" placeholder="+135"></label>
+        <label>Model Probability<input name="modelProbability" type="number" step="0.001" min="0" max="1" placeholder="0.645"></label>
+        <label>Confidence<select name="confidence"><option>Moderate</option><option>High</option><option>Low</option><option>Lineup Pending</option></select></label>
+        <label>Data Quality<input name="dataQuality" type="number" step="0.01" min="0" max="1" placeholder="0.91"></label>
+        <label>Sportsbook<input name="sportsbook" placeholder="Example Book"></label>
+        <label class="sports-span-2">Supporting Factors<textarea name="supportingFactors" placeholder="One factor per line"></textarea></label>
+        <label class="sports-span-2">Opposing Factors<textarea name="opposingFactors" placeholder="One factor per line"></textarea></label>
+        <button class="sports-button sports-span-4" type="submit">Save Forecast</button>
+      </form>
+    </section>
+
+    <section class="sports-panel">
+      <h2>Predictions</h2>
+      <div class="prediction-list" id="predictionList"></div>
+    </section>
+  </main>
+  <script src="./sports-intelligence.js"></script>
+</body>
+</html>

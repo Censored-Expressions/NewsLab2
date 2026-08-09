@@ -13,6 +13,7 @@ For News Lab, that means a verified, visible public article. For Creator Desk, i
 ```text
 Input
   -> Knowledge
+  -> Understanding
   -> Reasoning
   -> Coordination
   -> Execution
@@ -32,7 +33,8 @@ Coordination is the traffic-control layer. It decides which subsystem acts, whic
 | --- | --- | --- |
 | Input | Gather signals without treating them as final truth. | RSS, NewsData, collector workers, source reads, market feeds. |
 | Knowledge | Convert inputs into structured knowledge objects. | Story Dossier, sub-dossiers, source registry, knowledge graph, image dossier. |
-| Reasoning | Decide what the knowledge means before execution. | Canonical event, verified facts, unknown facts, attribution plan, headline inputs. |
+| Understanding | Determine what the evidence means before decisions are made. | Story Understanding answers what happened, who acted, what changed, why it matters, what is unknown, what could be misunderstood, what evidence supports each claim, and what must not be inferred. |
+| Reasoning | Decide what follows from understanding before execution. | Writer Reasoning plan, decision graph, attribution plan, paragraph plan, headline inputs, repair route. |
 | Coordination | Route work through one Framework workflow instead of many independent pipelines. | Decide whether Collector, Dossier, Writer, Image Worker, Publisher, or Repair Intelligence owns the next action. |
 | Execution | Produce the application output from approved reasoning. | Article body, headline, image selection, Creator Desk post, newsletter section. |
 | Verification | Test output against standards before and after release. | Editor, validator, image license guard, public API visibility check. |
@@ -86,6 +88,7 @@ Application Adapter
   -> Framework Coordinator
   -> Input
   -> Knowledge
+  -> Understanding
   -> Reasoning
   -> Coordination
   -> Execution
@@ -105,6 +108,7 @@ News Lab should consume Framework OS services rather than reimplement them indep
 News Lab Adapter
   -> Input: collectors and source leads
   -> Knowledge: Story Dossier and Image Dossier
+  -> Understanding: Story Understanding
   -> Reasoning: Writer Reasoning Plan
   -> Coordination: Framework Coordinator assigns next owner and prevents duplicate patching
   -> Execution: article body, headline, image
@@ -114,9 +118,9 @@ News Lab Adapter
   -> Governance: owner approval and proof logs
 ```
 
-The Story Dossier is the application knowledge object. It must become the single source of truth for Writer, Headline Generator, Editor, Image Intelligence, Newsletter, Creator Desk, Search, Owner Desk, analytics, and future applications.
+The Story Dossier is the application knowledge object. Story Understanding is the meaning layer produced from that dossier. Together they must become the source of truth for Writer, Headline Generator, Editor, Image Intelligence, Newsletter, Creator Desk, Search, Owner Desk, analytics, and future applications.
 
-The canonical event is more important than the article. Articles, newsletters, creator posts, images, alerts, search results, analytics, and updates are outputs created from the same canonical event dossier.
+The canonical event is more important than the article. Articles, newsletters, creator posts, images, alerts, search results, analytics, and updates are outputs created from the same canonical event dossier and its Story Understanding object.
 
 See `AI_FRAMEWORK_PHASE_3_STORY_DOSSIER_ENGINE.md` for the Story Dossier Engine contract. It defines evidence intake, normalization, entity extraction, event detection, evidence clustering, canonical story building, readiness gates, recovery, version history, and dossier memory.
 
@@ -150,6 +154,7 @@ See `AI_FRAMEWORK_DOSSIER_EFFICIENCY_REPORT.md` for the Project 2 Dossier Effici
 | --- | --- | --- |
 | Writer Reasoning | Often measured after drafting or inconsistently applied in lighter paths. | Always runs before prose. Blocks writing when actor, action, facts, uncertainty, attribution, paragraph plan, or headline inputs are missing. |
 | Story Dossier | Strong concept, uneven readiness and sometimes incomplete evidence. | Locked, validated, semantically classified, and stable before writing begins. |
+| Story Understanding | Newly formalized between Knowledge and Reasoning. | Converts the locked dossier into meaning answers, evidence maps, misunderstanding risks, prohibited inferences, headline/lead emphasis, and background boundaries before reasoning begins. |
 | Root Cause Intelligence | Can detect subsystem weakness but may patch symptoms independently. | Detects shared upstream causes and creates one higher-leverage proposal before isolated subsystem patches. |
 | Category Intelligence | Collector/feed category can bias output. | Source and collector categories are hints; final category comes from the canonical event after dossier completion. |
 | Image Intelligence | Image work can be delayed or treated as optional. | Image Dossier, license verification, provider ranking, generated fallback, and post-publication safe image repair. |

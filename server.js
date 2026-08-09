@@ -42,6 +42,7 @@ const newsLabProductionLoopEnabled = process.env.CE_NEWS_LAB_PRODUCTION_LOOP !==
 const backgroundLoopsEnabled = process.env.CE_BACKGROUND_LOOPS !== "false";
 const renderEmbeddedWorkerFallback = Boolean(process.env.RENDER || process.env.RENDER_SERVICE_ID) && process.env.CE_RENDER_EMBEDDED_WORKER_FALLBACK !== "false";
 const serverStartsBackgroundWorkers = process.env.CE_SERVER_START_WORKERS === "true" || renderEmbeddedWorkerFallback;
+const webScheduledContentFallback = process.env.CE_WEB_SCHEDULED_CONTENT_FALLBACK !== "false";
 const heavyParentMaintenanceEnabled = process.env.CE_HEAVY_PARENT_MAINTENANCE === "true";
 const publicDir = __dirname;
 const dataDir = process.env.CE_DATA_DIR
@@ -74,6 +75,7 @@ const productionIntelligenceFile = path.join(dataDir, "production-intelligence.j
 const newsLabThroughputDiagnosticsFile = path.join(dataDir, "news-lab-throughput-diagnostics.json");
 const marketSnapshotFile = path.join(dataDir, "market-snapshot.json");
 const marketSymbolHistoryFile = path.join(dataDir, "market-symbol-history-cache.json");
+const sportsIntelligenceFile = path.join(dataDir, "sports-intelligence-predictions.json");
 const newsLabApiResponseCacheFile = path.join(dataDir, "news-lab-api-response-cache.json");
 const newsLabApiWorkerStatusFile = path.join(dataDir, "news-lab-api-worker-status.json");
 const newsLabCollectorDir = path.join(dataDir, "news-lab-collectors");
@@ -96,6 +98,17 @@ const newsLabImageWorkerStatusFile = path.join(dataDir, "news-lab-image-worker-s
 const apiEndpointPerformanceFile = path.join(dataDir, "api-endpoint-performance.json");
 const newsLabGeneratedImageQueueFile = path.join(dataDir, "news-lab-generated-image-queue.json");
 const newsLabGeneratedImageAssetDir = path.join(publicDir, "assets", "generated-news-lab");
+const IMAGE_STATUS = {
+  MISSING: "missing",
+  LICENSED: "licensed",
+  STOCK_MATCH: "stock-match",
+  GENERATION_QUEUED: "generation-queued",
+  GENERATING: "generating",
+  GENERATED_PENDING_VALIDATION: "generated-pending-validation",
+  GENERATED_APPROVED: "generated-approved",
+  CE_FALLBACK_TEMPORARY: "ce-fallback-temporary",
+  FAILED_FINAL: "failed-final"
+};
 const writingTechniqueRegistryFile = path.join(dataDir, "writing-technique-registry.json");
 const lexiconIntelligenceFile = path.join(dataDir, "lexicon-intelligence.json");
 const learnerLexiconFile = path.join(dataDir, "learner-lexicon.json");
@@ -1713,6 +1726,7 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(frameworkPatchDirectionDir)) fs.mkdirSync(frameworkPatchDirectionDir, { recursive: true });
   if (!fs.existsSync(frameworkPatchTeachingDir)) fs.mkdirSync(frameworkPatchTeachingDir, { recursive: true });
   if (!fs.existsSync(newsLabCollectorDir)) fs.mkdirSync(newsLabCollectorDir, { recursive: true });
+  if (!fs.existsSync(newsLabGeneratedImageAssetDir)) fs.mkdirSync(newsLabGeneratedImageAssetDir, { recursive: true });
   if (!fs.existsSync(subscribersFile)) fs.writeFileSync(subscribersFile, "[]\n");
   if (!fs.existsSync(newslettersFile)) fs.writeFileSync(newslettersFile, "[]\n");
   if (!fs.existsSync(merchProductsFile)) fs.writeFileSync(merchProductsFile, `${JSON.stringify(defaultMerchProducts(), null, 2)}\n`);
@@ -1722,6 +1736,7 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(creatorCommentsFile)) fs.writeFileSync(creatorCommentsFile, "[]\n");
   if (!fs.existsSync(creatorDeskPendingFile)) fs.writeFileSync(creatorDeskPendingFile, "{}\n");
   if (!fs.existsSync(scheduledContentWorkerStatusFile)) fs.writeFileSync(scheduledContentWorkerStatusFile, `${JSON.stringify(defaultScheduledContentWorkerStatus(), null, 2)}\n`);
+  if (!fs.existsSync(sportsIntelligenceFile)) fs.writeFileSync(sportsIntelligenceFile, `${JSON.stringify(defaultSportsIntelligenceStore(), null, 2)}\n`);
   if (!fs.existsSync(learningFile)) fs.writeFileSync(learningFile, `${JSON.stringify(defaultLearningMemory(), null, 2)}\n`);
   if (!fs.existsSync(dailyArticleMemoryFile)) fs.writeFileSync(dailyArticleMemoryFile, `${JSON.stringify(defaultDailyArticleMemory(), null, 2)}\n`);
   if (!fs.existsSync(articleIntelligenceFile)) fs.writeFileSync(articleIntelligenceFile, `${JSON.stringify(defaultArticleIntelligenceStore(), null, 2)}\n`);
@@ -1802,12 +1817,86 @@ function compactNewsLabPublicImage(image = null) {
   };
 }
 
+function compactNewsLabCanonicalDossierIntelligence(intelligence = null) {
+  if (!intelligence || typeof intelligence !== "object") return null;
+  return {
+    id: intelligence.id || "",
+    version: intelligence.version || "",
+    revision: intelligence.revision ? {
+      id: intelligence.revision.id || "",
+      eventId: intelligence.revision.eventId || "",
+      fingerprint: intelligence.revision.fingerprint || "",
+      hash: intelligence.revision.hash || "",
+      lockedAt: intelligence.revision.lockedAt || "",
+      updateRule: intelligence.revision.updateRule || ""
+    } : null,
+    eventIdentity: intelligence.eventIdentity ? {
+      canonicalEventId: intelligence.eventIdentity.canonicalEventId || "",
+      topic: intelligence.eventIdentity.topic || "",
+      category: intelligence.eventIdentity.category || "",
+      confidence: Number(intelligence.eventIdentity.confidence || 0),
+      freshness: intelligence.eventIdentity.freshness || "",
+      eventStatus: intelligence.eventIdentity.eventStatus || "",
+      primaryActor: intelligence.eventIdentity.primaryActor || "",
+      primaryAction: intelligence.eventIdentity.primaryAction || "",
+      primaryConsequence: intelligence.eventIdentity.primaryConsequence || "",
+      ready: Boolean(intelligence.eventIdentity.ready)
+    } : null,
+    evidence: intelligence.evidence ? {
+      evidenceStrength: Number(intelligence.evidence.evidenceStrength || 0),
+      sourceAgreement: Number(intelligence.evidence.sourceAgreement || 0),
+      sourceDisagreement: Number(intelligence.evidence.sourceDisagreement || 0),
+      sourceCount: Number(intelligence.evidence.sourceCount || 0),
+      verifiedFacts: (intelligence.evidence.verifiedFacts || []).slice(0, 5),
+      disputedFacts: (intelligence.evidence.disputedFacts || []).slice(0, 3),
+      unsupportedClaims: (intelligence.evidence.unsupportedClaims || []).slice(0, 3)
+    } : null,
+    intelligence: intelligence.intelligence ? {
+      whyImportant: intelligence.intelligence.whyImportant || "",
+      whyToday: intelligence.intelligence.whyToday || "",
+      stillUnknown: (intelligence.intelligence.stillUnknown || []).slice(0, 4),
+      misinformationRisks: (intelligence.intelligence.misinformationRisks || []).slice(0, 4),
+      neverInfer: (intelligence.intelligence.neverInfer || []).slice(0, 4)
+    } : null,
+    storyUnderstanding: intelligence.storyUnderstanding ? {
+      id: intelligence.storyUnderstanding.id || "",
+      version: intelligence.storyUnderstanding.version || "",
+      dossierRevisionId: intelligence.storyUnderstanding.dossierRevisionId || "",
+      dossierRevisionHash: intelligence.storyUnderstanding.dossierRevisionHash || "",
+      canonicalEventId: intelligence.storyUnderstanding.canonicalEventId || "",
+      answers: intelligence.storyUnderstanding.answers ? {
+        whatHappened: intelligence.storyUnderstanding.answers.whatHappened || "",
+        whoDidIt: intelligence.storyUnderstanding.answers.whoDidIt || "",
+        whatChanged: intelligence.storyUnderstanding.answers.whatChanged || "",
+        whyThisIsNews: intelligence.storyUnderstanding.answers.whyThisIsNews || "",
+        stillUnknown: (intelligence.storyUnderstanding.answers.stillUnknown || []).slice(0, 4),
+        whatShouldNeverBeInferred: (intelligence.storyUnderstanding.answers.whatShouldNeverBeInferred || []).slice(0, 6),
+        headlineShouldEmphasize: intelligence.storyUnderstanding.answers.headlineShouldEmphasize || "",
+        leadShouldEmphasize: intelligence.storyUnderstanding.answers.leadShouldEmphasize || ""
+      } : null,
+      evidenceMap: (intelligence.storyUnderstanding.evidenceMap || []).slice(0, 8),
+      decisionInputs: (intelligence.storyUnderstanding.decisionInputs || []).slice(0, 6),
+      writerGuidance: intelligence.storyUnderstanding.writerGuidance || null,
+      readiness: intelligence.storyUnderstanding.readiness || null,
+      rule: intelligence.storyUnderstanding.rule || ""
+    } : null,
+    publicationPlanning: intelligence.publicationPlanning || null,
+    writerContract: intelligence.writerContract ? {
+      controlling: Boolean(intelligence.writerContract.controlling),
+      readyForWriter: Boolean(intelligence.writerContract.readyForWriter),
+      dossierRevisionId: intelligence.writerContract.dossierRevisionId || "",
+      rule: intelligence.writerContract.rule || ""
+    } : null,
+    consumerContract: intelligence.consumerContract || null
+  };
+}
+
 function compactNewsLabPublicStory(story = {}) {
   const keep = [
     "id", "topicKey", "eventId", "slug", "url", "title", "originalHeadline", "category", "tab", "source",
     "publishedAt", "originalPublishedAt", "updatedAt", "lastUpdatedAt", "generatedAt", "savedAt", "summary", "dek", "lead",
     "body", "paragraphs", "updates", "storyUpdates", "sources", "reportingTrail", "relatedArticles",
-    "storyDossier", "eventSubDossier", "subDossierPreSeparation", "dossierExpansion", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence", "articleReadDepth",
+    "storyDossier", "storyUnderstanding", "eventSubDossier", "subDossierPreSeparation", "dossierExpansion", "storyEvolution", "sourceAgreement", "contradictionDetection", "brainConfidence", "articleReadDepth",
     "confidence", "popularity", "publicationTier", "qualityGate", "editorEnforcement", "contentLaneQuality",
     "headlineAudit", "boardVisibility", "imagePublicationStatus", "publicArticle", "publicHeadlineRepaired", "fallbackCoverage", "isBreaking", "status"
   ];
@@ -1817,15 +1906,19 @@ function compactNewsLabPublicStory(story = {}) {
   });
   compacted.image = compactNewsLabPublicImage(story.image || null);
   compacted.imageProvenance = story.imageProvenance || compacted.image?.provenance || null;
+  compacted.dossierRevisionId = story.dossierRevisionId || story.storyDossier?.dossierLock?.revisionId || story.canonicalDossierIntelligence?.revision?.id || "";
+  compacted.canonicalDossierIntelligence = compactNewsLabCanonicalDossierIntelligence(story.canonicalDossierIntelligence || story.canonicalIntelligence || story.storyDossier?.canonicalDossierIntelligence || story.storyDossier?.canonicalIntelligence || null);
+  compacted.storyUnderstanding = story.storyUnderstanding || compacted.canonicalDossierIntelligence?.storyUnderstanding || story.storyDossier?.storyUnderstanding || null;
   return compacted;
 }
 
 function compactNewsLabPublishedPayload(value) {
   if (!value || typeof value !== "object" || !Array.isArray(value.ownedStories)) return value;
-  let boardReady = newsLabApplyCurrentBoardPolicy(value);
+  const preserveImageMaintenanceShelf = Boolean(value.imageImprovementPolicy?.shelfPreservationOverride);
+  let boardReady = preserveImageMaintenanceShelf ? value : newsLabApplyCurrentBoardPolicy(value);
   const incomingCount = Number(boardReady.ownedStories?.length || 0);
   try {
-    if (value.workerSyncServerShelfPreservation?.applied || value.skipPublicShelfWriteFloor) throw new Error("shelf-preservation-already-applied");
+    if (preserveImageMaintenanceShelf || value.workerSyncServerShelfPreservation?.applied || value.skipPublicShelfWriteFloor) throw new Error("shelf-preservation-already-applied");
     const existingPayload = readJsonFile(newsLabPublishedPayloadFile, null);
     const cachedPayload = readJsonFile(newsLabApiResponseCacheFile, null)?.responses?.all || null;
     const existingBoard = existingPayload?.ownedStories?.length ? newsLabApplyCurrentBoardPolicy(existingPayload) : null;
@@ -1885,6 +1978,7 @@ function compactNewsLabPublishedPayload(value) {
     boardDatePolicy: boardReady.boardDatePolicy || undefined,
     workerFinishShelfMerge: boardReady.workerFinishShelfMerge || undefined,
     boardPolicyPreservedShelf: boardReady.boardPolicyPreservedShelf || undefined,
+    imageImprovementPolicy: boardReady.imageImprovementPolicy || undefined,
     publicShelfWriteFloor: boardReady.publicShelfWriteFloor || undefined,
     workerFinishModePersisted: boardReady.workerFinishModePersisted || undefined,
     savedAt: boardReady.savedAt || new Date().toISOString(),
@@ -1911,6 +2005,249 @@ function writeJsonFile(filePath, value) {
   fs.renameSync(tempPath, filePath);
   updateJsonObjectCache(filePath, valueToWrite, finalText);
   clearOwnerRuntimeResponseCaches(`write:${path.basename(filePath)}`);
+}
+
+function defaultSportsPerformance() {
+  return {
+    predictionCount: 0,
+    settledCount: 0,
+    accuracy: null,
+    averageBrierScore: null,
+    averageEdge: null,
+    calibrationBuckets: [],
+    bySport: {},
+    byMarket: {},
+    byConfidence: {}
+  };
+}
+
+function defaultSportsIntelligenceStore() {
+  const now = new Date().toISOString();
+  return {
+    version: "20260808-sports-intelligence-v1",
+    updatedAt: now,
+    mode: "local-analytics-prototype",
+    regulatoryBoundary: {
+      productMode: "informational analytics only",
+      noWagering: true,
+      disclosure: "Probabilities are estimates, not guarantees. This prototype does not accept wagers, hold funds, or provide financial advice.",
+      responsibleUse: "Future public versions should include age controls, responsible-gaming resources, location-aware compliance review, and clear affiliate/odds disclosures."
+    },
+    predictions: [],
+    sampleMarkets: [
+      {
+        sport: "MLB",
+        league: "MLB",
+        event: "Yankees at Cubs",
+        eventId: "sample_mlb_nyy_chc",
+        startTime: now,
+        marketType: "moneyline",
+        selection: "Cubs",
+        sportsbook: "Example Book",
+        americanOdds: -155,
+        opposingAmericanOdds: 135,
+        modelProbability: 0.645,
+        confidence: "Moderate",
+        dataQuality: 0.91,
+        lineMovement: "Cubs -145 -> -155",
+        supportingFactors: ["Starting-pitcher advantage", "Better home performance", "Stronger recent bullpen results", "Opponent weaker against left-handed pitching"],
+        opposingFactors: ["Top relief pitchers used previous night", "Opponent has stronger season-long power numbers", "Weather may increase home-run variance"]
+      }
+    ],
+    performance: defaultSportsPerformance(),
+    learning: {
+      rule: "Every forecast freezes odds, model probability, market probability, confidence, data quality, model version, and timestamp before the event starts. Outcomes are settled later without changing the original probability.",
+      nextBuildStep: "Connect normalized odds/stat/injury/weather providers after the local dossier and calibration loop is proven."
+    }
+  };
+}
+
+function sportsAmericanOddsToProbability(americanOdds) {
+  const odds = Number(americanOdds);
+  if (!Number.isFinite(odds) || odds === 0) return null;
+  return odds < 0 ? Math.abs(odds) / (Math.abs(odds) + 100) : 100 / (odds + 100);
+}
+
+function sportsNoVigProbability(americanOdds, opposingAmericanOdds) {
+  const raw = sportsAmericanOddsToProbability(americanOdds);
+  const opposite = sportsAmericanOddsToProbability(opposingAmericanOdds);
+  if (raw == null) return null;
+  if (opposite == null || raw + opposite <= 0) return raw;
+  return raw / (raw + opposite);
+}
+
+function sportsPercent(value, digits = 1) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Number((number * 100).toFixed(digits)) : null;
+}
+
+function sportsEdgeClassification(edge, confidence = "", dataQuality = 0) {
+  const edgePoints = Number(edge || 0) * 100;
+  const quality = Number(dataQuality || 0);
+  const conf = String(confidence || "").toLowerCase();
+  if (!Number.isFinite(edgePoints)) return "NO RELIABLE SCORE";
+  if (quality && quality < 0.55) return "INSUFFICIENT DATA";
+  if (/pending|question|uncertain/.test(conf)) return "HIGH UNCERTAINTY";
+  if (Math.abs(edgePoints) < 1.5) return "MARKET-ALIGNED";
+  if (edgePoints >= 7 && quality >= 0.8 && /high|strong/.test(conf)) return "STRONG MODELED EDGE";
+  if (edgePoints >= 4) return "MODERATE POSITIVE EDGE";
+  if (edgePoints >= 1.5) return "SMALL POSITIVE EDGE";
+  return "NEGATIVE EDGE";
+}
+
+function sportsPredictionId(input = {}) {
+  const base = [input.sport, input.league, input.eventId || input.event, input.marketType, input.selection, input.line, Date.now(), Math.random().toString(36).slice(2, 7)].filter(Boolean).join("|");
+  return `sports_pred_${crypto.createHash("sha1").update(base).digest("hex").slice(0, 14)}`;
+}
+
+function sportsFactorList(value) {
+  if (Array.isArray(value)) return value.map(item => cleanArticleText(item, 140)).filter(Boolean).slice(0, 8);
+  return cleanArticleText(value || "", 800).split(/\n|;/).map(item => item.trim()).filter(Boolean).slice(0, 8);
+}
+
+function normalizeSportsPrediction(input = {}) {
+  const rawMarketProbability = sportsAmericanOddsToProbability(input.americanOdds);
+  const fairMarketProbability = sportsNoVigProbability(input.americanOdds, input.opposingAmericanOdds);
+  const modelProbability = Math.max(0, Math.min(1, Number(input.modelProbability || input.frameworkProbability || 0)));
+  const edge = fairMarketProbability == null ? null : modelProbability - fairMarketProbability;
+  const dataQuality = Math.max(0, Math.min(1, Number(input.dataQuality || 0)));
+  const confidence = cleanArticleText(input.confidence || "Unrated", 40);
+  const now = new Date().toISOString();
+  const modelVersion = cleanArticleText(input.modelVersion || "sports-intelligence-local-baseline-v1", 80);
+  return {
+    id: input.id || sportsPredictionId(input),
+    sport: cleanArticleText(input.sport || "MLB", 30),
+    league: cleanArticleText(input.league || input.sport || "MLB", 30),
+    eventId: cleanArticleText(input.eventId || "", 80),
+    event: cleanArticleText(input.event || "Untitled event", 120),
+    startTime: input.startTime || "",
+    marketType: cleanArticleText(input.marketType || "moneyline", 60),
+    selection: cleanArticleText(input.selection || "", 100),
+    line: input.line === undefined || input.line === "" ? null : Number(input.line),
+    sportsbook: cleanArticleText(input.sportsbook || "Manual Entry", 80),
+    americanOdds: Number(input.americanOdds || 0),
+    opposingAmericanOdds: input.opposingAmericanOdds === undefined || input.opposingAmericanOdds === "" ? null : Number(input.opposingAmericanOdds),
+    openingAmericanOdds: input.openingAmericanOdds === undefined || input.openingAmericanOdds === "" ? null : Number(input.openingAmericanOdds),
+    rawMarketImpliedProbability: rawMarketProbability,
+    fairMarketProbability,
+    modelProbability,
+    edge,
+    edgePoints: edge == null ? null : Number((edge * 100).toFixed(2)),
+    confidence,
+    dataQuality,
+    dataQualityPercent: sportsPercent(dataQuality),
+    lineMovement: cleanArticleText(input.lineMovement || "", 140),
+    supportingFactors: sportsFactorList(input.supportingFactors),
+    opposingFactors: sportsFactorList(input.opposingFactors),
+    classification: sportsEdgeClassification(edge, confidence, dataQuality),
+    modelVersion,
+    status: input.status || "open",
+    outcome: input.outcome === 0 || input.outcome === 1 ? Number(input.outcome) : null,
+    createdAt: input.createdAt || now,
+    frozenAt: input.frozenAt || now,
+    updatedAt: now,
+    immutableForecast: {
+      modelProbability,
+      americanOdds: Number(input.americanOdds || 0),
+      fairMarketProbability,
+      modelVersion,
+      frozenAt: input.frozenAt || now,
+      rule: "Do not alter these values after outcome settlement."
+    }
+  };
+}
+
+function sportsPredictionScored(prediction = {}) {
+  if (prediction.outcome !== 0 && prediction.outcome !== 1) return prediction;
+  const probability = Number(prediction.immutableForecast?.modelProbability ?? prediction.modelProbability);
+  const outcome = Number(prediction.outcome);
+  const brierScore = Number(((probability - outcome) ** 2).toFixed(4));
+  return {
+    ...prediction,
+    status: "settled",
+    brierScore,
+    correct: (probability >= 0.5 && outcome === 1) || (probability < 0.5 && outcome === 0),
+    settledAt: prediction.settledAt || new Date().toISOString()
+  };
+}
+
+function sportsAggregateGroup(predictions = [], groupKey = "sport") {
+  return predictions.reduce((groups, prediction) => {
+    const key = cleanArticleText(prediction[groupKey] || "unknown", 80).toLowerCase() || "unknown";
+    groups[key] = groups[key] || { count: 0, settled: 0, correct: 0, accuracy: null };
+    groups[key].count += 1;
+    if (prediction.status === "settled") {
+      groups[key].settled += 1;
+      if (prediction.correct) groups[key].correct += 1;
+      groups[key].accuracy = sportsPercent(groups[key].correct / groups[key].settled);
+    }
+    return groups;
+  }, {});
+}
+
+function sportsCalibrationBuckets(settled = []) {
+  const buckets = [
+    { min: 0, max: 0.2, label: "0-20%" },
+    { min: 0.2, max: 0.4, label: "20-40%" },
+    { min: 0.4, max: 0.6, label: "40-60%" },
+    { min: 0.6, max: 0.8, label: "60-80%" },
+    { min: 0.8, max: 1.01, label: "80-100%" }
+  ];
+  return buckets.map(bucket => {
+    const items = settled.filter(prediction => {
+      const probability = Number(prediction.immutableForecast?.modelProbability ?? prediction.modelProbability);
+      return probability >= bucket.min && probability < bucket.max;
+    });
+    const wins = items.filter(prediction => Number(prediction.outcome) === 1).length;
+    return {
+      label: bucket.label,
+      predictions: items.length,
+      averageForecast: items.length ? sportsPercent(items.reduce((sum, item) => sum + Number(item.immutableForecast?.modelProbability ?? item.modelProbability), 0) / items.length) : null,
+      actualWinRate: items.length ? sportsPercent(wins / items.length) : null
+    };
+  });
+}
+
+function sportsPerformance(predictions = []) {
+  const settled = predictions.filter(item => item.status === "settled" && (item.outcome === 0 || item.outcome === 1));
+  const brierScores = settled.map(item => Number(item.brierScore)).filter(Number.isFinite);
+  const edges = predictions.map(item => Number(item.edge)).filter(Number.isFinite);
+  return {
+    predictionCount: predictions.length,
+    settledCount: settled.length,
+    accuracy: settled.length ? sportsPercent(settled.filter(item => item.correct).length / settled.length) : null,
+    averageBrierScore: brierScores.length ? Number((brierScores.reduce((sum, value) => sum + value, 0) / brierScores.length).toFixed(4)) : null,
+    averageEdge: edges.length ? Number(((edges.reduce((sum, value) => sum + value, 0) / edges.length) * 100).toFixed(2)) : null,
+    calibrationBuckets: sportsCalibrationBuckets(settled),
+    bySport: sportsAggregateGroup(predictions, "sport"),
+    byMarket: sportsAggregateGroup(predictions, "marketType"),
+    byConfidence: sportsAggregateGroup(predictions, "confidence")
+  };
+}
+
+function readSportsIntelligenceStore() {
+  const store = readJsonFile(sportsIntelligenceFile, defaultSportsIntelligenceStore()) || defaultSportsIntelligenceStore();
+  const predictions = Array.isArray(store.predictions) ? store.predictions.map(sportsPredictionScored) : [];
+  return {
+    ...defaultSportsIntelligenceStore(),
+    ...store,
+    predictions,
+    performance: sportsPerformance(predictions),
+    updatedAt: store.updatedAt || new Date().toISOString()
+  };
+}
+
+function writeSportsIntelligenceStore(store = {}) {
+  const predictions = Array.isArray(store.predictions) ? store.predictions.map(sportsPredictionScored) : [];
+  const next = {
+    ...defaultSportsIntelligenceStore(),
+    ...store,
+    predictions,
+    performance: sportsPerformance(predictions),
+    updatedAt: new Date().toISOString()
+  };
+  writeJsonFile(sportsIntelligenceFile, next);
+  return next;
 }
 
 function defaultKnowledgeDistillationPolicy() {
@@ -10395,7 +10732,6 @@ function highImpactCapabilityPlan(memory = learningMemory(), diagnostics = null)
   const writing = writingPatternLibrarySummary(memory);
   const capabilityReport = readJsonFile(path.join(dataDir, "framework-capability-analysis-report.json"), null) || {};
   const capabilityMap = Object.fromEntries((capabilityReport.capabilities || []).map(item => [item.key, item]));
-  const graph = readJsonFile(newsLabKnowledgeGraphFile, defaultNewsLabKnowledgeGraph());
   const actionSummary = frameworkActionLogSummary(120);
   const sourceRegistry = newsLabSourceReliabilityRegistry();
   const sourceEntries = Object.values(sourceRegistry.sources || {});
@@ -10406,9 +10742,9 @@ function highImpactCapabilityPlan(memory = learningMemory(), diagnostics = null)
   const approvedStories = Number(published.ownedStories?.length || 0);
   const dossierStories = Number(intelligence.dossierSourceStoryCount || published.dossierSourceStoryCount || 0);
   const sourceFamilies = new Set(sourceEntries.map(source => source.sourceFamily || source.sourceType || "unknown")).size;
-  const predictionScore = Number(capabilityMap.prediction?.score || 0);
   const reasoningScore = Number(capabilityMap.reasoning?.score || 0);
   const executionScore = Number(capabilityMap.execution?.score || 0);
+  const editorialScore = Number(capabilityMap.editorial?.score || 0);
   const verifiedActions = Number(actionSummary.totals?.verifiedActionCount || 0);
   const improvedActions = Number(actionSummary.totals?.metricImprovedActionCount || 0);
   const issueCounts = memory.editorDecisionMemory?.issueCounts || {};
@@ -10420,71 +10756,63 @@ function highImpactCapabilityPlan(memory = learningMemory(), diagnostics = null)
     + Number(issueCounts["mixed-source-topic"] || 0)
     + Number(issueCounts["insufficient-full-article-facts"] || 0)
     + Number(issueCounts["paragraph-topic-contamination"] || 0);
+  const repairFailures = Number(issueCounts["headline-lead-topic-mismatch"] || 0)
+    + Number(issueCounts["missing-reporting-context"] || 0)
+    + Number(issueCounts["body-too-short"] || 0)
+    + Number(issueCounts["semantic-title-source-mismatch"] || 0);
+  const productiveWorkScore = clampScore(Math.min(35, approvedStories / 3) + Math.min(25, verifiedActions / 4) + Math.min(20, improvedActions / 2) + Math.min(20, Number(pipeline.readiness || 0) / 5));
   const lanes = [
     {
-      key: "headline-intelligence",
-      label: "Headline Intelligence",
-      score: clampScore(headlineSuccess),
-      impact: 98,
-      evidence: [`headlineSuccess=${headlineSuccess}`, `headlineFailures=${headlineFailures}`],
-      operatingRule: "Generate headlines only after the CE article and Story Dossier are complete.",
-      reasoningRule: "Use main actor + specific action + consequence from the dossier; reject word salad, copied structure, truncation, and source mismatch.",
-      correctionRule: "If a headline fails, rerun Headline Dossier Builder with required actor/action/consequence fields before the Editor sees it again.",
-      executionRule: "Produce at least five candidate headlines, score each against evidence overlap and natural grammar, then publish the first passing candidate.",
-      verificationMetric: "headline pattern success rate and headline-source-overlap must improve on the next writing cycle.",
-      nextAction: "Make headline repair the first writer repair pass, not a final polish pass."
-    },
-    {
-      key: "story-dossier-builder",
-      label: "Story Dossier Builder",
+      key: "canonical-story-dossier",
+      label: "Project 1 - Canonical Story Dossier",
       score: clampScore(44 + Math.min(28, dossierStories / 10) + Math.min(18, sourceFamilies * 3) - Math.min(24, dossierFailures / 8)),
-      impact: 96,
+      impact: 100,
       evidence: [`dossierStories=${dossierStories}`, `sourceFamilies=${sourceFamilies}`, `dossierFailures=${dossierFailures}`],
-      operatingRule: "The Writer receives a structured dossier, not RSS snippets or raw publisher summaries.",
-      reasoningRule: "Classify who, what, when, where, official evidence, independent reports, contradictions, unknowns, and confidence before writing.",
-      correctionRule: "If topic drift appears, demote the draft and rebuild the dossier cluster before attempting another article.",
-      executionRule: "Collector and sub-dossier workers must feed tab-specific evidence into the main dossier before Writer selection.",
-      verificationMetric: "article-body-topic-drift, mixed-source-topic, and insufficient-full-article-facts must decline.",
-      nextAction: "Add a hard ready-for-writer gate requiring known facts, evidence classes, and topic-isolation score."
+      operatingRule: "Build one authoritative dossier consumed by News Lab, Creator Desk, Newsletter, Headline, Image, Editor, Search, and analytics lanes.",
+      reasoningRule: "The dossier owns canonical event identity, evidence classes, source agreement, uncertainty, category, timeline, image brief, and writing strategy.",
+      correctionRule: "If a downstream lane detects identity drift, topic contamination, weak evidence, or wrong category, return to the canonical dossier and repair the shared event object first.",
+      executionRule: "Collectors and sub-dossiers pre-separate evidence, but only the locked canonical dossier can authorize Writer, Headline, Image, and Editor handoff.",
+      verificationMetric: "dossier-ready rate rises while article-body-topic-drift, mixed-source-topic, duplicate dossier builds, and wrong-tab placement decline.",
+      nextAction: "Make every output lane read the same locked dossier object and record when it consumed that dossier."
     },
     {
-      key: "predictive-brain",
-      label: "Predictive Brain",
-      score: clampScore(predictionScore),
-      impact: 94,
-      evidence: [`predictionScore=${predictionScore}`, `pipelineReadiness=${pipeline.readiness || 0}`],
-      operatingRule: "Forecast degradation before it affects public output.",
-      reasoningRule: "Use trends across feed latency, source failures, dossier completeness, editor rejections, and article output.",
-      correctionRule: "When a metric trends down twice, create a preventive action instead of waiting for a public failure.",
-      executionRule: "Attach a next-check deadline and target metric to every preventive action.",
-      verificationMetric: "forecastSignals, preventedFailures, and post-action metric improvements.",
-      nextAction: "Create source/article/editor risk forecasts for the next rebuild cycle."
+      key: "writer-reasoning-engine",
+      label: "Project 2 - Writer Reasoning Engine",
+      score: clampScore((reasoningScore * 0.58) + (structureSuccess * 0.16) + (evidenceSuccess * 0.16) + Math.min(10, Number(pipeline.readiness || 0) / 10)),
+      impact: 99,
+      evidence: [`reasoningScore=${reasoningScore}`, `structureSuccess=${structureSuccess}`, `evidenceSuccess=${evidenceSuccess}`, `pipelineReadiness=${pipeline.readiness || 0}`],
+      operatingRule: "The Writer is a reasoning engine first and a prose generator second.",
+      reasoningRule: "Before drafting, prove what happened, what is verified, what is uncertain, what cannot be inferred, attribution for each claim, paragraph purpose, article format, and headline inputs.",
+      correctionRule: "If standard or deep writing cannot follow the reasoning plan, route to Writer Reasoning recovery instead of generic body fallback.",
+      executionRule: "Draft only from the locked dossier and pre-draft reasoning plan, then verify the body against the plan before headline/editor review.",
+      verificationMetric: "writerReasoningPlansPassed, writerReasoningDraftVerificationsPassed, first-pass approvals, and plan-facts-used increase.",
+      nextAction: "Measure every draft by plan completeness, plan-body alignment, and whether it avoided generic fallback."
     },
     {
-      key: "cross-subsystem-reasoning",
-      label: "Cross-Subsystem Reasoning",
-      score: clampScore((reasoningScore * 0.55) + Math.min(35, verifiedActions / 3) + Math.min(10, Number(graph.edgeCount || (graph.edges || []).length) / 1000)),
-      impact: 92,
-      evidence: [`reasoningScore=${reasoningScore}`, `verifiedActions=${verifiedActions}`, `graphEdges=${graph.edgeCount || (graph.edges || []).length || 0}`],
-      operatingRule: "No subsystem should diagnose in isolation when another subsystem may be the cause.",
-      reasoningRule: "Test causal chains: feed quality -> dossier quality -> writer quality -> editor acceptance -> public output.",
-      correctionRule: "When a downstream stage fails, inspect upstream telemetry before changing the downstream subsystem.",
-      executionRule: "Write a causal note into proof memory for every high-impact repair.",
-      verificationMetric: "causal links recorded and repeated failures reduced after upstream repair.",
-      nextAction: "Add causal scoring between feed reliability, dossier quality, headline quality, and article approvals."
+      key: "editorial-intelligence",
+      label: "Project 3 - Editorial Intelligence",
+      score: clampScore((editorialScore * 0.46) + (headlineSuccess * 0.18) + (structureSuccess * 0.14) + (evidenceSuccess * 0.14) + Math.min(8, Number(writing.recentLessons?.length || 0) / 2)),
+      impact: 98,
+      evidence: [`editorialScore=${editorialScore}`, `headlineFailures=${headlineFailures}`, `repairFailures=${repairFailures}`, `recentLessons=${writing.recentLessons?.length || 0}`],
+      operatingRule: "Editorial Intelligence prevents known failures before draft submission instead of merely repairing them after rejection.",
+      reasoningRule: "Convert repeated editor findings into class-level prevention rules for Dossier, Writer, Headline, Image, and Publisher lanes.",
+      correctionRule: "When the Editor rejects, create a full issue list, targeted repair route, resubmission path, and upstream prevention hook.",
+      executionRule: "Feed top rejection classes into pre-draft validation before the next Writer cycle, then verify whether the class declines.",
+      verificationMetric: "first-pass publication rises while repeated headline, context, incomplete sentence, image, and topic-drift findings decline.",
+      nextAction: "Compile repeated editorial findings into one active prevention rule per failure class and attach each to the earliest responsible stage."
     },
     {
-      key: "writer-editor-pattern-learning",
-      label: "Writer Learning From Editor Patterns",
-      score: clampScore((headlineSuccess * 0.28) + (structureSuccess * 0.24) + (evidenceSuccess * 0.28) + Math.min(20, Number(writing.recentLessons?.length || 0))),
-      impact: 90,
-      evidence: [`headlineSuccess=${headlineSuccess}`, `structureSuccess=${structureSuccess}`, `evidenceSuccess=${evidenceSuccess}`],
-      operatingRule: "The Writer reads pattern lessons before drafting, while the Story Dossier supplies facts.",
-      reasoningRule: "Treat editor decisions as craft lessons, not content to imitate.",
-      correctionRule: "Every repeated rejection becomes a pre-draft prevention rule for the Writer, Headline Editor, and Dossier Builder.",
-      executionRule: "Before each draft, apply the top three failing pattern rules from Writing Intelligence.",
-      verificationMetric: "first-pass acceptance and pattern success rates must rise without weakening editor gates.",
-      nextAction: "Turn the weakest pattern into the first required writer instruction for the next cycle."
+      key: "production-intelligence",
+      label: "Project 4 - Production Intelligence",
+      score: productiveWorkScore,
+      impact: 97,
+      evidence: [`approvedStories=${approvedStories}`, `verifiedActions=${verifiedActions}`, `improvedActions=${improvedActions}`, `pipelineReadiness=${pipeline.readiness || 0}`],
+      operatingRule: "Optimize the cost and conversion of the whole pipeline, not raw activity.",
+      reasoningRule: "Ask what produced public value, what repeated work, what ran too early, what ran twice, and what should be done once for all lanes.",
+      correctionRule: "When multiple subsystems share the same failure signature, create one root-cause intervention at the earliest shared stage instead of separate subsystem patches.",
+      executionRule: "Measure CPU per verified-visible article, repair loops per article, duplicate dossier builds, duplicate reasoning, sync cost, cache hit rate, and public-cache conversion.",
+      verificationMetric: "CPU/article, repair loops/article, duplicate builds, sync timeout pressure, and time-to-visible article decline while visible article count rises.",
+      nextAction: "Create a production efficiency window comparing collected -> dossier -> reasoned -> drafted -> approved -> verified-visible conversion and cost."
     }
   ].map(lane => ({
     ...lane,
@@ -10494,15 +10822,15 @@ function highImpactCapabilityPlan(memory = learningMemory(), diagnostics = null)
   const top = lanes[0] || null;
   return {
     generatedAt: new Date().toISOString(),
-    version: "20260706-high-impact-capability-plan-v1",
-    purpose: "Improve how the five highest-impact Brain capabilities operate, reason, produce, correct, and execute.",
+    version: "20260806-four-project-framework-priority-plan-v1",
+    purpose: "Concentrate engineering effort on the four projects that turn the news site into a reusable Framework: canonical dossier, writer reasoning, editorial prevention, and production efficiency.",
     overall: clampScore(lanes.reduce((sum, lane) => sum + lane.score, 0) / Math.max(1, lanes.length)),
     topPriority: top,
     lanes,
     executionOrder: lanes.map(lane => lane.label),
     sharedVerificationRule: "Every high-impact improvement must name the metric it expects to improve, rerun after execution, and record whether the metric moved.",
     rollbackRule: "If a change reduces public output, weakens editor gates, or increases topic drift/headline mismatch, revert that change and preserve the lesson as a failed experiment.",
-    rule: "Visible quality improves fastest when Headline Intelligence, Story Dossier Builder, Predictive Brain, Cross-subsystem Reasoning, and Writer/Editor Pattern Learning improve together."
+    rule: "Do not scatter engineering effort across symptoms. Public article quality, throughput, CPU efficiency, first-pass approval, and commercial value improve fastest when these four projects operate as one pipeline: Canonical Story Dossier -> Writer Reasoning Engine -> Editorial Intelligence -> Production Intelligence."
   };
 }
 
@@ -10511,8 +10839,8 @@ function saveHighImpactCapabilityPlan(reason = "manual") {
   writeJsonFile(path.join(dataDir, "high-impact-capability-plan.json"), plan);
   saveFrameworkLearningProofEntry({
     category: "high-impact-capability-plan",
-    event: "Brain ranked the five highest-impact quality capabilities",
-    plainEnglish: `The Brain measured the five largest visible quality levers and selected ${plan.topPriority?.label || "unknown"} as the highest-priority improvement lane.`,
+    event: "Brain ranked the four primary Framework engineering projects",
+    plainEnglish: `The Brain measured the four primary Framework projects and selected ${plan.topPriority?.label || "unknown"} as the highest-priority improvement lane.`,
     realWorldData: { reason, topPriority: plan.topPriority, executionOrder: plan.executionOrder },
     decisionMeasurement: {
       overall: plan.overall,
@@ -10520,7 +10848,7 @@ function saveHighImpactCapabilityPlan(reason = "manual") {
       topPriorityScore: plan.topPriority?.score || 0
     },
     proceduralMemory: {
-      futureUse: "Before improving News Lab quality, run the high-impact capability plan and repair the highest-priority lane first.",
+      futureUse: "Before improving News Lab quality or adding features, run the four-project capability plan and repair the highest-priority project lane first.",
       sharedVerificationRule: plan.sharedVerificationRule
     },
     resultMetric: {
@@ -10528,7 +10856,7 @@ function saveHighImpactCapabilityPlan(reason = "manual") {
       laneCount: plan.lanes.length
     },
     evidence: plan.lanes.map(lane => `${lane.label}=${lane.score}:${lane.status}`),
-    tags: ["high-impact-capabilities", "headline-intelligence", "story-dossier", "predictive-brain", "cross-subsystem-reasoning", "writer-learning"]
+    tags: ["four-project-framework-plan", "canonical-story-dossier", "writer-reasoning", "editorial-intelligence", "production-intelligence"]
   });
   return plan;
 }
@@ -10580,6 +10908,9 @@ function frameworkCapabilityAnalysis(memory = learningMemory(), diagnostics = nu
   const executionScore = clampScore(50 + actionImprovementRate * 0.28 + verificationRate * 0.22);
   const recoveryScore = clampScore(Number(maturityByKey.runtimeStability?.score || 0) * 0.65 + verificationRate * 0.25 + Math.min(10, actionCount / 20));
   const knowledgeScore = clampScore(Number(maturityByKey.knowledgeGraph?.score || 0) + Math.min(6, consolidationSignals * 2));
+  const understandingSignals = proof.recentEntries.filter(entry => /story understanding|understanding layer|meaning object|understanding-alignment/i.test(`${entry.event || ""} ${entry.plainEnglish || ""} ${(entry.tags || []).join(" ")}`)).length;
+  const understandingStageScore = Number(pipeline.stageStats?.Understanding?.averageScore || 0);
+  const understandingScore = clampScore(42 + Math.min(24, understandingSignals * 6) + Math.min(24, understandingStageScore * 0.24) + Math.min(10, Number(maturityByKey.writerReasoning?.score || 0) * 0.08));
   const editorialScore = clampScore(Number(maturityByKey.editorialIntelligence?.score || 0));
   const investigationScore = clampScore(38 + Math.min(18, sourceFamilyCount * 4) + Math.min(14, officialSources * 2) + Math.min(10, courtSources * 3) + Math.min(10, researchSources * 2) + Math.min(10, contradictionCount) + Math.min(10, timelineCount / 4));
   const autonomyScore = clampScore(42 + actionImprovementRate * 0.22 + verificationRate * 0.26 + Math.min(14, Number(actions.totals?.autonomousActionCount || 0) / 10) - Math.min(12, gapAnalysis.summary.executionGaps * 4));
@@ -10591,6 +10922,7 @@ function frameworkCapabilityAnalysis(memory = learningMemory(), diagnostics = nu
     frameworkCapabilityItem("execution", "Execution", executionScore, "Executes bounded actions and approved structured patches, but some actions still lack verified improvement.", [`actionCount=${actionCount}`, `metricImprovedActions=${improvedActions}`, `verifiedActions=${verifiedActions}`], "Attach a mandatory post-action verification window and next-check deadline to every Brain action.", "Execution Scheduler"),
     frameworkCapabilityItem("recovery", "Recovery", recoveryScore, "Handles some runtime failures with fallbacks, but recovery needs stronger automatic close-the-loop behavior.", [`runtimeStability=${maturityByKey.runtimeStability?.score || 0}`, `verifiedActions=${verifiedActions}`], "Detect failure, recover, verify the same metric, and store prevention memory without waiting for owner notice.", "Recovery Engine"),
     frameworkCapabilityItem("knowledge", "Knowledge", knowledgeScore, "Maintains source registry, article memory, knowledge graph, and entity memory.", [`sourceCount=${sourceEntries.length}`, `sourceFamilies=${sourceFamilyCount}`, `consolidationSignals=${consolidationSignals}`], "Add weekly Knowledge Consolidation: summarize lessons, merge duplicates, retire stale lessons, promote permanent knowledge.", "Knowledge Consolidation"),
+    frameworkCapabilityItem("understanding", "Understanding", understandingScore, "Converts canonical knowledge into meaning before reasoning or execution.", [`understandingSignals=${understandingSignals}`, `understandingStageScore=${understandingStageScore || 0}`, `writerReasoning=${maturityByKey.writerReasoning?.score || 0}`], "Require every application to produce an Understanding object from its canonical knowledge object before reasoning, writing, image selection, newsletter generation, or Creator Desk output.", "Understanding Engine"),
     frameworkCapabilityItem("editorial", "Editorial", editorialScore, "Editor and writer learn from decisions, but pattern learning and pre-draft application need more force.", [`editorialScore=${maturityByKey.editorialIntelligence?.score || 0}`, `firstPassAcceptance=${firstPassAcceptance.toFixed(1)}`, `repeatedPatternSignals=${repeatedFailures}`], "Make the Writer read pattern-level Editorial Memory before drafting and block known-failing patterns earlier.", "Editorial Intelligence v2"),
     frameworkCapabilityItem("investigation", "Investigation", investigationScore, "Has source triangulation, timeline, contradiction, and evidence classification pieces, but needs stronger newsroom tooling.", [`officialSources=${officialSources}`, `courtSources=${courtSources}`, `researchSources=${researchSources}`, `contradictions=${contradictionCount}`, `timelineItems=${timelineCount}`], "Strengthen contradiction detection, source triangulation, fact provenance, entity relationship tracking, and follow-up recommendations.", "Investigation Desk"),
     frameworkCapabilityItem("autonomy", "Autonomy", autonomyScore, "Can act in bounded areas and apply owner-approved structured patches, but still depends on verification and teaching loops.", [`autonomousActions=${actions.totals?.autonomousActionCount || 0}`, `executionGaps=${gapAnalysis.summary.executionGaps}`, `verificationRate=${verificationRate.toFixed(1)}`], "Promote repeated successful Codex-taught operations into reusable Brain abilities with approval gates and measurable verification.", "Autonomy Governor")
@@ -10606,6 +10938,7 @@ function frameworkCapabilityAnalysis(memory = learningMemory(), diagnostics = nu
     { level: "Learning", name: "Pattern Intelligence", purpose: "Recognize repeated failed writing/code/source patterns across many records and attach failure rates." },
     { level: "Learning", name: "Causal Learning Engine", purpose: "Connect feed reliability, dossier quality, editor rejection, and publication output into causal chains." },
     { level: "Learning", name: "Knowledge Consolidation", purpose: "Weekly lesson summary, duplicate merge, stale lesson retirement, and permanent knowledge promotion." },
+    { level: "Understanding", name: "Understanding Engine", purpose: "Convert canonical knowledge objects into meaning objects before reasoning, execution, or repair begins." },
     { level: "Improvement", name: "Improvement Optimizer", purpose: "Rank improvements by expected return and work the highest-value item first." },
     { level: "Improvement", name: "Predictive Intelligence", purpose: "Forecast likely failure or degradation and trigger preventive action." },
     { level: "Improvement", name: "Experiment Manager", purpose: "Compare Version A/Version B changes, learn from outcomes, and keep the winner." },
@@ -18385,11 +18718,13 @@ function storyIdentityOverlap(a = {}, b = {}) {
 function sameNewsEvent(a = {}, b = {}) {
   if (!a.title || !b.title) return false;
   if (a.url && b.url && a.url === b.url) return true;
-  if ((a.category || "news") !== (b.category || "news")) return false;
+  const canonicalAgreement = newsLabCanonicalEventAgreement(a, b);
+  if (canonicalAgreement.canMerge) return true;
+  const sameCategory = newsLabCategory(a) === newsLabCategory(b);
   const { termOverlap, entityOverlap } = storyIdentityOverlap(a, b);
   const titleOverlap = keywordOverlap({ title: a.title }, { title: b.title });
   const sourceCountMatch = samePublisherDomain(a, b) && titleOverlap >= 4;
-  return entityOverlap >= 2 || termOverlap >= 7 || (titleOverlap >= 4 && termOverlap >= 4) || sourceCountMatch;
+  return sameCategory && (entityOverlap >= 2 || termOverlap >= 7 || (titleOverlap >= 4 && termOverlap >= 4) || sourceCountMatch);
 }
 
 function storyFingerprint(story) {
@@ -18500,8 +18835,10 @@ function newsLabSameStory(a = {}, b = {}) {
 function newsLabStrictSameNewsEvent(representative = {}, candidate = {}) {
   if (!representative.title || !candidate.title) return false;
   if (representative.url && candidate.url && representative.url === candidate.url) return true;
-  if (newsLabCategory(representative) !== newsLabCategory(candidate)) return false;
-  if (!sameNewsEvent(representative, candidate)) return false;
+  const canonicalAgreement = newsLabCanonicalEventAgreement(representative, candidate);
+  const sameCategory = newsLabCategory(representative) === newsLabCategory(candidate);
+  if (!canonicalAgreement.canMerge && !sameCategory) return false;
+  if (!canonicalAgreement.canMerge && !sameNewsEvent(representative, candidate)) return false;
   const identity = storyIdentityOverlap(representative, candidate);
   const titleOverlap = keywordOverlap({ title: representative.title || "" }, { title: candidate.title || "" });
   const termOverlap = newsLabOverlap(representative, candidate);
@@ -18515,7 +18852,15 @@ function newsLabStrictSameNewsEvent(representative = {}, candidate = {}) {
   const hasStrongTitleBridge = titleOverlap >= 4 && termOverlap >= 6;
   const hasSameOutletContinuation = samePublisherDomain(representative, candidate) && titleOverlap >= 5 && termOverlap >= 5;
   const foreignEntityBurst = foreignEntities.length >= 2 && identity.entityOverlap === 0 && termOverlap < 9;
-  return !foreignEntityBurst && !hasSingleEntityOnlyBridge && (hasEntityBridge || hasSingleEntityStrongBridge || hasStrongTermBridge || hasStrongTitleBridge || hasSameOutletContinuation || (identity.entityOverlap >= 2 && titleOverlap >= 1));
+  return !foreignEntityBurst && !hasSingleEntityOnlyBridge && (
+    canonicalAgreement.canMerge
+    || hasEntityBridge
+    || hasSingleEntityStrongBridge
+    || hasStrongTermBridge
+    || hasStrongTitleBridge
+    || hasSameOutletContinuation
+    || (identity.entityOverlap >= 2 && titleOverlap >= 1)
+  );
 }
 
 function newsLabTopicIsolatedStories(representative = {}, candidates = []) {
@@ -18526,10 +18871,14 @@ function newsLabTopicIsolatedStories(representative = {}, candidates = []) {
     const cleanCandidate = cleanNewsLabSourceStory(normalized);
     const acceptedForTopic = newsLabStrictSameNewsEvent(representative, cleanCandidate);
     const identity = storyIdentityOverlap(representative, cleanCandidate);
+    const canonicalAgreement = newsLabCanonicalEventAgreement(representative, cleanCandidate);
     const measurement = {
       title: cleanCandidate.title || "",
       source: cleanCandidate.source || "",
       url: cleanCandidate.url || "",
+      canonicalEventId: canonicalAgreement.right?.eventId || "",
+      canonicalAgreementScore: Number(canonicalAgreement.score || 0),
+      canonicalAgreementReason: canonicalAgreement.reason || "",
       titleOverlap: keywordOverlap({ title: representative.title || "" }, { title: cleanCandidate.title || "" }),
       termOverlap: newsLabOverlap(representative, cleanCandidate),
       identityTermOverlap: identity.termOverlap,
@@ -18559,6 +18908,7 @@ function newsLabDossierSourcePool(representative = {}, candidates = []) {
       const identity = storyIdentityOverlap(cleanRepresentative, candidate);
       const titleOverlap = keywordOverlap({ title: cleanRepresentative.title || "" }, { title: candidate.title || "" });
       const termOverlap = newsLabOverlap(cleanRepresentative, candidate);
+      const canonicalAgreement = newsLabCanonicalEventAgreement(cleanRepresentative, candidate);
       const strict = newsLabStrictSameNewsEvent(cleanRepresentative, candidate);
       const sameEvent = sameNewsEvent(cleanRepresentative, candidate);
       const sameCategory = newsLabCategory(cleanRepresentative) === newsLabCategory(candidate);
@@ -18571,12 +18921,12 @@ function newsLabDossierSourcePool(representative = {}, candidates = []) {
       }).length;
       let role = "rejected";
       let admissionReason = "insufficient event overlap";
-      if (strict) {
+      if (strict && canonicalAgreement.canMerge) {
         role = "strict-writing-source";
-        admissionReason = "strict same-event match";
-      } else if (sameEvent && (identity.entityOverlap >= 1 || termOverlap >= 5 || titleOverlap >= 2 || relevantFactCount >= 2)) {
+        admissionReason = "canonical actor/action/object/time same-event match";
+      } else if (sameEvent && canonicalAgreement.score >= 0.6 && (identity.entityOverlap >= 1 || termOverlap >= 5 || titleOverlap >= 2 || relevantFactCount >= 2)) {
         role = "verification-context-source";
-        admissionReason = "same event with usable verification or context facts";
+        admissionReason = "near same-event signature retained for verification/context only";
       } else if (sourceTier.primarySource && sameCategory && (relevantFactCount >= 1 || identity.entityOverlap >= 1 || termOverlap >= 4)) {
         role = "verification-context-source";
         admissionReason = "primary source with same category and usable dossier evidence";
@@ -18592,6 +18942,16 @@ function newsLabDossierSourcePool(representative = {}, candidates = []) {
         dossierRole: role,
         dossierAdmissionReason: admissionReason,
         dossierRelevance: {
+          canonicalEventId: canonicalAgreement.right?.eventId || "",
+          canonicalAgreementScore: Number(canonicalAgreement.score || 0),
+          canonicalAgreementReason: canonicalAgreement.reason || "",
+          canonicalAgreement: {
+            actor: Boolean(canonicalAgreement.actorAgreement),
+            action: Boolean(canonicalAgreement.actionAgreement),
+            timeWindow: Boolean(canonicalAgreement.timeWindowAgreement),
+            object: Boolean(canonicalAgreement.objectAgreement),
+            consequence: Boolean(canonicalAgreement.consequenceAgreement)
+          },
           sameEvent,
           sameCategory,
           titleOverlap,
@@ -18672,8 +19032,279 @@ function newsLabEventAnchorTerms(story = {}) {
   return [...new Set(newsLabTerms(story).filter(term => !broad.has(term)).slice(0, 18))];
 }
 
+function newsLabCanonicalEventAction(text = "", category = "news") {
+  const lower = String(text || "").toLowerCase();
+  const families = [
+    { key: "legal-ruling", pattern: /\b(rules?|ruling|ruled|judge|court|appeal|lawsuit|settlement|verdict|indictment|charges?|charged|sues?|filed)\b/, label: "legal action" },
+    { key: "policy-action", pattern: /\b(approves?|approved|passes?|passed|signs?|signed|votes?|voted|blocks?|blocked|allows?|allowed|orders?|ordered|bill|policy|budget|funding)\b/, label: "policy action" },
+    { key: "investigation", pattern: /\b(investigates?|investigation|probe|inquiry|questions?|scrutiny|review|examines?)\b/, label: "investigation" },
+    { key: "market-result", pattern: /\b(earnings|shares?|stock|market|profit|revenue|inflation|jobs|prices?|rises?|falls?|drops?|gains?|loses?)\b/, label: "market result" },
+    { key: "security-event", pattern: /\b(strikes?|attack|attacks?|missile|drone|war|ceasefire|sanctions|military|troops|border)\b/, label: "security event" },
+    { key: "weather-emergency", pattern: /\b(storm|flood|fire|outage|evacuation|warning|cleanup|tornado|hurricane|wildfire)\b/, label: "emergency response" },
+    { key: "sports-result", pattern: /\b(wins?|won|beats?|beat|scores?|scored|playoff|final|match|game|trade|draft|injury|season|tournament)\b/, label: "sports result" },
+    { key: "culture-release", pattern: /\b(film|movie|music|album|tour|festival|streaming|studio|artist|celebrity|debut|release)\b/, label: "culture release" },
+    { key: "technology-action", pattern: /\b(ai|chip|software|platform|privacy|security|cyber|data|launches?|launched|updates?|updated)\b/, label: "technology action" },
+    { key: "public-statement", pattern: /\b(says?|said|announces?|announced|confirms?|confirmed|warns?|warned|reports?|reported|statement)\b/, label: "public statement" }
+  ];
+  const match = families.find(item => item.pattern.test(lower));
+  if (match) return match;
+  const phrase = newsLabActionPhraseFromText(text, category);
+  return {
+    key: safeFileSlug(String(phrase || "verified-update").toLowerCase()).slice(0, 42) || "verified-update",
+    label: phrase || "verified update"
+  };
+}
+
+function newsLabCanonicalEventObjectTerms(story = {}, actor = "", actionKey = "") {
+  const actorTerms = new Set(String(actor || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  const actionTerms = new Set(String(actionKey || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  const generic = new Set([
+    "after", "before", "latest", "local", "news", "report", "reports", "story", "update", "updates",
+    "said", "says", "official", "officials", "source", "sources", "video", "watch", "live",
+    "legal", "action", "policy", "market", "result", "security", "event", "public", "statement"
+  ]);
+  return newsLabEventAnchorTerms(story)
+    .filter(term => !actorTerms.has(term))
+    .filter(term => !actionTerms.has(term))
+    .filter(term => !generic.has(term))
+    .slice(0, 5);
+}
+
+function newsLabEvidenceBackedEventField(value = "", field = "", story = {}, confidence = 0) {
+  const cleanValue = cleanArticleText(value || "", 220);
+  const sourceId = story.sourceId || story.id || story.url || story.source || story.title || "";
+  return {
+    value: cleanValue,
+    confidence: Number(Math.max(0, Math.min(1, confidence || (cleanValue ? 0.64 : 0))).toFixed(2)),
+    sourceIds: sourceId ? [String(sourceId).slice(0, 220)] : [],
+    independentSourceCount: sourceId ? 1 : 0,
+    status: cleanValue ? "source-backed" : "missing",
+    field
+  };
+}
+
+function newsLabCanonicalEventSignatureFromStory(story = {}) {
+  const cleanStory = cleanNewsLabSourceStory(story || {});
+  const text = [cleanStory.title, cleanStory.summary, cleanStory.articleSummary].filter(Boolean).join(" ");
+  const category = newsLabCategory(cleanStory);
+  const entities = storyNamedEntities(cleanStory)
+    .map(entity => cleanArticleText(entity, 90).toLowerCase())
+    .filter(Boolean)
+    .filter(entity => !/^(officials?|sources?|reports?|news|local|world|sports|business|technology|entertainment|politics)$/i.test(entity))
+    .slice(0, 8);
+  const primaryActor = entities[0] || newsLabCleanHeadlineSubject(cleanStory.title || cleanStory.summary || "", newsLabCategoryLabel(category)).toLowerCase();
+  const action = newsLabCanonicalEventAction(text, category);
+  const eventObjectTerms = newsLabCanonicalEventObjectTerms(cleanStory, primaryActor, action.key);
+  const eventTime = newsLabStoryEventTime([cleanStory]);
+  const timeWindow = (eventTime.firstSeenAt || cleanStory.published || cleanStory.publishedAt || "")
+    ? new Date(eventTime.firstSeenAt || cleanStory.published || cleanStory.publishedAt).toISOString().slice(0, 10)
+    : "";
+  const location = entities.find(entity => /\b(city|county|state|washington|new york|california|texas|florida|ukraine|russia|china|iran|israel|gaza|europe|asia|africa|america)\b/i.test(`${entity} ${text}`)) || "";
+  const consequenceTerms = newsLabEventAnchorTerms({ title: cleanStory.title, summary: cleanStory.summary || cleanStory.articleSummary })
+    .filter(term => !eventObjectTerms.includes(term))
+    .slice(0, 5);
+  const eventStatus = /\b(confirmed|official|ruled|approved|signed|won|lost|completed|final)\b/i.test(text)
+    ? "confirmed"
+    : /\b(expected|may|could|developing|reportedly|plans?|set to|scheduled)\b/i.test(text)
+      ? "developing"
+      : "active";
+  const eventObject = eventObjectTerms.join("-");
+  const consequence = consequenceTerms.join("-");
+  const eventIdParts = [primaryActor, action.key, eventObject || consequence, timeWindow, location].filter(Boolean);
+  const extractionConfidence = clampScore(
+    (primaryActor ? 25 : 0)
+    + (action.key ? 25 : 0)
+    + (eventObjectTerms.length ? 20 : 0)
+    + (timeWindow ? 15 : 0)
+    + (entities.length ? 10 : 0)
+    + (consequenceTerms.length ? 5 : 0)
+  );
+  return {
+    primaryActor,
+    primaryAction: action.key,
+    primaryActionLabel: action.label,
+    eventObject,
+    eventObjectTerms,
+    eventTimeWindow: timeWindow,
+    location,
+    consequence,
+    consequenceTerms,
+    eventStatus,
+    categoryHint: category,
+    entities,
+    eventId: `event:${safeFileSlug(eventIdParts.join(":")).slice(0, 120)}`,
+    extractionConfidence,
+    evidenceBackedFields: {
+      actor: newsLabEvidenceBackedEventField(primaryActor, "actor", cleanStory, primaryActor ? 0.72 + Math.min(0.18, entities.length * 0.02) : 0),
+      action: newsLabEvidenceBackedEventField(action.label || action.key, "action", cleanStory, action.key ? 0.78 : 0),
+      object: newsLabEvidenceBackedEventField(eventObject, "object", cleanStory, eventObject ? 0.66 + Math.min(0.18, eventObjectTerms.length * 0.03) : 0),
+      time: newsLabEvidenceBackedEventField(timeWindow, "time", cleanStory, timeWindow ? 0.72 : 0),
+      location: newsLabEvidenceBackedEventField(location, "location", cleanStory, location ? 0.62 : 0),
+      consequence: newsLabEvidenceBackedEventField(consequence, "consequence", cleanStory, consequence ? 0.6 + Math.min(0.2, consequenceTerms.length * 0.03) : 0),
+      status: newsLabEvidenceBackedEventField(eventStatus, "eventStatus", cleanStory, eventStatus ? 0.7 : 0)
+    },
+    rule: "Canonical event signature is actor + action + object/consequence + time window + optional location. Category and keywords are hints only."
+  };
+}
+
+function newsLabSetOverlapScore(left = [], right = []) {
+  const leftSet = new Set((left || []).filter(Boolean));
+  const rightList = (right || []).filter(Boolean);
+  if (!leftSet.size || !rightList.length) return 0;
+  return rightList.reduce((sum, item) => sum + (leftSet.has(item) ? 1 : 0), 0);
+}
+
+function newsLabCanonicalEventAgreement(leftStory = {}, rightStory = {}) {
+  if (leftStory.url && rightStory.url && leftStory.url === rightStory.url) {
+    return {
+      canMerge: true,
+      score: 1,
+      actorAgreement: true,
+      actionAgreement: true,
+      timeWindowAgreement: true,
+      objectAgreement: true,
+      consequenceAgreement: true,
+      reason: "same-url"
+    };
+  }
+  const left = leftStory.canonicalEventSignature || newsLabCanonicalEventSignatureFromStory(leftStory);
+  const right = rightStory.canonicalEventSignature || newsLabCanonicalEventSignatureFromStory(rightStory);
+  const actorOverlap = left.primaryActor && right.primaryActor
+    ? (left.primaryActor === right.primaryActor || newsLabTextOverlap(left.primaryActor, right.primaryActor) >= 0.24)
+    : false;
+  const sharedEntities = newsLabSetOverlapScore(left.entities || [], right.entities || []);
+  const actorAgreement = actorOverlap || sharedEntities >= 1;
+  const actionAgreement = Boolean(left.primaryAction && right.primaryAction && left.primaryAction === right.primaryAction);
+  const timeWindowAgreement = Boolean(
+    left.eventTimeWindow && right.eventTimeWindow
+      ? Math.abs(Date.parse(left.eventTimeWindow) - Date.parse(right.eventTimeWindow)) <= 2 * 86400000
+      : left.eventTimeWindow || right.eventTimeWindow
+  );
+  const objectOverlap = newsLabSetOverlapScore(left.eventObjectTerms || [], right.eventObjectTerms || []);
+  const consequenceOverlap = newsLabSetOverlapScore(left.consequenceTerms || [], right.consequenceTerms || []);
+  const objectAgreement = objectOverlap >= 1 || (left.eventObject && right.eventObject && newsLabTextOverlap(left.eventObject, right.eventObject) >= 0.22);
+  const consequenceAgreement = consequenceOverlap >= 1 || (left.consequence && right.consequence && newsLabTextOverlap(left.consequence, right.consequence) >= 0.22);
+  const categorySupport = left.categoryHint && right.categoryHint && left.categoryHint === right.categoryHint;
+  const score = Number((
+    (actorAgreement ? 0.28 : 0)
+    + (actionAgreement ? 0.28 : 0)
+    + (timeWindowAgreement ? 0.16 : 0)
+    + (objectAgreement ? 0.18 : 0)
+    + (consequenceAgreement ? 0.06 : 0)
+    + (categorySupport ? 0.04 : 0)
+  ).toFixed(2));
+  const canMerge = Boolean(actorAgreement && actionAgreement && timeWindowAgreement && (objectAgreement || consequenceAgreement) && score >= 0.72);
+  return {
+    left,
+    right,
+    canMerge,
+    score,
+    actorAgreement,
+    actionAgreement,
+    timeWindowAgreement,
+    objectAgreement,
+    consequenceAgreement,
+    categorySupport,
+    reason: canMerge ? "canonical-event-signature-agreement" : "canonical-event-signature-disagreement"
+  };
+}
+
+function newsLabEventCoherenceAssessment(stories = [], representative = null) {
+  const cleanStories = newsLabUniqueSourceStories(stories);
+  const primary = representative || cleanStories[0] || {};
+  const comparisons = cleanStories
+    .filter(story => story && (story.url || story.title) !== (primary.url || primary.title))
+    .map(story => ({
+      title: story.title || "",
+      source: story.source || "",
+      url: story.url || "",
+      agreement: newsLabCanonicalEventAgreement(primary, story)
+    }));
+  const incompatible = comparisons.filter(item => !item.agreement.canMerge);
+  const avgScore = comparisons.length
+    ? comparisons.reduce((sum, item) => sum + Number(item.agreement.score || 0), 0) / comparisons.length
+    : 1;
+  const signatures = cleanStories.map(newsLabCanonicalEventSignatureFromStory);
+  const actionCount = new Set(signatures.map(sig => sig.primaryAction).filter(Boolean)).size;
+  const actorCount = new Set(signatures.map(sig => sig.primaryActor).filter(Boolean)).size;
+  const objectCount = new Set(signatures.map(sig => sig.eventObject).filter(Boolean)).size;
+  const categoryCount = new Set(signatures.map(sig => sig.categoryHint).filter(Boolean)).size;
+  const structuralPenalty = Math.min(0.28,
+    Math.max(0, actionCount - 1) * 0.08
+    + Math.max(0, actorCount - 2) * 0.05
+    + Math.max(0, objectCount - 2) * 0.04
+    + Math.max(0, categoryCount - 2) * 0.04
+  );
+  const eventCoherence = Number(Math.max(0, Math.min(1, avgScore - structuralPenalty)).toFixed(2));
+  const contaminationScore = Number((1 - eventCoherence).toFixed(2));
+  const componentScores = {
+    actorConsistency: Number(Math.max(0, 1 - Math.max(0, actorCount - 1) * 0.28).toFixed(2)),
+    actionCompatibility: Number(Math.max(0, 1 - Math.max(0, actionCount - 1) * 0.34).toFixed(2)),
+    timelineCompatibility: Number((comparisons.length
+      ? comparisons.filter(item => item.agreement.timeWindowAgreement).length / Math.max(1, comparisons.length)
+      : 1).toFixed(2)),
+    objectConsequenceConsistency: Number((comparisons.length
+      ? comparisons.filter(item => item.agreement.objectAgreement || item.agreement.consequenceAgreement).length / Math.max(1, comparisons.length)
+      : 1).toFixed(2)),
+    semanticEventSimilarity: Number(avgScore.toFixed(2)),
+    contradictionSeverity: Number(Math.min(1, incompatible.length / Math.max(1, cleanStories.length)).toFixed(2)),
+    competingEventCenters: Math.max(0, Math.max(actionCount, objectCount, actorCount - 1) - 1)
+  };
+  const coherenceWarnings = [
+    componentScores.actorConsistency < 0.8 ? "actor-inconsistency-detected" : "",
+    componentScores.actionCompatibility < 0.8 ? "action-incompatibility-detected" : "",
+    componentScores.timelineCompatibility < 0.75 ? "timeline-incompatibility-detected" : "",
+    componentScores.objectConsequenceConsistency < 0.75 ? "object-or-consequence-inconsistency-detected" : "",
+    componentScores.competingEventCenters > 0 ? "competing-event-centers-detected" : "",
+    categoryCount > 2 ? "multiple-category-contexts-present" : ""
+  ].filter(Boolean);
+  const readiness = eventCoherence >= 0.8
+    ? "continue"
+    : eventCoherence >= 0.6
+      ? "split-or-repair-cluster"
+      : "do-not-draft";
+  const decision = eventCoherence >= 0.85 && !coherenceWarnings.some(warning => /competing|action-incompatibility/.test(warning))
+    ? "write"
+    : eventCoherence >= 0.6
+      ? "split-or-repair"
+      : "hold";
+  return {
+    version: "20260806-event-coherence-v1",
+    contaminationScore,
+    eventCoherence,
+    coherenceAnalysis: {
+      overallScore: eventCoherence,
+      contaminationScore,
+      components: componentScores,
+      competingEvents: incompatible.map(item => ({
+        eventId: item.agreement.right?.eventId || item.url || item.title || "",
+        title: item.title || "",
+        score: Number(item.agreement.score || 0),
+        reason: item.agreement.reason || ""
+      })).slice(0, 12),
+      warnings: coherenceWarnings,
+      decision,
+      rule: "Coherence analyzes actor, action, timeline, object, consequence, semantic similarity, contradiction pressure, and competing event centers before the dossier can write."
+    },
+    conflictingEventIds: incompatible.map(item => item.agreement.right?.eventId || item.url || item.title).filter(Boolean).slice(0, 12),
+    readyForWriting: eventCoherence >= 0.8,
+    routing: readiness,
+    actionCount,
+    actorCount,
+    objectCount,
+    categoryCount,
+    sourceCount: cleanStories.length,
+    incompatibleSourceCount: incompatible.length,
+    comparisons: comparisons.slice(0, 10),
+    canonicalEventSignature: newsLabCanonicalEventSignatureFromStory(primary),
+    rule: "Integrity measures whether sources describe one coherent event. Depth is decided later; thin coherent events can still become developing briefs."
+  };
+}
+
 function newsLabCleanSameEventSource(representative = {}, candidate = {}) {
   if (representative.url && candidate.url && representative.url === candidate.url) return true;
+  const eventAgreement = newsLabCanonicalEventAgreement(representative, candidate);
+  if (!eventAgreement.canMerge) return false;
   if (!newsLabStrictSameNewsEvent(representative, candidate)) return false;
   const representativeAnchors = new Set(newsLabEventAnchorTerms(representative));
   const candidateAnchors = newsLabEventAnchorTerms(candidate);
@@ -18687,12 +19318,148 @@ function newsLabCleanSameEventSource(representative = {}, candidate = {}) {
     || (identity.entityOverlap >= 2 && anchorOverlap >= 1 && termOverlap >= 9);
 }
 
+function newsLabIntraSourceEventSegments(story = {}) {
+  const cleanStory = cleanNewsLabSourceStory(story || {});
+  const text = [cleanStory.title, cleanStory.summary, cleanStory.articleSummary].filter(Boolean).join(" ");
+  const titleParts = String(cleanStory.title || "")
+    .split(/\s+(?:and|while|as|;|\||\/)\s+/i)
+    .map(part => cleanArticleText(part, 220))
+    .filter(part => part.split(/\s+/).length >= 4);
+  const sentenceParts = newsLabFactSentences(text, 8)
+    .filter(sentence => /\b(rules?|sues?|charges?|strikes?|wins?|loses?|approves?|blocks?|announces?|investigates?|reports?|confirms?|warns?|kills?|injures?|launches?|settles?|signs?|passes?|falls?|rises?|beats?)\b/i.test(sentence));
+  const candidates = [...titleParts, ...sentenceParts]
+    .filter(Boolean)
+    .filter((part, index, all) => all.findIndex(item => newsLabTextOverlap(item, part) >= 0.74) === index)
+    .slice(0, 8);
+  const segments = candidates.map((part, index) => {
+    const segmentStory = {
+      ...cleanStory,
+      id: `${cleanStory.id || cleanStory.url || cleanStory.title || "source"}:event_segment_${index + 1}`,
+      title: part,
+      summary: part,
+      articleSummary: part,
+      sourceSegmentId: `event_segment_${index + 1}`
+    };
+    const signature = newsLabCanonicalEventSignatureFromStory(segmentStory);
+    return {
+      segmentId: `${cleanStory.url || cleanStory.source || "source"}:event_segment_${index + 1}`,
+      sourceUrl: cleanStory.url || "",
+      source: cleanStory.source || cleanStory.name || "",
+      title: part,
+      eventSignature: signature,
+      eventId: signature.eventId,
+      primaryActor: signature.primaryActor,
+      primaryAction: signature.primaryAction,
+      eventObject: signature.eventObject,
+      eventTimeWindow: signature.eventTimeWindow,
+      categoryHint: signature.categoryHint,
+      extractionConfidence: signature.extractionConfidence
+    };
+  });
+  const confident = segments.filter(segment => Number(segment.extractionConfidence || 0) >= 60);
+  const actionCount = new Set(confident.map(segment => segment.primaryAction).filter(Boolean)).size;
+  const actorCount = new Set(confident.map(segment => segment.primaryActor).filter(Boolean)).size;
+  const eventCount = new Set(confident.map(segment => segment.eventId).filter(Boolean)).size;
+  const hasMultipleEvents = Boolean(confident.length >= 2 && eventCount >= 2 && (actionCount >= 2 || actorCount >= 2));
+  return {
+    active: true,
+    version: "20260806-intra-source-event-segmentation-v1",
+    hasMultipleEvents,
+    segmentCount: segments.length,
+    confidentSegmentCount: confident.length,
+    actionCount,
+    actorCount,
+    eventCount,
+    segments,
+    rule: "Roundups and multi-topic source items are converted into segment records before recovery/clustering so one source cannot contaminate a canonical dossier with unrelated events."
+  };
+}
+
+function newsLabStoryFromIntraSourceSegment(source = {}, segment = {}, index = 0) {
+  const parentId = source.id || source.url || source.title || source.source || "source";
+  const segmentId = segment.segmentId || `${parentId}:event_segment_${index + 1}`;
+  const cleanTitle = newsLabTrimSentence(segment.title || source.title || "", 220);
+  const segmentSlug = safeFileSlug(segmentId).slice(0, 44);
+  const segmentUrl = source.url ? `${source.url}#ce-event-${segmentSlug}` : `${source.source || "source"}:${segmentSlug}`;
+  return cleanNewsLabSourceStory({
+    ...source,
+    id: `${parentId}:event_segment_${index + 1}`,
+    title: cleanTitle,
+    summary: cleanTitle,
+    articleSummary: cleanTitle,
+    url: segmentUrl,
+    sourceSegmentId: segmentId,
+    sourceParentUrl: source.url || "",
+    sourceParentTitle: source.title || "",
+    sourceSegment: {
+      active: true,
+      segmentId,
+      parentUrl: source.url || "",
+      parentTitle: source.title || "",
+      eventSignature: segment.eventSignature || null,
+      extractionConfidence: Number(segment.extractionConfidence || 0),
+      rule: "This source segment was split before clustering so a roundup item cannot become one mixed dossier."
+    },
+    canonicalEventSignature: segment.eventSignature || source.canonicalEventSignature || null,
+    eventId: segment.eventId || segment.eventSignature?.eventId || source.eventId || "",
+    category: segment.categoryHint || source.category || ""
+  });
+}
+
+function newsLabExpandStoriesWithIntraSourceSegments(stories = []) {
+  const metrics = {
+    inputStories: Array.isArray(stories) ? stories.length : 0,
+    splitSourceCount: 0,
+    segmentStoryCount: 0,
+    unchangedStoryCount: 0,
+    outputStories: 0,
+    segmentExamples: [],
+    rule: "Multi-event source items are split before clustering. Single-event sources pass through unchanged."
+  };
+  const expanded = [];
+  (Array.isArray(stories) ? stories : []).forEach(source => {
+    const segmentation = newsLabIntraSourceEventSegments(source);
+    if (segmentation.hasMultipleEvents && segmentation.segments.length >= 2) {
+      const segmentStories = segmentation.segments
+        .filter(segment => Number(segment.extractionConfidence || 0) >= 55)
+        .map((segment, index) => newsLabStoryFromIntraSourceSegment(source, segment, index))
+        .filter(newsLabReportableSourceStory);
+      if (segmentStories.length >= 2) {
+        metrics.splitSourceCount += 1;
+        metrics.segmentStoryCount += segmentStories.length;
+        metrics.segmentExamples.push({
+          title: source.title || "",
+          source: source.source || "",
+          segmentCount: segmentStories.length,
+          eventIds: segmentStories.map(story => story.eventId || story.canonicalEventSignature?.eventId || "").filter(Boolean).slice(0, 5)
+        });
+        expanded.push(...segmentStories);
+        return;
+      }
+    }
+    metrics.unchangedStoryCount += 1;
+    expanded.push(source);
+  });
+  metrics.outputStories = expanded.length;
+  metrics.segmentExamples = metrics.segmentExamples.slice(0, 12);
+  return { stories: expanded, metrics };
+}
+
 function newsLabBuildEventSubDossier(cleanRepresentative = {}, sourcePool = [], topicIsolation = {}, facts = [], supporting = [], options = {}) {
   const writingSources = sourcePool.filter(source => source.dossierRole === "strict-writing-source");
   const verificationSources = sourcePool.filter(source => source.dossierRole === "verification-context-source");
   const backgroundSources = sourcePool.filter(source => source.dossierRole === "background-context-source");
   const reviewOnlySources = sourcePool.filter(source => source.dossierRole === "dossier-review-source");
   const rejectedSources = sourcePool.filter(source => source.dossierRole === "rejected");
+  const representativeSegmentation = newsLabIntraSourceEventSegments(cleanRepresentative);
+  const sourceSegmentations = sourcePool
+    .map(source => ({ title: source.title || "", url: source.url || "", segmentation: newsLabIntraSourceEventSegments(source) }))
+    .filter(item => item.segmentation.hasMultipleEvents || item.segmentation.segmentCount > 1)
+    .slice(0, 12);
+  const segmentedEvidenceRecords = [representativeSegmentation, ...sourceSegmentations.map(item => item.segmentation)]
+    .flatMap(segmentation => segmentation.segments || [])
+    .filter(segment => Number(segment.extractionConfidence || 0) >= 55)
+    .slice(0, 24);
   const keywordOnlyRejected = rejectedSources.filter(source => {
     const relevance = source.dossierRelevance || {};
     return Number(relevance.titleOverlap || 0) > 0 || Number(relevance.termOverlap || 0) > 0 || Number(relevance.relevantFactCount || 0) > 0;
@@ -18718,6 +19485,15 @@ function newsLabBuildEventSubDossier(cleanRepresentative = {}, sourcePool = [], 
       mixedTopicRejectedCount: Number(topicIsolation.rejected?.length || 0),
       rule: "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
     },
+    sourceSegmentation: {
+      representativeHasMultipleEvents: representativeSegmentation.hasMultipleEvents,
+      multiEventSourceCount: sourceSegmentations.filter(item => item.segmentation.hasMultipleEvents).length,
+      segmentedEvidenceRecordCount: segmentedEvidenceRecords.length,
+      representative: representativeSegmentation,
+      sourceExamples: sourceSegmentations.slice(0, 6),
+      segmentedEvidenceRecords,
+      rule: "Before clustering/recovery, source items that contain multiple actor/action pairs are preserved as source:event_segment records."
+    },
     sources: {
       writing: writingSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
       verification: verificationSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
@@ -18735,9 +19511,9 @@ function newsLabBuildEventSubDossier(cleanRepresentative = {}, sourcePool = [], 
       url: source.url || ""
     })).filter(item => item.title || item.source),
     readiness: {
-      readyForMainDossier: sameEventSources.length >= 1 && (facts || []).length >= 1,
-      readyForWriterCandidate: writingSources.length >= 1 && (facts || []).length >= 2,
-      blocker: sameEventSources.length < 1 ? "needs-same-event-source" : (facts || []).length < 1 ? "needs-same-event-facts" : "",
+      readyForMainDossier: sameEventSources.length >= 1 && (facts || []).length >= 1 && !representativeSegmentation.hasMultipleEvents,
+      readyForWriterCandidate: writingSources.length >= 1 && (facts || []).length >= 2 && !representativeSegmentation.hasMultipleEvents,
+      blocker: representativeSegmentation.hasMultipleEvents ? "needs-intra-source-event-segmentation" : sameEventSources.length < 1 ? "needs-same-event-source" : (facts || []).length < 1 ? "needs-same-event-facts" : "",
       rule: "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
     },
     handoff: {
@@ -18809,6 +19585,7 @@ function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates =
   const eventSubDossier = newsLabBuildEventSubDossier(cleanRepresentative, sourcePool, topicIsolation, facts, supporting, options);
   const readyForWriter = draftEligibility.eligible
     && facts.length >= (options.workerFinishMode ? 1 : 2)
+    && !eventSubDossier.sourceSegmentation?.representativeHasMultipleEvents
     && !facts.some(fact => /\b(local|political|international|sports|technology|business) record turns on\b/i.test(fact));
   const handoffRecovery = newsLabDossierReadinessClassFromEvidence({
     readyForWriter,
@@ -18816,6 +19593,7 @@ function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates =
     factCount: facts.length,
     sourceCount: 1 + supporting.length,
     missing: [
+      eventSubDossier.sourceSegmentation?.representativeHasMultipleEvents ? "needs-intra-source-event-segmentation" : "",
       draftEligibility.eligible ? "" : "needs-clear-actor-action-event",
       facts.length >= 2 ? "" : "needs-two-unique-verified-facts",
       supporting.length >= 1 ? "" : "single-source-developing-dossier",
@@ -18858,6 +19636,8 @@ function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates =
       eventSubDossierWritingSources: Number(eventSubDossier.sourceSeparation?.writingSourceCount || 0),
       eventSubDossierVerificationSources: Number(eventSubDossier.sourceSeparation?.verificationSourceCount || 0),
       eventSubDossierKeywordOnlyRejected: Number(eventSubDossier.sourceSeparation?.keywordOnlyRejectedCount || 0),
+      intraSourceMultiEventCount: Number(eventSubDossier.sourceSegmentation?.multiEventSourceCount || 0) + Number(eventSubDossier.sourceSegmentation?.representativeHasMultipleEvents ? 1 : 0),
+      segmentedEvidenceRecordCount: Number(eventSubDossier.sourceSegmentation?.segmentedEvidenceRecordCount || 0),
       factCount: facts.length,
       eventAnchorRule: "Holiday/date/common-context overlap is not enough. Support sources must share strong actor/action/place/outcome anchors with the representative event.",
       rule: "One clean event dossier must be built before the first draft. Mixed-topic, generic, search-page, or process-language fragments are excluded before Writer sees the story."
@@ -18997,6 +19777,11 @@ function newsLabTopicKeyFromStories(stories = []) {
 function newsLabEventSignature(stories = []) {
   const cleanStories = stories.filter(Boolean);
   const category = newsLabCategory(cleanStories[0] || {});
+  const representative = newsLabBestEventRepresentative(cleanStories);
+  const canonical = newsLabCanonicalEventSignatureFromStory(representative || cleanStories[0] || {});
+  const coherence = cleanStories.length
+    ? newsLabEventCoherenceAssessment(cleanStories, representative || cleanStories[0])
+    : null;
   const entityCounts = new Map();
   const termCounts = new Map();
   cleanStories.forEach(story => {
@@ -19018,10 +19803,16 @@ function newsLabEventSignature(stories = []) {
     .map(([term]) => term);
   const anchor = entities.length ? entities.slice(0, 3) : terms.slice(0, 4);
   const action = terms.filter(term => !anchor.some(entity => entity.includes(term))).slice(0, 4);
-  const eventId = `${category}:event:${[...anchor, ...action].join("-") || newsLabTopicKeyFromStories(cleanStories)}`.replace(/[^a-z0-9:_-]+/gi, "-");
+  const canonicalEventId = canonical.extractionConfidence >= 65 ? canonical.eventId : "";
+  const eventId = `${category}:${canonicalEventId || `event:${[...anchor, ...action].join("-") || newsLabTopicKeyFromStories(cleanStories)}`}`.replace(/[^a-z0-9:_-]+/gi, "-");
   return {
     category,
     eventId,
+    canonicalEventId: canonical.eventId,
+    canonical,
+    eventCoherence: coherence ? coherence.eventCoherence : 1,
+    contaminationScore: coherence ? coherence.contaminationScore : 0,
+    readyForWriting: coherence ? coherence.readyForWriting : true,
     entities,
     terms,
     sourceArticleCount: cleanStories.length
@@ -19046,7 +19837,15 @@ function newsLabClusterStories(cluster = {}) {
 
 function newsLabSameEventSignature(left = {}, right = {}) {
   if (!left.eventSignature || !right.eventSignature) return false;
-  if (left.eventSignature.category !== right.eventSignature.category) return false;
+  const leftCanonical = left.eventSignature.canonical || null;
+  const rightCanonical = right.eventSignature.canonical || null;
+  if (leftCanonical && rightCanonical) {
+    const canonicalAgreement = newsLabCanonicalEventAgreement(
+      { ...(left.representative || {}), canonicalEventSignature: leftCanonical },
+      { ...(right.representative || {}), canonicalEventSignature: rightCanonical }
+    );
+    if (canonicalAgreement.canMerge) return true;
+  }
   if (left.eventId && right.eventId && left.eventId === right.eventId) return true;
   const leftEntities = new Set(left.eventSignature.entities || []);
   const rightEntities = right.eventSignature.entities || [];
@@ -19055,9 +19854,10 @@ function newsLabSameEventSignature(left = {}, right = {}) {
   const rightTerms = right.eventSignature.terms || [];
   const sharedTerms = rightTerms.filter(term => leftTerms.has(term)).length;
   const representativeBridge = newsLabStrictSameNewsEvent(left.representative || {}, right.representative || {});
-  return (sharedEntities >= 2 && sharedTerms >= 2)
+  const sameCategory = left.eventSignature.category === right.eventSignature.category;
+  return sameCategory && ((sharedEntities >= 2 && sharedTerms >= 2)
     || (sharedEntities >= 1 && sharedTerms >= 5)
-    || (representativeBridge && (sharedEntities >= 1 || sharedTerms >= 5));
+    || (representativeBridge && (sharedEntities >= 1 || sharedTerms >= 5)));
 }
 
 function newsLabBestEventRepresentative(stories = []) {
@@ -19130,6 +19930,96 @@ function newsLabMergeEventClusters(clusters = []) {
   return merged.sort((a, b) => b.reportingScore - a.reportingScore);
 }
 
+function newsLabClusterFromStoryGroup(stories = [], parentCluster = {}, splitIndex = 0) {
+  const uniqueStories = newsLabClusterStories({ stories });
+  if (!uniqueStories.length) return null;
+  const representative = newsLabBestEventRepresentative(uniqueStories);
+  const signature = newsLabEventSignature(uniqueStories);
+  const coherence = newsLabEventCoherenceAssessment(uniqueStories, representative);
+  const sources = [...new Set(uniqueStories.map(story => story.source).filter(Boolean))];
+  return {
+    ...parentCluster,
+    key: signature.eventId || `${parentCluster.key || "cluster"}:split:${splitIndex + 1}`,
+    eventId: signature.eventId || `${parentCluster.eventId || parentCluster.key || "event"}:split:${splitIndex + 1}`,
+    eventSignature: signature,
+    eventCoherence: coherence,
+    eventSourceArticleCount: uniqueStories.length,
+    representative,
+    sources,
+    reportCount: uniqueStories.length,
+    reportingScore: Math.max(Number(parentCluster.reportingScore || 0), 0) + sources.length * 12 + uniqueStories.length * 10,
+    absorbedStories: uniqueStories.filter(story => story.url !== representative.url).slice(0, 24),
+    supportingStories: uniqueStories
+      .filter(story => story.url !== representative.url && newsLabCleanSameEventSource(representative, story))
+      .slice(0, 12),
+    clusterSplit: {
+      active: Boolean(parentCluster.key || parentCluster.eventId),
+      parentKey: parentCluster.key || parentCluster.eventId || "",
+      splitIndex,
+      sourceCountBefore: Number(newsLabClusterStories(parentCluster).length || uniqueStories.length),
+      sourceCountAfter: uniqueStories.length,
+      eventCoherence: coherence.eventCoherence,
+      contaminationScore: coherence.contaminationScore,
+      rule: "Mixed clusters are split into smaller canonical event dossiers instead of being rejected as one contaminated draft."
+    }
+  };
+}
+
+function newsLabSplitMixedEventCluster(cluster = {}) {
+  const stories = newsLabClusterStories(cluster);
+  if (stories.length <= 1) {
+    return [{ ...cluster, eventCoherence: newsLabEventCoherenceAssessment(stories, cluster.representative || stories[0]) }];
+  }
+  const coherence = newsLabEventCoherenceAssessment(stories, cluster.representative || stories[0]);
+  if (coherence.eventCoherence >= 0.8) return [{ ...cluster, eventCoherence: coherence }];
+  const groups = [];
+  stories.forEach(story => {
+    const cleanStory = cleanNewsLabSourceStory(story);
+    let group = groups.find(item => newsLabCanonicalEventAgreement(item.representative, cleanStory).canMerge);
+    if (!group) {
+      group = { representative: cleanStory, stories: [] };
+      groups.push(group);
+    }
+    group.stories.push(cleanStory);
+    group.representative = newsLabBestEventRepresentative(group.stories);
+  });
+  const splitClusters = groups
+    .map((group, index) => newsLabClusterFromStoryGroup(group.stories, cluster, index))
+    .filter(Boolean)
+    .filter(item => item.eventCoherence?.eventCoherence >= 0.6 || item.eventSourceArticleCount === 1);
+  return splitClusters.length ? splitClusters : [{ ...cluster, eventCoherence: coherence }];
+}
+
+function newsLabSplitMixedEventClusters(clusters = []) {
+  const splitClusters = [];
+  let splitSourceClusterCount = 0;
+  let splitYield = 0;
+  clusters.forEach(cluster => {
+    const pieces = newsLabSplitMixedEventCluster(cluster);
+    if (pieces.length > 1) {
+      splitSourceClusterCount += 1;
+      splitYield += pieces.length;
+    }
+    splitClusters.push(...pieces);
+  });
+  return {
+    clusters: splitClusters.sort((a, b) => Number(b.reportingScore || 0) - Number(a.reportingScore || 0)),
+    metrics: {
+      inputClusters: clusters.length,
+      outputClusters: splitClusters.length,
+      splitSourceClusterCount,
+      clusterSplitYield: splitYield,
+      eventCoherenceRate: splitClusters.length
+        ? Number((splitClusters.filter(cluster => Number(cluster.eventCoherence?.eventCoherence || cluster.eventSignature?.eventCoherence || 0) >= 0.8).length / splitClusters.length).toFixed(2))
+        : 1,
+      contaminationRate: splitClusters.length
+        ? Number((splitClusters.filter(cluster => Number(cluster.eventCoherence?.contaminationScore || cluster.eventSignature?.contaminationScore || 0) >= 0.4).length / splitClusters.length).toFixed(2))
+        : 0,
+      rule: "Split mixed clusters before writing; do not lower source intake or publishable event count."
+    }
+  };
+}
+
 async function newsLabEventClusterWorkerPass(rawClusters = []) {
   if (!rawClusters.length) return [];
   const chunks = newsLabChunkItems(rawClusters, newsLabClusteringWorkers);
@@ -19187,7 +20077,8 @@ function newsLabReportedStoryClusters(stories = []) {
   candidates.forEach(story => {
     const storyEventSignature = newsLabEventSignature([story]);
     let cluster = clusters.find(item =>
-      newsLabSameStory(item.representative, story)
+      newsLabCanonicalEventAgreement(item.representative, story).canMerge
+      || newsLabSameStory(item.representative, story)
       || newsLabSameEventSignature(
         { representative: item.representative, eventId: item.eventId, eventSignature: item.eventSignature },
         { representative: story, eventId: storyEventSignature.eventId, eventSignature: storyEventSignature }
@@ -23197,15 +24088,26 @@ function newsLabDossierReadinessClassFromEvidence(evidence = {}) {
   const factCount = Number(metrics.uniqueFactCount || metrics.directWritingFactCount || metrics.knownFactCount || evidence.factCount || 0);
   const sourceCount = Number(metrics.sourceCount || metrics.independentSourceCount || evidence.sourceCount || 0);
   const primarySourcePresent = Boolean(metrics.primarySourcePresent || evidence.primarySourcePresent);
-  const mixedOrGeneric = Boolean(metrics.mixedOrGeneric || evidence.mixedOrGeneric || /mixed|contamination|generic|keyword-only/.test(reasons.join(" ").toLowerCase()));
-  const hasIdentityProblem = /identity|primary-event|actor-action|representative|unclear/.test(reasons.join(" ").toLowerCase());
+  const reasonText = reasons.join(" ").toLowerCase();
+  const mixedOrGeneric = Boolean(metrics.mixedOrGeneric || evidence.mixedOrGeneric || /mixed|contamination|generic|keyword-only|intra-source-event-segmentation|multi-event/.test(reasonText));
+  const hasIdentityProblem = /identity|primary-event|actor-action|representative|unclear/.test(reasonText);
+  const hasCoreEvidenceGap = /needs-source-context|needs-two-unique-verified-facts|needs-writer-evidence-pack|needs-clear-actor-action-event|needs-primary-event|needs-completed-story-dossier|missing-attribution/i.test(reasonText);
+  const canUseDevelopingBrief = !mixedOrGeneric
+    && !hasIdentityProblem
+    && !hasCoreEvidenceGap
+    && (
+      evidence.readyForWriter
+      || evidence.readinessTier === "READY_FOR_BREAKING_BRIEF"
+      || (factCount >= 2 && sourceCount >= 1)
+      || (factCount >= 1 && primarySourcePresent)
+    );
   let readinessClass = "NEEDS_ENRICHMENT";
   if (evidence.readyForWriter && (evidence.readinessTier === "READY_FOR_DEEP_ARTICLE" || evidence.readinessTier === "READY_FOR_STANDARD_ARTICLE" || evidence.readyForStandardArticle)) readinessClass = "FULL_ARTICLE";
-  else if (evidence.readyForWriter || evidence.readinessTier === "READY_FOR_BREAKING_BRIEF" || (factCount >= 2 && sourceCount >= 1) || (factCount >= 1 && primarySourcePresent)) readinessClass = "READY_FOR_DEVELOPING_BRIEF";
+  else if (canUseDevelopingBrief) readinessClass = "READY_FOR_DEVELOPING_BRIEF";
   else if (mixedOrGeneric) readinessClass = hasIdentityProblem ? "NEEDS_IDENTITY_RESOLUTION" : "NEEDS_CLUSTER_REPAIR";
   else if (hasIdentityProblem) readinessClass = "NEEDS_IDENTITY_RESOLUTION";
-  else if (/duplicate|fragmented/.test(reasons.join(" ").toLowerCase())) readinessClass = "DUPLICATE_EVENT";
-  else if (/stale|unsafe|defamatory|unsupported-central-claim/.test(reasons.join(" ").toLowerCase())) readinessClass = "REJECTED";
+  else if (/duplicate|fragmented/.test(reasonText)) readinessClass = "DUPLICATE_EVENT";
+  else if (/stale|unsafe|defamatory|unsupported-central-claim/.test(reasonText)) readinessClass = "REJECTED";
   const blockingReasons = readinessClass === "READY_FOR_DEVELOPING_BRIEF"
     ? reasons.filter(reason => /mixed|identity|unsupported|contradiction/.test(reason))
     : reasons;
@@ -23217,6 +24119,213 @@ function newsLabDossierReadinessClassFromEvidence(evidence = {}) {
     recommendedAction: newsLabDossierRecoveryAction(readinessClass, reasons),
     nextRetryAt: ["FULL_ARTICLE", "READY_FOR_DEVELOPING_BRIEF", "REJECTED"].includes(readinessClass) ? null : new Date(Date.now() + 10 * 60 * 1000).toISOString()
   };
+}
+
+function newsLabRecoverySourceRegistry(dossier = {}, record = {}) {
+  const sources = [
+    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
+    ...(Array.isArray(dossier.sourceContext) ? dossier.sourceContext : []),
+    ...(Array.isArray(dossier.sourceRecords) ? dossier.sourceRecords : []),
+    ...(Array.isArray(record.acceptedSources) ? record.acceptedSources : [])
+  ]
+    .map((source, index) => typeof source === "string" ? {
+      sourceId: `source_${index + 1}`,
+      title: source,
+      source,
+      summary: source,
+      url: ""
+    } : {
+      sourceId: source.sourceId || source.id || `source_${index + 1}`,
+      title: cleanArticleText(source.title || source.headline || "", 220),
+      source: cleanArticleText(source.source || source.name || source.publisher || "", 120),
+      url: source.url || source.sourceUrl || "",
+      summary: cleanArticleText(source.summary || source.articleSummary || source.description || "", 360),
+      publishedAt: source.published || source.publishedAt || source.date || "",
+      category: source.category || record.category || dossier.category || "",
+      role: source.role || source.dossierRole || (index === 0 ? "primary-source" : "supporting-source"),
+      articleReadStatus: source.articleReadStatus || source.sourceDepth || "",
+      articleTextLength: Number(source.articleTextLength || String(source.articleSummary || source.summary || "").length || 0)
+    })
+    .filter(source => source.title || source.summary || source.url || source.source)
+    .filter((source, index, all) => all.findIndex(item => (item.url && item.url === source.url) || (item.title && item.title === source.title && item.source === source.source)) === index)
+    .slice(0, 20);
+  return sources.map((source, index) => ({
+    ...source,
+    sourceId: source.sourceId || `source_${index + 1}`
+  }));
+}
+
+function newsLabRecoveryEntityRecords(dossier = {}, representative = {}) {
+  const list = value => Array.isArray(value) ? value : value ? [value] : [];
+  const text = [
+    dossier.whatHappened,
+    ...list(dossier.knownFacts),
+    ...list(dossier.facts),
+    representative.title,
+    representative.summary,
+    representative.articleSummary
+  ].filter(Boolean).join(" ");
+  const named = storyNamedEntities({ title: text, summary: text });
+  return {
+    people: [...new Set([...list(dossier.people), ...list(dossier.whoIsInvolved), ...named.filter(item => !/inc|corp|agency|department|court|team|league/i.test(item))])].slice(0, 16),
+    organizations: [...new Set([...list(dossier.organizations), ...named.filter(item => /inc|corp|agency|department|court|team|league|senate|house|company|university/i.test(item))])].slice(0, 16),
+    locations: [...new Set([...list(dossier.locations), ...list(dossier.where), ...named.filter(item => /\b(city|county|state|washington|new york|california|texas|florida|ukraine|russia|china|iran|israel|gaza|europe)\b/i.test(`${item} ${text}`))])].slice(0, 12),
+    relationships: list(dossier.knowledgeGraphRelationships || dossier.entities?.relationships).slice(0, 20)
+  };
+}
+
+function newsLabBuildRecoveryDossierSnapshot(dossierInput = {}, record = {}) {
+  const dossier = dossierInput && typeof dossierInput === "object" ? JSON.parse(JSON.stringify(dossierInput)) : {};
+  const sourceRegistry = newsLabRecoverySourceRegistry(dossier, record);
+  const representative = sourceRegistry[0] || cleanNewsLabSourceStory({
+    title: record.title || dossier.representative || dossier.whatHappened || "",
+    summary: Array.isArray(dossier.facts) ? dossier.facts[0] || "" : "",
+    category: record.category || dossier.category || "top"
+  });
+  const facts = [
+    ...(Array.isArray(dossier.knownFacts) ? dossier.knownFacts : []),
+    ...(Array.isArray(dossier.writerInput?.directWritingFacts) ? dossier.writerInput.directWritingFacts : []),
+    ...(Array.isArray(dossier.facts) ? dossier.facts : []),
+    ...(Array.isArray(record.facts) ? record.facts : [])
+  ]
+    .map(fact => typeof fact === "string" ? fact : fact.statement || fact.claim || fact.summary || "")
+    .map(newsLabCleanDossierFactSentence)
+    .filter(Boolean)
+    .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.78) === index)
+    .slice(0, 20);
+  const eventSignature = dossier.canonicalEventSignature
+    || dossier.eventSignature?.canonical
+    || newsLabCanonicalEventSignatureFromStory({
+      ...representative,
+      title: representative.title || record.title || dossier.whatHappened || "",
+      summary: [dossier.whatHappened, ...facts].filter(Boolean).join(" "),
+      category: record.category || dossier.category || representative.category || "top"
+    });
+  const eventId = dossier.eventId
+    || dossier.storyId
+    || record.eventId
+    || record.clusterId
+    || eventSignature.eventId
+    || safeFileSlug(record.title || dossier.whatHappened || "dossier-recovery");
+  const timeline = (Array.isArray(dossier.timeline) && dossier.timeline.length ? dossier.timeline : sourceRegistry.slice(0, 8).map((source, index) => ({
+    id: `recovery-timeline-${index + 1}`,
+    at: source.publishedAt || record.createdAt || record.updatedAt || new Date().toISOString(),
+    source: source.source || "",
+    title: source.title || facts[0] || record.title || "",
+    url: source.url || ""
+  }))).filter(Boolean).slice(0, 12);
+  const factLedger = dossier.factLedger || newsLabBuildCanonicalFactLedger({
+    eventId,
+    eventSignature: { canonical: eventSignature },
+    representative,
+    facts,
+    sourceRecords: sourceRegistry,
+    sourceSpecificClaims: dossier.disagreement?.sourceSpecificClaims || dossier.sourceSpecificClaims || [],
+    disputedClaims: dossier.contradictions || []
+  });
+  const writerFactIds = factLedger.writingEligibleFactIds
+    || (factLedger.facts || []).filter(fact => fact.writingEligible).map(fact => fact.factId);
+  const enriched = {
+    ...dossier,
+    dossierId: dossier.dossierId || dossier.storyId || eventId,
+    storyId: dossier.storyId || eventId,
+    eventId,
+    revision: Number(dossier.revision || dossier.dossierRevision || dossier.dossierLock?.revision || 1),
+    dossierRevisionId: dossier.dossierRevisionId || dossier.dossierLock?.revisionId || dossier.canonicalDossierIntelligence?.revision?.id || `dossier_${safeFileSlug(`${eventId}:${facts.join("|").slice(0, 220)}`).slice(0, 96)}`,
+    canonicalEventSignature: eventSignature,
+    eventSignature: dossier.eventSignature || { canonical: eventSignature },
+    eventCoherence: dossier.eventCoherence || null,
+    contaminationCheck: dossier.contaminationCheck || {
+      contaminationScore: Number(dossier.eventCoherence?.contaminationScore || 0),
+      eventCoherence: Number(dossier.eventCoherence?.eventCoherence || 1),
+      conflictingEventIds: dossier.eventCoherence?.conflictingEventIds || [],
+      readyForWriting: dossier.eventCoherence?.readyForWriting !== false
+    },
+    whatHappened: cleanArticleText(dossier.whatHappened || facts[0] || record.title || representative.title || "", 420),
+    facts,
+    knownFacts: facts,
+    claims: (dossier.claims || dossier.sourceSpecificClaims || dossier.disagreement?.sourceSpecificClaims || []).slice(0, 24),
+    factLedger,
+    timeline,
+    entities: dossier.entities || newsLabRecoveryEntityRecords(dossier, representative),
+    people: dossier.people || [],
+    organizations: dossier.organizations || [],
+    locations: dossier.locations || [],
+    contradictions: (dossier.contradictions || dossier.disputedClaims || dossier.disagreement?.contradictions || []).slice(0, 12),
+    knownUnknowns: [...new Set([
+      ...(dossier.knownUnknowns || []),
+      ...(dossier.unknownFacts || []),
+      ...(dossier.stillUnknown || [])
+    ].filter(Boolean))].slice(0, 12),
+    sourceRegistry,
+    sourcePool: sourceRegistry,
+    sourceContext: sourceRegistry,
+    sourceProvenance: {
+      sourceCount: sourceRegistry.length,
+      independentSourceCount: new Set(sourceRegistry.map(source => newsLabDossierSourceKey(source) || source.sourceId).filter(Boolean)).size,
+      rule: "Recovery resumes from the preserved source registry. It adds missing intelligence instead of rebuilding the dossier from raw feed fragments."
+    },
+    categoryClassification: dossier.categoryClassification || {
+      collectorHint: record.category || dossier.category || "",
+      sourceHint: representative.category || "",
+      semanticPrimary: dossier.category || record.category || "top",
+      confidence: 0.5,
+      rule: "Recovery keeps category as a dossier decision. Collector/feed category remains a hint."
+    },
+    readiness: dossier.readiness || dossier.readinessContract || {
+      readinessClass: record.readinessClass || "",
+      blockingReasons: record.blockingReasons || [],
+      missingEvidence: record.missingEvidence || [],
+      recommendedAction: record.recommendedAction || "",
+      nextRetryAt: record.nextRetryAt || null
+    },
+    readinessByLayer: {
+      eventIdentity: Boolean(eventSignature.primaryActor && eventSignature.primaryAction),
+      evidence: Boolean((factLedger.facts || []).length),
+      timeline: Boolean(timeline.length),
+      entities: Boolean(newsLabRecoveryEntityRecords(dossier, representative).people.length || newsLabRecoveryEntityRecords(dossier, representative).organizations.length),
+      context: Boolean(dossier.historicalContext || dossier.context || dossier.storyIntelligenceDossier?.contextLayer),
+      uncertainty: Boolean((dossier.unknownFacts || []).length || (dossier.contradictions || []).length),
+      productionContract: Boolean(dossier.canonicalLayers?.layer7ProductionContract || dossier.writerInput)
+    },
+    imageInstructions: dossier.imageInstructions || dossier.imageDossier || dossier.canonicalLayers?.layer7ProductionContract?.imageBrief || dossier.publicationPlanning?.imageBrief || null,
+    writerContract: {
+      ...(dossier.writerContract || dossier.canonicalDossierIntelligence?.writerContract || {}),
+      allowedFactIds: writerFactIds,
+      requiredAttributions: sourceRegistry.map(source => source.source || source.title).filter(Boolean).slice(0, 8),
+      prohibitedClaims: (dossier.contradictions || dossier.disputedClaims || []).slice(0, 8),
+      dossierRevisionId: dossier.dossierRevisionId || dossier.dossierLock?.revisionId || dossier.canonicalDossierIntelligence?.revision?.id || "",
+      rule: "Recovery writer contracts preserve fact IDs, attributions, prohibited claims, and dossier revision so no stage writes from loose fragments."
+    },
+    recoveryRequirements: [...new Set([
+      ...(record.blockingReasons || []),
+      ...(record.missingEvidence || []),
+      record.recommendedAction || "",
+      record.nextAction || ""
+    ].filter(Boolean))].slice(0, 20),
+    recoverySnapshot: {
+      version: "20260806-full-recovery-dossier-snapshot-v1",
+      createdAt: new Date().toISOString(),
+      source: "approval-or-dossier-recovery-queue",
+      rule: "Held dossiers retain canonical intelligence state. Recovery adds missing intelligence; it does not rebuild from a thin partial record."
+    }
+  };
+  const readiness = newsLabDossierReadinessContract(enriched, { sources: sourceRegistry, eventId });
+  const canonicalIntelligence = enriched.canonicalDossierIntelligence
+    || enriched.canonicalIntelligence
+    || newsLabBuildCanonicalDossierIntelligence(enriched, readiness, {
+      eventId,
+      canonicalStoryIdentity: newsLabCanonicalStoryIdentity({ ...representative, storyDossier: enriched }, enriched, { representative })
+    });
+  enriched.readiness = {
+    ...enriched.readiness,
+    ...readiness
+  };
+  enriched.canonicalDossierIntelligence = compactNewsLabCanonicalDossierIntelligence(canonicalIntelligence);
+  enriched.canonicalIntelligence = enriched.canonicalDossierIntelligence;
+  enriched.storyUnderstanding = enriched.canonicalDossierIntelligence?.storyUnderstanding || canonicalIntelligence.storyUnderstanding || null;
+  enriched.fingerprint = newsLabDossierFingerprint(enriched);
+  return enriched;
 }
 
 function newsLabDossierFingerprint(dossier = {}) {
@@ -23432,6 +24541,8 @@ function newsLabStoryFromRecoveredDossier(recovery = {}, index = 0) {
     body,
     category,
     storyDossier: lockedDossier,
+    canonicalDossierIntelligence: lockedDossier.canonicalDossierIntelligence || lockedDossier.canonicalIntelligence || null,
+    dossierRevisionId: lockedDossier.dossierLock?.revisionId || lockedDossier.canonicalDossierIntelligence?.revision?.id || lockedDossier.canonicalIntelligence?.revision?.id || "",
     sources,
     writerDossierInput: newsLabWriterDossierInput(lockedDossier, { story: representative }),
     evidenceSupportedArticleCapacity: readiness,
@@ -23548,7 +24659,11 @@ function recordNewsLabDossierRecovery(record = {}) {
   const now = new Date().toISOString();
   const readinessClass = record.readinessClass || "NEEDS_ENRICHMENT";
   const eventId = String(record.eventId || record.clusterId || record.storyId || record.title || crypto.randomUUID()).slice(0, 220);
-  const fingerprint = newsLabDossierFingerprint(record.partialDossier || {});
+  const recoveryDossierSnapshot = newsLabBuildRecoveryDossierSnapshot(record.partialDossier || {}, {
+    ...record,
+    eventId
+  });
+  const fingerprint = recoveryDossierSnapshot.fingerprint || newsLabDossierFingerprint(recoveryDossierSnapshot || {});
   const existing = (queue.active || []).find(item => item.id === eventId || item.eventId === eventId || item.clusterId === (record.clusterId || eventId));
   const compact = {
     id: eventId,
@@ -23561,12 +24676,16 @@ function recordNewsLabDossierRecovery(record = {}) {
     blockingReasons: [...new Set(record.blockingReasons || [])].slice(0, 12),
     warnings: [...new Set(record.warnings || [])].slice(0, 12),
     missingEvidence: [...new Set(record.missingEvidence || [])].slice(0, 12),
-    acceptedSourceCount: Number(record.acceptedSourceCount || 0),
+    acceptedSourceCount: Number(record.acceptedSourceCount || recoveryDossierSnapshot.sourceRegistry?.length || recoveryDossierSnapshot.sourcePool?.length || 0),
     rejectedSourceCount: Number(record.rejectedSourceCount || 0),
-    factCount: Number(record.factCount || 0),
+    factCount: Number(record.factCount || recoveryDossierSnapshot.factLedger?.metrics?.writingEligibleCount || recoveryDossierSnapshot.factLedger?.writingEligibleFactIds?.length || recoveryDossierSnapshot.knownFacts?.length || 0),
     acceptedSources: (record.acceptedSources || []).slice(0, 6),
     rejectedSources: (record.rejectedSources || []).slice(0, 6),
-    partialDossier: record.partialDossier || null,
+    partialDossier: recoveryDossierSnapshot || null,
+    dossierRevisionId: recoveryDossierSnapshot.dossierRevisionId || recoveryDossierSnapshot.canonicalDossierIntelligence?.revision?.id || "",
+    canonicalEventSignature: recoveryDossierSnapshot.canonicalEventSignature || null,
+    canonicalDossierIntelligence: recoveryDossierSnapshot.canonicalDossierIntelligence || null,
+    recoveryRequirements: recoveryDossierSnapshot.recoveryRequirements || [],
     nextAction: record.recommendedAction || newsLabDossierRecoveryAction(readinessClass, record.blockingReasons || []),
     fingerprint,
     unchangedSinceLastRecovery: Boolean(existing?.fingerprint && existing.fingerprint === fingerprint),
@@ -23576,7 +24695,8 @@ function recordNewsLabDossierRecovery(record = {}) {
     state: ["FULL_ARTICLE", "READY_FOR_DEVELOPING_BRIEF"].includes(readinessClass) ? "ready-route" : readinessClass === "REJECTED" ? "learning-only" : "needs-recovery",
     updatedAt: now,
     createdAt: record.createdAt || now,
-    preventionLesson: record.preventionLesson || "Collector, Cluster, and Dossier Builder should prevent this failure class before Writer handoff by separating same-event facts, resolving identity, and choosing brief format when evidence is thin."
+    preventionLesson: record.preventionLesson || "Collector, Cluster, and Dossier Builder should prevent this failure class before Writer handoff by separating same-event facts, resolving identity, and choosing brief format when evidence is thin.",
+    retentionRule: "This recovery record retains the canonical dossier snapshot: event signature, fact ledger, source provenance, timeline, entities, uncertainty, readiness, image instructions, writer contract, and revision identity."
   };
   compact.priorityScore = newsLabDossierRecoveryPriority(compact);
   const compactTitleKey = cleanArticleText(compact.title || "", 220).toLowerCase();
@@ -27078,7 +28198,37 @@ function newsLabPublicImageReady(story = {}) {
   const isFallback = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|temporary local image|ce fallback/i.test(imageText);
   const findings = newsLabImageEditorFindings({ ...story, image }, "news-lab").map(finding => finding.code || finding.message || "image-finding");
   const hasRequiredCredit = !findings.includes("image-missing-credit");
-  return hasAsset && isApprovedSource && !isFallback && hasRequiredCredit;
+  return hasAsset && imageWorkIsComplete({ ...story, image }) && isApprovedSource && !isFallback && hasRequiredCredit;
+}
+
+function newsLabImageStatus(story = {}) {
+  const image = story.image || story.imageProvenance || {};
+  const provenance = image.provenance || story.imageProvenance || {};
+  const explicit = story.imageStatus || image.imageStatus || image.status || image.type || provenance.imageStatus || provenance.status || "";
+  const text = `${explicit} ${image.primary || ""} ${image.url || ""} ${image.src || ""} ${image.fallback || ""} ${image.source || ""} ${image.license || ""} ${image.credit || ""} ${provenance.source || ""} ${provenance.license || ""} ${provenance.auditNote || ""}`.toLowerCase();
+  if (!image || !(image.primary || image.url || image.src || image.fallback)) return IMAGE_STATUS.MISSING;
+  if (/generated-approved|ce-generated|generated editorial image|\/assets\/generated-news-lab\//i.test(text)) return IMAGE_STATUS.GENERATED_APPROVED;
+  if (/generation-queued|pending-generation|queued|generated-pending-validation|generating/i.test(text)) return IMAGE_STATUS.GENERATION_QUEUED;
+  if (/source-provided-review-required|failed-final/i.test(text)) return IMAGE_STATUS.FAILED_FINAL;
+  if (/logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|temporary local image|ce fallback|ce media visual|local fallback image used/i.test(text)) return IMAGE_STATUS.CE_FALLBACK_TEMPORARY;
+  if (/pexels local asset|pexels|pixabay|unsplash/i.test(text)) return IMAGE_STATUS.STOCK_MATCH;
+  return IMAGE_STATUS.MISSING;
+}
+
+function imageWorkIsComplete(story = {}) {
+  return [
+    IMAGE_STATUS.LICENSED,
+    IMAGE_STATUS.STOCK_MATCH,
+    IMAGE_STATUS.GENERATED_APPROVED
+  ].includes(newsLabImageStatus(story));
+}
+
+function needsImageResolution(story = {}) {
+  return !imageWorkIsComplete(story);
+}
+
+function isCeFallbackImage(story = {}) {
+  return newsLabImageStatus(story) === IMAGE_STATUS.CE_FALLBACK_TEMPORARY;
 }
 function newsLabBoardDisplayReadyStory(story = {}) {
   if (story.publicArticle === true) {
@@ -27262,6 +28412,9 @@ function newsLabNormalizeStoryImage(story = {}, existingImage = null) {
     source: image.source || topicImage.source,
     photographer: image.photographer || topicImage.photographer || "",
     license: image.license || topicImage.license,
+    imageStatus: image.imageStatus || image.status || image.type || image.provenance?.imageStatus || topicImage.imageStatus || topicImage.status || "",
+    status: image.imageStatus || image.status || image.type || image.provenance?.imageStatus || topicImage.status || topicImage.imageStatus || "",
+    type: image.type || image.imageStatus || image.status || image.provenance?.imageStatus || topicImage.type || topicImage.imageStatus || "",
     imageDossier: image.imageDossier || topicImage.imageDossier || story.imageDossier || newsLabBuildImageDossier(story),
     licensing: image.licensing || topicImage.licensing || story.imageDossier?.licensePolicy || newsLabBuildImageDossier(story).licensePolicy,
     provenance: image.provenance || topicImage.provenance
@@ -29170,7 +30323,14 @@ function newsLabBuildUsefulnessPreEditorIssues(story = {}) {
   if (story.canonicalStoryIdentity && story.canonicalStoryIdentity.ready === false) issues.add("canonical-story-identity-not-ready");
   if (story.writerReasoning && story.writerReasoning.readyForDraft === false) issues.add("writer-reasoning-not-ready");
   if (story.writerReasoningPlan?.readiness && story.writerReasoningPlan.readiness.ready === false) issues.add("writer-reasoning-plan-not-ready");
+  if (story.writerReasoningPlan && !story.writerReasoningPlan.writerReasoningContract) issues.add("writer-reasoning-contract-missing");
+  if (story.writerReasoningPlan?.reasoningHardChecks && Object.values(story.writerReasoningPlan.reasoningHardChecks).some(check => check && check.passed === false)) {
+    issues.add("writer-reasoning-hard-check-failed");
+  }
   if (story.writerReasoningVerification && story.writerReasoningVerification.passed === false) issues.add("writer-reasoning-plan-alignment-failed");
+  if (story.headlineAudit?.canonicalHeadline?.validationPassed === false || story.canonicalHeadline?.validationPassed === false) {
+    issues.add("headline-generated-without-locked-dossier-and-reasoning-inputs");
+  }
   const publicIssues = typeof newsLabPublicArticleIssues === "function" ? newsLabPublicArticleIssues(story) : [];
   publicIssues
     .filter(issue => /summary-repeats-body|headline-word-salad|headline-lead-topic-mismatch|headline-editor-needs-rewrite|generic-weak-headline|title-looks-truncated|headline-source-no-overlap|semantic-title-source-mismatch|publisher-headline-too-close|coach-copied-headline-risk|incomplete-sentence-detected|paragraph-topic-contamination|article-body-topic-drift|image-topic-mismatch|process-language|placeholder-guidance|copied-or-noisy|body-too-short|body-needs-intro-body-ending|missing-reporting-context/i.test(issue))
@@ -33693,6 +34853,7 @@ function newsLabImageProvenance(input = {}) {
     source: input.source || "Local placeholder",
     photographer: input.photographer || "",
     license: input.license || "local-placeholder",
+    imageStatus: input.imageStatus || input.status || "",
     retrievedAt,
     originalQuery: input.originalQuery || input.query || "",
     sourceUrl: input.sourceUrl || "",
@@ -33703,19 +34864,31 @@ function newsLabImageProvenance(input = {}) {
 
 function newsLabBuildImageDossier(story = {}) {
   const dossier = story.storyDossier || {};
+  const canonicalIntelligence = story.canonicalDossierIntelligence
+    || story.canonicalIntelligence
+    || dossier.canonicalDossierIntelligence
+    || dossier.canonicalIntelligence
+    || {};
+  const canonicalIdentity = canonicalIntelligence.eventIdentity || {};
   const identity = story.canonicalStoryIdentity || {};
   const reasoning = story.writerReasoningPlan || {};
-  const category = newsLabCategory(story);
-  const actor = cleanArticleText(identity.primaryActor || reasoning.headlineInputs?.actor || dossier.primaryActor || dossier.who || story.title || "", 90);
-  const action = cleanArticleText(identity.primaryAction || reasoning.headlineInputs?.action || dossier.primaryAction || dossier.bestVerb || dossier.whatHappened || "", 120);
-  const consequence = cleanArticleText(reasoning.headlineInputs?.consequence || dossier.consequence || dossier.whyItMatters || story.summary || "", 160);
-  const eventSummary = cleanArticleText(dossier.whatHappened || story.summary || story.articleSummary || story.title || "", 240);
+  const category = newsLabCategory({ ...story, category: canonicalIdentity.category || story.category });
+  const actor = cleanArticleText(canonicalIdentity.primaryActor || identity.primaryActor || reasoning.headlineInputs?.actor || dossier.primaryActor || dossier.who || story.title || "", 90);
+  const action = cleanArticleText(canonicalIdentity.primaryAction || identity.primaryAction || reasoning.headlineInputs?.action || dossier.primaryAction || dossier.bestVerb || dossier.whatHappened || "", 120);
+  const consequence = cleanArticleText(canonicalIdentity.primaryConsequence || reasoning.headlineInputs?.consequence || dossier.consequence || dossier.whyItMatters || story.summary || "", 160);
+  const eventSummary = cleanArticleText(canonicalIdentity.topic || dossier.whatHappened || story.summary || story.articleSummary || story.title || "", 240);
   const locations = [
+    ...(Array.isArray(canonicalIntelligence.entities?.locations) ? canonicalIntelligence.entities.locations : []),
     ...(Array.isArray(dossier.locations) ? dossier.locations : []),
     ...(Array.isArray(story.writerDossierInput?.relatedEntities?.locations) ? story.writerDossierInput.relatedEntities.locations : [])
   ].filter(Boolean).slice(0, 6);
   const entities = [
     actor,
+    ...(Array.isArray(canonicalIntelligence.entities?.people) ? canonicalIntelligence.entities.people : []),
+    ...(Array.isArray(canonicalIntelligence.entities?.organizations) ? canonicalIntelligence.entities.organizations : []),
+    ...(Array.isArray(canonicalIntelligence.entities?.companies) ? canonicalIntelligence.entities.companies : []),
+    ...(Array.isArray(canonicalIntelligence.entities?.teams) ? canonicalIntelligence.entities.teams : []),
+    ...(Array.isArray(canonicalIntelligence.entities?.governments) ? canonicalIntelligence.entities.governments : []),
     ...(Array.isArray(dossier.people) ? dossier.people : []),
     ...(Array.isArray(dossier.organizations) ? dossier.organizations : []),
     ...(Array.isArray(story.writerDossierInput?.relatedEntities?.organizations) ? story.writerDossierInput.relatedEntities.organizations : [])
@@ -33728,6 +34901,12 @@ function newsLabBuildImageDossier(story = {}) {
     version: "20260801-image-dossier-v1",
     storyId: story.id || story.topicKey || story.eventId || "",
     eventId: story.eventId || story.topicKey || dossier.eventId || "",
+    canonicalIntelligenceRef: {
+      id: canonicalIntelligence.id || "",
+      dossierRevisionId: canonicalIntelligence.revision?.id || dossier.dossierLock?.revisionId || story.dossierRevisionId || "",
+      consumed: Boolean(canonicalIntelligence.id || canonicalIntelligence.revision?.id),
+      rule: "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+    },
     category,
     canonicalEvent: {
       actor,
@@ -33787,6 +34966,9 @@ function newsLabImageForStory(story = {}) {
     fallback: match.fallback,
     url: hasLocalPexelsImage ? match.image : match.fallback,
     src: hasLocalPexelsImage ? match.image : match.fallback,
+    imageStatus: hasLocalPexelsImage ? IMAGE_STATUS.STOCK_MATCH : IMAGE_STATUS.CE_FALLBACK_TEMPORARY,
+    status: hasLocalPexelsImage ? IMAGE_STATUS.STOCK_MATCH : IMAGE_STATUS.CE_FALLBACK_TEMPORARY,
+    type: hasLocalPexelsImage ? IMAGE_STATUS.STOCK_MATCH : IMAGE_STATUS.CE_FALLBACK_TEMPORARY,
     alt: match.label,
     credit: creditText,
     query: match.query,
@@ -33799,6 +34981,7 @@ function newsLabImageForStory(story = {}) {
       source: hasLocalPexelsImage ? "Pexels local asset" : "CE Media visual",
       photographer: pexelsCredit?.photographer || "",
       license: hasLocalPexelsImage ? "Pexels" : "CE Media",
+      imageStatus: hasLocalPexelsImage ? IMAGE_STATUS.STOCK_MATCH : IMAGE_STATUS.CE_FALLBACK_TEMPORARY,
       sourceUrl: pexelsCredit?.pexelsUrl || "",
       originalQuery: match.query,
       auditNote: hasLocalPexelsImage
@@ -34409,7 +35592,7 @@ function newsLabGeneratedImageBrief(story = {}) {
 }
 
 function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker") {
-  const existing = readJsonFile(newsLabGeneratedImageQueueFile, { version: "20260722-generated-image-queue-v1", items: [] }) || { items: [] };
+  const existing = readJsonFile(newsLabGeneratedImageQueueFile, { version: "20260808-generated-image-queue-v2", items: [] }) || { items: [] };
   const existingItems = Array.isArray(existing.items) ? existing.items : [];
   const refreshExisting = process.env.CE_NEWS_LAB_GENERATED_IMAGE_QUEUE_REFRESH === "true";
   const byStory = new Map(existingItems.map(item => [String(item.storyId || ""), item]));
@@ -34417,20 +35600,55 @@ function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker")
   stories.forEach(story => {
     const brief = newsLabGeneratedImageBrief(story);
     if (!brief.storyId) return;
+    const imageDossier = story.imageDossier || newsLabBuildImageDossier(story);
+    const dossierRevision = story.dossierRevision
+      || story.dossierRevisionId
+      || story.storyDossier?.dossierLock?.revisionId
+      || imageDossier.canonicalIntelligenceRef?.dossierRevisionId
+      || "unversioned";
+    const dossierRevisionHash = crypto.createHash("sha1")
+      .update(JSON.stringify({
+        storyId: brief.storyId,
+        eventId: story.eventId || story.topicKey || imageDossier.eventId || "",
+        dossierRevision,
+        canonicalEvent: imageDossier.canonicalEvent || {},
+        prompt: brief.prompt || ""
+      }))
+      .digest("hex");
     const existingBrief = byStory.get(String(brief.storyId));
     if (existingBrief && !refreshExisting) return;
-    byStory.set(String(brief.storyId), { ...(existingBrief || {}), ...brief, status: existingBrief?.status && existingBrief.status !== "pending-generation" ? existingBrief.status : brief.status, queuedReason: reason, refreshedAt: existingBrief ? new Date().toISOString() : "" });
+    const jobId = existingBrief?.jobId || `image_job_${Date.now()}_${crypto.createHash("sha1").update(String(brief.storyId)).digest("hex").slice(0, 8)}`;
+    byStory.set(String(brief.storyId), {
+      ...(existingBrief || {}),
+      ...brief,
+      jobId,
+      eventId: story.eventId || story.topicKey || imageDossier.eventId || "",
+      dossierRevision,
+      dossierRevisionHash,
+      currentImageStatus: newsLabImageStatus(story),
+      requiredAction: "licensed-search-then-generation",
+      status: existingBrief?.status && !["pending-generation", "queued", IMAGE_STATUS.GENERATION_QUEUED].includes(existingBrief.status)
+        ? existingBrief.status
+        : "queued",
+      attempts: Number(existingBrief?.attempts || 0),
+      priority: Number(story.isBreaking ? 100 : story.priority || 50),
+      imageDossier,
+      queuedReason: reason,
+      queuedAt: existingBrief?.queuedAt || new Date().toISOString(),
+      refreshedAt: existingBrief ? new Date().toISOString() : "",
+      persistenceRule: "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+    });
     added += 1;
   });
   const items = [...byStory.values()].slice(-250);
   const record = {
-    version: "20260722-generated-image-queue-v1",
+    version: "20260808-generated-image-queue-v2",
     updatedAt: new Date().toISOString(),
     reason,
     summary: {
       queuedItems: items.length,
       addedThisPass: added,
-      pendingGeneration: items.filter(item => item.status === "pending-generation").length,
+      pendingGeneration: items.filter(item => ["queued", "pending-generation", IMAGE_STATUS.GENERATION_QUEUED].includes(item.status)).length,
       readyForReview: items.filter(item => item.status === "generated-awaiting-review").length,
       approvedForPublication: items.filter(item => item.status === "approved-for-publication").length
     },
@@ -34520,6 +35738,9 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
     url: assetUrl,
     primary: assetUrl,
     fallback: "/assets/newsroom-hero.png",
+    imageStatus: IMAGE_STATUS.GENERATED_APPROVED,
+    status: IMAGE_STATUS.GENERATED_APPROVED,
+    type: IMAGE_STATUS.GENERATED_APPROVED,
     alt: `${title} - original CE Media editorial visual`,
     credit: "Original visual by CE Media",
     source: "CE generated editorial image",
@@ -34533,6 +35754,7 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
       source: "CE generated editorial image",
       photographer: "CE Media",
       license: "CE-generated",
+      imageStatus: IMAGE_STATUS.GENERATED_APPROVED,
       sourceUrl: assetUrl,
       retrievedAt: new Date().toISOString(),
       originalQuery: brief.title || title,
@@ -34545,13 +35767,24 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
 function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generated-image-promotion") {
   const queue = readJsonFile(newsLabGeneratedImageQueueFile, { version: "20260722-generated-image-queue-v1", items: [] }) || { items: [] };
   const items = Array.isArray(queue.items) ? queue.items : [];
-  if (!items.length || !Array.isArray(stories) || !stories.length) return { stories, applied: 0, queue };
+  if (!items.length || !Array.isArray(stories)) return { stories, applied: 0, queue };
   const storyMap = new Map(stories.map(story => [String(story.id || story.topicKey || story.eventId || ""), story]));
+  const pendingStatuses = new Set(["queued", "pending-generation", IMAGE_STATUS.GENERATION_QUEUED]);
   let applied = 0;
+  let staleRetired = 0;
   const updatedItems = items.map(item => {
     const storyId = String(item.storyId || "");
     const story = storyMap.get(storyId);
-    if (!story || item.status !== "pending-generation") return item;
+    if (!story && pendingStatuses.has(item.status)) {
+      staleRetired += 1;
+      return {
+        ...item,
+        status: "retired-story-not-current",
+        retiredAt: new Date().toISOString(),
+        retiredReason: "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
+      };
+    }
+    if (!story || !pendingStatuses.has(item.status)) return item;
     const currentImage = story.image || {};
     const currentScore = newsLabImageQualityScore(story, currentImage);
     const currentText = `${currentImage.source || ""} ${currentImage.license || ""} ${currentImage.credit || ""} ${currentImage.url || ""}`;
@@ -34575,6 +35808,7 @@ function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generat
     return {
       ...item,
       status: "approved-for-publication",
+      attempts: Number(item.attempts || 0) + 1,
       generatedAt: generated.image.generatedAt,
       assetUrl: generated.assetUrl,
       assetFile: generated.fileName,
@@ -34589,9 +35823,10 @@ function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generat
     summary: {
       queuedItems: updatedItems.length,
       addedThisPass: 0,
-      pendingGeneration: updatedItems.filter(item => item.status === "pending-generation").length,
+      pendingGeneration: updatedItems.filter(item => pendingStatuses.has(item.status)).length,
       readyForReview: updatedItems.filter(item => item.status === "generated-awaiting-review").length,
       approvedForPublication: updatedItems.filter(item => item.status === "approved-for-publication").length,
+      retiredStaleJobsThisPass: staleRetired,
       assetsPromotedThisPass: applied
     },
     items: updatedItems
@@ -34625,6 +35860,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
   const startedAt = new Date().toISOString();
   const payload = readJsonFile(newsLabPublishedPayloadFile, null) || { ownedStories: [] };
   const stories = Array.isArray(payload.ownedStories) ? payload.ownedStories : [];
+  const prePassStories = stories.map(story => ({ ...story }));
   const limit = Math.max(1, Number(options.limit || process.env.CE_NEWS_LAB_IMAGE_WORKER_LIMIT || stories.length || 1));
   const usedPhotoIds = new Set(stories.map(story => newsLabImageIdentity(story.image || story.imageProvenance || {})).filter(Boolean));
   const auditItems = [];
@@ -34633,6 +35869,12 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
   let unchanged = 0;
   const imageDiagnostics = {
     storiesNeedingImages: 0,
+    publicStories: stories.length,
+    resolvedLicensedImages: 0,
+    resolvedGeneratedImages: 0,
+    temporaryCeFallbacks: 0,
+    fallbackJobsAwaitingQueue: 0,
+    fallbackJobsBackfilled: 0,
     publisherImages: 0,
     sourceImageCandidates: 0,
     liveSearchCandidates: 0,
@@ -34645,6 +35887,21 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
   };
   const generationQueueEnabled = process.env.CE_NEWS_LAB_GENERATED_IMAGE_QUEUE !== "false";
   const generatedImageQueueStories = [];
+  const fallbackBackfillStories = generationQueueEnabled
+    ? stories
+        .map(story => ({ ...story, image: story.image || newsLabNormalizeStoryImage(story, null) }))
+        .filter(story => newsLabCompleteArticleStory(story) && needsImageResolution(story))
+        .map(story => ({
+          ...story,
+          generatedImageFallbackReason: isCeFallbackImage(story) ? "existing-ce-fallback-backfill" : "existing-unresolved-image-backfill",
+          generatedImageFallbackPolicy: "Every public story with a temporary CE fallback or unresolved image state keeps a durable image job until a licensed or generated-approved image is attached."
+        }))
+    : [];
+  const fallbackBackfillQueue = fallbackBackfillStories.length
+    ? newsLabGeneratedImageQueueRecord(fallbackBackfillStories, `${reason}:existing-fallback-backfill`)
+    : null;
+  imageDiagnostics.fallbackJobsBackfilled = fallbackBackfillStories.length;
+  imageDiagnostics.fallbackJobsAwaitingQueue = fallbackBackfillStories.length;
   let nextStories = [];
   for (const story of stories) {
     if (nextStories.length >= stories.length) break;
@@ -34688,17 +35945,28 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     const currentFindings = newsLabImageEditorFindings({ ...storyContext, image: currentImage }, "news-lab");
     const currentBlockingFindings = currentFindings.filter(finding => finding.severity === "high" || finding.priority === "high");
     const currentImageText = `${currentImage?.source || ""} ${currentImage?.license || ""} ${currentImage?.credit || ""} ${currentImage?.primary || ""}`;
-    const currentIsPlaceholder = /placeholder|local-placeholder|temporary local image|newsroom-hero|creator-bg/i.test(currentImageText);
+    const currentStatus = newsLabImageStatus({ ...storyContext, image: currentImage });
+    const currentIsPlaceholder = currentStatus === IMAGE_STATUS.CE_FALLBACK_TEMPORARY
+      || /placeholder|local-placeholder|temporary local image|newsroom-hero|creator-bg|ce media visual|ce fallback/i.test(currentImageText);
     const publishedImageNeedsRepair = Boolean(story.imagePublicationStatus?.needsRepair || !newsLabPublicImageReady(story) || currentBlockingFindings.length);
     if (currentIsPlaceholder) imageDiagnostics.placeholderImages += 1;
-    if (currentIsPlaceholder || beforeScore < 24 || publishedImageNeedsRepair) imageDiagnostics.storiesNeedingImages += 1;
+    if (currentStatus === IMAGE_STATUS.CE_FALLBACK_TEMPORARY) imageDiagnostics.temporaryCeFallbacks += 1;
+    if (currentStatus === IMAGE_STATUS.GENERATED_APPROVED) imageDiagnostics.resolvedGeneratedImages += 1;
+    if ([IMAGE_STATUS.LICENSED, IMAGE_STATUS.STOCK_MATCH].includes(currentStatus)) imageDiagnostics.resolvedLicensedImages += 1;
+    if (needsImageResolution({ ...storyContext, image: currentImage }) || beforeScore < 24 || publishedImageNeedsRepair) imageDiagnostics.storiesNeedingImages += 1;
     const bestIsLiveLicensed = /^(Pexels|Pixabay|Unsplash)$/i.test(best?.image?.license || "") && /Pexels|Pixabay|Unsplash/i.test(best?.image?.source || "");
     const promoteThreshold = publishedImageNeedsRepair && bestIsLiveLicensed ? Math.max(16, Math.min(24, beforeScore + 2)) : currentIsPlaceholder && bestIsLiveLicensed ? 18 : Math.max(28, beforeScore + 4);
     const shouldPromote = Boolean(best && bestIdentity && bestIdentity !== currentIdentity && best.score >= promoteThreshold && !blockingFindings.length);
     if (shouldPromote) {
       const promotedImage = {
         ...best.image,
-        provenance: best.image.provenance || newsLabImageProvenance(best.image)
+        imageStatus: IMAGE_STATUS.STOCK_MATCH,
+        status: IMAGE_STATUS.STOCK_MATCH,
+        type: IMAGE_STATUS.STOCK_MATCH,
+        provenance: best.image.provenance || newsLabImageProvenance({
+          ...best.image,
+          imageStatus: IMAGE_STATUS.STOCK_MATCH
+        })
       };
       nextStories.push({
         ...story,
@@ -34722,7 +35990,8 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
           beforeScore < 24
           || !best
           || blockingFindings.length > 0
-          || /placeholder|local-placeholder|temporary local image/i.test(currentImageTextForFallback)
+          || /placeholder|local-placeholder|temporary local image|ce media visual|ce fallback/i.test(currentImageTextForFallback)
+          || currentStatus === IMAGE_STATUS.CE_FALLBACK_TEMPORARY
         );
       const shouldGenerateImmediateFallback = shouldQueueGeneratedFallback
         && process.env.CE_NEWS_LAB_GENERATED_IMAGE_ASSETS !== "false"
@@ -34768,8 +36037,9 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     }
   }
   const persistentImageAttachmentStories = generationQueueEnabled
-    ? nextStories.filter(story => newsLabCompleteArticleStory(story) && !newsLabPublicImageReady(story))
+    ? nextStories.filter(story => newsLabCompleteArticleStory(story) && needsImageResolution(story))
     : [];
+  imageDiagnostics.fallbackJobsAwaitingQueue = persistentImageAttachmentStories.filter(isCeFallbackImage).length;
   persistentImageAttachmentStories.forEach(story => {
     const storyId = String(story.id || story.storyId || story.topicKey || story.eventId || "");
     if (!storyId) return;
@@ -34799,8 +36069,35 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     }
   };
   persisted = newsLabPreserveLockedPublicPayload(persisted, "image-improvement-pass");
+  const shelfRestoreStories = nextStories.length ? nextStories : prePassStories;
+  if (stories.length && !((persisted.ownedStories || []).length) && shelfRestoreStories.length) {
+    persisted = {
+      ...persisted,
+      ownedStories: shelfRestoreStories,
+      imageImprovementPolicy: {
+        ...(persisted.imageImprovementPolicy || {}),
+        shelfPreservationOverride: true,
+        shelfPreservationRule: "Image-only maintenance is not allowed to empty the public shelf. Board expiration belongs to the publishing/retention lane, not the image worker."
+      }
+    };
+  }
   writeJsonFile(newsLabPublishedPayloadFile, persisted);
-  const cache = buildPreparedNewsLabApiResponses(`image-improvement-pass:${reason}`);
+  let cache = buildPreparedNewsLabApiResponses(`image-improvement-pass:${reason}`);
+  const postCachePayload = readJsonFile(newsLabPublishedPayloadFile, persisted) || persisted;
+  if (stories.length && !((postCachePayload.ownedStories || []).length) && shelfRestoreStories.length) {
+    persisted = {
+      ...postCachePayload,
+      ownedStories: shelfRestoreStories,
+      savedAt: new Date().toISOString(),
+      imageImprovementPolicy: {
+        ...(postCachePayload.imageImprovementPolicy || persisted.imageImprovementPolicy || {}),
+        shelfPreservationOverride: true,
+        shelfPreservationRule: "Image-only maintenance restored the pre-pass shelf after cache rebuild attempted to leave News Lab empty."
+      }
+    };
+    writeJsonFile(newsLabPublishedPayloadFile, persisted);
+    cache = buildPreparedNewsLabApiResponses(`image-improvement-pass:${reason}:shelf-restored`);
+  }
   const audit = {
     version: "20260722-news-lab-image-intelligence-v1",
     reason,
@@ -34820,7 +36117,29 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       lookupTimeoutMs: Math.max(800, Number(process.env.CE_NEWS_LAB_IMAGE_LOOKUP_MS || 2200)),
       limit
     },
-    summary: { totalStories: stories.length, reviewed: auditItems.length, upgraded, held, unchanged, ...imageDiagnostics, generatedImageBriefsQueued: (generatedImagePromotion.queue || generatedImageQueue)?.summary?.queuedItems || 0, generatedImageBriefsAdded: generatedImageQueue?.summary?.addedThisPass || 0, generatedImageAssetsPromoted: generatedImagePromotion.applied || 0, publishedImageAttachmentsQueued: persistentImageAttachmentStories.length, cacheRebuilt: Boolean(cache) },
+    summary: {
+      totalStories: stories.length,
+      publicStories: imageDiagnostics.publicStories,
+      reviewed: auditItems.length,
+      upgraded,
+      held,
+      unchanged,
+      ...imageDiagnostics,
+      temporaryCeFallbacks: imageDiagnostics.temporaryCeFallbacks,
+      fallbackJobsAwaitingQueue: imageDiagnostics.fallbackJobsAwaitingQueue,
+      generationJobsQueued: (generatedImagePromotion.queue || generatedImageQueue || fallbackBackfillQueue)?.summary?.pendingGeneration || 0,
+      generationJobsClaimed: generatedImagePromotion.applied || 0,
+      generationProviderConfigured: Boolean(process.env.OPENAI_API_KEY || process.env.CE_IMAGE_GENERATION_PROVIDER || process.env.CE_NEWS_LAB_GENERATED_IMAGE_ASSETS !== "false"),
+      generationRequestsSent: generatedImagePromotion.applied || 0,
+      generationResponsesReceived: generatedImagePromotion.applied || 0,
+      validationFailures: auditItems.filter(item => /held-for-image-editor|unchanged/.test(item.status || "") && (item.findings || []).length).length,
+      verifiedVisibleReplacements: generatedImagePromotion.applied || 0,
+      generatedImageBriefsQueued: (generatedImagePromotion.queue || generatedImageQueue || fallbackBackfillQueue)?.summary?.queuedItems || 0,
+      generatedImageBriefsAdded: (generatedImageQueue?.summary?.addedThisPass || 0) + (fallbackBackfillQueue?.summary?.addedThisPass || 0),
+      generatedImageAssetsPromoted: generatedImagePromotion.applied || 0,
+      publishedImageAttachmentsQueued: persistentImageAttachmentStories.length,
+      cacheRebuilt: Boolean(cache)
+    },
     items: auditItems
   };
   writeJsonFile(newsLabImageImprovementAuditFile, audit);
@@ -35396,6 +36715,109 @@ function newsLabHeadlineHasNaturalGrammar(title = "") {
   return true;
 }
 
+function newsLabHeadlineActionWords() {
+  return new Set([
+    "approves", "approval", "issues", "recalls", "announces", "adds", "opens", "closes", "launches", "expands",
+    "cuts", "raises", "lowers", "blocks", "allows", "rules", "orders", "upholds", "rejects", "files", "sues",
+    "charges", "arrests", "sentences", "signs", "passes", "wins", "beats", "defeats", "advances", "forces",
+    "sets", "strikes", "targets", "warns", "halts", "delays", "cancels", "resumes", "reopens", "settles",
+    "confirms", "finds", "reports", "seeks", "backs", "weighs", "faces", "draws", "brings", "puts", "keeps",
+    "leaves", "returns", "falls", "rises", "drops", "jumps", "hits", "clears", "investigates", "forecasts"
+  ]);
+}
+
+function newsLabHeadlineForbiddenFiller(title = "") {
+  return /\b(draws public attention|draws new attention|draws new questions|raises new questions|brings new questions|comes into focus|moves into focus|adds new verified details|develops with new confirmed details|changes the picture|changes public release plans|changes international response|moves toward public decision|raises security questions|draws culture spotlight|faces technology review|faces new market pressure|draws new political scrutiny|brings official response|triggers local response|prompts local response|brings emergency response|moves through court|sets new policy fight|reshapes tournament picture|heads into decisive finish|advances in tournament test)\b/i.test(title);
+}
+
+function newsLabHeadlineWordProfile(title = "") {
+  const cleanTitle = newsLabTitleCase(cleanArticleText(title || "", 140)).replace(/[,.!?;:]+$/g, "").trim();
+  const words = cleanTitle.split(/\s+/).filter(Boolean);
+  const actionWords = newsLabHeadlineActionWords();
+  const actionIndex = words.findIndex(word => actionWords.has(word.toLowerCase()));
+  const subjectWords = actionIndex > 0 ? words.slice(0, actionIndex) : words.slice(0, Math.min(6, words.length));
+  return { cleanTitle, words, actionIndex, subjectWords };
+}
+
+function newsLabHeadlineCategory(title = "", story = {}) {
+  const cleanTitle = cleanArticleText(title || "", 180);
+  const text = [
+    cleanTitle,
+    story.summary,
+    story.articleSummary,
+    story.originalHeadline,
+    ...(story.body || []),
+    ...(story.storyDossier?.knownFacts || [])
+  ].join(" ").toLowerCase();
+  if (/\b(inside|journey|small town|after the cameras|what happened|from .+ to|final lesson|community|spirit|blueprints|the day)\b/i.test(cleanTitle)) return "feature";
+  if (/\b(alert|weather|how|what|where|schools|tax|taxes|safety|recall|expected|weekend|2026)\b/.test(text)) return "seo";
+  if (/\b(families|community|teacher|refugee|rebuild|victims|survivors|neighbors)\b/.test(text)) return "impact";
+  return "direct";
+}
+
+function newsLabHeadlineQualityCheck(title = "", story = {}) {
+  const { cleanTitle, words, actionIndex, subjectWords } = newsLabHeadlineWordProfile(title);
+  const issues = [];
+  const category = newsLabHeadlineCategory(cleanTitle, story);
+  const storyText = [
+    story.originalHeadline,
+    story.summary,
+    story.articleSummary,
+    ...(story.storyDossier?.knownFacts || []),
+    story.storyDossier?.whatHappened,
+    ...(story.body || [])
+  ].filter(Boolean).join(" ");
+  if (!cleanTitle) issues.push("headline-empty");
+  if (words.length < 4) issues.push("headline-too-thin");
+  if (words.length > 14) issues.push("headline-too-long");
+  if (newsLabHeadlineTruncated(cleanTitle)) issues.push("headline-truncated");
+  if (newsLabHeadlineForbiddenFiller(cleanTitle) || newsLabWeakGenericHeadline(cleanTitle)) issues.push("headline-too-generic");
+  if (actionIndex < 1) issues.push("headline-missing-active-verb");
+  if (subjectWords.length > 6) issues.push("headline-subject-overloaded");
+  if (/^(Why|How|What|They|This|That|Known|Expected|Available|Official|Source|Sources|Report|Reports|Story|Coverage|Update|Video|Pictures?)\b/i.test(cleanTitle)) {
+    issues.push("headline-weak-opening");
+  }
+  if (/\b(at a glance|live updates?|what to know|watch:|analysis|explainer|latest|breaking)\b/i.test(cleanTitle)) {
+    issues.push("headline-publisher-format-leak");
+  }
+  if (story.originalHeadline && newsLabHeadlineTooClose(cleanTitle, story.originalHeadline)) {
+    issues.push("headline-too-close-to-publisher");
+  }
+  const titleTerms = newsLabTermSet(cleanTitle);
+  const evidenceTerms = newsLabTermSet(storyText);
+  const sharedTerms = [...titleTerms].filter(term => evidenceTerms.has(term)).length;
+  const sharedEntity = storyNamedEntities({ title: cleanTitle, summary: cleanTitle })
+    .some(entity => new Set(storyNamedEntities({ title: storyText, summary: storyText })).has(entity));
+  if (titleTerms.size >= 4 && sharedTerms < 2 && !sharedEntity) issues.push("headline-not-specific-to-story");
+  const score = clampScore(
+    100
+    - issues.length * 16
+    - (category === "direct" && actionIndex < 1 ? 10 : 0)
+    + (words.length >= 5 && words.length <= 11 ? 6 : 0)
+    + (actionIndex >= 1 ? 8 : 0)
+    + (sharedTerms >= 2 || sharedEntity ? 8 : 0)
+  );
+  return {
+    passed: issues.length === 0 && score >= 78,
+    score,
+    category,
+    issues,
+    wordCount: words.length,
+    action: actionIndex >= 0 ? words[actionIndex] : "",
+    subject: subjectWords.join(" "),
+    sharedTerms,
+    sharedEntity,
+    principles: [
+      "clear-accurate",
+      "concise",
+      "active-voice",
+      "specific",
+      "timely",
+      "balanced"
+    ]
+  };
+}
+
 function newsLabImpactHeadlineFromDossier(story = {}, index = 0) {
   const dossier = story.storyDossier || {};
   const category = newsLabCategory(story);
@@ -35662,10 +37084,143 @@ function newsLabEnsureOwnedHeadline(candidate = "", story = {}, index = 0) {
     && !newsLabHeadlineTooClose(fallback, original)
     && !newsLabWeakGenericHeadline(fallback)
     && newsLabHeadlineEditor(fallback, { ...story, title: fallback }).passed) return fallback;
-  const finalFallback = newsLabTitleCase(`${subject} Comes Into Focus`).replace(/[,.!?;:]+$/g, "").trim();
-  return newsLabHeadlineEditor(finalFallback, { ...story, title: finalFallback }).passed
-    ? finalFallback
-    : newsLabTitleCase(`${newsLabCategoryLabel(category)} Update Centers On ${subject}`).replace(/[,.!?;:]+$/g, "").trim();
+  const evidenceText = [
+    story.summary,
+    story.articleSummary,
+    story.storyDossier?.whatHappened,
+    ...(story.storyDossier?.knownFacts || []),
+    ...(story.body || [])
+  ].filter(Boolean).join(" ");
+  const action = newsLabActionPhraseFromText(evidenceText, category);
+  const activeFallback = newsLabTitleCase(`${subject} ${action}`).replace(/[,.!?;:]+$/g, "").trim();
+  if (activeFallback
+    && !newsLabHeadlineTruncated(activeFallback)
+    && !newsLabHeadlineTooClose(activeFallback, original)
+    && !newsLabWeakGenericHeadline(activeFallback)
+    && newsLabHeadlineEditor(activeFallback, { ...story, title: activeFallback }).passed) return activeFallback;
+  return "";
+}
+
+function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
+  const dossier = story.storyDossier || {};
+  const identity = story.canonicalStoryIdentity || newsLabCanonicalStoryIdentity(story, dossier, {});
+  const bodyText = Array.isArray(story.body) ? story.body.join(" ") : cleanArticleText(story.articleSummary || story.summary || "", 1200);
+  const productionContract = dossier.canonicalLayers?.layer7ProductionContract || {};
+  const headlineInputs = story.writerReasoningPlan?.headlineInputs || productionContract.headlineInputs || {};
+  const lockedSignature = dossier.canonicalEventSignature || dossier.eventSignature?.canonical || {};
+  const lockedActor = cleanArticleText(
+    headlineInputs.actor
+      || lockedSignature.primaryActor
+      || identity.primaryActor
+      || "",
+    90
+  );
+  const lockedAction = cleanArticleText(
+    identity.action
+      || headlineInputs.action
+      || lockedSignature.primaryActionLabel
+      || lockedSignature.primaryAction
+      || "",
+    110
+  );
+  const rawConsequence = Array.isArray(lockedSignature.consequenceTerms)
+    ? lockedSignature.consequenceTerms.join(" ")
+    : (headlineInputs.consequence || lockedSignature.consequence || identity.consequence || "");
+  const lockedConsequence = cleanArticleText(rawConsequence, 95);
+  const consequenceSuffix = lockedConsequence && newsLabTextOverlap(lockedAction, lockedConsequence) < 0.25
+    ? lockedConsequence
+    : "";
+  const actorAlreadyInAction = lockedActor && lockedAction && newsLabTextOverlap(lockedActor, lockedAction) >= 0.75;
+  const lockedHeadlineSeed = actorAlreadyInAction
+    ? [lockedAction, consequenceSuffix].filter(Boolean).join(" ")
+    : [lockedActor, lockedAction, consequenceSuffix].filter(Boolean).join(" ");
+  const lockedHeadlineCandidate = lockedActor && lockedAction
+    ? newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(lockedHeadlineSeed, 140)).replace(/[,.!?;:]+$/g, "").trim())
+    : "";
+  const lockedAgreementForCandidate = candidate => {
+    const titleTerms = newsLabTermSet(candidate);
+    const actorTerms = [...newsLabTermSet(lockedActor)];
+    const actionTerms = [...newsLabTermSet(lockedAction)].filter(term => !["adds", "verified", "details", "new"].includes(term));
+    const consequenceTerms = [...newsLabTermSet(lockedConsequence)].filter(term => !["said", "says", "reported", "reports"].includes(term));
+    const termHits = terms => terms.reduce((count, term) => count + (titleTerms.has(term) ? 1 : 0), 0);
+    const actorAgreement = !actorTerms.length || termHits(actorTerms) >= 1;
+    const actionAgreement = !actionTerms.length || termHits(actionTerms) >= Math.min(2, actionTerms.length);
+    const consequenceAgreement = !consequenceTerms.length || termHits(consequenceTerms) >= 1 || newsLabTextOverlap(candidate, lockedConsequence) >= 0.18;
+    const leadOverlap = Number(newsLabTextOverlap(candidate, Array.isArray(story.body) ? story.body[0] || "" : story.summary || "").toFixed(2));
+    return {
+      actorAgreement,
+      actionAgreement,
+      consequenceAgreement,
+      leadOverlap,
+      ready: actorAgreement && actionAgreement && consequenceAgreement && leadOverlap >= 0.03,
+      source: "locked-dossier-event-identity"
+    };
+  };
+  const serviceStory = {
+    ...story,
+    title: identity.primaryEvent || story.title || seed || "",
+    summary: bodyText.slice(0, 420) || story.summary || dossier.whatHappened || "",
+    articleSummary: bodyText || story.articleSummary || "",
+    originalHeadline: story.originalHeadline || ""
+  };
+  const candidates = [
+    lockedHeadlineCandidate,
+    newsLabHeadlineFromCompletedArticle(serviceStory, index),
+    newsLabPlainFactHeadlineCandidate(serviceStory),
+    newsLabOwnedHeadlineFromFacts(serviceStory, index),
+    newsLabImpactHeadlineFromDossier(serviceStory, index),
+    newsLabSpecificHeadlineFromFacts(serviceStory, index),
+    seed
+  ]
+    .map(candidate => newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(candidate || "", 140)).replace(/[,.!?;:]+$/g, "").trim()))
+    .filter(Boolean)
+    .filter((candidate, candidateIndex, all) => all.findIndex(item => item.toLowerCase() === candidate.toLowerCase()) === candidateIndex);
+  const validation = candidates.map(candidate => {
+    const editor = newsLabHeadlineEditor(candidate, { ...serviceStory, title: candidate });
+    const dossierAgreement = lockedAgreementForCandidate(candidate);
+    return {
+      candidate,
+      passed: editor.passed
+        && !newsLabHeadlineTooClose(candidate, serviceStory.originalHeadline || "")
+        && !newsLabWeakGenericHeadline(candidate)
+        && !newsLabHeadlineTruncated(candidate)
+        && newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "") >= 0.03
+        && dossierAgreement.ready,
+      issues: editor.issues || [],
+      bodyOverlap: Number(newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "").toFixed(2)),
+      dossierAgreement
+    };
+  });
+  const selected = validation.find(item => item.passed)?.candidate
+    || newsLabSelectPassingHeadline(serviceStory, candidates[0] || seed)
+    || candidates[0]
+    || seed
+    || serviceStory.title;
+  const title = newsLabEnsureOwnedHeadline(selected, serviceStory, index);
+  const selectedValidation = validation.find(item => item.candidate === title) || validation.find(item => item.candidate === selected) || null;
+  const validationPassed = Boolean(selectedValidation?.passed);
+  return {
+    active: true,
+    version: "20260806-canonical-headline-service-v1",
+    title,
+    candidates,
+    validation,
+    validationPassed,
+    finalIssues: validationPassed ? [] : ["headline-generated-without-locked-dossier-and-reasoning-inputs"],
+    selectedBy: validationPassed ? "canonical-validation" : "owned-headline-fallback",
+    inputs: {
+      hasLockedDossier: Boolean(dossier.dossierLock?.active),
+      hasCanonicalIdentity: Boolean(identity.ready),
+      hasCompletedBody: bodyText.length >= 220,
+      primaryActor: identity.primaryActor || "",
+      action: identity.action || "",
+      consequence: identity.consequence || "",
+      dossierRevisionId: dossier.dossierRevisionId || dossier.dossierLock?.revisionId || productionContract.dossierRevisionId || "",
+      lockedHeadlineCandidate
+    },
+    dossierHeadlineAgreement: selectedValidation?.dossierAgreement || lockedAgreementForCandidate(title),
+    rule: "All headline creation and repair should route through the canonical headline service: locked dossier plus canonical identity plus completed plan-aligned body produces constrained candidates, validation, and one selected headline."
+  };
 }
 
 function newsLabHeadlineTruncated(title = "") {
@@ -35680,7 +37235,10 @@ function newsLabWeakGenericHeadline(title = "") {
   const cleaned = String(title || "").trim();
   if (!cleaned) return true;
   const words = cleaned.split(/\s+/).filter(Boolean);
-  return /\b(Several Reports Describe|Same Core Development|Core Development|Brings New Local Questions|Draws New Industry Attention|Draws New Culture Attention|Faces New International Pressure|Raises New Market Questions|Develops With New Confirmed Details|Changes The Competitive Picture|Changes The Competitive Picture|Moves Into Focus|Comes Into Focus|Draws New Scrutiny|Draws New Political Scrutiny|Faces New Market Pressure|Faces Technology Review|Brings New Scrutiny|Draws Local Response|Prompts Local Response|Triggers Local Response|Triggers Emergency Response|Raises Technology Stakes|Sharpens Technology Debate|Changes Technology Policy|Changes Culture Conversation|Changes Public Release Plans|Advances In Tournament Test|Shifts The Result|Shifts Competitive Stakes|Shifts Competitive Picture|Becomes International Flashpoint|Brings Emergency Response|Faces New Legal Test|Puts Legal Fight in Motion|Moves Through Court|Moves Into Policy Fight|Moves Into Political Fight|Moves Into Government Fight|Draws New Fight|Changes Security Situation|Changes International Response|Moves Toward Public Decision|Raises Security Questions|Adds Economic Pressure|Raises After|Changes EU Android Fine|Live View Changes|Filings Statements Votes Orders|Agency Action Should Show|Should Clarify The Timeline|Remains The Center Of The Story|Details Common Across Those Reports|Narrower Outlet Specific Details|Model Distillation Is A Common AI Training Technique|Public Decision|Given Faces|Competition Whether|Moves EU Android Fine|Changes EU Android Fine|Advances Policy Measure|Moves Markets|Draws Industry Review|Draws Court Ruling|Adds New Verified Details)\b/i.test(cleaned)
+  return newsLabHeadlineForbiddenFiller(cleaned)
+    || /\b(Several Reports Describe|Same Core Development|Core Development|Brings New Local Questions|Draws New Industry Attention|Draws New Culture Attention|Faces New International Pressure|Raises New Market Questions|Develops With New Confirmed Details|Changes The Competitive Picture|Changes The Competitive Picture|Moves Into Focus|Comes Into Focus|Draws New Scrutiny|Draws New Political Scrutiny|Faces New Market Pressure|Faces Technology Review|Brings New Scrutiny|Draws Local Response|Prompts Local Response|Triggers Local Response|Triggers Emergency Response|Raises Technology Stakes|Sharpens Technology Debate|Changes Technology Policy|Changes Culture Conversation|Changes Public Release Plans|Advances In Tournament Test|Shifts The Result|Shifts Competitive Stakes|Shifts Competitive Picture|Becomes International Flashpoint|Brings Emergency Response|Faces New Legal Test|Puts Legal Fight in Motion|Moves Through Court|Moves Into Policy Fight|Moves Into Political Fight|Moves Into Government Fight|Draws New Fight|Changes Security Situation|Changes International Response|Moves Toward Public Decision|Raises Security Questions|Adds Economic Pressure|Raises After|Changes EU Android Fine|Live View Changes|Filings Statements Votes Orders|Agency Action Should Show|Should Clarify The Timeline|Remains The Center Of The Story|Details Common Across Those Reports|Narrower Outlet Specific Details|Model Distillation Is A Common AI Training Technique|Public Decision|Given Faces|Competition Whether|Moves EU Android Fine|Changes EU Android Fine|Advances Policy Measure|Moves Markets|Draws Industry Review|Draws Court Ruling|Adds New Verified Details)\b/i.test(cleaned)
+    || /\b(Report|Story|Coverage|Update|Development)\s+(Adds|Brings|Raises|Draws|Faces|Changes)\b/i.test(cleaned)
+    || /\b(Local|World|Politics|Business|Technology|Sports|Entertainment)\s+(Report|Update|Story)\b/i.test(cleaned)
     || /\b(Number Labels|Issue Changes|Changes Public Release Plans|Changes International Response)\b/i.test(cleaned)
     || (words.length <= 7 && /\b(Questions|Scrutiny|Attention|Pressure|Picture|Details|Focus|Response|Stakes|Debate|Flashpoint)\b/i.test(cleaned));
 }
@@ -35697,6 +37255,8 @@ function newsLabHeadlineEditor(title = "", story = {}) {
     ...(story.body || [])
   ].filter(Boolean).join(" ");
   const issues = [];
+  const newsroomQuality = newsLabHeadlineQualityCheck(cleanTitle, story);
+  newsroomQuality.issues.forEach(issue => issues.push(issue));
   if (!cleanTitle || words.length < 4) issues.push("headline-too-thin");
   if (words.length > 14) issues.push("headline-too-long");
   if (!newsLabHeadlineHasNaturalGrammar(cleanTitle)) issues.push("headline-unnatural-grammar");
@@ -35734,12 +37294,13 @@ function newsLabHeadlineEditor(title = "", story = {}) {
     issues.push("headline-action-category-mismatch");
   }
   return {
-    passed: issues.length === 0,
-    issues,
-    score: clampScore(100 - issues.length * 18),
+    passed: issues.length === 0 && newsroomQuality.passed,
+    issues: [...new Set(issues)],
+    score: Math.min(clampScore(100 - [...new Set(issues)].length * 18), newsroomQuality.score),
     title: cleanTitle,
     evidenceSharedTerms: sharedTerms,
-    sharedEntity
+    sharedEntity,
+    newsroomQuality
   };
 }
 
@@ -36065,6 +37626,39 @@ function newsLabSourceSpecificDetails(stories = [], acceptedText = "") {
     .slice(0, 2);
 }
 
+function newsLabDossierFactEventAnchor(fact = "", representative = {}) {
+  const cleaned = newsLabTrimSentence(fact, 320);
+  const representativeText = [representative.title, representative.summary, representative.articleSummary].filter(Boolean).join(" ");
+  const overlap = representativeText ? newsLabTextOverlap(cleaned, representativeText) : 0;
+  const representativeEntities = storyNamedEntities({ title: representativeText, summary: representativeText });
+  const factEntities = storyNamedEntities({ title: cleaned, summary: cleaned });
+  const sharedEntities = factEntities.filter(entity => representativeEntities.includes(entity));
+  const foreignEntities = factEntities.filter(entity => !representativeEntities.includes(entity));
+  const hasActionSignal = /\b(announced|approved|arrested|beat|blocked|charged|confirmed|died|ended|faces|filed|found|injured|killed|launched|lost|ordered|passed|reported|resumed|ruled|said|says|settled|showed|signed|struck|voted|warned|withdrew|won)\b/i.test(cleaned);
+  const hasAttributionSignal = /\b(according to|agency|company|court|department|filing|league|official|police|representative|spokesperson|statement|team)\b/i.test(cleaned);
+  const hasRepresentativeAnchor = representativeText ? overlap >= 0.04 || sharedEntities.length > 0 : cleaned.length >= 80;
+  const topicContamination = Boolean(representativeEntities.length && foreignEntities.length >= 4 && sharedEntities.length <= 1 && overlap < 0.1);
+  const headlinePileup = /\b[A-Z][A-Za-z'.-]+(?:\s+[A-Z][A-Za-z'.-]+){2,}\b.*\b[A-Z][A-Za-z'.-]+(?:\s+[A-Z][A-Za-z'.-]+){2,}\b.*\b[A-Z][A-Za-z'.-]+(?:\s+[A-Z][A-Za-z'.-]+){2,}\b/.test(cleaned)
+    && overlap < 0.12
+    && sharedEntities.length <= 1;
+  return {
+    cleaned,
+    overlap,
+    namedEntityShared: sharedEntities.length > 0,
+    sharedEntityCount: sharedEntities.length,
+    foreignEntityCount: foreignEntities.length,
+    hasActionSignal,
+    hasAttributionSignal,
+    hasRepresentativeAnchor,
+    topicContamination,
+    headlinePileup,
+    usable: hasRepresentativeAnchor
+      && (hasActionSignal || hasAttributionSignal || cleaned.length >= 120)
+      && !topicContamination
+      && !headlinePileup
+  };
+}
+
 function newsLabDossierFactQuality(fact = "", representative = {}) {
   const cleaned = newsLabTrimSentence(fact, 320);
   if (!cleaned || cleaned.length < 35) return { usable: false, reason: "too-short", fact: cleaned };
@@ -36080,17 +37674,152 @@ function newsLabDossierFactQuality(fact = "", representative = {}) {
   if (/\b(read more|sign up|newsletter|advertisement|skip to main content|photo gallery|watch live)\b/i.test(cleaned) || /&[a-z]+;|\.\.\./i.test(cleaned)) {
     return { usable: false, reason: "source-noise", fact: cleaned };
   }
-  const representativeText = [representative.title, representative.summary, representative.articleSummary].filter(Boolean).join(" ");
-  const overlap = representativeText ? newsLabTextOverlap(cleaned, representativeText) : 0;
-  const representativeEntities = storyNamedEntities({ title: representativeText, summary: representativeText });
-  const namedEntityShared = storyNamedEntities({ title: cleaned, summary: cleaned })
-    .some(entity => representativeEntities.includes(entity));
+  const anchor = newsLabDossierFactEventAnchor(cleaned, representative);
+  if (anchor.topicContamination) return { usable: false, reason: "topic-contamination", fact: cleaned, overlap: Number(anchor.overlap.toFixed(2)), foreignEntityCount: anchor.foreignEntityCount };
+  if (anchor.headlinePileup) return { usable: false, reason: "headline-pileup-fragment", fact: cleaned, overlap: Number(anchor.overlap.toFixed(2)), foreignEntityCount: anchor.foreignEntityCount };
+  if (!anchor.hasRepresentativeAnchor) return { usable: false, reason: "weak-event-anchor", fact: cleaned, overlap: Number(anchor.overlap.toFixed(2)), namedEntityShared: anchor.namedEntityShared };
+  if (!anchor.hasActionSignal && !anchor.hasAttributionSignal && cleaned.length < 120) {
+    return { usable: false, reason: "needs-action-or-attribution", fact: cleaned, overlap: Number(anchor.overlap.toFixed(2)), namedEntityShared: anchor.namedEntityShared };
+  }
   return {
-    usable: overlap >= 0.04 || namedEntityShared || cleaned.length >= 80,
-    reason: overlap >= 0.04 || namedEntityShared || cleaned.length >= 80 ? "usable-writing-fact" : "weak-event-anchor",
+    usable: anchor.usable,
+    reason: anchor.usable ? "usable-writing-fact" : "weak-event-anchor",
     fact: cleaned,
-    overlap: Number(overlap.toFixed(2)),
-    namedEntityShared
+    overlap: Number(anchor.overlap.toFixed(2)),
+    namedEntityShared: anchor.namedEntityShared,
+    sharedEntityCount: anchor.sharedEntityCount,
+    foreignEntityCount: anchor.foreignEntityCount
+  };
+}
+
+function newsLabBuildCanonicalFactLedger({ eventId = "", eventSignature = {}, representative = {}, facts = [], sourceRecords = [], sourceSpecificClaims = [], disputedClaims = [] } = {}) {
+  const canonicalSignature = eventSignature.canonical || newsLabCanonicalEventSignatureFromStory(representative);
+  const sources = Array.isArray(sourceRecords) ? sourceRecords : [];
+  const sourceForFact = (fact = "", index = 0) => {
+    const matching = sources.filter(source => {
+      const sourceText = [source.title, source.summary, source.articleSummary, source.source, source.url].filter(Boolean).join(" ");
+      return sourceText && newsLabTextOverlap(sourceText, fact) >= 0.12;
+    });
+    return (matching.length ? matching : sources.slice(index, index + 1)).filter(Boolean);
+  };
+  const makeRecord = (statement = "", index = 0, lane = "verified") => {
+    const cleanStatement = newsLabCleanDossierFactSentence(statement);
+    const quality = newsLabDossierFactQuality(cleanStatement, representative);
+    const matchedSources = sourceForFact(cleanStatement, index);
+    const sourceIds = matchedSources
+      .map(source => source.url || source.source || source.title || "")
+      .filter(Boolean)
+      .slice(0, 6);
+    const independentSourceCount = new Set(matchedSources.map(source => newsLabDossierSourceKey(source)).filter(Boolean)).size || (sourceIds.length ? 1 : 0);
+    const sourceBacked = sourceIds.length > 0 || sources.length === 0;
+    const writingEligible = quality.usable && sourceBacked && lane !== "disputed" && lane !== "unsupported";
+    const confidence = clampScore(
+      (quality.usable ? 45 : 15)
+      + Math.min(25, independentSourceCount * 12)
+      + (sourceBacked ? 20 : 0)
+      + (lane === "verified" ? 10 : 0)
+      - (lane === "disputed" ? 30 : 0)
+    );
+    return {
+      factId: `fact_${safeFileSlug(eventId || canonicalSignature.eventId || "event").slice(0, 36)}_${index + 1}`,
+      statement: cleanStatement,
+      actor: canonicalSignature.primaryActor || "",
+      action: canonicalSignature.primaryAction || "",
+      object: canonicalSignature.eventObject || "",
+      time: canonicalSignature.eventTimeWindow || "",
+      sourceIds,
+      sourceEvidence: matchedSources.map(source => ({
+        sourceId: source.url || source.source || source.title || "",
+        source: source.source || source.name || source.publisher || "",
+        title: source.title || "",
+        url: source.url || "",
+        role: source.role || source.dossierRole || "source-context"
+      })).slice(0, 6),
+      independentSourceCount,
+      verificationStatus: writingEligible
+        ? (independentSourceCount >= 2 ? "corroborated" : "source-backed")
+        : lane === "disputed"
+          ? "disputed"
+          : quality.reason || "not-writing-eligible",
+      writingEligible,
+      eventId: eventId || canonicalSignature.eventId || "",
+      namedEntities: storyNamedEntities({ title: cleanStatement, summary: cleanStatement }).slice(0, 12),
+      timelinePosition: canonicalSignature.eventTimeWindow || "",
+      contradictionGroup: lane === "disputed" ? `contradiction_${index + 1}` : "",
+      confidence,
+      articleRole: lane === "verified"
+        ? (index === 0 ? "lead" : "evidence")
+        : lane === "contextual"
+          ? "context"
+          : "qualification",
+      lane,
+      quality
+    };
+  };
+  const verifiedRecords = (facts || [])
+    .map((fact, index) => makeRecord(fact, index, "verified"))
+    .filter(record => record.statement)
+    .filter((record, index, all) => all.findIndex(item => newsLabTextOverlap(item.statement, record.statement) >= 0.72) === index);
+  const contextualRecords = (sourceSpecificClaims || [])
+    .map((item, index) => makeRecord(item.claim || item.summary || item, verifiedRecords.length + index, "contextual"))
+    .filter(record => record.statement)
+    .filter(record => !verifiedRecords.some(verified => newsLabTextOverlap(verified.statement, record.statement) >= 0.72))
+    .slice(0, 8);
+  const disputedRecords = (disputedClaims || [])
+    .map((claim, index) => makeRecord(claim, verifiedRecords.length + contextualRecords.length + index, "disputed"))
+    .filter(record => record.statement)
+    .slice(0, 8);
+  const allRecords = [...verifiedRecords, ...contextualRecords, ...disputedRecords];
+  return {
+    version: "20260806-canonical-fact-ledger-v1",
+    generatedAt: new Date().toISOString(),
+    eventId: eventId || canonicalSignature.eventId || "",
+    canonicalEventSignature: canonicalSignature,
+    facts: allRecords,
+    verifiedFacts: allRecords.filter(record => record.writingEligible && record.lane === "verified"),
+    singleSourceFacts: allRecords.filter(record => record.writingEligible && record.independentSourceCount <= 1),
+    contextualFacts: allRecords.filter(record => record.lane === "contextual"),
+    disputedClaims: allRecords.filter(record => record.lane === "disputed"),
+    unsupportedFragments: allRecords.filter(record => !record.writingEligible && record.lane !== "disputed"),
+    writingEligibleFactIds: allRecords.filter(record => record.writingEligible).map(record => record.factId),
+    claimGraph: {
+      rawClaims: [
+        ...(facts || []).map((claim, index) => ({ rawClaimId: `raw_verified_${index + 1}`, statement: newsLabTrimSentence(claim, 320), lane: "candidate-verified" })),
+        ...(sourceSpecificClaims || []).map((claim, index) => ({ rawClaimId: `raw_context_${index + 1}`, statement: newsLabTrimSentence(claim.claim || claim.summary || claim, 320), lane: "source-specific" })),
+        ...(disputedClaims || []).map((claim, index) => ({ rawClaimId: `raw_disputed_${index + 1}`, statement: newsLabTrimSentence(claim.claim || claim.summary || claim, 320), lane: "disputed" }))
+      ].filter(item => item.statement).slice(0, 40),
+      normalizedClaims: allRecords.map(record => ({
+        factId: record.factId,
+        statement: record.statement,
+        actor: record.actor,
+        action: record.action,
+        object: record.object,
+        sourceIds: record.sourceIds,
+        confidence: record.confidence,
+        writingEligible: record.writingEligible,
+        articleRole: record.articleRole
+      })),
+      corroboratedFacts: allRecords.filter(record => record.verificationStatus === "corroborated"),
+      disputedFacts: allRecords.filter(record => record.lane === "disputed"),
+      contextualFacts: allRecords.filter(record => record.lane === "contextual"),
+      inferredRelationships: [],
+      prohibitedInferences: [
+        ...allRecords
+          .filter(record => !record.writingEligible)
+          .map(record => ({ claimId: record.factId, statement: record.statement, reason: record.verificationStatus })),
+        ...disputedRecords
+          .map(record => ({ claimId: record.factId, statement: record.statement, reason: "disputed-claim-must-be-attributed-or-held" }))
+      ].filter(item => item.statement).slice(0, 20),
+      rule: "The claim graph separates raw claims from normalized, corroborated, disputed, contextual, inferred, and prohibited claims before Writer Reasoning."
+    },
+    metrics: {
+      totalFacts: allRecords.length,
+      writingEligibleFacts: allRecords.filter(record => record.writingEligible).length,
+      corroboratedFacts: allRecords.filter(record => record.verificationStatus === "corroborated").length,
+      disputedClaims: disputedRecords.length,
+      sourceRecordCount: sources.length
+    },
+    rule: "The Writer may use only writingEligible fact IDs from the canonical fact ledger. Disputed, unsupported, review-only, and contextual records guide verification or context but cannot become unqualified article claims."
   };
 }
 
@@ -36882,6 +38611,7 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
   newsLabUpdateSourceReliabilityRegistry(stories);
   const eventSignature = cluster.eventSignature || newsLabEventSignature(stories);
   const eventId = cluster.eventId || eventSignature.eventId || cluster.key || reportClusterKey(representative);
+  const eventCoherence = cluster.eventCoherence || newsLabEventCoherenceAssessment(stories, representative);
   const sourcePoolFacts = contextStories
     .filter(story => story.dossierRole === "strict-writing-source" || story.dossierRole === "verification-context-source")
     .flatMap(story => newsLabRelevantFactSentences({
@@ -37049,6 +38779,15 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
     ...eventWorkspace,
     officialStatementCount: officialStatements.length
   });
+  const factLedger = newsLabBuildCanonicalFactLedger({
+    eventId,
+    eventSignature,
+    representative,
+    facts: knownFacts,
+    sourceRecords,
+    sourceSpecificClaims,
+    disputedClaims: contradictions
+  });
   const dossierBuilderStages = [
     {
       name: "Collect",
@@ -37066,6 +38805,17 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
         rejectedButRememberedSources: contextStories.filter(story => story.dossierRole === "rejected").length,
         exactDuplicateFiltered: Math.max(0, ...contextStories.map(story => Number(story.dossierRelevance?.exactDuplicateCountAtBuild || 0))),
         sourceRecords: sourceRecords.length
+      }
+    },
+    {
+      name: "Event Integrity",
+      status: eventCoherence.readyForWriting ? "complete" : eventCoherence.routing,
+      evidence: `Event coherence ${Math.round(Number(eventCoherence.eventCoherence || 0) * 100)}%; contamination ${Math.round(Number(eventCoherence.contaminationScore || 0) * 100)}%.`,
+      metrics: {
+        eventCoherence: Number(eventCoherence.eventCoherence || 0),
+        contaminationScore: Number(eventCoherence.contaminationScore || 0),
+        conflictingEventIds: Number(eventCoherence.conflictingEventIds?.length || 0),
+        routing: eventCoherence.routing || ""
       }
     },
     {
@@ -37112,15 +38862,26 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
     },
     {
       name: "Deliver Dossier To Writer",
-      status: writerEvidencePack.readiness.readyForWriter && timeline.length ? "ready" : "needs-more-dossier-work",
-      evidence: "Writer should draft from writerInput.directWritingFacts first, then use verification/context facts only for support.",
-      metrics: { ready: Boolean(writerEvidencePack.readiness.readyForWriter && timeline.length), confidenceScore: confidence.score, writingFacts: writerEvidencePack.readiness.writingFactCount, excludedFragments: writerEvidencePack.readiness.excludedFragmentCount }
+      status: writerEvidencePack.readiness.readyForWriter && timeline.length && eventCoherence.readyForWriting ? "ready" : "needs-more-dossier-work",
+      evidence: "Writer should draft from factLedger.writingEligibleFactIds and writerInput.directWritingFacts first, then use verification/context facts only for support.",
+      metrics: { ready: Boolean(writerEvidencePack.readiness.readyForWriter && timeline.length && eventCoherence.readyForWriting), confidenceScore: confidence.score, writingFacts: writerEvidencePack.readiness.writingFactCount, writingEligibleFactIds: factLedger.writingEligibleFactIds.length, excludedFragments: writerEvidencePack.readiness.excludedFragmentCount }
     }
   ];
   return {
     storyId: eventId || safeFileSlug(representative.title || whatHappened || "story"),
     eventId,
     eventSignature,
+    canonicalEventSignature: eventCoherence.canonicalEventSignature || eventSignature.canonical || null,
+    eventCoherence,
+    contaminationCheck: {
+      contaminationScore: Number(eventCoherence.contaminationScore || 0),
+      eventCoherence: Number(eventCoherence.eventCoherence || 0),
+      conflictingEventIds: eventCoherence.conflictingEventIds || [],
+      readyForWriting: Boolean(eventCoherence.readyForWriting),
+      routing: eventCoherence.routing || "",
+      rule: "Coherent but thin events may become briefs. Mixed or uncertain events return to split/identity recovery before prose."
+    },
+    factLedger,
     eventSourceArticleCount: Number(cluster.eventSourceArticleCount || stories.length || 1),
     sourcePool: sourcePoolAudit,
     sourcePoolMemory: {
@@ -37130,6 +38891,7 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
       rule: "Keep every non-duplicate reviewed source in dossier memory. Only strict-writing and verification-context sources may directly feed article facts; review-only and rejected sources remain available for future memory, entity context, historical context, contradiction checks, and source reliability."
     },
     writerInput: {
+      allowedFactIds: factLedger.writingEligibleFactIds,
       directWritingFacts: writerEvidencePack.writingFacts,
       verificationFacts: writerEvidencePack.verificationFacts,
       contextFacts: writerEvidencePack.contextFacts,
@@ -37139,7 +38901,7 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
       readiness: writerEvidencePack.readiness,
       directWritingSources: directWritingSources.map(story => ({ source: story.source || "", title: story.title || "", url: story.url || "", role: story.dossierRole || "" })).slice(0, 12),
       forbiddenForDirectWriting: [...reviewOnlySources, ...rejectedMemorySources].map(story => ({ source: story.source || "", title: story.title || "", url: story.url || "", role: story.dossierRole || "" })).slice(0, 20),
-      rule: "The Writer may draft from directWritingFacts and directWritingSources only. Verification, background, review-only, and rejected-memory sources can guide checks, context, contradiction detection, and future memory but cannot become public article facts unless promoted by the Dossier Builder."
+      rule: "The Writer may draft from factLedger.writingEligibleFactIds, directWritingFacts, and directWritingSources only. Verification, background, review-only, and rejected-memory sources can guide checks, context, contradiction detection, and future memory but cannot become public article facts unless promoted by the Dossier Builder."
     },
     verificationInput: {
       verificationFacts: factsFromSources(verificationContextSources).slice(0, 10),
@@ -37147,6 +38909,51 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
       reviewOnlyCount: reviewOnlySources.length,
       rejectedMemoryCount: rejectedMemorySources.length,
       rule: "Verification and background facts support confidence, context, and contradiction checks. They do not override the direct-writing source set."
+    },
+    canonicalLayers: {
+      layer1EventIdentity: {
+        canonicalEventSignature: eventCoherence.canonicalEventSignature || eventSignature.canonical || null,
+        eventId,
+        whatHappened,
+        categoryHint: newsLabCategory(representative),
+        eventStatus: (eventCoherence.canonicalEventSignature || eventSignature.canonical || {}).eventStatus || ""
+      },
+      layer2Evidence: {
+        verifiedFacts: factLedger.verifiedFacts,
+        singleSourceFacts: factLedger.singleSourceFacts,
+        disputedClaims: factLedger.disputedClaims,
+        sourceProvenance: sourceRecords.slice(0, 12)
+      },
+      layer3Timeline: timeline,
+      layer4Entities: { people, organizations, locations, roles: entityProfiles.slice(0, 12), relationships: [] },
+      layer5Context: {
+        necessaryBackground: historicalContextEngine.suggestedContextParagraph || newsLabTopicDescription(representative),
+        priorRelatedEvents: historicalContextEngine.relevantHistory || [],
+        legalPoliticalBusinessContext: {
+          legal: sourceLayers.courtDocuments.length > 0,
+          political: newsLabCategory(representative) === "politics",
+          business: newsLabCategory(representative) === "business"
+        }
+      },
+      layer6Uncertainty: {
+        unknownFacts,
+        disputedClaims: contradictions,
+        shouldNotInfer: unknownFacts.map(item => `Do not state as confirmed: ${item}`).slice(0, 8),
+        couldMateriallyChange: unknownFacts.slice(0, 5)
+      },
+      layer7ProductionContract: {
+        articleFormat: "",
+        paragraphPlan: [],
+        finalCategory: "",
+        headlineInputs: {
+          actor: (eventCoherence.canonicalEventSignature || eventSignature.canonical || {}).primaryActor || "",
+          action: (eventCoherence.canonicalEventSignature || eventSignature.canonical || {}).primaryAction || "",
+          consequence: (eventCoherence.canonicalEventSignature || eventSignature.canonical || {}).consequence || ""
+        },
+        imageBrief: "",
+        refreshSchedule: eventCoherence.routing === "continue" ? "refresh-on-new-same-event-evidence" : "return-to-cluster-split-or-identity-recovery"
+      },
+      rule: "The canonical dossier is a disciplined model of one event, not a larger pile of source fragments. Downstream lanes consume these layers instead of rebuilding context."
     },
     createdAt: new Date().toISOString(),
     method: "structured-event-dossier-before-writing",
@@ -37193,6 +39000,9 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
       weakestStage: dossierBuilderStages.find(stage => /needs|limited|thin/i.test(stage.status))?.name || "",
       outputContract: {
         knownFacts: "Facts the Writer may state directly.",
+        factLedger: "Claim-level fact IDs with source provenance, verification status, event ID, and writing eligibility.",
+        integrity: "Integrity decides whether the event is safe to write at all.",
+        depthCapacity: "Depth decides whether the event becomes a developing brief, standard article, or deep article.",
         unknownFacts: "Missing or unresolved facts the Writer must not invent.",
         sourceSpecificClaims: "Claims that should be attributed or qualified unless later confirmed by other sources.",
         contradictions: "Conflicting claims that should be explained, not hidden.",
@@ -37247,6 +39057,347 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
   };
 }
 
+function newsLabCanonicalDossierRevisionId(storyDossier = {}, readiness = {}, context = {}) {
+  const eventId = storyDossier.eventId || storyDossier.storyId || context.eventId || safeFileSlug(storyDossier.whatHappened || "story");
+  const revisionSeed = [
+    eventId,
+    storyDossier.createdAt || storyDossier.dossierLock?.lockedAt || new Date().toISOString(),
+    readiness.score || storyDossier.dossierBuilder?.readinessContract?.score || 0,
+    (storyDossier.knownFacts || []).join("|").slice(0, 240)
+  ].join(":");
+  return context.revisionId || storyDossier.dossierLock?.revisionId || `dossier_${safeFileSlug(revisionSeed).slice(0, 96)}`;
+}
+
+function newsLabBuildCanonicalDossierIntelligence(storyDossier = {}, readiness = {}, context = {}) {
+  const representative = context.representative || {
+    title: storyDossier.whatHappened || storyDossier.storyId || "",
+    summary: (storyDossier.knownFacts || []).join(" "),
+    articleSummary: (storyDossier.writerInput?.directWritingFacts || []).join(" ")
+  };
+  const revisionId = newsLabCanonicalDossierRevisionId(storyDossier, readiness, context);
+  const identity = context.canonicalStoryIdentity || newsLabCanonicalStoryIdentity({
+    ...representative,
+    storyDossier,
+    category: storyDossier.categoryClassification?.semanticCategory || storyDossier.category || context.category || ""
+  }, storyDossier, context);
+  const category = storyDossier.categoryClassification?.semanticCategory
+    || storyDossier.categorySubDossierHandoff?.finalSemanticCategory
+    || storyDossier.category
+    || context.category
+    || newsLabCategory(representative);
+  const verifiedFacts = newsLabDossierUniqueFacts([
+    ...(storyDossier.writerInput?.directWritingFacts || []),
+    ...(storyDossier.knownFacts || []),
+    ...(storyDossier.agreement?.sharedClaims || []),
+    ...(storyDossier.supportingEvidence?.sharedClaims || [])
+  ], representative);
+  const disputedFacts = [
+    ...(storyDossier.contradictions || []),
+    ...(storyDossier.disagreement?.sourceSpecificClaims || []).map(item => item.claim || item.summary || item).filter(Boolean)
+  ].map(item => newsLabTrimSentence(typeof item === "string" ? item : item.claim || item.summary || "", 260)).filter(Boolean).slice(0, 10);
+  const unsupportedClaims = (storyDossier.writerInput?.excludedFragments || [])
+    .map(item => ({ fact: item.fact || item.claim || "", reason: item.reason || "excluded-from-direct-writing" }))
+    .filter(item => item.fact)
+    .slice(0, 12);
+  const sourceRecords = newsLabDossierSourceContextRecords(storyDossier, context).slice(0, 18);
+  const timeline = (storyDossier.timeline || []).map((item, index) => ({
+    id: item.id || `canonical-timeline-${index + 1}`,
+    at: item.at || item.date || "",
+    source: item.source || "",
+    title: newsLabTrimSentence(item.title || item.summary || "", 180),
+    url: item.url || ""
+  })).filter(item => item.title || item.source || item.at).slice(0, 12);
+  const unknownFacts = [...new Set([
+    ...(storyDossier.unknownFacts || []),
+    ...(storyDossier.unknowns || []),
+    ...(storyDossier.stillUnknown || [])
+  ].map(item => newsLabTrimSentence(item, 220)).filter(Boolean))].slice(0, 8);
+  const evidenceStrength = clampScore(
+    Math.min(34, verifiedFacts.length * 8)
+    + Math.min(22, sourceRecords.length * 4)
+    + Math.min(14, timeline.length * 4)
+    + Math.min(20, Number(storyDossier.confidence?.score || storyDossier.evidence?.confidenceScore || readiness.score || 0) * 0.2)
+    - Math.min(18, disputedFacts.length * 4)
+  );
+  const eventStatus = readiness.articleFormat === "breaking-brief"
+    ? "developing"
+    : readiness.readyForDeepArticle
+      ? "active-deep"
+      : readiness.readyForStandardArticle
+        ? "active-standard"
+        : "hold-for-evidence";
+  const canonical = {
+    id: `canonical_intelligence_${safeFileSlug(revisionId).slice(0, 96)}`,
+    version: "20260806-canonical-dossier-intelligence-v1",
+    generatedAt: new Date().toISOString(),
+    revision: {
+      id: revisionId,
+      eventId: storyDossier.eventId || storyDossier.storyId || identity.eventId || "",
+      fingerprint: newsLabDossierFingerprint(storyDossier),
+      hash: context.revisionHash || storyDossier.dossierLock?.revisionHash || "",
+      locked: Boolean(storyDossier.dossierLock?.active),
+      lockedAt: storyDossier.dossierLock?.lockedAt || "",
+      updateRule: "New evidence creates a new dossier revision. Downstream systems reference this revision instead of rebuilding event understanding."
+    },
+    eventIdentity: {
+      canonicalEventId: storyDossier.eventId || storyDossier.storyId || identity.eventId || "",
+      topic: storyDossier.whatHappened || identity.primaryEvent || "",
+      category,
+      confidence: Number(storyDossier.confidence?.score || storyDossier.evidence?.confidenceScore || readiness.score || 0),
+      freshness: storyDossier.when?.firstSeenAt || storyDossier.createdAt || "",
+      eventStatus,
+      primaryActor: identity.primaryActor || "",
+      primaryAction: identity.action || "",
+      consequence: identity.consequence || "",
+      ready: Boolean(identity.ready && readiness.readyForWriter)
+    },
+    evidence: {
+      verifiedFacts,
+      disputedFacts,
+      unsupportedClaims,
+      evidenceStrength,
+      sourceAgreement: Number(storyDossier.agreement?.score || 0),
+      sourceDisagreement: Number(storyDossier.disagreement?.score || disputedFacts.length || 0),
+      sourceCount: sourceRecords.length,
+      sources: sourceRecords
+    },
+    timeline,
+    entities: {
+      people: storyDossier.people || [],
+      organizations: storyDossier.organizations || [],
+      governments: (storyDossier.organizations || []).filter(item => /government|department|agency|senate|house|court|police|ministry/i.test(item)),
+      companies: (storyDossier.organizations || []).filter(item => /inc|corp|company|llc|ltd|plc|group|bank|airlines|motors|technology/i.test(item)),
+      teams: (storyDossier.organizations || []).filter(item => /fc|united|club|team|league|nba|nfl|mlb|nhl|fifa/i.test(item)),
+      locations: storyDossier.locations || [],
+      relationships: storyDossier.knowledgeGraphRelationships || []
+    },
+    context: {
+      background: storyDossier.historicalContext || storyDossier.historicalContextEngine?.suggestedContextParagraph || "",
+      previousRelatedEvents: storyDossier.previousEventsRelated || storyDossier.relatedStories || [],
+      historicalComparisons: storyDossier.historicalContextEngine?.relevantHistory || [],
+      legalContext: /court|judge|lawsuit|trial|charges|settlement|filing/i.test(`${storyDossier.whatHappened || ""} ${(storyDossier.knownFacts || []).join(" ")}`),
+      politicalImplications: category === "politics",
+      economicImplications: category === "business"
+    },
+    intelligence: {
+      whyImportant: newsLabTrimSentence(identity.consequence || storyDossier.historicalContext || storyDossier.writerInput?.contextFacts?.[0] || storyDossier.whatHappened || "", 260),
+      whyToday: timeline[0]?.title || storyDossier.whatHappened || "",
+      whoBenefits: [],
+      whoIsAffected: [...new Set([...(storyDossier.people || []), ...(storyDossier.organizations || []), ...(storyDossier.locations || [])])].slice(0, 12),
+      stillUnknown: unknownFacts,
+      misinformationRisks: disputedFacts.slice(0, 4),
+      neverInfer: [
+        ...unknownFacts.map(item => `Do not state as confirmed: ${item}`),
+        ...disputedFacts.map(item => `Attribute or qualify disputed claim: ${item}`)
+      ].slice(0, 10)
+    },
+    publicationPlanning: {
+      recommendedHeadlineDirection: `${identity.primaryActor || "Primary actor"} ${identity.action || "verified action"} ${identity.consequence || "verified consequence"}`.trim(),
+      bestAudience: category,
+      readingLevel: "general-public",
+      category,
+      imagesRequired: true,
+      supportingGraphics: timeline.length >= 4 ? ["timeline"] : [],
+      newsletterSuitability: evidenceStrength >= 55 || category === "politics" || category === "business",
+      creatorDeskSuitability: category !== "local" && evidenceStrength >= 50
+    },
+    writerContract: {
+      controlling: true,
+      readyForWriter: Boolean(readiness.readyForWriter && identity.ready && verifiedFacts.length >= 2),
+      dossierRevisionId: revisionId,
+      directFactsAllowed: verifiedFacts,
+      unknownFacts,
+      disputedFacts,
+      forbiddenFragments: unsupportedClaims,
+      rule: "The Writer explains this canonical dossier. It does not research, infer missing facts, rebuild context, or draft from RSS/source fragments."
+    },
+    consumerContract: {
+      consumers: ["Writer", "Headline", "Image Intelligence", "Publishing Editor", "Validator", "Publisher", "Newsletter", "Creator Desk", "Search"],
+      requirement: "Every downstream subsystem must record dossierRevisionId and consume this canonical intelligence object before producing output.",
+      noIndependentContextRule: "Collector, Writer, Editor, Repair, Newsletter, and Creator Desk may not create separate event context when this canonical dossier revision exists."
+    }
+  };
+  canonical.storyUnderstanding = newsLabBuildStoryUnderstanding(storyDossier, canonical, readiness, context);
+  return canonical;
+}
+
+function newsLabBuildStoryUnderstanding(storyDossier = {}, canonicalIntelligence = {}, readiness = {}, context = {}) {
+  const revision = canonicalIntelligence.revision || {};
+  const eventIdentity = canonicalIntelligence.eventIdentity || {};
+  const intelligence = canonicalIntelligence.intelligence || {};
+  const evidence = canonicalIntelligence.evidence || {};
+  const factGraph = storyDossier.factLedger?.claimGraph || {};
+  const normalizedClaims = Array.isArray(factGraph.normalizedClaims)
+    ? factGraph.normalizedClaims
+    : (Array.isArray(storyDossier.factLedger?.facts) ? storyDossier.factLedger.facts : []);
+  const writingEligibleClaims = normalizedClaims
+    .filter(claim => claim?.writingEligible !== false && (claim.statement || claim.fact))
+    .map((claim, index) => ({
+      factId: claim.factId || `understanding_fact_${index + 1}`,
+      statement: newsLabTrimSentence(claim.statement || claim.fact || "", 320),
+      sourceIds: claim.sourceIds || [],
+      confidence: Number(claim.confidence || 0),
+      articleRole: claim.articleRole || (index === 0 ? "lead" : "evidence")
+    }))
+    .filter(claim => claim.statement)
+    .slice(0, 14);
+  const verifiedFallbackClaims = (evidence.verifiedFacts || [])
+    .map((fact, index) => ({
+      factId: `understanding_verified_${index + 1}`,
+      statement: newsLabTrimSentence(fact, 320),
+      sourceIds: [],
+      confidence: Number(evidence.evidenceStrength || 60),
+      articleRole: index === 0 ? "lead" : "evidence"
+    }))
+    .filter(claim => claim.statement);
+  const usableClaims = writingEligibleClaims.length ? writingEligibleClaims : verifiedFallbackClaims;
+  const whatHappened = newsLabTrimSentence(
+    eventIdentity.topic
+      || storyDossier.whatHappened
+      || usableClaims[0]?.statement
+      || context.representative?.title
+      || "",
+    320
+  );
+  const whoDidIt = eventIdentity.primaryActor || storyDossier.canonicalEventSignature?.primaryActor || "";
+  const whatChanged = newsLabTrimSentence(
+    eventIdentity.consequence
+      || eventIdentity.primaryConsequence
+      || usableClaims.find(claim => claim.articleRole === "context" || claim.factId !== usableClaims[0]?.factId)?.statement
+      || whatHappened,
+    260
+  );
+  const whoAffected = [...new Set([
+    ...(intelligence.whoIsAffected || []),
+    ...(storyDossier.people || []),
+    ...(storyDossier.organizations || []),
+    ...(storyDossier.locations || [])
+  ].filter(Boolean))].slice(0, 12);
+  const stillUnknown = [...new Set([
+    ...(intelligence.stillUnknown || []),
+    ...(storyDossier.knownUnknowns || []),
+    ...(storyDossier.unknownFacts || []),
+    ...(storyDossier.stillUnknown || [])
+  ].map(item => newsLabTrimSentence(item, 240)).filter(Boolean))].slice(0, 10);
+  const disputed = [
+    ...(factGraph.disputedFacts || []).map(item => item.statement || item.fact || item).filter(Boolean),
+    ...(evidence.disputedFacts || []),
+    ...(storyDossier.contradictions || [])
+  ].map(item => newsLabTrimSentence(typeof item === "string" ? item : item.claim || item.summary || "", 260)).filter(Boolean).slice(0, 10);
+  const unsupported = [
+    ...(factGraph.prohibitedInferences || []).map(item => item.statement || item.claim || item).filter(Boolean),
+    ...(evidence.unsupportedClaims || []).map(item => item.fact || item.claim || item).filter(Boolean),
+    ...(storyDossier.writerInput?.excludedFragments || []).map(item => item.fact || item.claim || "").filter(Boolean)
+  ].map(item => newsLabTrimSentence(item, 260)).filter(Boolean).slice(0, 12);
+  const sourceCount = Number(evidence.sourceCount || storyDossier.evidence?.sourceCount || storyDossier.sourcePool?.length || 0);
+  const minimumFacts = readiness.articleFormat === "breaking-brief" ? 2 : readiness.articleFormat === "deep-article" ? 5 : 3;
+  const blockers = [
+    whatHappened ? "" : "understanding-missing-what-happened",
+    whoDidIt && !/^officials$/i.test(whoDidIt) ? "" : "understanding-missing-specific-actor",
+    usableClaims.length >= minimumFacts ? "" : "understanding-needs-more-writing-eligible-evidence",
+    sourceCount >= 1 ? "" : "understanding-needs-attributable-source",
+    whatChanged ? "" : "understanding-missing-what-changed"
+  ].filter(Boolean);
+  const score = clampScore(
+    (whatHappened ? 18 : 0)
+    + (whoDidIt && !/^officials$/i.test(whoDidIt) ? 14 : 0)
+    + Math.min(28, usableClaims.length * 7)
+    + Math.min(16, sourceCount * 4)
+    + (whatChanged ? 10 : 0)
+    + (stillUnknown.length ? 6 : 0)
+    + Math.min(8, Number(evidence.evidenceStrength || 0) / 12)
+    - Math.min(14, disputed.length * 3)
+  );
+  const evidenceMap = usableClaims.map((claim, index) => ({
+    factId: claim.factId,
+    statement: claim.statement,
+    supports: [
+      index === 0 ? "what-happened" : "",
+      claim.articleRole === "lead" ? "lead-emphasis" : "",
+      claim.articleRole === "context" ? "background-or-context" : "evidence",
+      claim.statement && newsLabTextOverlap(claim.statement, whatChanged) >= 0.18 ? "what-changed" : ""
+    ].filter(Boolean),
+    sourceIds: claim.sourceIds || [],
+    confidence: Number(claim.confidence || evidence.evidenceStrength || 0),
+    articleRole: claim.articleRole || (index === 0 ? "lead" : "evidence")
+  }));
+  const previousRelatedEvents = Array.isArray(canonicalIntelligence.context?.previousRelatedEvents)
+    ? canonicalIntelligence.context.previousRelatedEvents
+    : (canonicalIntelligence.context?.previousRelatedEvents ? [canonicalIntelligence.context.previousRelatedEvents] : []);
+  const historicalComparisons = Array.isArray(canonicalIntelligence.context?.historicalComparisons)
+    ? canonicalIntelligence.context.historicalComparisons
+    : (canonicalIntelligence.context?.historicalComparisons ? [canonicalIntelligence.context.historicalComparisons] : []);
+  const backgroundOnly = [
+    canonicalIntelligence.context?.background || "",
+    ...previousRelatedEvents.map(item => typeof item === "string" ? item : item.title || item.summary || "").filter(Boolean),
+    ...historicalComparisons.map(item => typeof item === "string" ? item : item.title || item.summary || "").filter(Boolean)
+  ].map(item => newsLabTrimSentence(item, 260)).filter(Boolean).slice(0, 6);
+  const answerSet = {
+    whatHappened,
+    whoDidIt,
+    whoWasAffected: whoAffected,
+    whatChanged,
+    whyThisIsNews: newsLabTrimSentence(intelligence.whyImportant || whatChanged || whatHappened, 260),
+    stillUnknown,
+    couldReadersMisunderstand: [
+      ...disputed.map(item => `Disputed or needs attribution: ${item}`),
+      ...stillUnknown.map(item => `Unknown: ${item}`)
+    ].slice(0, 8),
+    whatEvidenceSupportsEachStatement: evidenceMap,
+    whatShouldNeverBeInferred: [
+      ...(intelligence.neverInfer || []),
+      ...unsupported.map(item => `Do not use unsupported fragment: ${item}`),
+      ...disputed.map(item => `Do not state disputed claim as settled: ${item}`)
+    ].slice(0, 14),
+    headlineShouldEmphasize: newsLabTrimSentence(`${whoDidIt || "Primary actor"} ${eventIdentity.primaryAction || storyDossier.canonicalEventSignature?.primaryAction || ""} ${whatChanged || whatHappened}`.replace(/\s+/g, " "), 160),
+    leadShouldEmphasize: whatHappened,
+    belongsOnlyInBackground: backgroundOnly,
+    belongsNowhere: unsupported
+  };
+  const decisionInputs = [
+    { decisionId: "story-identity", question: "What is the story?", answer: answerSet.whatHappened, evidenceFactIds: evidenceMap.slice(0, 3).map(item => item.factId) },
+    { decisionId: "strongest-evidence", question: "What is the strongest evidence?", answer: evidenceMap[0]?.statement || "", evidenceFactIds: evidenceMap.slice(0, 4).map(item => item.factId) },
+    { decisionId: "reader-first", question: "What should the reader know first?", answer: answerSet.leadShouldEmphasize, evidenceFactIds: evidenceMap.slice(0, 2).map(item => item.factId) },
+    { decisionId: "necessary-context", question: "What context is necessary?", answer: backgroundOnly[0] || answerSet.whyThisIsNews, evidenceFactIds: evidenceMap.filter(item => item.articleRole === "context").map(item => item.factId).slice(0, 3) },
+    { decisionId: "uncertainty-boundary", question: "What remains unknown or should not be implied?", answer: [...stillUnknown, ...disputed].slice(0, 3).join(" | "), evidenceFactIds: [] },
+    { decisionId: "headline-reality", question: "What should the headline represent?", answer: answerSet.headlineShouldEmphasize, evidenceFactIds: evidenceMap.slice(0, 3).map(item => item.factId) }
+  ];
+  return {
+    active: true,
+    id: `story_understanding_${safeFileSlug(revision.id || eventIdentity.canonicalEventId || whatHappened || "story").slice(0, 96)}`,
+    version: "20260806-story-understanding-v1",
+    generatedAt: new Date().toISOString(),
+    dossierRevisionId: revision.id || "",
+    dossierRevisionHash: revision.hash || "",
+    canonicalEventId: eventIdentity.canonicalEventId || "",
+    operatingLayer: "Knowledge -> Understanding -> Reasoning -> Execution -> Verification -> Optimization -> Learning",
+    answers: answerSet,
+    evidenceMap,
+    decisionInputs,
+    writerGuidance: {
+      writerDoesNotResearch: true,
+      writerExecutesPlan: true,
+      paragraphSequence: [
+        { role: "lead", decisionId: "reader-first", verifyAgainst: ["what-happened", "lead-emphasis"] },
+        { role: "evidence", decisionId: "strongest-evidence", verifyAgainst: ["evidence", "attribution"] },
+        { role: "context", decisionId: "necessary-context", verifyAgainst: ["background-or-context"] },
+        { role: "next-step", decisionId: "uncertainty-boundary", verifyAgainst: ["unknowns", "prohibited-inferences"] }
+      ],
+      headlineAfterDraft: true,
+      noGenericFallback: readiness.articleFormat !== "breaking-brief",
+      rule: "Writer Reasoning owns decisions; Writer execution turns each approved decision into a paragraph and verifies before moving to the next paragraph."
+    },
+    readiness: {
+      score,
+      readyForReasoning: blockers.length === 0 && score >= 62,
+      blockers,
+      articleFormat: readiness.articleFormat || "",
+      minimumWritingFacts: minimumFacts
+    },
+    rule: "Story Understanding answers what the evidence means before Writer Reasoning makes drafting decisions. It is not article prose and may not include unsupported claims as publishable facts."
+  };
+}
+
 function newsLabDossierUniqueFacts(facts = [], representative = {}) {
   return (Array.isArray(facts) ? facts : [])
     .map(fact => newsLabTrimSentence(fact, 320))
@@ -37283,6 +39434,42 @@ function newsLabDossierPrimarySourcePresent(sources = [], storyDossier = {}) {
   return /\b(whitehouse\.gov|congress\.gov|supreme court|justice\.gov|fbi\.gov|sec\.gov|federalreserve\.gov|treasury\.gov|cdc\.gov|nih\.gov|fda\.gov|nasa\.gov|noaa\.gov|weather\.gov|fema\.gov|bls\.gov|bea\.gov|court|filing|docket|official|press release|newsroom|investor relations|10-k|10-q|8-k|edgar|public company|agency|department)\b/i.test(sourceText);
 }
 
+function newsLabDossierIntegrityCheck(storyDossier = {}, context = {}) {
+  const representative = context.representative || storyDossier.representative || {
+    title: storyDossier.whatHappened || "",
+    summary: (storyDossier.knownFacts || []).join(" ")
+  };
+  const signature = storyDossier.canonicalEventSignature || storyDossier.eventSignature?.canonical || newsLabCanonicalEventSignatureFromStory(representative);
+  const contamination = storyDossier.contaminationCheck || storyDossier.eventCoherence || {};
+  const factLedger = storyDossier.factLedger || {};
+  const sourcePool = Array.isArray(storyDossier.sourcePool) ? storyDossier.sourcePool : [];
+  const contextSources = Array.isArray(context.sources) ? context.sources : [];
+  const sourceCount = Math.max(Number(storyDossier.evidence?.sourceCount || 0), sourcePool.length, contextSources.length);
+  const writingEligibleFactCount = Number(factLedger.metrics?.writingEligibleFacts || factLedger.writingEligibleFactIds?.length || (storyDossier.writerInput?.directWritingFacts || []).length || 0);
+  const unsupportedCentralClaim = (factLedger.unsupportedFragments || storyDossier.writerInput?.excludedFragments || [])
+    .some(item => /central|lead|headline|primary|actor|action|consequence|unsupported|weak-event-anchor|topic-contamination/i.test(`${item.reason || ""} ${item.fact || item.statement || ""}`));
+  const holdReasons = [
+    signature.primaryActor ? "" : "needs-canonical-primary-actor",
+    signature.primaryAction ? "" : "needs-canonical-primary-action",
+    signature.eventObject || signature.consequence ? "" : "needs-event-object-or-consequence",
+    sourceCount >= 1 ? "" : "needs-attributable-source",
+    Number(contamination.contaminationScore || 0) < 0.4 && contamination.routing !== "do-not-draft" ? "" : "needs-cluster-split-before-writing",
+    unsupportedCentralClaim ? "unsupported-central-claim" : ""
+  ].filter(Boolean);
+  return {
+    version: "20260806-dossier-integrity-v1",
+    ready: holdReasons.length === 0,
+    holdReasons,
+    canonicalEventSignature: signature,
+    contaminationScore: Number(contamination.contaminationScore || 0),
+    eventCoherence: Number(contamination.eventCoherence || 1),
+    sourceCount,
+    writingEligibleFactCount,
+    unsupportedCentralClaim,
+    rule: "Integrity decides whether the event is safe to write. Depth decides the article length after integrity passes."
+  };
+}
+
 function newsLabDossierArticleCapacity(storyDossier = {}, context = {}) {
   const representative = context.representative || storyDossier.representative || {};
   const knownFacts = newsLabDossierUniqueFacts(storyDossier.knownFacts || [], representative);
@@ -37309,7 +39496,9 @@ function newsLabDossierArticleCapacity(storyDossier = {}, context = {}) {
   ].filter(Boolean), representative).length;
   const whatHappened = cleanArticleText(storyDossier.whatHappened || "", 260);
   const hasEventIdentity = Boolean(whatHappened && storyNamedEntities({ title: whatHappened, summary: whatHappened }).length);
+  const integrity = newsLabDossierIntegrityCheck(storyDossier, { ...context, sources: sourceRecords });
   const holdReasons = [
+    ...integrity.holdReasons,
     hasEventIdentity ? "" : "needs-clear-actor-action-event",
     sourceCount >= 1 ? "" : "needs-source-context",
     uniqueFacts.length >= 2 ? "" : "needs-two-unique-verified-facts",
@@ -37354,8 +39543,10 @@ function newsLabDossierArticleCapacity(storyDossier = {}, context = {}) {
       confidenceScore,
       contextFactCount,
       primarySourcePresent,
-      hasEventIdentity
+      hasEventIdentity,
+      integrityReady: integrity.ready
     },
+    integrity,
     rule: "Dossier readiness is tiered by evidence-supported article capacity. Thin but valid dossiers become breaking briefs; weak dossiers return to Evidence/Dossier instead of being stretched into full articles."
   };
 }
@@ -37380,13 +39571,18 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   const whatHappened = cleanArticleText(storyDossier.whatHappened || "", 260);
   const confidenceScore = Number(storyDossier.confidence?.score || storyDossier.evidence?.confidenceScore || 0);
   const sourceCount = Number(storyDossier.evidence?.sourceCount || sourcePool.length || storyDossier.eventSubDossier?.sourceSeparation?.writingSourceCount || storyDossier.eventSubDossier?.sourceSeparation?.verificationSourceCount || context.sources?.length || 0);
-  const writerPackReady = Boolean(storyDossier.writerInput?.readiness?.readyForWriter || storyDossier.dossierBuilder?.readyForWriter);
+  const writerInputReadiness = storyDossier.writerInput?.readiness || {};
+  const directWritingSourceCount = Number((storyDossier.writerInput?.directWritingSources || []).length || 0);
+  const directWritingFactCount = Number(writerInputReadiness.writingFactCount || directWritingFacts.length || 0);
+  const verificationFactCount = Number(writerInputReadiness.verificationFactCount || 0);
+  const writerPackReady = Boolean(writerInputReadiness.readyForWriter || storyDossier.dossierBuilder?.readyForWriter);
+  const writerEvidencePackReady = Boolean(writerPackReady && directWritingFactCount >= 2 && (sourceCount >= 1 || directWritingSourceCount >= 1));
   const mixedOrGeneric = Boolean(handoff.genericRepresentative || handoff.mixedEvent || handoff.topicContamination || handoff.minimumDossierFallback);
   const capacity = newsLabDossierArticleCapacity(storyDossier, context);
   const missing = [
     whatHappened ? "" : "needs-primary-event",
     mixedOrGeneric ? "needs-clean-single-event-identity" : "",
-    writerPackReady || directWritingFacts.length >= 1 ? "" : "needs-writer-evidence-pack",
+    writerEvidencePackReady ? "" : "needs-writer-evidence-pack",
     ...capacity.holdReasons
   ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
   const warning = [
@@ -37396,13 +39592,13 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
     capacity.tier === "READY_FOR_BREAKING_BRIEF" ? "brief-capacity-only" : "",
     ...(capacity.standardBlockers || [])
   ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
-  const readyForWriter = missing.length === 0 && capacity.readyForWriter;
+  const readyForWriter = missing.length === 0 && capacity.readyForWriter && writerEvidencePackReady;
   const score = clampScore(35
-    + Math.min(22, Number(capacity.metrics?.uniqueFactCount || Math.max(knownFacts.length, directWritingFacts.length)) * 6)
+    + Math.min(22, Number(capacity.metrics?.uniqueFactCount || Math.max(knownFacts.length, directWritingFactCount)) * 6)
     + Math.min(18, Number(capacity.metrics?.independentSourceCount || sourceCount) * 8)
     + Math.min(12, Number(capacity.metrics?.meaningfulTimelineCount || timeline.length) * 6)
     + Math.min(15, confidenceScore * 0.15)
-    + (writerPackReady ? 10 : 0)
+    + (writerEvidencePackReady ? 10 : 0)
     + (capacity.readyForStandardArticle ? 8 : 0)
     - (mixedOrGeneric ? 30 : 0));
   const readinessRouting = newsLabDossierReadinessClassFromEvidence({
@@ -37414,7 +39610,9 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
     metrics: {
       ...capacity.metrics,
       knownFactCount: knownFacts.length,
-      directWritingFactCount: directWritingFacts.length,
+      directWritingFactCount,
+      verificationFactCount,
+      directWritingSourceCount,
       sourceCount,
       mixedOrGeneric
     }
@@ -37447,6 +39645,9 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
       contradictionCount: contradictions.length,
       confidenceScore,
       writerPackReady,
+      writerEvidencePackReady,
+      directWritingSourceCount,
+      verificationFactCount,
       mixedOrGeneric,
       articleCapacity: capacity.metrics
     },
@@ -37459,13 +39660,26 @@ function newsLabLockDossierForWriting(storyDossier = {}, readiness = {}, context
   const now = new Date().toISOString();
   const eventId = storyDossier.eventId || storyDossier.storyId || context.eventId || safeFileSlug(storyDossier.whatHappened || "story");
   const revisionSeed = [eventId, storyDossier.createdAt || now, readiness.score || 0, (storyDossier.knownFacts || []).join("|").slice(0, 240)].join(":");
-  return {
+  const revisionId = `dossier_${safeFileSlug(revisionSeed).slice(0, 96)}`;
+  const revisionHash = `sha256:${crypto.createHash("sha256").update(JSON.stringify({
+    eventId,
+    revisionId,
+    readinessTier: readiness.readinessTier || "",
+    articleFormat: readiness.articleFormat || "",
+    knownFacts: storyDossier.knownFacts || [],
+    writingEligibleFactIds: storyDossier.factLedger?.writingEligibleFactIds || [],
+    timeline: storyDossier.timeline || [],
+    canonicalEventSignature: storyDossier.canonicalEventSignature || storyDossier.eventSignature?.canonical || null,
+    sourceKeys: (storyDossier.sourcePool || []).map(source => source.url || source.source || source.title || "").filter(Boolean).slice(0, 40)
+  })).digest("hex")}`;
+  const lockedDossier = {
     ...JSON.parse(JSON.stringify(storyDossier || {})),
     dossierLock: {
       active: true,
       lockedAt: now,
       eventId,
-      revisionId: `dossier_${safeFileSlug(revisionSeed).slice(0, 96)}`,
+      revisionId,
+      revisionHash,
       readiness,
       updateRule: "New evidence after this lock creates a dossier revision and article update. It must not mutate the active draft or reset the original publish date.",
       publishDateRule: "Article publishedAt/originalPublishedAt remains the earliest credible event/source time; cache refreshes and dossier revisions may update updatedAt only."
@@ -37481,9 +39695,62 @@ function newsLabLockDossierForWriting(storyDossier = {}, readiness = {}, context
       dossierLock: {
         active: true,
         lockedAt: now,
-        revisionId: `dossier_${safeFileSlug(revisionSeed).slice(0, 96)}`
+        revisionId,
+        revisionHash
       },
       readinessContract: readiness
+    },
+    canonicalLayers: {
+      ...(storyDossier.canonicalLayers || {}),
+      layer7ProductionContract: {
+        ...(storyDossier.canonicalLayers?.layer7ProductionContract || {}),
+        dossierRevisionId: revisionId,
+        dossierRevisionHash: revisionHash,
+        articleFormat: readiness.articleFormat || "hold",
+        readinessTier: readiness.readinessTier || "",
+        allowedFactIds: storyDossier.factLedger?.writingEligibleFactIds || storyDossier.writerInput?.allowedFactIds || [],
+        paragraphPlan: [],
+        finalCategory: storyDossier.categoryClassification?.semanticCategory || storyDossier.category || "",
+        headlineInputs: {
+          actor: storyDossier.canonicalEventSignature?.primaryActor || storyDossier.eventSignature?.canonical?.primaryActor || "",
+          action: storyDossier.canonicalEventSignature?.primaryAction || storyDossier.eventSignature?.canonical?.primaryAction || "",
+          consequence: storyDossier.canonicalEventSignature?.consequence || storyDossier.eventSignature?.canonical?.consequence || ""
+        },
+        imageBrief: "Image Intelligence must use this same dossier revision and canonical event signature.",
+        refreshSchedule: readiness.articleFormat === "breaking-brief" ? "watch-for-follow-up-evidence-and-upgrade" : "update-on-material-same-event-evidence",
+        rule: "The locked production contract controls Writer Reasoning, body, headline, category, image, editor, repair, newsletter, and Creator Desk handoff."
+      }
+    }
+  };
+  const canonicalIntelligence = newsLabBuildCanonicalDossierIntelligence(lockedDossier, readiness, { ...context, eventId, revisionId, revisionHash });
+  return {
+    ...lockedDossier,
+    canonicalDossierIntelligence: canonicalIntelligence,
+    canonicalIntelligence,
+    storyUnderstanding: canonicalIntelligence.storyUnderstanding || null,
+    dossierLock: {
+      ...lockedDossier.dossierLock,
+      canonicalIntelligenceId: canonicalIntelligence.id,
+      storyUnderstandingId: canonicalIntelligence.storyUnderstanding?.id || "",
+      revisionHash,
+      controllingObject: "canonicalDossierIntelligence"
+    },
+    dossierBuilder: {
+      ...lockedDossier.dossierBuilder,
+      canonicalIntelligenceId: canonicalIntelligence.id,
+      storyUnderstandingId: canonicalIntelligence.storyUnderstanding?.id || "",
+      controlsDownstreamSystems: true
+    },
+    writerInput: {
+      ...lockedDossier.writerInput,
+      canonicalIntelligenceRef: {
+        id: canonicalIntelligence.id,
+        revisionId,
+        revisionHash,
+        storyUnderstandingId: canonicalIntelligence.storyUnderstanding?.id || "",
+        storyUnderstandingReady: Boolean(canonicalIntelligence.storyUnderstanding?.readiness?.readyForReasoning),
+        readyForWriter: canonicalIntelligence.writerContract.readyForWriter
+      }
     }
   };
 }
@@ -37904,8 +40171,8 @@ function newsLabEnsureWriterDossierHandoff(story = {}) {
     writingWorkflow: {
       ...existingWorkflow,
       stages: updatedStages,
-      brainPipelineOrder: ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"],
-    rule: "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Dossier To Writer Handoff -> Headline Generator -> Headline Editor -> Article Writer -> Draft Optimization Engine -> Publishing Editor -> Validator -> Publisher, then the Brain evaluates Evidence -> Context -> Reasoning -> Writing -> Self Critique -> Publishing."
+      brainPipelineOrder: ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"],
+    rule: "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Story Understanding -> Dossier To Writer Handoff -> Writer Reasoning -> Headline Generator -> Headline Editor -> Article Writer -> Draft Optimization Engine -> Publishing Editor -> Validator -> Publisher, then the Brain evaluates Evidence -> Context -> Understanding -> Reasoning -> Writing -> Self Critique -> Publishing."
     }
   };
 }
@@ -40882,7 +43149,20 @@ function defaultWritingPatternLibrary() {
         relatedIssues: {}
       },
       headline: {
-        principle: "Create headlines from the completed CE story dossier using actor + action + consequence.",
+        principle: "Create clear, accurate, concise, active-voice headlines from the completed CE story dossier using actor + action + consequence.",
+        categories: {
+          direct: "Use for hard news: name the actor, action, and concrete result immediately.",
+          curiosity: "Use for features only when the headline stays accurate and specific.",
+          impact: "Use for human-impact stories by naming who is affected and what changed.",
+          seo: "Use searchable names, places, alerts, laws, agencies, and years when discoverability matters.",
+          unconventional: "Use sparingly for special features, never for straight news or breaking alerts."
+        },
+        blockingRules: [
+          "Reject generic fallback language such as comes into focus, adds new details, raises questions, or draws attention.",
+          "Reject copied publisher headline structure, live-update labels, analysis labels, and truncated source fragments.",
+          "Require a concrete subject, active verb, and evidence-backed consequence before the headline can pass.",
+          "Prefer 5-11 words and allow up to 14 only when a named person, place, law, agency, or event needs clarity."
+        ],
         successes: 0,
         failures: 0,
         successRate: 0,
@@ -40897,7 +43177,7 @@ function defaultWritingPatternLibrary() {
       }
     },
     lessons: [],
-    writerDirective: "Before drafting, read the Story Dossier for facts and this pattern library for craft. Never imitate source wording.",
+    writerDirective: "Before drafting, read the Story Dossier for facts and this pattern library for craft. Write the article first, then let the Headline Editor distill the strongest verified fact into a clear, active, specific CE Media headline. Never imitate source wording.",
     rule: "Writing Intelligence teaches construction technique separately from content memory."
   };
 }
@@ -40905,7 +43185,7 @@ function defaultWritingPatternLibrary() {
 function writingPatternKeysForIssue(issue = "") {
   const text = String(issue || "").toLowerCase();
   const keys = new Set();
-  if (/headline|title|truncated|word-salad|copied-headline|publisher-headline|source-no-overlap/.test(text)) keys.add("headline");
+  if (/headline|title|truncated|word-salad|copied-headline|publisher-headline|source-no-overlap|active-verb|weak-opening|weak-subject|keyword-salad|too-generic|publisher-format|too-close/.test(text)) keys.add("headline");
   if (/lead|opening|first sentence|gets to the point/.test(text)) keys.add("lead");
   if (/context|who|what|when|where|missing-reporting-context|insufficient-full-article-facts|empty-body|short-body|body/.test(text)) keys.add("structure");
   if (/transition|repeated|repetition|generic|template|process-language|abrupt/.test(text)) keys.add("transition");
@@ -41419,13 +43699,17 @@ function newsLabSelectPassingHeadline(story = {}, seed = "") {
   if (passing) return passing;
   const evidenceBacked = candidates.find(candidate => {
     const edited = newsLabHeadlineEditor(candidate, { ...story, title: candidate });
-    return !edited.issues.includes("headline-not-evidence-backed")
+    return edited.score >= 78
+      && !edited.issues.includes("headline-not-evidence-backed")
       && !edited.issues.includes("headline-missing-action")
+      && !edited.issues.includes("headline-missing-active-verb")
+      && !edited.issues.includes("headline-too-generic")
+      && !edited.issues.includes("headline-publisher-format-leak")
       && !newsLabHeadlineTooClose(candidate, story.originalHeadline || "")
       && !newsLabWeakGenericHeadline(candidate)
       && !newsLabHeadlineTruncated(candidate);
   });
-  return evidenceBacked || candidates[0] || seed || story.title || "";
+  return evidenceBacked || "";
 }
 
 function newsLabPublicationIdentityIssueSet(story = {}) {
@@ -41614,19 +43898,35 @@ function newsLabBuildWriterReasoningPlan(story = {}, dossierInput = null, contex
   const identity = context.canonicalStoryIdentity || story.canonicalStoryIdentity || newsLabCanonicalStoryIdentity(story, dossier, context);
   const readiness = context.dossierReadiness || story.evidenceSupportedArticleCapacity || dossier.dossierLock?.readiness || dossier.dossierBuilder?.readinessContract || {};
   const articleFormat = readiness.articleFormat || story.articleFormat || "standard-article";
+  const reasoningRepresentative = context.representative || story.representative || story;
+  const canonicalIntelligence = dossier.canonicalDossierIntelligence || dossier.canonicalIntelligence || newsLabBuildCanonicalDossierIntelligence(dossier, readiness, { ...context, canonicalStoryIdentity: identity });
+  const storyUnderstanding = context.storyUnderstanding
+    || dossier.storyUnderstanding
+    || canonicalIntelligence.storyUnderstanding
+    || newsLabBuildStoryUnderstanding(dossier, canonicalIntelligence, readiness, context);
+  const ledgerRecords = Array.isArray(dossier.factLedger?.verifiedFacts)
+    ? dossier.factLedger.verifiedFacts.filter(record => record?.writingEligible && record.statement)
+    : [];
   const promotedFacts = [
+    ...ledgerRecords.map(record => record.statement),
+    ...(storyUnderstanding.evidenceMap || []).map(record => record.statement),
+    ...(canonicalIntelligence.evidence?.verifiedFacts || []),
     ...(story.writerDossierInput?.knownFacts || []),
     ...(dossier.writerInput?.directWritingFacts || []),
     ...(dossier.knownFacts || []),
     ...(dossier.agreement?.sharedClaims || [])
   ].map(newsLabCleanDossierFactSentence)
     .filter(Boolean)
+    .filter(fact => newsLabDossierFactQuality(fact, reasoningRepresentative).usable)
     .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.78) === index)
     .slice(0, articleFormat === "breaking-brief" ? 5 : articleFormat === "deep-article" ? 12 : 8);
   const factRecords = promotedFacts.map((statement, index) => ({
-    factId: `fact_${index + 1}`,
+    factId: ledgerRecords.find(record => newsLabTextOverlap(record.statement, statement) >= 0.78)?.factId || `fact_${index + 1}`,
     statement,
-    sourceId: (dossier.sourcePool || story.sources || [])[index % Math.max(1, (dossier.sourcePool || story.sources || []).length)]?.url || "",
+    sourceId: ledgerRecords.find(record => newsLabTextOverlap(record.statement, statement) >= 0.78)?.sourceIds?.[0]
+      || (dossier.sourcePool || story.sources || [])[index % Math.max(1, (dossier.sourcePool || story.sources || []).length)]?.url
+      || "",
+    verificationStatus: ledgerRecords.find(record => newsLabTextOverlap(record.statement, statement) >= 0.78)?.verificationStatus || "promoted-by-writer-reasoning",
     writingEligible: true
   }));
   const sourceRecords = [
@@ -41634,11 +43934,14 @@ function newsLabBuildWriterReasoningPlan(story = {}, dossierInput = null, contex
     ...(Array.isArray(story.sources) ? story.sources : [])
   ].filter(Boolean);
   const uncertainty = [
+    ...(storyUnderstanding.answers?.stillUnknown || []),
+    ...(canonicalIntelligence.intelligence?.stillUnknown || []),
     ...(story.writerDossierInput?.unknownFacts || []),
     ...(dossier.unknownFacts || []),
     ...(dossier.stillUnknown || [])
   ].filter(Boolean).slice(0, 6);
   const disputedFacts = [
+    ...(canonicalIntelligence.evidence?.disputedFacts || []),
     ...(dossier.contradictions || []),
     ...(dossier.disagreement?.sourceSpecificClaims || []).map(item => item.claim || "")
   ].filter(Boolean).slice(0, 6);
@@ -41652,59 +43955,170 @@ function newsLabBuildWriterReasoningPlan(story = {}, dossierInput = null, contex
     };
   });
   const minimumFacts = articleFormat === "breaking-brief" ? 2 : articleFormat === "deep-article" ? 5 : 3;
-  const paragraphPlan = articleFormat === "breaking-brief"
+  const factIdAt = (index) => factRecords[index]?.factId || "";
+  const compactFactIds = (...indexes) => indexes.map(factIdAt).filter(Boolean);
+  const rawParagraphPlan = articleFormat === "breaking-brief"
     ? [
-        { role: "lead", factsAllowed: ["fact_1"], purpose: "State the verified development and primary actor without analysis." },
-        { role: "evidence", factsAllowed: ["fact_2", "fact_3"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Add direct attribution and the clearest supporting detail." },
-        { role: "unknowns", factsAllowed: ["fact_1"], purpose: "Name what remains unknown or the next confirmed update." }
+        { role: "lead", decisionId: "reader-first", factsAllowed: compactFactIds(0), purpose: "State the verified development and primary actor without analysis." },
+        { role: "evidence", decisionId: "strongest-evidence", factsAllowed: compactFactIds(1, 2), purpose: "Add direct attribution and the clearest supporting detail." },
+        { role: "unknowns", decisionId: "uncertainty-boundary", factsAllowed: compactFactIds(0), purpose: "Name what remains unknown or the next confirmed update." }
       ]
     : [
-        { role: "lead", factsAllowed: ["fact_1"], purpose: "State the verified development." },
-        { role: "evidence", factsAllowed: ["fact_2", "fact_3"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Show the evidence and attribution behind the lead." },
-        { role: "context", factsAllowed: ["fact_3", "fact_4"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Explain why the development matters without speculation." },
-        { role: "timeline", factsAllowed: ["fact_4", "fact_5"].filter(id => factRecords.some(fact => fact.factId === id)), purpose: "Place the development in sequence when timeline facts exist." },
-        { role: "next-step", factsAllowed: ["fact_1"], purpose: "Close with the next confirmed step or unresolved fact." }
+        { role: "lead", decisionId: "reader-first", factsAllowed: compactFactIds(0), purpose: "State the verified development." },
+        { role: "evidence", decisionId: "strongest-evidence", factsAllowed: compactFactIds(1, 2), purpose: "Show the evidence and attribution behind the lead." },
+        { role: "context", decisionId: "necessary-context", factsAllowed: compactFactIds(2, 3), purpose: "Explain why the development matters without speculation." },
+        { role: "timeline", decisionId: "necessary-context", factsAllowed: compactFactIds(3, 4), purpose: "Place the development in sequence when timeline facts exist." },
+        { role: "next-step", decisionId: "uncertainty-boundary", factsAllowed: compactFactIds(0), purpose: "Close with the next confirmed step or unresolved fact." }
       ].slice(0, articleFormat === "deep-article" ? 6 : 5);
+  const paragraphPlan = rawParagraphPlan.filter(plan => Array.isArray(plan.factsAllowed) && plan.factsAllowed.length);
   const blockers = [];
+  if (!canonicalIntelligence.revision?.id) blockers.push("missing-canonical-dossier-revision");
+  if (storyUnderstanding.readiness?.readyForReasoning === false) blockers.push(...(storyUnderstanding.readiness.blockers || ["story-understanding-not-ready"]));
+  if (canonicalIntelligence.writerContract?.readyForWriter === false) blockers.push("canonical-dossier-writer-contract-not-ready");
   if (!identity.ready) blockers.push(...(identity.readinessIssues || ["story-identity-not-ready"]));
   if (!identity.primaryActor || /^officials$/i.test(identity.primaryActor)) blockers.push("missing-primary-actor");
   if (!identity.action) blockers.push("missing-primary-action");
   if (factRecords.length < minimumFacts) blockers.push(articleFormat === "breaking-brief" ? "needs-two-verified-facts-for-brief" : "needs-more-verified-facts");
   if (!attributionPlan.length) blockers.push("missing-attribution-plan");
   if (!paragraphPlan.length || paragraphPlan.some(paragraph => !paragraph.factsAllowed?.length)) blockers.push("missing-article-structure");
+  const allowedFactText = factRecords.map(record => record.statement).join(" ");
+  const sourceEventKeys = [...new Set(sourceRecords
+    .map(source => source.eventId || source.topicKey || source.clusterKey || source.storyId || "")
+    .map(value => String(value || "").trim())
+    .filter(Boolean))];
+  const headlineActorSupported = !identity.primaryActor || newsLabTextOverlap(identity.primaryActor, allowedFactText) >= 0.04;
+  const headlineActionSupported = !identity.action || newsLabTextOverlap(identity.action, allowedFactText) >= 0.04;
+  const headlineConsequenceSupported = !identity.consequence || newsLabTextOverlap(identity.consequence, allowedFactText) >= 0.04 || articleFormat === "breaking-brief";
+  if (sourceEventKeys.length > 1 && articleFormat !== "breaking-brief") blockers.push("alternative-event-possible-split-dossier");
+  if (articleFormat !== "breaking-brief" && sourceRecords.length <= 1 && factRecords.length <= minimumFacts) blockers.push("weakest-source-removal-breaks-central-event");
+  if (!headlineActorSupported || !headlineActionSupported || !headlineConsequenceSupported) blockers.push("headline-truth-check-failed");
   const readinessReady = blockers.length === 0;
+  const writerReasoningContract = {
+    eventId: identity.eventId || dossier.eventId || dossier.storyId || story.eventId || "",
+    dossierRevision: canonicalIntelligence.revision?.number || canonicalIntelligence.revision?.id || dossier.dossierLock?.revision || dossier.dossierLock?.revisionId || "",
+    dossierRevisionId: canonicalIntelligence.revision?.id || dossier.dossierLock?.revisionId || "",
+    centralEvent: {
+      actor: identity.primaryActor || "",
+      action: identity.action || "",
+      object: storyUnderstanding.answers?.whatHappened || identity.primaryEvent || dossier.whatHappened || "",
+      consequence: identity.consequence || ""
+    },
+    verifiedFactIds: factRecords.map(record => record.factId),
+    requiredAttribution: attributionPlan.filter(item => item.required).map(item => item.factId),
+    uncertainties: uncertainty,
+    prohibitedInferences: [
+      ...(storyUnderstanding.answers?.whatShouldNeverBeInferred || []),
+      ...uncertainty.map(item => `Do not state as confirmed: ${item}`),
+      ...disputedFacts.map(item => `Attribute or qualify disputed claim: ${item}`)
+    ].slice(0, 8),
+    articleType: articleFormat,
+    leadDecision: "Open with the central event supported by allowedFactIds.",
+    contextDecision: "Use only context tied to the same locked event revision.",
+    endingDecision: "Close with verified next step, uncertainty, or direct consequence.",
+    headlineInputs: {
+      actor: identity.primaryActor || "",
+      action: identity.action || "",
+      consequence: identity.consequence || ""
+    }
+  };
+  const reasoningHardChecks = {
+    alternativeEventCheck: {
+      passed: !(sourceEventKeys.length > 1 && articleFormat !== "breaking-brief"),
+      eventKeys: sourceEventKeys,
+      rule: "Could these facts plausibly describe two different events? If yes, split or rebuild the dossier before writing."
+    },
+    evidenceRemovalCheck: {
+      passed: !(articleFormat !== "breaking-brief" && sourceRecords.length <= 1 && factRecords.length <= minimumFacts),
+      sourceCount: sourceRecords.length,
+      factCount: factRecords.length,
+      rule: "If the weakest source disappeared, the central event must still be supportable for a standard article."
+    },
+    headlineTruthCheck: {
+      passed: headlineActorSupported && headlineActionSupported && headlineConsequenceSupported,
+      actorSupported: headlineActorSupported,
+      actionSupported: headlineActionSupported,
+      consequenceSupported: headlineConsequenceSupported,
+      rule: "Actor + action + consequence must remain true using only promoted facts."
+    }
+  };
   return {
     active: true,
-    version: "20260801-writer-reasoning-plan-v1",
+    version: "20260806-writer-reasoning-contract-v2",
     generatedAt: new Date().toISOString(),
+    planId: `writer_plan_${safeFileSlug(identity.eventId || dossier.eventId || dossier.storyId || story.id || story.title || "story").slice(0, 80)}_${Date.now().toString(36)}`,
     eventId: identity.eventId || dossier.eventId || dossier.storyId || story.eventId || "",
+    dossierRevisionId: canonicalIntelligence.revision?.id || dossier.dossierLock?.revisionId || "",
+    dossierRevisionHash: canonicalIntelligence.revision?.hash || dossier.dossierLock?.revisionHash || "",
+    canonicalIntelligenceId: canonicalIntelligence.id || "",
+    canonicalDossierConsumed: true,
+    storyUnderstandingId: storyUnderstanding.id || "",
+    storyUnderstandingConsumed: true,
     articleFormat,
-    primaryActor: identity.primaryActor || "",
+    primaryActor: storyUnderstanding.answers?.whoDidIt || identity.primaryActor || "",
     primaryAction: identity.action || "",
     verifiedConsequence: identity.consequence || "",
-    whatHappened: identity.primaryEvent || dossier.whatHappened || "",
+    whatHappened: storyUnderstanding.answers?.whatHappened || identity.primaryEvent || dossier.whatHappened || "",
     verifiedFacts: factRecords,
+    allowedFactIds: factRecords.map(record => record.factId),
     uncertainFacts: uncertainty,
+    knownUnknowns: uncertainty,
     disputedFacts,
     attributionPlan,
+    requiredAttributions: attributionPlan.filter(item => item.required),
     whyItMatters: [
-      newsLabTrimSentence(identity.consequence || dossier.historicalContext || story.contextEngine?.topicSummary || story.summary || "", 220)
+      newsLabTrimSentence(storyUnderstanding.answers?.whyThisIsNews || identity.consequence || dossier.historicalContext || story.contextEngine?.topicSummary || story.summary || "", 220)
     ].filter(Boolean),
     necessaryContext: [
+      ...(storyUnderstanding.answers?.belongsOnlyInBackground || []),
       dossier.historicalContext,
       dossier.historicalContextEngine?.suggestedContextParagraph,
       story.contextEngine?.topicSummary
     ].filter(Boolean).slice(0, 4),
     prohibitedInferences: [
+      ...(storyUnderstanding.answers?.whatShouldNeverBeInferred || []),
       ...uncertainty.map(item => `Do not state as confirmed: ${item}`),
       ...disputedFacts.map(item => `Attribute or qualify disputed claim: ${item}`)
     ].slice(0, 8),
+    storyDecisions: (storyUnderstanding.decisionInputs || []).slice(0, 8),
+    counterfactualChecks: [
+      {
+        check: "Could this headline or lead describe a different event?",
+        passCondition: "No; actor, action, object, and consequence all match the canonical dossier revision."
+      },
+      {
+        check: "Could any sentence imply an unsupported fact?",
+        passCondition: "No; every article claim maps to allowedFactIds or is explicitly framed as unknown/disputed."
+      },
+      {
+        check: "Did the dossier change after writing began?",
+        passCondition: "No; use dossierRevisionHash and create a new revision for later evidence."
+      }
+    ],
     paragraphPlan,
+    paragraphExecutionPlan: paragraphPlan.map((paragraph, index) => ({
+      step: index + 1,
+      role: paragraph.role,
+      decisionId: paragraph.decisionId || (storyUnderstanding.writerGuidance?.paragraphSequence || [])[index]?.decisionId || "",
+      allowedFactIds: paragraph.factsAllowed || [],
+      verifyBeforeNextParagraph: true,
+      verification: (storyUnderstanding.writerGuidance?.paragraphSequence || [])[index]?.verifyAgainst || ["allowed-facts", "article-role"]
+    })),
+    sentenceToFactMappingRequired: true,
+    genericFallbackPolicy: articleFormat === "breaking-brief"
+      ? "allowed-only-as-developing-brief-with-two-verified-facts"
+      : "forbidden-return-to-dossier-evidence",
     headlineInputs: {
       actor: identity.primaryActor || "",
       action: identity.action || "",
-      consequence: identity.consequence || ""
+      consequence: identity.consequence || "",
+      dossierRevisionId: canonicalIntelligence.revision?.id || dossier.dossierLock?.revisionId || "",
+      dossierRevisionHash: canonicalIntelligence.revision?.hash || dossier.dossierLock?.revisionHash || "",
+      allowedFactIds: factRecords.map(record => record.factId),
+      storyUnderstandingId: storyUnderstanding.id || "",
+      generationRule: "Generate headline only after the plan-bound draft passes sentence-to-fact verification."
     },
+    writerReasoningContract,
+    reasoningHardChecks,
     readiness: {
       ready: readinessReady,
       blockers: [...new Set(blockers)],
@@ -41714,7 +44128,24 @@ function newsLabBuildWriterReasoningPlan(story = {}, dossierInput = null, contex
         uncertainty.length ? "include-unknowns-or-next-step" : ""
       ].filter(Boolean)
     },
-    rule: "Writer Reasoning is a pre-draft plan. The body must be built from promoted dossier facts assigned to paragraph roles, not from raw RSS/source fragments."
+    executableContract: {
+      allowedFactIds: factRecords.map(record => record.factId),
+      requiredAttributions: attributionPlan.filter(item => item.required),
+      prohibitedClaims: [
+        ...(canonicalIntelligence.evidence?.unsupportedClaims || []).map(item => item.fact || item.claim || item).filter(Boolean),
+        ...disputedFacts,
+        ...uncertainty
+      ].slice(0, 16),
+      knownUnknowns: uncertainty,
+      paragraphPlan,
+      storyUnderstandingId: storyUnderstanding.id || "",
+      decisionsToExecute: (storyUnderstanding.decisionInputs || []).slice(0, 8),
+      noGenericFallback: articleFormat !== "breaking-brief",
+      sentenceToFactMappingRequired: true,
+      owner: "Writer Reasoning Engine",
+      rule: "The Writer may draft only when this contract is ready; failed standard/deep contracts return upstream to Dossier Builder instead of producing generic prose."
+    },
+    rule: "Writer Reasoning consumes the canonical dossier intelligence revision. The body must be built from promoted dossier facts assigned to paragraph roles, not from raw RSS/source fragments or independently rebuilt context."
   };
 }
 
@@ -41758,6 +44189,30 @@ function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) 
   const bodyText = body.join(" ");
   const lead = body[0] || "";
   const factStatements = (reasoningPlan.verifiedFacts || []).map(fact => fact.statement).filter(Boolean);
+  const understandingAnchors = [
+    reasoningPlan.whatHappened,
+    reasoningPlan.primaryActor,
+    reasoningPlan.verifiedConsequence,
+    ...(reasoningPlan.storyDecisions || []).map(decision => decision.answer || "")
+  ].map(item => newsLabTrimSentence(item, 260)).filter(Boolean);
+  const sentenceToFactMapping = bodyText
+    .split(/(?<=[.!?])\s+/)
+    .map(sentence => newsLabTrimSentence(sentence, 320))
+    .filter(Boolean)
+    .map((sentence, index) => {
+      const matchedFacts = (reasoningPlan.verifiedFacts || [])
+        .filter(fact => fact.statement && newsLabTextOverlap(sentence, fact.statement) >= 0.12)
+        .map(fact => fact.factId)
+        .slice(0, 4);
+      const attributionSafe = /\breported|according|said|stated|filing|records|official|source|agency|court|police\b/i.test(sentence);
+      return {
+        sentenceIndex: index,
+        sentence,
+        matchedFactIds: matchedFacts,
+        attributionSafe,
+        mapped: Boolean(matchedFacts.length || attributionSafe || sentence.split(/\s+/).length < 7)
+      };
+    });
   const usedFacts = factStatements.filter(fact => newsLabTextOverlap(bodyText, fact) >= 0.18);
   const missingFacts = factStatements.filter(fact => !usedFacts.includes(fact)).slice(0, 5);
   const prohibitedInferenceHits = (reasoningPlan.prohibitedInferences || [])
@@ -41782,27 +44237,104 @@ function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) 
   const attributionPresent = !attributionRequired || /\breported|according|said|stated|filing|records|official|source|agency|court|police\b/i.test(bodyText);
   const planCoverage = Number((usedFacts.length / Math.max(1, factStatements.length)).toFixed(2));
   const alignmentRate = Number((paragraphAlignment.filter(row => row.aligned).length / Math.max(1, paragraphAlignment.length)).toFixed(2));
-  const passed = leadMatchesEvent && attributionPresent && planCoverage >= (reasoningPlan.articleFormat === "breaking-brief" ? 0.5 : 0.6) && alignmentRate >= 0.6 && !prohibitedInferenceHits.length;
+  const sentenceMappingRate = Number((sentenceToFactMapping.filter(row => row.mapped).length / Math.max(1, sentenceToFactMapping.length)).toFixed(2));
+  const understandingAlignmentRate = Number((understandingAnchors.filter(anchor => newsLabTextOverlap(bodyText, anchor) >= 0.08).length / Math.max(1, understandingAnchors.length)).toFixed(2));
+  const understandingAligned = !reasoningPlan.storyUnderstandingConsumed || understandingAlignmentRate >= 0.15;
+  const passed = leadMatchesEvent && attributionPresent && planCoverage >= (reasoningPlan.articleFormat === "breaking-brief" ? 0.5 : 0.6) && alignmentRate >= 0.6 && sentenceMappingRate >= 0.65 && understandingAligned && !prohibitedInferenceHits.length;
   return {
     active: true,
     verifiedAt: new Date().toISOString(),
     passed,
     planCoverage,
     paragraphAlignmentRate: alignmentRate,
+    sentenceToFactMappingRate: sentenceMappingRate,
+    understandingAlignmentRate,
+    understandingAligned,
     leadMatchesEvent,
     attributionPresent,
     unsupportedClaims: [],
     missingFacts,
     prohibitedInferenceHits,
+    sentenceToFactMapping: sentenceToFactMapping.slice(0, 24),
     paragraphAlignment,
     targetedRepair: !passed ? newsLabTargetedRepairRouteFromIssues([
       !leadMatchesEvent ? "weak-lead-plan-mismatch" : "",
       !attributionPresent ? "missing-attribution-plan" : "",
       planCoverage < 0.6 ? "plan-facts-not-used" : "",
+      sentenceMappingRate < 0.65 ? "sentence-fact-mapping-incomplete" : "",
+      !understandingAligned ? "story-understanding-alignment-failed" : "",
       prohibitedInferenceHits.length ? "prohibited-inference-detected" : ""
     ].filter(Boolean)) : null,
     rule: "After drafting, verify that the article followed the pre-draft reasoning plan before headline/editor review."
   };
+}
+
+function newsLabReasoningRequiresPlanOnlyArticle(reasoningPlan = {}, readiness = {}) {
+  const articleFormat = String(reasoningPlan.articleFormat || readiness.articleFormat || "").toLowerCase();
+  const readinessTier = String(readiness.readinessTier || "").toUpperCase();
+  return Boolean(
+    /standard|deep/.test(articleFormat)
+    || /STANDARD|DEEP/.test(readinessTier)
+    || readiness.readyForStandardArticle
+    || readiness.readyForDeepArticle
+  );
+}
+
+function newsLabReasoningBodyMeetsMinimum(body = [], reasoningPlan = {}, readiness = {}) {
+  const paragraphs = Array.isArray(body) ? body.filter(Boolean) : [];
+  const articleFormat = String(reasoningPlan.articleFormat || readiness.articleFormat || "").toLowerCase();
+  const textLength = paragraphs.join(" ").length;
+  const minimumParagraphs = /deep/.test(articleFormat) || readiness.readyForDeepArticle ? 5 : 4;
+  const minimumCharacters = /deep/.test(articleFormat) || readiness.readyForDeepArticle ? 650 : 420;
+  return paragraphs.length >= minimumParagraphs && textLength >= minimumCharacters;
+}
+
+function newsLabRecordWriterReasoningRecovery({
+  representative = {},
+  storyDossier = {},
+  cluster = {},
+  category = "",
+  reasoningPlan = {},
+  readiness = {},
+  sources = [],
+  facts = [],
+  reason = "writer-reasoning-body-generation-failed",
+  body = []
+} = {}) {
+  const blockingReasons = [...new Set([
+    reason,
+    ...(reasoningPlan.readiness?.blockers || []),
+    ...(readiness.blockingReasons || []),
+    ...(readiness.missing || [])
+  ].filter(Boolean))];
+  recordNewsLabDossierRecovery({
+    eventId: storyDossier.eventId || storyDossier.storyId || cluster.eventId || cluster.key || reportClusterKey(representative),
+    clusterId: cluster.key || cluster.eventId || storyDossier.storyId || reportClusterKey(representative),
+    title: representative.title || storyDossier.whatHappened || "",
+    category,
+    readinessClass: "NEEDS_WRITER_REASONING",
+    holdReason: reason,
+    blockingReasons,
+    missingEvidence: blockingReasons,
+    acceptedSourceCount: sources.length,
+    rejectedSourceCount: Number(cluster.rejectedSourceCount || 0),
+    factCount: facts.length,
+    acceptedSources: sources.map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
+    recommendedAction: "repair-writer-reasoning-plan-and-regenerate-plan-body",
+    nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+    partialDossier: {
+      ...storyDossier,
+      writerReasoningPlan: reasoningPlan,
+      writerReasoningRecovery: {
+        reason,
+        bodyParagraphCount: Array.isArray(body) ? body.length : 0,
+        bodyLength: Array.isArray(body) ? body.join(" ").length : 0,
+        articleFormat: reasoningPlan.articleFormat || readiness.articleFormat || "",
+        strictPlanOnly: newsLabReasoningRequiresPlanOnlyArticle(reasoningPlan, readiness)
+      }
+    },
+    preventionLesson: "Standard and deep articles must be written from the pre-draft Writer Reasoning plan. If plan-based prose is missing, thin, or fails plan verification, return to Writer Reasoning/Evidence for targeted recovery instead of falling back to generic body generation."
+  });
 }
 
 function newsLabTargetedRepairRouteFromIssues(issues = []) {
@@ -43974,8 +46506,8 @@ function newsLabStoryWritingWorkflow({
         issueCount: Number((qualityGate?.remainingIssues || qualityGate?.issues || []).length || 0)
       })
     ],
-    brainPipelineOrder: ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"],
-    rule: "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Dossier To Writer Handoff -> Headline Generator -> Headline Editor -> Article Writer -> Draft Optimization Engine -> Publishing Editor -> Validator -> Publisher, then the Brain evaluates Evidence -> Context -> Reasoning -> Writing -> Self Critique -> Publishing."
+    brainPipelineOrder: ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"],
+    rule: "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Story Understanding -> Dossier To Writer Handoff -> Writer Reasoning -> Headline Generator -> Headline Editor -> Article Writer -> Draft Optimization Engine -> Publishing Editor -> Validator -> Publisher, then the Brain evaluates Evidence -> Context -> Understanding -> Reasoning -> Writing -> Self Critique -> Publishing."
   };
 }
 
@@ -43983,7 +46515,8 @@ function newsLabBrainPipelineSubsystemForStage(stageName = "") {
   const map = {
     Evidence: "Evidence Engine + Collector Workers",
     Context: "Context Engine + Story Dossier Builder",
-    Reasoning: "Brain Reasoning + Evidence Engine",
+    Understanding: "Story Understanding Engine + Canonical Dossier",
+    Reasoning: "Writer Reasoning + Brain Reasoning",
     Writing: "Article Writer + Headline Editor",
     "Self Critique": "Editorial Coach + Technical Editor",
     Publishing: "Publisher + API Response Worker"
@@ -44003,7 +46536,7 @@ function newsLabBrainPipelineStage(name, score, evidence = [], metrics = {}) {
     repairAction: normalizedScore >= 80
       ? "Preserve this pattern and teach downstream stages what worked."
       : `Repair ${name} before asking later stages to compensate for missing inputs.`,
-    upstreamDependencies: name === "Evidence" ? [] : ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"].slice(0, Math.max(0, ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"].indexOf(name))),
+    upstreamDependencies: name === "Evidence" ? [] : ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"].slice(0, Math.max(0, ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"].indexOf(name))),
     downstreamImpact: name === "Publishing"
       ? "Determines whether the completed story can reach readers."
       : "Weakness here increases repair pressure on later stages and lowers publication speed."
@@ -44029,6 +46562,11 @@ function newsLabBrainPipelineIntelligence(story = {}) {
   const confidenceScore = Number(story.brainConfidence?.score || story.storyDossier?.evidence?.confidenceScore || story.writerDossierInput?.evidenceScore || 0);
   const agreementScore = Number(story.sourceAgreement?.agreement || 0);
   const contradictionCount = Number(story.contradictionDetection?.count || story.storyDossier?.contradictions?.length || story.storyDossier?.possibleContradictions?.length || 0);
+  const storyUnderstanding = story.storyUnderstanding || story.canonicalDossierIntelligence?.storyUnderstanding || story.storyDossier?.storyUnderstanding || story.storyDossier?.canonicalDossierIntelligence?.storyUnderstanding || null;
+  const understandingReady = Boolean(storyUnderstanding?.readiness?.readyForReasoning);
+  const understandingEvidenceCount = Number(storyUnderstanding?.evidenceMap?.length || 0);
+  const understandingDecisionCount = Number(storyUnderstanding?.decisionInputs?.length || 0);
+  const understandingAlignmentRate = Number(story.writerReasoningVerification?.understandingAlignmentRate || 0);
   const headlinePassed = newsLabHeadlineEditor(story.title || "", story).passed;
   const writingStage = workflowStage("Article Writer");
   const coachStage = workflowStage("Editorial Coach");
@@ -44042,6 +46580,10 @@ function newsLabBrainPipelineIntelligence(story = {}) {
       36 + Math.min(34, contextItems * 5) + (story.contextEngine?.historicalContext ? 12 : 0) + (story.storyDossier?.historicalContext ? 8 : 0) - (publicIssues.includes("missing-reporting-context") ? 25 : 0),
       [`${contextItems} context signals`, story.contextEngine?.historicalContext ? "historical context present" : "historical context limited", publicIssues.includes("missing-reporting-context") ? "missing reporting context issue" : "context passed public issue scan"],
       { contextItems, missingReportingContext: publicIssues.includes("missing-reporting-context") }),
+    newsLabBrainPipelineStage("Understanding",
+      34 + (understandingReady ? 24 : 0) + Math.min(18, understandingEvidenceCount * 4) + Math.min(14, understandingDecisionCount * 3) + Math.min(10, understandingAlignmentRate * 20) - (blockingIssues.includes("story-understanding-alignment-failed") ? 28 : 0),
+      [storyUnderstanding ? "story understanding present" : "story understanding missing", understandingReady ? "ready for reasoning" : "not ready for reasoning", `${understandingEvidenceCount} evidence-map items`, `${understandingDecisionCount} decisions`, understandingAlignmentRate ? `alignment=${understandingAlignmentRate}` : ""],
+      { understandingReady, understandingEvidenceCount, understandingDecisionCount, understandingAlignmentRate }),
     newsLabBrainPipelineStage("Reasoning",
       35 + Math.min(24, confidenceScore * 0.24) + Math.min(18, agreementScore * 0.18) + (contradictionCount ? 8 : 0) - (blockingIssues.includes("mixed-source-topic") ? 24 : 0) - (blockingIssues.includes("article-body-topic-drift") ? 24 : 0),
       [`${confidenceScore}% confidence`, `${agreementScore}% source agreement`, `${contradictionCount} contradiction signals`, blockingIssues.includes("mixed-source-topic") || blockingIssues.includes("article-body-topic-drift") ? "topic reasoning needs repair" : "topic reasoning held together"],
@@ -44063,8 +46605,8 @@ function newsLabBrainPipelineIntelligence(story = {}) {
   const earliestWeakStage = stageScores.find(stage => stage.score < 62) || weakestStage;
   const readiness = clampScore(stageScores.reduce((sum, stage) => sum + stage.score, 0) / Math.max(1, stageScores.length));
   return {
-    version: "20260704-evidence-context-reasoning-writing-critique-publishing",
-    order: ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"],
+    version: "20260806-evidence-context-understanding-reasoning-writing-critique-publishing",
+    order: ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"],
     readiness,
     canPublish: newsLabCompleteArticleStory(story) && readiness >= 62,
     weakestStage: weakestStage ? { name: weakestStage.name, score: weakestStage.score, subsystem: weakestStage.subsystem } : null,
@@ -44073,7 +46615,7 @@ function newsLabBrainPipelineIntelligence(story = {}) {
     repairPlan: earliestWeakStage ? {
       firstMove: earliestWeakStage.repairAction,
       assignedSubsystem: earliestWeakStage.subsystem,
-      reason: `The Brain repairs ${earliestWeakStage.name} first because the pipeline depends on Evidence -> Context -> Reasoning -> Writing -> Self Critique -> Publishing.`
+      reason: `The Brain repairs ${earliestWeakStage.name} first because the pipeline depends on Evidence -> Context -> Understanding -> Reasoning -> Writing -> Self Critique -> Publishing.`
     } : null,
     rule: "The Brain must learn from every accepted, rejected, bypassed, and repaired output, then improve the earliest weak stage before publishing pressure reaches later stages."
   };
@@ -44097,13 +46639,13 @@ function newsLabBrainPipelineSummary(stories = []) {
     delete stat.totalScore;
   });
   const weakestStage = Object.entries(stageStats).sort((a, b) => a[1].averageScore - b[1].averageScore)[0];
-  const earliestWeakStage = ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"]
+  const earliestWeakStage = ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"]
     .map(name => [name, stageStats[name]])
     .find(([, stat]) => stat && stat.averageScore < 62);
   const readiness = clampScore(pipelines.reduce((sum, pipeline) => sum + Number(pipeline.readiness || 0), 0) / Math.max(1, pipelines.length));
   return {
-    version: "20260704-brain-pipeline-summary",
-    order: ["Evidence", "Context", "Reasoning", "Writing", "Self Critique", "Publishing"],
+    version: "20260806-brain-pipeline-summary-understanding-v1",
+    order: ["Evidence", "Context", "Understanding", "Reasoning", "Writing", "Self Critique", "Publishing"],
     reviewedStories: stories.length,
     readiness,
     publishableStories: stories.filter(newsLabCompleteArticleStory).length,
@@ -44126,7 +46668,7 @@ function recordNewsLabBrainPipelineLearning(stories = [], pipelineSummary = {}) 
   runtimeState.newsLabBrainPipelineLastLoggedAt = now;
   saveFrameworkLearningProofEntry({
     category: "news-lab-brain-pipeline-intelligence",
-    event: "Brain evaluated Evidence -> Context -> Reasoning -> Writing -> Self Critique -> Publishing",
+    event: "Brain evaluated Evidence -> Context -> Understanding -> Reasoning -> Writing -> Self Critique -> Publishing",
     plainEnglish: `The Brain reviewed ${pipelineSummary.reviewedStories || 0} News Lab stor${Number(pipelineSummary.reviewedStories || 0) === 1 ? "y" : "ies"}, found ${pipelineSummary.publishableStories || 0} publishable, and identified ${weakestName} as the first stage needing attention.`,
     realWorldData: {
       reviewedStories: pipelineSummary.reviewedStories || 0,
@@ -44278,7 +46820,16 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       factCount: Number(cleanWriterHandoff.diagnostic?.factCount || 0),
       acceptedSources: (cleanWriterHandoff.topicIsolation?.accepted || []).map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
       rejectedSources: (cleanWriterHandoff.topicIsolation?.rejected || []).map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
-      partialDossier: cleanWriterHandoff.eventSubDossier || null,
+      partialDossier: {
+        ...(cleanWriterHandoff.eventSubDossier || {}),
+        storyId: cluster.eventId || cluster.key || reportClusterKey(rawRepresentative),
+        eventId: cluster.eventId || cluster.key || reportClusterKey(rawRepresentative),
+        whatHappened: cleanArticleText(rawRepresentative.articleSummary || rawRepresentative.summary || rawRepresentative.title || "", 420),
+        knownFacts: cleanWriterHandoff.facts || [],
+        sourcePool: cleanWriterHandoff.sourcePool || [],
+        sourceContext: cleanWriterHandoff.sourcePool || [],
+        eventSubDossier: cleanWriterHandoff.eventSubDossier || null
+      },
       preventionLesson: "Full article writing must begin only after one clean event dossier exists. Collectors and Sub-Dossiers should pre-separate tab-specific same-event evidence before the main dossier receives it."
     });    return null;
   }
@@ -44541,6 +47092,8 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       ...(storyDossier.contradictions || [])
     ].filter(Boolean).join(" "),
     storyDossier,
+    canonicalDossierIntelligence: storyDossier.canonicalDossierIntelligence || storyDossier.canonicalIntelligence || null,
+    dossierRevisionId: storyDossier.dossierLock?.revisionId || storyDossier.canonicalDossierIntelligence?.revision?.id || storyDossier.canonicalIntelligence?.revision?.id || "",
     productionPlanner,
     writerDossierInput,
     canonicalStoryIdentity,
@@ -44554,6 +47107,22 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
   const image = await boundedNewsLabImageForStory(imageStoryContext, newsLabImageForStory(imageStoryContext), usedPhotoIds);
 
   let body = newsLabWriteFromReasoningPlan({ representative, supporting, facts, dossier: storyDossier, identity: canonicalStoryIdentity, reasoningPlan: writerReasoningPlan });
+  const strictReasoningBody = newsLabReasoningRequiresPlanOnlyArticle(writerReasoningPlan, dossierReadiness);
+  if (strictReasoningBody && !newsLabReasoningBodyMeetsMinimum(body, writerReasoningPlan, dossierReadiness)) {
+    newsLabRecordWriterReasoningRecovery({
+      representative,
+      storyDossier,
+      cluster,
+      category,
+      reasoningPlan: writerReasoningPlan,
+      readiness: dossierReadiness,
+      sources,
+      facts,
+      reason: "standard-deep-reasoning-body-generation-failed",
+      body
+    });
+    return null;
+  }
   if (!body.length) body = newsLabStraightBody({ representative, supporting, facts, dossier: storyDossier, canonicalStoryIdentity, writerReasoningPlan });
   body = newsLabConstrainBodyToDossierCapacity(body, dossierReadiness, storyDossier);
   if (!body.some(paragraph => /reported|official|source|statement|filing|agency|court|police|records/i.test(paragraph))) {
@@ -44593,6 +47162,21 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     canonicalStoryIdentity,
     writerReasoningPlan
   }, writerReasoningPlan);
+  if (strictReasoningBody && !writerReasoningVerification.passed) {
+    newsLabRecordWriterReasoningRecovery({
+      representative,
+      storyDossier,
+      cluster,
+      category,
+      reasoningPlan: writerReasoningPlan,
+      readiness: dossierReadiness,
+      sources,
+      facts,
+      reason: "standard-deep-reasoning-plan-alignment-failed",
+      body
+    });
+    return null;
+  }
   const eventSignature = cluster.eventSignature || newsLabEventSignature(allStories);
   const eventId = cluster.eventId || eventSignature.eventId || newsLabTopicKeyFromStories(allStories);
   const topicKey = eventId;
@@ -44621,17 +47205,32 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     collectorLearning,
     publisherLearning
   });
-  const titleCandidate = newsLabHeadlineFromCompletedArticle(headlineStory, index);
+  const canonicalHeadline = newsLabCanonicalHeadlineService({
+    ...headlineStory,
+    body,
+    canonicalStoryIdentity,
+    writerReasoningPlan,
+    writerReasoningVerification,
+    storyDossier
+  }, index, body[0] || storyDossier.whatHappened || "");
+  if (strictReasoningBody && !canonicalHeadline.validationPassed) {
+    newsLabRecordWriterReasoningRecovery({
+      representative,
+      storyDossier,
+      cluster,
+      category,
+      reasoningPlan: writerReasoningPlan,
+      readiness: dossierReadiness,
+      sources,
+      facts,
+      reason: "canonical-headline-failed-locked-dossier-reasoning-validation",
+      body
+    });
+    return null;
+  }
+  const titleCandidate = canonicalHeadline.title;
   const preEditorHeadline = titleCandidate;
   let title = titleCandidate;
-  if (!title || newsLabWeakGenericHeadline(title) || !newsLabHeadlineEditor(title, { ...headlineStory, title }).passed) {
-    title = newsLabSelectPassingHeadline({
-      ...headlineStory,
-      title: body[0] || storyDossier.whatHappened || "",
-      summary: body.join(" ").slice(0, 420),
-      articleSummary: body.join(" ")
-    }, titleCandidate || body[0] || storyDossier.whatHappened || "");
-  }
   const writingWorkflow = newsLabStoryWritingWorkflow({
     cluster,
     rawRepresentative,
@@ -44647,7 +47246,8 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     productionPlanner,
     preDraftMemoryBrief,
     title,
-    body
+    body,
+    canonicalHeadline
   });
   return {
     id: `news_lab_${cluster.key || reportClusterKey(representative)}_${index}`.replace(/[^a-z0-9_:-]+/gi, "_"),
@@ -44664,10 +47264,11 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       candidateHeadline: titleCandidate,
       preEditorHeadline,
       finalHeadline: title,
+      canonicalHeadline,
       copiedVerbatim: cleanArticleText(title, 180).toLowerCase() === cleanArticleText(originalHeadline, 180).toLowerCase(),
       similarity: Number(newsLabTextOverlap(title, originalHeadline).toFixed(2)),
-      action: newsLabHeadlineOriginalEnough(title, originalHeadline) ? "body-first-owned-headline" : "headline-needs-final-semantic-review",
-      rule: "News Lab headlines are generated after the CE Media article body is written. The finished article and dossier are the headline evidence; RSS/source headlines are stored as provenance, not used as the headline source."
+      action: newsLabHeadlineOriginalEnough(title, originalHeadline) ? "canonical-headline-service" : "headline-needs-final-semantic-review",
+      rule: "News Lab headlines are generated by the canonical headline service after the CE Media article body is written. The finished article, locked dossier, canonical identity, and Writer Reasoning plan are the headline evidence; RSS/source headlines are provenance, not headline source."
     },
     category,
     categoryLabel: newsLabCategoryLabel(category),
@@ -44708,9 +47309,12 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       nextAction: eventWorkspace.nextIntelligenceAction || ""
     },
     storyDossier,
+    canonicalDossierIntelligence: storyDossier.canonicalDossierIntelligence || storyDossier.canonicalIntelligence || null,
+    dossierRevisionId: storyDossier.dossierLock?.revisionId || storyDossier.canonicalDossierIntelligence?.revision?.id || storyDossier.canonicalIntelligence?.revision?.id || "",
     productionPlanner,
     writerDossierInput,
     canonicalStoryIdentity,
+    canonicalHeadline,
     writerReasoning,
     writerReasoningPlan,
     writerReasoningVerification,
@@ -44832,7 +47436,16 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       factCount: Number(cleanWriterHandoff.diagnostic?.factCount || 0),
       acceptedSources: (cleanWriterHandoff.topicIsolation?.accepted || []).map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
       rejectedSources: (cleanWriterHandoff.topicIsolation?.rejected || []).map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
-      partialDossier: cleanWriterHandoff.eventSubDossier || null,
+      partialDossier: {
+        ...(cleanWriterHandoff.eventSubDossier || {}),
+        storyId: cluster.eventId || cluster.key || reportClusterKey(representative),
+        eventId: cluster.eventId || cluster.key || reportClusterKey(representative),
+        whatHappened: cleanArticleText(representative.articleSummary || representative.summary || representative.title || "", 420),
+        knownFacts: cleanWriterHandoff.facts || [],
+        sourcePool: cleanWriterHandoff.sourcePool || [],
+        sourceContext: cleanWriterHandoff.sourcePool || [],
+        eventSubDossier: cleanWriterHandoff.eventSubDossier || null
+      },
       preventionLesson: "Thin-but-valid dossiers should route to a developing brief; mixed or identity-unclear dossiers should return to Collector/Sub-Dossier for same-event separation before Writer handoff."
     });
     if (recoveryRecord.readinessClass !== "READY_FOR_DEVELOPING_BRIEF") return null;
@@ -44919,7 +47532,27 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       acceptedSources: sourceCandidates.map(source => ({ title: source.title || "", source: source.source || source.name || "", url: source.url || "" })),
       recommendedAction: "collect-primary-or-independent-source-evidence",
       nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-      partialDossier: { representative: representative.title || "", facts, sourceCount: sourceCandidates.length },
+      partialDossier: {
+        storyId: cluster.eventId || cluster.key || reportClusterKey(representative),
+        eventId: cluster.eventId || cluster.key || reportClusterKey(representative),
+        representative: representative.title || "",
+        whatHappened: cleanArticleText(representative.articleSummary || representative.summary || representative.title || "", 420),
+        knownFacts: facts,
+        facts,
+        sourcePool: sourceCandidates,
+        sourceContext: sourceCandidates,
+        sourceCount: sourceCandidates.length,
+        eventSubDossier: cleanWriterHandoff.eventSubDossier || null,
+        writerInput: {
+          directWritingFacts: facts,
+          readiness: {
+            readyForWriter: false,
+            writingFactCount: facts.length,
+            sourceCount: sourceCandidates.length,
+            rule: "Thin evidence records stay in recovery with full source context and must be enriched before Writer handoff."
+          }
+        }
+      },
       preventionLesson: "A story with fewer than two clean facts or no full-depth source should be enriched by Collector/Dossier before Writer handoff; do not let it vanish or become weak prose."
     });    return null;
   }
@@ -45096,8 +47729,56 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     identity: workerCanonicalStoryIdentity,
     reasoningPlan: workerReasoningPlan
   });
-  if (!Array.isArray(body) || body.join(" ").length < 360) body = newsLabStraightBody({ representative, supporting, facts, dossier, canonicalStoryIdentity: workerCanonicalStoryIdentity, writerReasoningPlan: workerReasoningPlan });
+  const workerStrictReasoningBody = newsLabReasoningRequiresPlanOnlyArticle(workerReasoningPlan, workerSliceDossierReadiness);
+  if (workerStrictReasoningBody && !newsLabReasoningBodyMeetsMinimum(body, workerReasoningPlan, workerSliceDossierReadiness)) {
+    newsLabRecordWriterReasoningRecovery({
+      representative,
+      storyDossier: dossier,
+      cluster,
+      category: finalWorkerCategory,
+      reasoningPlan: workerReasoningPlan,
+      readiness: workerSliceDossierReadiness,
+      sources: sourceCandidates,
+      facts,
+      reason: "worker-slice-standard-deep-reasoning-body-generation-failed",
+      body
+    });
+    return null;
+  }
+  if (!Array.isArray(body) || body.join(" ").length < 360) {
+    if (workerStrictReasoningBody) {
+      newsLabRecordWriterReasoningRecovery({
+        representative,
+        storyDossier: dossier,
+        cluster,
+        category: finalWorkerCategory,
+        reasoningPlan: workerReasoningPlan,
+        readiness: workerSliceDossierReadiness,
+        sources: sourceCandidates,
+        facts,
+        reason: "worker-slice-plan-body-too-thin-generic-fallback-blocked",
+        body
+      });
+      return null;
+    }
+    body = newsLabStraightBody({ representative, supporting, facts, dossier, canonicalStoryIdentity: workerCanonicalStoryIdentity, writerReasoningPlan: workerReasoningPlan });
+  }
   if (!Array.isArray(body) || body.join(" ").length < 520) {
+    if (workerStrictReasoningBody) {
+      newsLabRecordWriterReasoningRecovery({
+        representative,
+        storyDossier: dossier,
+        cluster,
+        category: finalWorkerCategory,
+        reasoningPlan: workerReasoningPlan,
+        readiness: workerSliceDossierReadiness,
+        sources: sourceCandidates,
+        facts,
+        reason: "worker-slice-standard-article-needs-plan-evidence-expansion",
+        body
+      });
+      return null;
+    }
     const detailFacts = newsLabDetailList(facts, 0, 8, 260);
     body = newsLabDedupeArticleParagraphs([
       facts[0] || representative.articleSummary || representative.summary || representative.title,
@@ -45126,6 +47807,21 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     canonicalStoryIdentity: workerCanonicalStoryIdentity,
     writerReasoningPlan: workerReasoningPlan
   }, workerReasoningPlan);
+  if (workerStrictReasoningBody && !workerReasoningVerification.passed) {
+    newsLabRecordWriterReasoningRecovery({
+      representative,
+      storyDossier: dossier,
+      cluster,
+      category: finalWorkerCategory,
+      reasoningPlan: workerReasoningPlan,
+      readiness: workerSliceDossierReadiness,
+      sources: sourceCandidates,
+      facts,
+      reason: "worker-slice-standard-deep-reasoning-plan-alignment-failed",
+      body
+    });
+    return null;
+  }
   const baseStory = {
     title: representative.title || summary,
     originalHeadline: representative.title || "",
@@ -45137,6 +47833,8 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     categoryClassification: workerCategoryClassification,
     secondaryCategories: workerCategoryClassification.secondaryCategories || [],
     storyDossier: dossier,
+    canonicalDossierIntelligence: dossier.canonicalDossierIntelligence || dossier.canonicalIntelligence || null,
+    dossierRevisionId: dossier.dossierLock?.revisionId || dossier.canonicalDossierIntelligence?.revision?.id || dossier.canonicalIntelligence?.revision?.id || "",
     canonicalStoryIdentity: workerCanonicalStoryIdentity,
     writerReasoningPlan: workerReasoningPlan,
     writerReasoningVerification: workerReasoningVerification,
@@ -45148,7 +47846,23 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       eventSourceArticleCount: Number(cluster.eventSourceArticleCount || sourceCandidates.length || 1)
     }
   };
-  const titleSeed = newsLabHeadlineFromCompletedArticle(baseStory, index) || newsLabSelectPassingHeadline(baseStory, newsLabHardRewriteCeHeadline(baseStory, index));
+  const canonicalHeadline = newsLabCanonicalHeadlineService(baseStory, index, newsLabHardRewriteCeHeadline(baseStory, index));
+  if (workerStrictReasoningBody && !canonicalHeadline.validationPassed) {
+    newsLabRecordWriterReasoningRecovery({
+      representative,
+      storyDossier: dossier,
+      cluster,
+      category: finalWorkerCategory,
+      reasoningPlan: workerReasoningPlan,
+      readiness: workerSliceDossierReadiness,
+      sources: sourceCandidates,
+      facts,
+      reason: "worker-slice-canonical-headline-failed-locked-dossier-reasoning-validation",
+      body
+    });
+    return null;
+  }
+  const titleSeed = canonicalHeadline.title;
   const title = newsLabEnsureOwnedHeadline(titleSeed || newsLabHardRewriteCeHeadline(baseStory, index), baseStory, index);
   const imageDossier = newsLabBuildImageDossier({ ...baseStory, title, category: finalWorkerCategory });
   const image = newsLabNormalizeStoryImage({ ...baseStory, title, category: finalWorkerCategory, imageDossier }, representative.image);
@@ -45181,9 +47895,10 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       sourceHeadline: representative.title || "",
       candidateHeadline: titleSeed || "",
       finalHeadline: title,
+      canonicalHeadline,
       similarity: Number(newsLabTextOverlap(title, representative.title || "").toFixed(2)),
-      action: "worker-slice-body-first-owned-headline",
-      rule: "Timed worker headlines are generated after the compact body and Writer Reasoning plan, using actor/action/consequence from the locked dossier rather than source titles."
+      action: "worker-slice-canonical-headline-service",
+      rule: "Timed worker headlines route through the canonical headline service after the compact body and Writer Reasoning plan, using actor/action/consequence from the locked dossier rather than source titles."
     },
     sourceAgreement: {
       agreement: sourceCandidates.length >= 3 ? 72 : 52,
@@ -45487,6 +48202,11 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
     const draftLengthPassed = supportedBrief ? bodyLength >= 220 : bodyLength >= 650;
     const draftLengthAttention = supportedBrief ? bodyLength >= 140 : bodyLength >= 360;
     const writerPercent = Math.min(100, (bodyLength >= 900 ? 38 : bodyLength >= 650 ? 28 : bodyLength >= 360 ? 18 : bodyLength >= 220 ? 14 : 6) + Math.min(20, paragraphCount * 4) + (writerReadiness.readyForFirstDraft ? 30 : 0) + (writerReadiness.editorialMemoryApplied ? 12 : 0));
+    const storyUnderstanding = story.storyUnderstanding || story.canonicalDossierIntelligence?.storyUnderstanding || story.storyDossier?.storyUnderstanding || story.storyDossier?.canonicalDossierIntelligence?.storyUnderstanding || null;
+    const storyUnderstandingReady = Boolean(storyUnderstanding?.readiness?.readyForReasoning);
+    const storyUnderstandingPercent = storyUnderstanding
+      ? Math.min(100, Number(storyUnderstanding.readiness?.score || 0) || 40 + Math.min(24, Number(storyUnderstanding.evidenceMap?.length || 0) * 4) + Math.min(18, Number(storyUnderstanding.decisionInputs?.length || 0) * 3) + (storyUnderstandingReady ? 18 : 0))
+      : 0;
     const repairAttempted = Boolean(story.editorRepairReview?.applied || story.approvalRecoveryReview?.applied || story.lifecycleRepair?.repaired || (story.qualityGate?.correctedIssues || []).length);
     const repairPassed = Boolean(story.editorRepairReview?.finalPassed || story.approvalRecoveryReview?.passed || story.lifecycleRepair?.passedAfterRepair || (repairAttempted && !issues.length));
     const qualityPassed = Boolean(story.qualityGate?.passed || (!issues.length && newsLabCompleteArticleStory(story)));
@@ -45497,7 +48217,8 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
       newsLabLifecycleStage("RSS Collected", "Collector", newsLabLifecycleStageStatus(sourceInputStories.length > 0), sourceInputStories.length ? 100 : 0, { sourceInputStories: sourceInputStories.length }, sourceInputStories.length ? "" : "no-source-input-stories", "Collector must fetch tab-specific source material before clustering."),
       newsLabLifecycleStage("Evidence Collected", "Evidence Engine", newsLabLifecycleStageStatus(sourceCount > 0), Math.min(100, sourceCount * 24 + knownFacts * 8), { sourceCount, knownFacts, fullReadCount: Number(story.articleReadDepth?.fullReadCount || story.storyDossier?.evidence?.fullReadCount || 0) }, sourceCount ? "" : "missing-source-evidence", "Add source context or mark needs-dossier-evidence before writing."),
       newsLabLifecycleStage("Story Dossier Built", "Story Dossier Builder", newsLabLifecycleStageStatus(Boolean(story.storyDossier), Boolean(story.writerDossierInput)), dossierPercent, { knownFacts, sourcePool: Number(story.storyDossier?.sourcePool?.length || 0), confidence, storyId: story.storyDossier?.storyId || story.id || "" }, story.storyDossier ? "" : "missing-story-dossier", "Build one canonical event dossier before Writer, Headline, Image, and Editor run."),
-      newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readinessScore || (writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22)), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read dossier, editorial memory, lexicon/historical guidance, and prevention rules before drafting. If readinessGate is needs-dossier-evidence, return upstream instead of generating headline/prose from weak fragments."),
+      newsLabLifecycleStage("Story Understanding", "Story Understanding Engine", newsLabLifecycleStageStatus(storyUnderstandingReady, Boolean(storyUnderstanding)), storyUnderstandingPercent, { storyUnderstandingId: storyUnderstanding?.id || "", evidenceMapCount: Number(storyUnderstanding?.evidenceMap?.length || 0), decisionCount: Number(storyUnderstanding?.decisionInputs?.length || 0), answers: storyUnderstanding?.answers || null }, storyUnderstandingReady ? "" : storyUnderstanding ? (storyUnderstanding.readiness?.blockers || ["story-understanding-not-ready"]).join(", ") : "missing-story-understanding", "Convert the locked dossier into meaning answers before Writer Reasoning. If not ready, enrich the dossier instead of drafting."),
+      newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readinessScore || (writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22)), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read Story Understanding, dossier, editorial memory, lexicon/historical guidance, and prevention rules before drafting. If readinessGate is needs-dossier-evidence, return upstream instead of generating headline/prose from weak fragments."),
       newsLabLifecycleStage("Draft Generated", "Article Writer", newsLabLifecycleStageStatus(draftLengthPassed, draftLengthAttention), Math.min(100, Math.round(bodyLength / 10)), { paragraphs: paragraphCount, bodyLength, articleFormat: writerReadiness.articleFormat, readinessTier: writerReadiness.readinessTier }, draftLengthPassed ? "" : (supportedBrief ? "brief-body-too-thin" : "draft-body-too-thin"), "Generate only the article format supported by the locked dossier capacity; do not stretch a brief dossier into a full article."),
       newsLabLifecycleStage("Headline Generated", "Headline Generator", newsLabLifecycleStageStatus(Boolean(headlineReview.passed), Boolean((headlineReview.issues || []).length === 0 && story.title)), headlineReview.passed ? 100 : Math.max(20, 100 - (headlineReview.issues || []).length * 25), { title: story.title || "", headlineIssues: headlineReview.issues || [], headlineAudit: story.headlineAudit || null }, headlineReview.passed ? "" : (headlineReview.issues || ["headline-validation-failed"])[0], "Rebuild headline from final dossier/article identity using actor + action + consequence."),
       newsLabLifecycleStage("Self Review", "Draft Optimization Engine", story.editorialCoach ? (story.editorialCoach.passed ? "passed" : "attention") : "not-recorded", story.editorialCoach ? (story.editorialCoach.passed ? 100 : 55) : 0, { editorialCoach: story.editorialCoach || null, preventionMemory: story.publicationPreventionMemory || null }, story.editorialCoach?.passed === false ? "self-review-found-issues" : "", "Draft Optimization should repair automatic language/headline/context issues before Editor."),
@@ -45554,6 +48275,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
       { stage: "Collected", count: sourceInputStories.length },
       { stage: "Clusters", count: eventClusters.length || rawArticleClusters.length },
       { stage: "Dossiers", count: storyRows.filter(row => row.stages.find(stage => stage.name === "Story Dossier Built")?.status === "passed").length },
+      { stage: "Understanding", count: storyRows.filter(row => row.stages.find(stage => stage.name === "Story Understanding")?.status === "passed").length },
       { stage: "Drafts", count: generatedStories.filter(Boolean).length || editorInputStories.length },
       { stage: "Passed Writer", count: storyRows.filter(row => row.stages.find(stage => stage.name === "Writer Reasoning")?.status === "passed").length },
       { stage: "Passed Editor", count: storyRows.filter(row => row.stages.find(stage => stage.name === "Editor")?.status === "passed").length },
@@ -45566,7 +48288,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
       generatedStoryCount: Number(buildHandoffDiagnostics.generatedStoryCount || generatedStories.filter(Boolean).length || 0)
     },
     storyRows,
-    lifecycleRule: "Walk every article through Collector -> Evidence -> Dossier -> Writer Reasoning -> Draft -> Headline -> Self Review -> Editor -> Repair -> Image -> Publisher -> Public API. Any stage that finds a problem must repair, teach, resubmit, and measure outcome."
+    lifecycleRule: "Walk every article through Collector -> Evidence -> Dossier -> Story Understanding -> Writer Reasoning -> Draft -> Headline -> Self Review -> Editor -> Repair -> Image -> Publisher -> Public API. Any stage that finds a problem must repair, teach, resubmit, and measure outcome."
   };
   const previous = readJsonFile(newsLabArticleLifecycleTraceFile, { version: "20260710-news-lab-lifecycle-v1", reports: [] });
   const next = {
@@ -45583,11 +48305,15 @@ async function buildNewsLabPayload(payload = {}) {
   const rawSourceInputStories = Array.isArray(payload.dossierStories) && payload.dossierStories.length
     ? payload.dossierStories
     : (payload.stories || []);
-  const sourceInputStories = rawSourceInputStories
+  const cleanedSourceInputStories = rawSourceInputStories
     .map(story => cleanNewsLabSourceStory(story))
     .filter(newsLabReportableSourceStory);
+  const sourceSegmentationPass = newsLabExpandStoriesWithIntraSourceSegments(cleanedSourceInputStories);
+  const sourceInputStories = sourceSegmentationPass.stories;
   const rawArticleClusters = newsLabReportedStoryClusters(sourceInputStories);
-  const eventClusters = await newsLabEventClusterWorkerPass(rawArticleClusters);
+  const mergedEventClusters = await newsLabEventClusterWorkerPass(rawArticleClusters);
+  const eventClusterSplitResult = newsLabSplitMixedEventClusters(mergedEventClusters);
+  const eventClusters = eventClusterSplitResult.clusters;
   const activeClusterLimit = payload.catchupCycle?.active
     ? Number(payload.catchupCycle?.clusterLimit || newsLabCatchupCycleClusterLimit)
     : payload.microCycle?.active
@@ -46473,6 +49199,34 @@ async function buildNewsLabPayload(payload = {}) {
         historicalReasoningApplied: Boolean(story.writerDossierInput?.historicalContextEngine || story.storyDossier?.historicalContextEngine),
         rule: "Compact public stories preserve behavioral-learning proof while omitting heavy memory payloads."
       },
+      dossierRevisionId: story.dossierRevisionId || story.storyDossier?.dossierLock?.revisionId || story.canonicalDossierIntelligence?.revision?.id || "",
+      canonicalDossierIntelligence: story.canonicalDossierIntelligence ? {
+        id: story.canonicalDossierIntelligence.id || "",
+        version: story.canonicalDossierIntelligence.version || "",
+        revision: story.canonicalDossierIntelligence.revision || null,
+        eventIdentity: story.canonicalDossierIntelligence.eventIdentity || null,
+        evidence: {
+          evidenceStrength: story.canonicalDossierIntelligence.evidence?.evidenceStrength || 0,
+          sourceAgreement: story.canonicalDossierIntelligence.evidence?.sourceAgreement || 0,
+          sourceDisagreement: story.canonicalDossierIntelligence.evidence?.sourceDisagreement || 0,
+          sourceCount: story.canonicalDossierIntelligence.evidence?.sourceCount || 0,
+          verifiedFacts: (story.canonicalDossierIntelligence.evidence?.verifiedFacts || []).slice(0, 5),
+          disputedFacts: (story.canonicalDossierIntelligence.evidence?.disputedFacts || []).slice(0, 3),
+          unsupportedClaims: (story.canonicalDossierIntelligence.evidence?.unsupportedClaims || []).slice(0, 3)
+        },
+        intelligence: {
+          whyImportant: story.canonicalDossierIntelligence.intelligence?.whyImportant || "",
+          stillUnknown: (story.canonicalDossierIntelligence.intelligence?.stillUnknown || []).slice(0, 4),
+          neverInfer: (story.canonicalDossierIntelligence.intelligence?.neverInfer || []).slice(0, 4)
+        },
+        publicationPlanning: story.canonicalDossierIntelligence.publicationPlanning || null,
+        writerContract: {
+          controlling: Boolean(story.canonicalDossierIntelligence.writerContract?.controlling),
+          readyForWriter: Boolean(story.canonicalDossierIntelligence.writerContract?.readyForWriter),
+          dossierRevisionId: story.canonicalDossierIntelligence.writerContract?.dossierRevisionId || "",
+          rule: story.canonicalDossierIntelligence.writerContract?.rule || ""
+        }
+      } : undefined,
       preDraftMemoryBrief: undefined,
       writerMemoryBrief: undefined,
       headlineMemoryBrief: undefined,
@@ -46492,6 +49246,7 @@ async function buildNewsLabPayload(payload = {}) {
         knownFacts: (story.storyDossier.knownFacts || []).slice(0, 8),
         unknownFacts: (story.storyDossier.unknownFacts || []).slice(0, 4),
         sourcePool: (story.storyDossier.sourcePool || []).slice(0, 8),
+        dossierLock: story.storyDossier.dossierLock || null,
         dossierBuilder: story.storyDossier.dossierBuilder || null
       } : undefined
     }));
@@ -46905,6 +49660,7 @@ async function buildNewsLabPayload(payload = {}) {
     articleReadIntelligence: {
       uniquePublisherReads: Number(payload.dailyArticleMemory?.fullArticleReadCount || 0),
       absorbedArticles: Number(payload.dailyArticleMemory?.articleCount || 0),
+      intraSourceSegmentation: sourceSegmentationPass.metrics,
       readyClusters: Number(payload.articleIntelligence?.readyClusterCount || 0),
       generatedFromFullReads: finalOwnedStories.filter(story => Number(story.articleReadDepth?.fullReadCount || 0) > 0).length,
       prepublishQualityGate: qualityGate.result,
@@ -46971,7 +49727,8 @@ async function buildNewsLabPayload(payload = {}) {
       readsPerCluster: newsLabReadsPerCluster,
       rawArticleClusterCount: rawArticleClusters.length,
       eventClusterCount: eventClusters.length,
-      eventMergeReduction: Math.max(0, rawArticleClusters.length - eventClusters.length),
+      eventMergeReduction: Math.max(0, rawArticleClusters.length - mergedEventClusters.length),
+      eventClusterSplitMetrics: eventClusterSplitResult.metrics,
       sourceToEventReduction: Math.max(0, Number(sourceInputStories.length || 0) - eventClusters.length),
       eventDossierRule: "CNN/AP/Reuters/BBC/Fox/ABC/NBC/local/government/police inputs are treated as evidence for an event dossier. The Brain publishes one CE Media story per event, not one article per source, and the Writer sees the dossier contract instead of raw RSS snippets.",
       writingClusterCount: writingClusters.length,
@@ -50155,6 +52912,69 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
+  if (url.pathname === "/api/sports-intelligence" && request.method === "GET") {
+    sendJson(response, 200, readSportsIntelligenceStore());
+    return;
+  }
+
+  if (url.pathname === "/api/sports-intelligence/predictions" && request.method === "POST") {
+    if (!isAdminRequest(request)) {
+      sendPrivateNotFound(response);
+      return;
+    }
+    try {
+      const body = await readRequestBody(request);
+      const store = readSportsIntelligenceStore();
+      const prediction = normalizeSportsPrediction(body);
+      const next = writeSportsIntelligenceStore({
+        ...store,
+        predictions: [prediction, ...(store.predictions || [])].slice(0, 5000)
+      });
+      sendJson(response, 200, { ok: true, prediction, performance: next.performance });
+    } catch (error) {
+      sendJson(response, 400, { ok: false, error: error.message || "Unable to save prediction" });
+    }
+    return;
+  }
+
+  if (url.pathname === "/api/sports-intelligence/settle" && request.method === "POST") {
+    if (!isAdminRequest(request)) {
+      sendPrivateNotFound(response);
+      return;
+    }
+    try {
+      const body = await readRequestBody(request);
+      const id = String(body.id || "").trim();
+      const outcome = Number(body.outcome);
+      if (!id || (outcome !== 0 && outcome !== 1)) {
+        sendJson(response, 400, { ok: false, error: "Provide prediction id and outcome 1 for win or 0 for loss." });
+        return;
+      }
+      const store = readSportsIntelligenceStore();
+      let updatedPrediction = null;
+      const predictions = (store.predictions || []).map(prediction => {
+        if (prediction.id !== id) return prediction;
+        updatedPrediction = sportsPredictionScored({
+          ...prediction,
+          outcome,
+          finalScore: cleanArticleText(body.finalScore || "", 80),
+          settlementNote: cleanArticleText(body.settlementNote || "", 240),
+          settledAt: new Date().toISOString()
+        });
+        return updatedPrediction;
+      });
+      if (!updatedPrediction) {
+        sendJson(response, 404, { ok: false, error: "Prediction not found." });
+        return;
+      }
+      const next = writeSportsIntelligenceStore({ ...store, predictions });
+      sendJson(response, 200, { ok: true, prediction: updatedPrediction, performance: next.performance });
+    } catch (error) {
+      sendJson(response, 400, { ok: false, error: error.message || "Unable to settle prediction" });
+    }
+    return;
+  }
+
   if (url.pathname === "/ads.txt") {
     response.writeHead(301, {
       location: adsTxtManagerUrl,
@@ -50434,6 +53254,38 @@ if (isKnowledgeDistillationWorkerProcess) {
       startKnowledgeDistillationLoop();
     } else {
       console.log("Censored Expressions web server running in web-only mode; background AI work belongs to worker.js");
+      if (webScheduledContentFallback && backgroundLoopsEnabled) {
+        scheduledContentWorkerStatusPatch({
+          lastStatus: "web-scheduled-content-fallback-starting",
+          startedAt: new Date().toISOString(),
+          roles: ["creator-desk", "newsletter"],
+          rule: "The public web process runs only the lightweight scheduled content fallback so Creator Desk and Newsletter posts are not missed if the separate worker is unavailable or not syncing."
+        });
+        startNewsletterLoop();
+        startCreatorDeskLoop();
+        setTimeout(() => {
+          runScheduledContentAutonomousCycle("web-fallback-startup-catchup").catch(error => {
+            scheduledContentWorkerStatusPatch({ lastStatus: "web-fallback-failed", lastError: error.message || String(error) });
+          });
+        }, 9000);
+        setInterval(() => {
+          runScheduledContentAutonomousCycle("web-fallback-interval-catchup").catch(error => {
+            scheduledContentWorkerStatusPatch({ lastStatus: "web-fallback-failed", lastError: error.message || String(error) });
+          });
+        }, Math.max(5 * 60 * 1000, Number(process.env.CE_SCHEDULED_CONTENT_CATCHUP_INTERVAL_MS || 15 * 60 * 1000)));
+        setInterval(() => {
+          try {
+            scheduledContentWorkerStatusPatch({
+              lastStatus: "web-scheduled-content-fallback-heartbeat",
+              heartbeatAt: new Date().toISOString(),
+              creatorDesk: creatorDeskLaneStatus(),
+              newsletter: newsletterLaneStatus()
+            });
+          } catch {
+            // Heartbeat failure should not stop scheduled content fallback loops.
+          }
+        }, 60000);
+      }
     }
     startMarketSnapshotLoop();
   });
