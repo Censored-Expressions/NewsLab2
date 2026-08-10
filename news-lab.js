@@ -23,6 +23,9 @@ const marketSymbolDetail = document.querySelector("[data-market-symbol-detail]")
 const autoRefreshMs = 6 * 60 * 1000;
 const marketRefreshMs = 60 * 1000;
 const storyCacheKey = "ceNewsLabOwnedStories";
+const tabCacheMs = 90 * 1000;
+const tabPrefetchDelayMs = 1200;
+const newsLabFetchTimeoutMs = 9000;
 const storyPageSize = 10;
 let ownedStories = [];
 let activeFilter = "all";
@@ -33,6 +36,9 @@ let backgroundRefreshTimer = null;
 let topTickerItems = [];
 let topTickerLoadedAt = 0;
 let topTickerRequest = null;
+let newsLabRequestController = null;
+let newsLabPrefetchStarted = false;
+const newsLabTabCache = new Map();
 
 function formatMarketNumber(value, options = {}) {
   const number = Number(value);
@@ -645,51 +651,132 @@ function newsLabApiCategory() {
   return activeFilter === "all" ? "top" : activeFilter;
 }
 
-async function loadNewsLab(force = false) {
-  statusEl.textContent = force ? "Refreshing original Censored Expressions stories..." : "Loading original Censored Expressions stories...";
-  setRefreshDisabled(true);
+function newsLabCacheKey(category = newsLabApiCategory()) {
+  return String(category || "top").toLowerCase();
+}
+
+function newsLabCachedPayload(category = newsLabApiCategory()) {
+  const cached = newsLabTabCache.get(newsLabCacheKey(category));
+  if (!cached || !cached.payload) return null;
+  if (Date.now() - Number(cached.storedAt || 0) > tabCacheMs) return null;
+  return cached.payload;
+}
+
+function storeNewsLabPayload(category = newsLabApiCategory(), payload = {}) {
+  if (!payload || typeof payload !== "object") return;
+  newsLabTabCache.set(newsLabCacheKey(category), { storedAt: Date.now(), payload });
+}
+
+function applyNewsLabPayload(payload = {}, category = newsLabApiCategory()) {
+  ownedStories = payload.ownedStories || [];
   try {
-    const params = new URLSearchParams({ category: newsLabApiCategory() });
-    if (force) params.set("refresh", "1");
-    const response = await fetch(`/api/news-lab?${params.toString()}`, { cache: "no-store" });
-    const payload = await response.json();
-    ownedStories = payload.ownedStories || [];
-    try {
-      sessionStorage.setItem(storyCacheKey, JSON.stringify({
-        storedAt: Date.now(),
-        stories: ownedStories
-      }));
-    } catch {
-      // Cache is an acceleration path only; rendering should continue if storage is blocked.
+    sessionStorage.setItem(storyCacheKey, JSON.stringify({
+      storedAt: Date.now(),
+      stories: ownedStories,
+      category
+    }));
+  } catch {
+    // Cache is an acceleration path only; rendering should continue if storage is blocked.
+  }
+  if (sourceStoryCount) sourceStoryCount.textContent = payload.sourceStoryCount || 0;
+  const intelligence = payload.articleReadIntelligence || {};
+  if (clusterCount) clusterCount.textContent = intelligence.uniquePublisherReads
+    ? `${payload.clusteredStoryCount || 0} / ${intelligence.uniquePublisherReads} reads`
+    : payload.clusteredStoryCount || 0;
+  if (ownedCount) ownedCount.textContent = ownedStories.length;
+  renderStories();
+  if (category === "top") {
+    topTickerItems = Array.isArray(payload.ticker) && payload.ticker.length
+      ? payload.ticker
+      : ownedStories;
+    topTickerLoadedAt = Date.now();
+    renderTicker(topTickerItems);
+  } else {
+    loadTopNewsTicker(false);
+  }
+  renderBrainInfrastructure(payload.brainInfrastructure || {});
+  statusEl.textContent = `${payload.status || "unknown"} feed state. Updated ${new Date(payload.generatedAt || Date.now()).toLocaleString()}.`;
+}
+
+function restoreNewsLabSessionCache() {
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(storyCacheKey) || "null");
+    if (!cached || !Array.isArray(cached.stories) || Date.now() - Number(cached.storedAt || 0) > tabCacheMs) return false;
+    const category = cached.category || "top";
+    storeNewsLabPayload(category, {
+      status: "cached",
+      generatedAt: cached.storedAt,
+      ownedStories: cached.stories,
+      sourceStoryCount: cached.stories.length,
+      clusteredStoryCount: cached.stories.length,
+      articleReadIntelligence: {}
+    });
+    if (newsLabApiCategory() === category) {
+      applyNewsLabPayload(newsLabCachedPayload(category), category);
+      return true;
     }
-    if (sourceStoryCount) sourceStoryCount.textContent = payload.sourceStoryCount || 0;
-    const intelligence = payload.articleReadIntelligence || {};
-    if (clusterCount) clusterCount.textContent = intelligence.uniquePublisherReads
-      ? `${payload.clusteredStoryCount || 0} / ${intelligence.uniquePublisherReads} reads`
-      : payload.clusteredStoryCount || 0;
-    if (ownedCount) ownedCount.textContent = ownedStories.length;
-    renderStories();
-    if (newsLabApiCategory() === "top") {
-      topTickerItems = Array.isArray(payload.ticker) && payload.ticker.length
-        ? payload.ticker
-        : ownedStories;
-      topTickerLoadedAt = Date.now();
-      renderTicker(topTickerItems);
-    } else {
-      loadTopNewsTicker(false);
-    }
-    renderBrainInfrastructure(payload.brainInfrastructure || {});
-    statusEl.textContent = `${payload.status || "unknown"} feed state. Updated ${new Date(payload.generatedAt).toLocaleString()}.`;
+  } catch {
+    // Ignore corrupt local cache.
+  }
+  return false;
+}
+
+function fetchNewsLabPayload(category = newsLabApiCategory(), force = false, signal = null) {
+  const params = new URLSearchParams({ category });
+  if (force) params.set("refresh", "1");
+  return fetch(`/api/news-lab?${params.toString()}`, { cache: "no-store", signal })
+    .then(response => response.json().then(payload => {
+      if (!response.ok) throw new Error(payload.error || "News Lab unavailable");
+      return payload;
+    }));
+}
+
+async function prefetchNewsLabTabs() {
+  if (newsLabPrefetchStarted) return;
+  newsLabPrefetchStarted = true;
+  const categories = ["top", "world", "politics", "business", "technology", "sports", "entertainment", "local"];
+  for (const category of categories) {
+    if (category === newsLabApiCategory() || newsLabCachedPayload(category)) continue;
+    await fetchNewsLabPayload(category, false)
+      .then(payload => storeNewsLabPayload(category, payload))
+      .catch(() => {});
+  }
+}
+
+async function loadNewsLab(force = false) {
+  const category = newsLabApiCategory();
+  const cached = !force ? newsLabCachedPayload(category) : null;
+  if (cached) {
+    applyNewsLabPayload(cached, category);
+    statusEl.textContent = "Showing cached stories while the Brain checks for updates...";
+  } else {
+    statusEl.textContent = force ? "Refreshing original Censored Expressions stories..." : "Loading original Censored Expressions stories...";
+  }
+  setRefreshDisabled(true);
+  if (newsLabRequestController) newsLabRequestController.abort();
+  const controller = new AbortController();
+  newsLabRequestController = controller;
+  const timeoutId = setTimeout(() => controller.abort(), newsLabFetchTimeoutMs);
+  try {
+    const payload = await fetchNewsLabPayload(category, force, controller.signal);
+    storeNewsLabPayload(category, payload);
+    if (category === newsLabApiCategory()) applyNewsLabPayload(payload, category);
     if (payload.backgroundRebuild?.active && !backgroundRefreshTimer) {
       backgroundRefreshTimer = setTimeout(() => {
         backgroundRefreshTimer = null;
         loadNewsLab(false);
       }, 9000);
     }
+    setTimeout(prefetchNewsLabTabs, tabPrefetchDelayMs);
   } catch (error) {
-    statusEl.textContent = "News Lab could not load original stories.";
-    grid.innerHTML = '<p class="empty-state">CE Media News is unavailable right now.</p>';
+    if (error?.name === "AbortError" && cached) return;
+    statusEl.textContent = cached ? "Showing cached stories; live refresh is still catching up." : "News Lab could not load original stories.";
+    if (!cached) grid.innerHTML = '<p class="empty-state">CE Media News is unavailable right now.</p>';
   } finally {
+    clearTimeout(timeoutId);
+    if (newsLabRequestController === controller) {
+      newsLabRequestController = null;
+    }
     setRefreshDisabled(false);
   }
 }
@@ -742,6 +829,7 @@ storyPages?.addEventListener("click", event => {
   grid?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+restoreNewsLabSessionCache();
 loadNewsLab(false);
 loadMarketSnapshot(false);
 marketSnapshotEl?.addEventListener("click", event => {
