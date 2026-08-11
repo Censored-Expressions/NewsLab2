@@ -1,4 +1,4 @@
-﻿const http = require("node:http");
+const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
@@ -95,6 +95,7 @@ const newsLabStuckRescueWorkerStatusFile = path.join(dataDir, "news-lab-stuck-re
 const newsLabStuckRescueLearningFile = path.join(dataDir, "news-lab-stuck-rescue-learning.json");
 const newsLabImageImprovementAuditFile = path.join(dataDir, "news-lab-image-improvement-audit.json");
 const newsLabImageWorkerStatusFile = path.join(dataDir, "news-lab-image-worker-status.json");
+const newsLabQualityPublicationSprintFile = path.join(dataDir, "news-lab-quality-publication-sprint.json");
 const apiEndpointPerformanceFile = path.join(dataDir, "api-endpoint-performance.json");
 const newsLabGeneratedImageQueueFile = path.join(dataDir, "news-lab-generated-image-queue.json");
 const newsLabGeneratedImageAssetDir = path.join(publicDir, "assets", "generated-news-lab");
@@ -1585,12 +1586,12 @@ function cleanEncodingArtifacts(value = "") {
     .split(rightDouble).join('"')
     .split(dash).join("-")
     .split(longDash).join("-")
-    .replace(/â€™|â€˜|â€š|â€²/g, "'")
-    .replace(/â€œ|â€|â€³/g, '"')
-    .replace(/â€“|â€”|â€•/g, "-")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¹Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Âº/g, "'")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¾|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸/g, '"')
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â/g, "-")
+    .replace(/’|‘|‚|′/g, "'")
+    .replace(/“|”|″/g, '"')
+    .replace(/–|—|―/g, "-")
+    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº/g, "'")
+    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¸/g, '"')
+    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â/g, "-")
     .replace(/\u00e2\u20ac[\u02dc\u2122\u0153\u009d]?/g, "'")
     .replace(/\u00e2\u20ac[\u009c\u009d]/g, '"')
     .replace(/\u00c3[\u0080-\u00bf]?/g, "")
@@ -7955,11 +7956,150 @@ async function runPatchStructuringCycle(input = {}) {
 
 function readCreatorPosts() {
   const posts = readJsonFile(creatorPostsFile, []);
-  const list = Array.isArray(posts) ? posts : posts && typeof posts === "object" && posts.dayId ? [posts] : [];
+  const rawList = Array.isArray(posts)
+    ? posts
+    : Array.isArray(posts?.posts)
+      ? posts.posts
+      : posts && typeof posts === "object" && (posts.dayId || posts.weekId || posts.id)
+        ? [posts]
+        : [];
+  const list = rawList.map((post, index) => normalizeCreatorArchivePost(post, index));
   return list.sort((a, b) =>
     new Date(b.dayId || b.weekId || b.generatedAt || 0) - new Date(a.dayId || a.weekId || a.generatedAt || 0)
     || new Date(b.generatedAt || 0) - new Date(a.generatedAt || 0)
   );
+}
+
+function creatorArchiveSlug(value = "") {
+  return String(value || "creator-desk-editorial")
+    .toLowerCase()
+    .replace(/&[#a-z0-9]+;/gi, " ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 90) || "creator-desk-editorial";
+}
+
+function creatorArchiveDateKey(post = {}) {
+  const raw = String(post.dayId || post.weekId || post.date || post.publishedAt || post.generatedAt || "").trim();
+  const match = raw.match(/\d{4}-\d{2}-\d{2}/);
+  if (match) return match[0];
+  return creatorDayWindow(new Date()).id;
+}
+
+function creatorArchiveMonthLabel(monthKey = "") {
+  const match = String(monthKey || "").match(/^(\d{4})-(\d{2})$/);
+  if (!match) return monthKey || "Undated";
+  return new Date(Number(match[1]), Number(match[2]) - 1, 1)
+    .toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}
+
+function normalizeCreatorArchivePost(post = {}, index = 0) {
+  const dayId = creatorArchiveDateKey(post);
+  const monthKey = post.monthKey || dayId.slice(0, 7);
+  const title = cleanPublicText(post.title || "Creator Desk Editorial", 180);
+  const id = cleanPublicText(post.id || `creator_${dayId}`, 120);
+  const generatedAt = post.generatedAt || post.publishedAt || new Date(`${dayId}T21:00:00-04:00`).toISOString();
+  return {
+    ...post,
+    id,
+    dayId,
+    weekId: post.weekId || dayId,
+    date: post.date || dayId,
+    publishedAt: post.publishedAt || generatedAt,
+    generatedAt,
+    title,
+    slug: post.slug || `${dayId}-${creatorArchiveSlug(title)}`,
+    month: post.month || monthKey,
+    monthKey,
+    monthLabel: post.monthLabel || creatorArchiveMonthLabel(monthKey),
+    year: Number(post.year || dayId.slice(0, 4)),
+    topic: post.topic || (post.items || []).map(item => item.topic || item.category).filter(Boolean).slice(0, 3).join(", ") || "daily editorial",
+    published: post.published !== false,
+    status: post.status && post.status !== "archived" ? post.status : "published",
+    archiveIndex: Number.isFinite(Number(post.archiveIndex)) ? Number(post.archiveIndex) : index
+  };
+}
+
+function creatorArchiveSort(posts = []) {
+  return [...posts].sort((a, b) =>
+    new Date(b.dayId || b.weekId || b.generatedAt || 0) - new Date(a.dayId || a.weekId || a.generatedAt || 0)
+    || new Date(b.generatedAt || 0) - new Date(a.generatedAt || 0)
+  );
+}
+
+function creatorMonthlyIndex(posts = []) {
+  return creatorArchiveSort(posts).reduce((index, post) => {
+    const monthKey = post.monthKey || post.month || creatorArchiveDateKey(post).slice(0, 7);
+    if (!index[monthKey]) index[monthKey] = {
+      month: monthKey,
+      label: post.monthLabel || creatorArchiveMonthLabel(monthKey),
+      postIds: []
+    };
+    index[monthKey].postIds.push(post.id);
+    return index;
+  }, {});
+}
+
+function creatorArchivePayload(posts = readCreatorPosts(), limit = 365) {
+  const normalized = creatorArchiveSort(posts.map((post, index) => normalizeCreatorArchivePost(post, index)));
+  const visiblePosts = normalized.filter(post => post.status !== "deleted" && post.published !== false);
+  const latestEditorial = visiblePosts[0] || null;
+  return {
+    version: "20260811-creator-desk-archive-v1",
+    updatedAt: new Date().toISOString(),
+    latestEditorialId: latestEditorial?.id || "",
+    latestEditorial,
+    monthlyIndex: creatorMonthlyIndex(visiblePosts),
+    posts: visiblePosts.slice(0, limit),
+    rule: "Creator Desk publishes new editorials as durable archive records. The latest editorial is a pointer, not a replacement."
+  };
+}
+
+function writeCreatorPosts(posts = []) {
+  const normalized = creatorArchiveSort((Array.isArray(posts) ? posts : []).map((post, index) => normalizeCreatorArchivePost(post, index)))
+    .slice(0, 730)
+    .map(({ archiveIndex, ...post }) => post);
+  writeJsonFile(creatorPostsFile, normalized);
+  return normalized;
+}
+
+function publishCreatorDeskPost(post = {}, options = {}) {
+  const current = readCreatorPosts();
+  const normalized = normalizeCreatorArchivePost(post);
+  const sameRecord = item => item.id === normalized.id || item.dayId === normalized.dayId || item.weekId === normalized.dayId;
+  const existing = current.find(sameRecord);
+  const shouldReplace = Boolean(options.republish || options.rewrite || existing?.dayId === normalized.dayId);
+  const next = shouldReplace
+    ? [normalized, ...current.filter(item => !sameRecord(item))]
+    : [normalized, ...current];
+  const saved = writeCreatorPosts(next);
+  const archive = creatorArchivePayload(saved);
+  saveFrameworkLearningProofEntry({
+    category: "creator-desk-archive",
+    event: shouldReplace ? "Creator Desk editorial republished in archive" : "Creator Desk editorial added to archive",
+    plainEnglish: shouldReplace
+      ? `The Brain updated the ${normalized.dayId} Creator Desk editorial without removing older editorials.`
+      : `The Brain published ${normalized.dayId} as a new Creator Desk archive record and preserved older editorials.`,
+    decisionMeasurement: {
+      dayId: normalized.dayId,
+      postId: normalized.id,
+      mode: shouldReplace ? "republish-same-day" : "append-new-day",
+      totalPublishedEditorials: archive.posts.length,
+      month: normalized.monthKey,
+      monthCount: archive.monthlyIndex[normalized.monthKey]?.postIds.length || 0
+    },
+    proceduralMemory: {
+      rule: "Generate Editorial -> Publish -> Assign Unique ID -> Save to Archive -> Update Monthly Index -> Update Latest Editorial pointer. Never overwrite older published days unless the owner explicitly republishes that same day."
+    },
+    resultMetric: {
+      archivePreserved: true,
+      latestEditorialId: archive.latestEditorialId,
+      totalPublishedEditorials: archive.posts.length
+    },
+    evidence: [`postId=${normalized.id}`, `dayId=${normalized.dayId}`, `month=${normalized.monthKey}`],
+    tags: ["creator-desk", "editorial-archive", "brain-publication-memory"]
+  });
+  return archive.posts.find(item => item.id === normalized.id) || normalized;
 }
 
 function readCreatorComments() {
@@ -11689,7 +11829,7 @@ function contentOrchestrationAnalysis(memory = learningMemory(), diagnostics = n
     {
       key: "newsletter",
       label: "Newsletter",
-      role: "Weekly recap and forecast using the weekÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s evidence and audience interest.",
+      role: "Weekly recap and forecast using the weekÃ¢â‚¬â„¢s evidence and audience interest.",
       currentOutput: newsletterRecent,
       targetOutput: 1,
       source: "Execution Engine -> Newsletter",
@@ -13997,8 +14137,8 @@ function reviewCreatorDraft(draft = {}, stories = [], source = "creator-desk") {
   const partialSentenceCount = paragraphs.reduce((count, paragraph) => {
     const fragments = String(paragraph || "")
       .split(/\s+/)
-      .filter(word => /\b(bi|spo|Donal|Uni|Ki|ComparingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢s|Grizzli)\.?\b/i.test(word));
-    return count + fragments.length + Number(/\.{3}|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½|function\s*\(|=>|fetch-start|headers|params|metrics/i.test(paragraph));
+      .filter(word => /\b(bi|spo|Donal|Uni|Ki|ComparingÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s|Grizzli)\.?\b/i.test(word));
+    return count + fragments.length + Number(/\.{3}|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÂ¯Ã‚Â¿Ã‚Â½|function\s*\(|=>|fetch-start|headers|params|metrics/i.test(paragraph));
   }, 1000);
   if (partialSentenceCount) {
     issues.push("Remove clipped source text, mojibake, tracking/script fragments, and partial sentences before publishing.");
@@ -15304,14 +15444,14 @@ function decodeHtmlEntities(value = "") {
 
 function cleanNewsletterCopy(value = "") {
   return decodeHtmlEntities(value)
+    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº/g, "'")
+    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾/g, "\"")
+    .replace(/ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â/g, "-")
     .replace(/ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¹Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Âº/g, "'")
     .replace(/ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¾/g, "\"")
     .replace(/ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â/g, "-")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº/g, "'")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¾/g, "\"")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â/g, "-")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ /g, " ")
-    .replace(/ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡/g, "")
+    .replace(/ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ /g, " ")
+    .replace(/ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -15507,9 +15647,9 @@ function newsletterTopNewsBriefs(signals = []) {
 function newsletterOpeningNote(signals = [], week = workWeekWindow()) {
   const lead = signals[0];
   const variants = lead ? [
-    `This weekÃƒÂ¯Ã‚Â¿Ã‚Â½s issue starts with ${newsletterShortMatter(lead.matter)} because that is where the public consequence was easiest to see. The purpose is not to recap every headline; it is to separate passing noise from the stories that still deserve attention.`,
+    `This weekÃ¯Â¿Â½s issue starts with ${newsletterShortMatter(lead.matter)} because that is where the public consequence was easiest to see. The purpose is not to recap every headline; it is to separate passing noise from the stories that still deserve attention.`,
     `The week brought more headlines than clarity, so this issue slows down around ${newsletterShortMatter(lead.matter)} and asks what changed, who carried the cost, and what should be watched next.`,
-    `${sentenceCase(newsletterShortMatter(lead.matter))} shaped the strongest signal this week. The newsletterÃƒÂ¯Ã‚Â¿Ã‚Â½s job is to give readers a clean read on the consequence without turning the issue into a pile of links.`
+    `${sentenceCase(newsletterShortMatter(lead.matter))} shaped the strongest signal this week. The newsletterÃ¯Â¿Â½s job is to give readers a clean read on the consequence without turning the issue into a pile of links.`
   ] : [
     "This issue looks back at the week by separating lasting consequence from passing noise, then looks ahead to the stories most likely to demand clearer answers.",
     "The week did not need more headline stacking. It needed a cleaner read on responsibility, consequence, and the next public decision worth watching.",
@@ -15564,7 +15704,7 @@ function newsletterMainNarrative(signals = [], week = workWeekWindow()) {
   const matters = [...new Set(signals.map(signal => newsletterShortMatter(signal.matter)).filter(Boolean))].slice(0, 4);
   const matterLine = matters.length === 1 ? matters[0] : matters.join(", ");
   const openingVariants = matters.length ? [
-    `The weekÃƒÂ¯Ã‚Â¿Ã‚Â½s strongest pattern ran through ${matterLine}. That does not make every story the same; it means each one should be judged by the decision made, the consequence created, and the standard that can be checked later.`,
+    `The weekÃ¯Â¿Â½s strongest pattern ran through ${matterLine}. That does not make every story the same; it means each one should be judged by the decision made, the consequence created, and the standard that can be checked later.`,
     `${sentenceCase(matterLine)} gave the week its shape. The important part is not the number of headlines, but whether any of them reveal who acted, who benefited, and who was left carrying the result.`,
     `The week kept returning to ${matterLine}. A useful weekly signal has to do more than name the topic; it has to explain why the topic still matters after the news cycle moves on.`
   ] : [
@@ -16139,7 +16279,7 @@ function technicalEditorIssues(record = {}, lane = "general") {
   if (!text.trim()) return ["empty-public-text"];
   if (/[ \t]{2,}/.test(text)) issues.push("extra-spacing");
   if (/\s+[,.!?;:]/.test(text)) issues.push("punctuation-spacing");
-  if (/\.{3}|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½|&#x27;/.test(text) || text.includes(String.fromCharCode(226, 8364))) {
+  if (/\.{3}|ÃƒÆ’Ã†â€™|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½|&#x27;/.test(text) || text.includes(String.fromCharCode(226, 8364))) {
     issues.push("encoding-or-ellipsis-artifact");
   }
   if (/\b(teh|recieve|recieved|seperate|goverment|responsiblity|occuring|additonal|siting|grammer)\b/i.test(text)) {
@@ -16240,7 +16380,7 @@ function technicalEditorFindings(record = {}, lane = "general") {
   publicEntries.forEach(entry => {
     if (/[ \t]{2,}/.test(entry.text)) findings.push(editorFinding("extra-spacing", lane, entry.path, entry.text, "Collapse repeated spaces before save.", "low"));
     if (/\s+[,.!?;:]/.test(entry.text)) findings.push(editorFinding("punctuation-spacing", lane, entry.path, entry.text, "Remove spaces before punctuation.", "low"));
-    if (/\.{3}|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½|&#x27;/.test(entry.text) || entry.text.includes(String.fromCharCode(226, 8364))) {
+    if (/\.{3}|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½|&#x27;/.test(entry.text) || entry.text.includes(String.fromCharCode(226, 8364))) {
       findings.push(editorFinding("encoding-or-ellipsis-artifact", lane, entry.path, entry.text, "Normalize encoding artifacts and remove ellipses/clipped source fragments.", "high"));
     }
     const spelling = entry.text.match(/\b(teh|recieve|recieved|seperate|goverment|responsiblity|occuring|additonal|siting|grammer)\b/i);
@@ -16387,7 +16527,7 @@ function applyContentLaneQualityGate(record = {}, lane = "general") {
     cleaned.text,
     ...(Array.isArray(cleaned.body) ? cleaned.body : [])
   ].join(" ");
-  const knownBadPattern = /\.{3}|ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½|&#x27;|fetch-start|fetch-done|headers|Comparing|Grizzli|\bbi\b|\bspo\b|\bDonal\b|\bUni\b|\bKi\b|not a placeholder|approved narrative|loudest room|The reader should be able to identify|The point is not to make every story say the same thing/i;
+  const knownBadPattern = /\.{3}|ÃƒÆ’Ã†â€™|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½|&#x27;|fetch-start|fetch-done|headers|Comparing|Grizzli|\bbi\b|\bspo\b|\bDonal\b|\bUni\b|\bKi\b|not a placeholder|approved narrative|loudest room|The reader should be able to identify|The point is not to make every story say the same thing/i;
   const hasEncodingArtifact = publicText.includes(String.fromCharCode(226, 8364))
     || publicText.includes(String.fromCharCode(195))
     || publicText.includes(String.fromCharCode(65533));
@@ -17291,7 +17431,7 @@ function creatorPerspectiveForStory(story, index) {
   if (story.category === "local" || /city|mayor|crime|housing|community/.test(text)) {
     return `${sourceLine} Local stories matter because people live with the consequences directly. The answer cannot always be another office, another subsidy, another campaign promise, or another excuse. Strong families, present fathers, serious churches, private charity, local accountability, and safer streets still matter more than polished language from people who never feel the impact.`;
   }
-  return `${sourceLine} The bigger issue is not just the event itself; it is the pressure to accept the approved interpretation. I believe people should be free to think, speak, disagree, and make private choices. But freedom also means nobody gets to force a belief system into another personÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢s home and call that tolerance. ${skepticism}`;
+  return `${sourceLine} The bigger issue is not just the event itself; it is the pressure to accept the approved interpretation. I believe people should be free to think, speak, disagree, and make private choices. But freedom also means nobody gets to force a belief system into another personÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s home and call that tolerance. ${skepticism}`;
 }
 
 function creatorPostTitle(stories) {
@@ -17728,7 +17868,7 @@ function creatorDeskText(post) {
 function cleanCreatorEditorialParagraph(paragraph = "") {
   let text = cleanEncodingArtifacts(cleanArticleText(paragraph, 1800) || cleanPublicText(paragraph, 1800));
   text = text
-    .replace(/["ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â][^"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â]{4,220}["ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â],?\s+as reported by [^,.;]+,?\s+is not a placeholder for a values paragraph;?\s+it is the evidence the column has to work from\.?/gi, "")
+    .replace(/["ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â][^"ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â]{4,220}["ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â],?\s+as reported by [^,.;]+,?\s+is not a placeholder for a values paragraph;?\s+it is the evidence the column has to work from\.?/gi, "")
     .replace(/\bStart with what was actually reported:\s*/gi, "")
     .replace(/\bThe fact pattern is this:\s*/gi, "")
     .replace(/\bThe center of the story is simple enough to test:\s*/gi, "")
@@ -17767,13 +17907,13 @@ function completeCreatorSentences(value = "", limit = 520) {
     .replace(/\.\.\.+/g, ".")
     .replace(/\s+/g, " ")
     .trim();
-  if (!text || /ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½|[\[{][A-Za-z0-9_]{1,8}[)\]}]|function\s*\(|=>|headers|fetch-start|params|metrics/i.test(text)) return "";
+  if (!text || /ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÂ¯Ã‚Â¿Ã‚Â½|[\[{][A-Za-z0-9_]{1,8}[)\]}]|function\s*\(|=>|headers|fetch-start|params|metrics/i.test(text)) return "";
   const sentences = text
     .split(/(?<=[.!?])\s+/)
     .map(sentence => sentence.trim())
     .filter(sentence => /[.!?]$/.test(sentence))
     .filter(sentence => sentence.length >= 38)
-    .filter(sentence => !/\b(bi|spo|Ki|Donal|Uni|ComparingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢s|x2019)\.?$/i.test(sentence))
+    .filter(sentence => !/\b(bi|spo|Ki|Donal|Uni|ComparingÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s|x2019)\.?$/i.test(sentence))
     .filter(sentence => !/click here|advertisement|subscribe|copyright|all rights reserved|read more/i.test(sentence));
   return sentences.join(" ").slice(0, limit).trim();
 }
@@ -17781,9 +17921,9 @@ function completeCreatorSentences(value = "", limit = 520) {
 function summaryLooksUnsafeForEditorial(value = "") {
   const text = String(value || "").trim();
   if (!text) return true;
-  if (/\.{3}|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½|function\s*\(|=>|fetch-start|headers|params|metrics|content-length|sourceMappingURL/i.test(text)) return true;
+  if (/\.{3}|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÂ¯Ã‚Â¿Ã‚Â½|function\s*\(|=>|fetch-start|headers|params|metrics|content-length|sourceMappingURL/i.test(text)) return true;
   if (!/[.!?]\s*$/.test(text) && text.length > 120) return true;
-  if (/\b(bi|spo|Donal|Uni|Ki|ComparingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢s)\.?$/i.test(text)) return true;
+  if (/\b(bi|spo|Donal|Uni|Ki|ComparingÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s)\.?$/i.test(text)) return true;
   return false;
 }
 
@@ -18362,7 +18502,8 @@ async function generateCreatorDeskPost(force = false, targetDate = new Date()) {
       differingFrames: story.differingFrames || [],
       whySelected: story.whySelected || "Selected from the day's strongest available story mix."
     })),
-    status: "archived"
+    published: true,
+    status: "published"
   };
   post.body = polishedDraft.body;
   post.aiModel = aiDraft ? aiModelStatus() : { enabled: false, fallback: "Built-in editorial rules used." };
@@ -18371,9 +18512,10 @@ async function generateCreatorDeskPost(force = false, targetDate = new Date()) {
   post.text = creatorDeskText(post);
   const finalPost = enforceContentEditor(post, "creator-desk");
 
-  const next = [finalPost, ...posts.filter(item => item.dayId !== day.id && item.weekId !== day.id)].slice(0, 365);
-  writeJsonFile(creatorPostsFile, next);
-  return finalPost;
+  return publishCreatorDeskPost(finalPost, {
+    republish: Boolean(existing && force),
+    source: force ? "owner-manual-generate" : "scheduled-daily-generate"
+  });
 }
 
 async function rewriteCreatorDeskPost(dayId) {
@@ -18453,7 +18595,8 @@ async function rewriteCreatorDeskPost(dayId) {
       differingFrames: story.differingFrames || existing.items?.[index]?.differingFrames || [],
       whySelected: story.whySelected || "Selected from the saved Creator Desk story set."
     })),
-    status: "archived"
+    published: true,
+    status: "published"
   };
   rewritten.body = polishedDraft.body;
   rewritten.aiModel = aiDraft ? aiModelStatus() : { enabled: false, fallback: "Built-in editorial rewrite rules used." };
@@ -18461,7 +18604,7 @@ async function rewriteCreatorDeskPost(dayId) {
   rewritten.html = creatorDeskHtml(rewritten);
   rewritten.text = creatorDeskText(rewritten);
   const finalRewritten = enforceContentEditor(rewritten, "creator-desk");
-  writeJsonFile(creatorPostsFile, [finalRewritten, ...posts.filter(item => item.dayId !== day.id && item.weekId !== day.id)].slice(0, 365));
+  publishCreatorDeskPost(finalRewritten, { rewrite: true, source: "creator-desk-rewrite" });
   logCreatorDesk("rewritten", { dayId: day.id, titles: stories.map(story => story.title) });
   return finalRewritten;
 }
@@ -19330,7 +19473,7 @@ function storyIdentityTerms(story = {}) {
 function storyNamedEntities(story = {}) {
   const text = `${story.title || ""} ${story.summary || ""} ${story.articleSummary || ""}`;
   const entities = new Set();
-  [...text.matchAll(/\b[A-Z][a-zA-Z'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢.-]{2,}(?:\s+[A-Z][a-zA-Z'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢.-]{2,}){0,4}\b/g)]
+  [...text.matchAll(/\b[A-Z][a-zA-Z'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢.-]{2,}(?:\s+[A-Z][a-zA-Z'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢.-]{2,}){0,4}\b/g)]
     .map(match => match[0].trim())
     .filter(value => !/^(The|This|That|And|But|For|From|With|After|Before|Latest|Watch|Video|Breaking|Local|World|News)$/i.test(value))
     .forEach(value => entities.add(value.toLowerCase()));
@@ -19868,6850 +20011,36 @@ function newsLabEventCoherenceAssessment(stories = [], representative = null) {
   const signatures = cleanStories.map(newsLabCanonicalEventSignatureFromStory);
   const actionCount = new Set(signatures.map(sig => sig.primaryAction).filter(Boolean)).size;
   const actorCount = new Set(signatures.map(sig => sig.primaryActor).filter(Boolean)).size;
-  const objectCount = new Set(signatures.map(sig => sig.eventObject).filter(Boolean)).size;
-  const categoryCount = new Set(signatures.map(sig => sig.categoryHint).filter(Boolean)).size;
-  const structuralPenalty = Math.min(0.28,
-    Math.max(0, actionCount - 1) * 0.08
-    + Math.max(0, actorCount - 2) * 0.05
-    + Math.max(0, objectCount - 2) * 0.04
-    + Math.max(0, categoryCount - 2) * 0.04
-  );
-  const eventCoherence = Number(Math.max(0, Math.min(1, avgScore - structuralPenalty)).toFixed(2));
-  const contaminationScore = Number((1 - eventCoherence).toFixed(2));
-  const componentScores = {
-    actorConsistency: Number(Math.max(0, 1 - Math.max(0, actorCount - 1) * 0.28).toFixed(2)),
-    actionCompatibility: Number(Math.max(0, 1 - Math.max(0, actionCount - 1) * 0.34).toFixed(2)),
-    timelineCompatibility: Number((comparisons.length
-      ? comparisons.filter(item => item.agreement.timeWindowAgreement).length / Math.max(1, comparisons.length)
-      : 1).toFixed(2)),
-    objectConsequenceConsistency: Number((comparisons.length
-      ? comparisons.filter(item => item.agreement.objectAgreement || item.agreement.consequenceAgreement).length / Math.max(1, comparisons.length)
-      : 1).toFixed(2)),
-    semanticEventSimilarity: Number(avgScore.toFixed(2)),
-    contradictionSeverity: Number(Math.min(1, incompatible.length / Math.max(1, cleanStories.length)).toFixed(2)),
-    competingEventCenters: Math.max(0, Math.max(actionCount, objectCount, actorCount - 1) - 1)
-  };
-  const coherenceWarnings = [
-    componentScores.actorConsistency < 0.8 ? "actor-inconsistency-detected" : "",
-    componentScores.actionCompatibility < 0.8 ? "action-incompatibility-detected" : "",
-    componentScores.timelineCompatibility < 0.75 ? "timeline-incompatibility-detected" : "",
-    componentScores.objectConsequenceConsistency < 0.75 ? "object-or-consequence-inconsistency-detected" : "",
-    componentScores.competingEventCenters > 0 ? "competing-event-centers-detected" : "",
-    categoryCount > 2 ? "multiple-category-contexts-present" : ""
-  ].filter(Boolean);
-  const readiness = eventCoherence >= 0.8
-    ? "continue"
-    : eventCoherence >= 0.6
-      ? "split-or-repair-cluster"
-      : "do-not-draft";
-  const decision = eventCoherence >= 0.85 && !coherenceWarnings.some(warning => /competing|action-incompatibility/.test(warning))
-    ? "write"
-    : eventCoherence >= 0.6
-      ? "split-or-repair"
-      : "hold";
+  const objectCount = new Set(signatures.map(sig => sig.eventObject || (sig.eventObjectTerms || []).join(" ")).filter(Boolean)).size;
+  const consequenceCount = new Set(signatures.map(sig => sig.consequence || (sig.consequenceTerms || []).join(" ")).filter(Boolean)).size;
+  const eventCoherence = Number((comparisons.length ? Math.max(0, avgScore) : 1).toFixed(2));
+  const contaminationScore = Number(Math.min(1, (
+    incompatible.length / Math.max(1, comparisons.length)
+    + Math.max(0, actionCount - 1) * 0.14
+    + Math.max(0, actorCount - 1) * 0.1
+    + Math.max(0, objectCount - 1) * 0.08
+    + Math.max(0, consequenceCount - 1) * 0.05
+  )).toFixed(2));
+  const readyForWriting = cleanStories.length > 0 && contaminationScore <= 0.34 && eventCoherence >= 0.62;
   return {
-    version: "20260806-event-coherence-v1",
-    contaminationScore,
+    storyCount: cleanStories.length,
+    comparisonCount: comparisons.length,
     eventCoherence,
-    coherenceAnalysis: {
-      overallScore: eventCoherence,
-      contaminationScore,
-      components: componentScores,
-      competingEvents: incompatible.map(item => ({
-        eventId: item.agreement.right?.eventId || item.url || item.title || "",
-        title: item.title || "",
-        score: Number(item.agreement.score || 0),
-        reason: item.agreement.reason || ""
-      })).slice(0, 12),
-      warnings: coherenceWarnings,
-      decision,
-      rule: "Coherence analyzes actor, action, timeline, object, consequence, semantic similarity, contradiction pressure, and competing event centers before the dossier can write."
-    },
-    conflictingEventIds: incompatible.map(item => item.agreement.right?.eventId || item.url || item.title).filter(Boolean).slice(0, 12),
-    readyForWriting: eventCoherence >= 0.8,
-    routing: readiness,
-    actionCount,
-    actorCount,
-    objectCount,
-    categoryCount,
-    sourceCount: cleanStories.length,
-    incompatibleSourceCount: incompatible.length,
-    comparisons: comparisons.slice(0, 10),
+    contaminationScore,
+    readyForWriting,
+    routing: readyForWriting ? "write" : "split-or-collect-more-evidence",
     canonicalEventSignature: newsLabCanonicalEventSignatureFromStory(primary),
-    rule: "Integrity measures whether sources describe one coherent event. Depth is decided later; thin coherent events can still become developing briefs."
-  };
-}
-
-function newsLabCleanSameEventSource(representative = {}, candidate = {}) {
-  if (representative.url && candidate.url && representative.url === candidate.url) return true;
-  const eventAgreement = newsLabCanonicalEventAgreement(representative, candidate);
-  if (!eventAgreement.canMerge) return false;
-  if (!newsLabStrictSameNewsEvent(representative, candidate)) return false;
-  const representativeAnchors = new Set(newsLabEventAnchorTerms(representative));
-  const candidateAnchors = newsLabEventAnchorTerms(candidate);
-  const anchorOverlap = candidateAnchors.filter(term => representativeAnchors.has(term)).length;
-  const titleOverlap = keywordOverlap({ title: representative.title || "" }, { title: candidate.title || "" });
-  const termOverlap = newsLabOverlap(representative, candidate);
-  const identity = storyIdentityOverlap(representative, candidate);
-  return anchorOverlap >= 2
-    || (titleOverlap >= 3 && termOverlap >= 6)
-    || (titleOverlap >= 2 && anchorOverlap >= 1 && termOverlap >= 7)
-    || (identity.entityOverlap >= 2 && anchorOverlap >= 1 && termOverlap >= 9);
-}
-
-function newsLabIntraSourceEventSegments(story = {}) {
-  const cleanStory = cleanNewsLabSourceStory(story || {});
-  const text = [cleanStory.title, cleanStory.summary, cleanStory.articleSummary].filter(Boolean).join(" ");
-  const titleParts = String(cleanStory.title || "")
-    .split(/\s+(?:and|while|as|;|\||\/)\s+/i)
-    .map(part => cleanArticleText(part, 220))
-    .filter(part => part.split(/\s+/).length >= 4);
-  const sentenceParts = newsLabFactSentences(text, 8)
-    .filter(sentence => /\b(rules?|sues?|charges?|strikes?|wins?|loses?|approves?|blocks?|announces?|investigates?|reports?|confirms?|warns?|kills?|injures?|launches?|settles?|signs?|passes?|falls?|rises?|beats?)\b/i.test(sentence));
-  const candidates = [...titleParts, ...sentenceParts]
-    .filter(Boolean)
-    .filter((part, index, all) => all.findIndex(item => newsLabTextOverlap(item, part) >= 0.74) === index)
-    .slice(0, 8);
-  const segments = candidates.map((part, index) => {
-    const segmentStory = {
-      ...cleanStory,
-      id: `${cleanStory.id || cleanStory.url || cleanStory.title || "source"}:event_segment_${index + 1}`,
-      title: part,
-      summary: part,
-      articleSummary: part,
-      sourceSegmentId: `event_segment_${index + 1}`
-    };
-    const signature = newsLabCanonicalEventSignatureFromStory(segmentStory);
-    return {
-      segmentId: `${cleanStory.url || cleanStory.source || "source"}:event_segment_${index + 1}`,
-      sourceUrl: cleanStory.url || "",
-      source: cleanStory.source || cleanStory.name || "",
-      title: part,
-      eventSignature: signature,
-      eventId: signature.eventId,
-      primaryActor: signature.primaryActor,
-      primaryAction: signature.primaryAction,
-      eventObject: signature.eventObject,
-      eventTimeWindow: signature.eventTimeWindow,
-      categoryHint: signature.categoryHint,
-      extractionConfidence: signature.extractionConfidence
-    };
-  });
-  const confident = segments.filter(segment => Number(segment.extractionConfidence || 0) >= 60);
-  const actionCount = new Set(confident.map(segment => segment.primaryAction).filter(Boolean)).size;
-  const actorCount = new Set(confident.map(segment => segment.primaryActor).filter(Boolean)).size;
-  const eventCount = new Set(confident.map(segment => segment.eventId).filter(Boolean)).size;
-  const hasMultipleEvents = Boolean(confident.length >= 2 && eventCount >= 2 && (actionCount >= 2 || actorCount >= 2));
-  return {
-    active: true,
-    version: "20260806-intra-source-event-segmentation-v1",
-    hasMultipleEvents,
-    segmentCount: segments.length,
-    confidentSegmentCount: confident.length,
-    actionCount,
-    actorCount,
-    eventCount,
-    segments,
-    rule: "Roundups and multi-topic source items are converted into segment records before recovery/clustering so one source cannot contaminate a canonical dossier with unrelated events."
-  };
-}
-
-function newsLabStoryFromIntraSourceSegment(source = {}, segment = {}, index = 0) {
-  const parentId = source.id || source.url || source.title || source.source || "source";
-  const segmentId = segment.segmentId || `${parentId}:event_segment_${index + 1}`;
-  const cleanTitle = newsLabTrimSentence(segment.title || source.title || "", 220);
-  const segmentSlug = safeFileSlug(segmentId).slice(0, 44);
-  const segmentUrl = source.url ? `${source.url}#ce-event-${segmentSlug}` : `${source.source || "source"}:${segmentSlug}`;
-  return cleanNewsLabSourceStory({
-    ...source,
-    id: `${parentId}:event_segment_${index + 1}`,
-    title: cleanTitle,
-    summary: cleanTitle,
-    articleSummary: cleanTitle,
-    url: segmentUrl,
-    sourceSegmentId: segmentId,
-    sourceParentUrl: source.url || "",
-    sourceParentTitle: source.title || "",
-    sourceSegment: {
-      active: true,
-      segmentId,
-      parentUrl: source.url || "",
-      parentTitle: source.title || "",
-      eventSignature: segment.eventSignature || null,
-      extractionConfidence: Number(segment.extractionConfidence || 0),
-      rule: "This source segment was split before clustering so a roundup item cannot become one mixed dossier."
+    conflictingEventIds: incompatible.map(item => item.url || item.title).filter(Boolean).slice(0, 8),
+    incompatible: incompatible.slice(0, 8),
+    diversity: {
+      actionCount,
+      actorCount,
+      objectCount,
+      consequenceCount
     },
-    canonicalEventSignature: segment.eventSignature || source.canonicalEventSignature || null,
-    eventId: segment.eventId || segment.eventSignature?.eventId || source.eventId || "",
-    category: segment.categoryHint || source.category || ""
-  });
-}
-
-function newsLabExpandStoriesWithIntraSourceSegments(stories = []) {
-  const metrics = {
-    inputStories: Array.isArray(stories) ? stories.length : 0,
-    splitSourceCount: 0,
-    segmentStoryCount: 0,
-    unchangedStoryCount: 0,
-    outputStories: 0,
-    segmentExamples: [],
-    rule: "Multi-event source items are split before clustering. Single-event sources pass through unchanged."
-  };
-  const expanded = [];
-  (Array.isArray(stories) ? stories : []).forEach(source => {
-    const segmentation = newsLabIntraSourceEventSegments(source);
-    if (segmentation.hasMultipleEvents && segmentation.segments.length >= 2) {
-      const segmentStories = segmentation.segments
-        .filter(segment => Number(segment.extractionConfidence || 0) >= 55)
-        .map((segment, index) => newsLabStoryFromIntraSourceSegment(source, segment, index))
-        .filter(newsLabReportableSourceStory);
-      if (segmentStories.length >= 2) {
-        metrics.splitSourceCount += 1;
-        metrics.segmentStoryCount += segmentStories.length;
-        metrics.segmentExamples.push({
-          title: source.title || "",
-          source: source.source || "",
-          segmentCount: segmentStories.length,
-          eventIds: segmentStories.map(story => story.eventId || story.canonicalEventSignature?.eventId || "").filter(Boolean).slice(0, 5)
-        });
-        expanded.push(...segmentStories);
-        return;
-      }
-    }
-    metrics.unchangedStoryCount += 1;
-    expanded.push(source);
-  });
-  metrics.outputStories = expanded.length;
-  metrics.segmentExamples = metrics.segmentExamples.slice(0, 12);
-  return { stories: expanded, metrics };
-}
-
-function newsLabBuildEventSubDossier(cleanRepresentative = {}, sourcePool = [], topicIsolation = {}, facts = [], supporting = [], options = {}) {
-  const writingSources = sourcePool.filter(source => source.dossierRole === "strict-writing-source");
-  const verificationSources = sourcePool.filter(source => source.dossierRole === "verification-context-source");
-  const backgroundSources = sourcePool.filter(source => source.dossierRole === "background-context-source");
-  const reviewOnlySources = sourcePool.filter(source => source.dossierRole === "dossier-review-source");
-  const rejectedSources = sourcePool.filter(source => source.dossierRole === "rejected");
-  const representativeSegmentation = newsLabIntraSourceEventSegments(cleanRepresentative);
-  const sourceSegmentations = sourcePool
-    .map(source => ({ title: source.title || "", url: source.url || "", segmentation: newsLabIntraSourceEventSegments(source) }))
-    .filter(item => item.segmentation.hasMultipleEvents || item.segmentation.segmentCount > 1)
-    .slice(0, 12);
-  const segmentedEvidenceRecords = [representativeSegmentation, ...sourceSegmentations.map(item => item.segmentation)]
-    .flatMap(segmentation => segmentation.segments || [])
-    .filter(segment => Number(segment.extractionConfidence || 0) >= 55)
-    .slice(0, 24);
-  const keywordOnlyRejected = rejectedSources.filter(source => {
-    const relevance = source.dossierRelevance || {};
-    return Number(relevance.titleOverlap || 0) > 0 || Number(relevance.termOverlap || 0) > 0 || Number(relevance.relevantFactCount || 0) > 0;
-  });
-  const sameEventSources = [...writingSources, ...verificationSources];
-  const entitySet = new Set();
-  sameEventSources.forEach(source => {
-    storyNamedEntities(source).forEach(entity => entitySet.add(entity));
-  });
-  return {
-    version: "20260730-event-sub-dossier-v1",
-    generatedAt: new Date().toISOString(),
-    mode: "pre-dossier-event-separation",
-    storyId: options.cluster?.eventId || options.cluster?.key || reportClusterKey(cleanRepresentative),
-    category: newsLabCategory(cleanRepresentative),
-    primaryEvent: newsLabTrimSentence(cleanRepresentative.articleSummary || cleanRepresentative.summary || cleanRepresentative.title || "", 260),
-    sourceSeparation: {
-      writingSourceCount: writingSources.length,
-      verificationSourceCount: verificationSources.length,
-      backgroundSourceCount: backgroundSources.length,
-      reviewOnlySourceCount: reviewOnlySources.length,
-      keywordOnlyRejectedCount: keywordOnlyRejected.length,
-      mixedTopicRejectedCount: Number(topicIsolation.rejected?.length || 0),
-      rule: "Sub-dossier separates same-event evidence before the main Story Dossier. Keyword overlap alone is recorded for memory but cannot become public article evidence."
-    },
-    sourceSegmentation: {
-      representativeHasMultipleEvents: representativeSegmentation.hasMultipleEvents,
-      multiEventSourceCount: sourceSegmentations.filter(item => item.segmentation.hasMultipleEvents).length,
-      segmentedEvidenceRecordCount: segmentedEvidenceRecords.length,
-      representative: representativeSegmentation,
-      sourceExamples: sourceSegmentations.slice(0, 6),
-      segmentedEvidenceRecords,
-      rule: "Before clustering/recovery, source items that contain multiple actor/action pairs are preserved as source:event_segment records."
-    },
-    sources: {
-      writing: writingSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
-      verification: verificationSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
-      background: backgroundSources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
-      reviewOnly: reviewOnlySources.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "" })).slice(0, 12),
-      rejectedKeywordOnly: keywordOnlyRejected.map(source => ({ title: source.title || "", source: source.source || "", url: source.url || "", reason: source.dossierAdmissionReason || "", relevance: source.dossierRelevance || {} })).slice(0, 12)
-    },
-    knownFacts: (facts || []).map(fact => newsLabTrimSentence(fact, 260)).filter(Boolean).slice(0, 14),
-    entities: Array.from(entitySet).slice(0, 24),
-    timeline: sameEventSources.slice(0, 8).map((source, index) => ({
-      id: `event-sub-dossier-timeline-${index + 1}`,
-      at: source.published || source.publishedAt || "",
-      source: source.source || "",
-      title: newsLabTrimSentence(source.title || "", 180),
-      url: source.url || ""
-    })).filter(item => item.title || item.source),
-    readiness: {
-      readyForMainDossier: sameEventSources.length >= 1 && (facts || []).length >= 1 && !representativeSegmentation.hasMultipleEvents,
-      readyForWriterCandidate: writingSources.length >= 1 && (facts || []).length >= 2 && !representativeSegmentation.hasMultipleEvents,
-      blocker: representativeSegmentation.hasMultipleEvents ? "needs-intra-source-event-segmentation" : sameEventSources.length < 1 ? "needs-same-event-source" : (facts || []).length < 1 ? "needs-same-event-facts" : "",
-      rule: "Main Dossier may enrich and reorganize, but it must verify this sub-dossier and reject keyword-only sources before Writer handoff."
-    },
-    handoff: {
-      to: "Story Dossier Builder",
-      mainDossierMustVerify: ["same-event evidence", "direct writing facts", "timeline anchor", "keyword-only rejects", "mixed-topic rejects"],
-      writerReceivesOnlyAfterMainDossier: true
-    }
-  };
-}
-function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates = [], options = {}) {
-  const cleanRepresentative = cleanNewsLabSourceStory(representative || {});
-  const allCandidates = newsLabUniqueSourceStories([cleanRepresentative, ...(candidates || [])]);
-  const genericRejected = allCandidates.filter(newsLabGenericDossierFragment);
-  if (newsLabGenericDossierFragment(cleanRepresentative)) {
-    return {
-      readyForWriter: false,
-      readinessClass: "NEEDS_IDENTITY_RESOLUTION",
-      blockingReasons: ["generic-representative-held-before-writer"],
-      warnings: [],
-      missingEvidence: ["needs-clear-actor-action-event", "needs-specific-source-event"],
-      recommendedAction: "resolve-primary-actor-action-time-location",
-      nextRetryAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-      reason: "generic-representative-held-before-writer",
-      representative: cleanRepresentative,
-      supporting: [],
-      facts: [],
-      sourcePool: [],
-      topicIsolation: { accepted: [], rejected: [] },
-      draftEligibility: newsLabClusterDraftEligible(cleanRepresentative, []),
-      diagnostic: {
-        workerFinishMode: !!options.workerFinishMode,
-        rejectedGenericCount: genericRejected.length,
-        rule: "The Writer cannot draft from a generic, placeholder, paid-plan, search-page, or process-language representative. The dossier must identify one real event first."
-      }
-    };
-  }
-  const nonGenericCandidates = allCandidates
-    .filter(story => !newsLabGenericDossierFragment(story))
-    .filter(story => (story.url || story.title) !== (cleanRepresentative.url || cleanRepresentative.title));
-  const topicIsolation = newsLabTopicIsolatedStories(cleanRepresentative, nonGenericCandidates);
-  const sourcePool = newsLabDossierSourcePool(cleanRepresentative, nonGenericCandidates)
-    .filter(source => !newsLabGenericDossierFragment(source));
-  const strictWritingSources = sourcePool
-    .filter(source => source.dossierRole === "strict-writing-source")
-    .filter(source => newsLabCleanSameEventSource(cleanRepresentative, source));
-  const verificationSources = sourcePool
-    .filter(source => source.dossierRole === "verification-context-source")
-    .filter(source => newsLabCleanSameEventSource(cleanRepresentative, source))
-    .slice(0, 4);
-  const supporting = newsLabUniqueSourceStories([...topicIsolation.accepted, ...strictWritingSources, ...verificationSources])
-    .filter(source => newsLabCleanSameEventSource(cleanRepresentative, source))
-    .sort((a, b) => newsLabSourceMaterialScore(b) - newsLabSourceMaterialScore(a))
-    .slice(0, 16);
-  const factCandidates = [
-    cleanRepresentative.articleSummary,
-    cleanRepresentative.summary,
-    cleanRepresentative.title,
-    ...supporting.flatMap(story => [story.articleSummary, story.summary, story.title])
-  ].filter(Boolean);
-  const facts = newsLabAcceptedFacts({
-    representative: cleanRepresentative,
-    supporting,
-    facts: factCandidates
-  })
-    .filter(fact => !newsLabIsMetaOnlyParagraph(fact))
-    .filter(fact => !newsLabGenericDossierFragment({ title: "", summary: fact, articleSummary: fact }))
-    .slice(0, 14);
-  const draftEligibility = newsLabClusterDraftEligible(cleanRepresentative, supporting);
-  const eventSubDossier = newsLabBuildEventSubDossier(cleanRepresentative, sourcePool, topicIsolation, facts, supporting, options);
-  const readyForWriter = draftEligibility.eligible
-    && facts.length >= (options.workerFinishMode ? 1 : 2)
-    && !eventSubDossier.sourceSegmentation?.representativeHasMultipleEvents
-    && !facts.some(fact => /\b(local|political|international|sports|technology|business) record turns on\b/i.test(fact));
-  const handoffRecovery = newsLabDossierReadinessClassFromEvidence({
-    readyForWriter,
-    readinessTier: readyForWriter && facts.length >= 3 && supporting.length >= 1 ? "READY_FOR_STANDARD_ARTICLE" : readyForWriter || facts.length >= 2 ? "READY_FOR_BREAKING_BRIEF" : "HOLD_FOR_EVIDENCE",
-    factCount: facts.length,
-    sourceCount: 1 + supporting.length,
-    missing: [
-      eventSubDossier.sourceSegmentation?.representativeHasMultipleEvents ? "needs-intra-source-event-segmentation" : "",
-      draftEligibility.eligible ? "" : "needs-clear-actor-action-event",
-      facts.length >= 2 ? "" : "needs-two-unique-verified-facts",
-      supporting.length >= 1 ? "" : "single-source-developing-dossier",
-      topicIsolation.rejected.length ? "mixed-event-sources-rejected" : ""
-    ].filter(Boolean),
-    warning: [supporting.length < 1 ? "single-source-developing-dossier" : ""].filter(Boolean),
-    metrics: {
-      uniqueFactCount: facts.length,
-      sourceCount: 1 + supporting.length,
-      independentSourceCount: newsLabSources([cleanRepresentative, ...supporting]).length || 1 + supporting.length,
-      mixedOrGeneric: topicIsolation.rejected.length > supporting.length && supporting.length < 1,
-      primarySourcePresent: newsLabDossierPrimarySourcePresent([cleanRepresentative, ...supporting], {})
-    }
-  });
-  return {
-    readyForWriter,
-    readinessClass: handoffRecovery.readinessClass,
-    blockingReasons: handoffRecovery.blockingReasons,
-    warnings: handoffRecovery.warnings,
-    missingEvidence: handoffRecovery.missingEvidence,
-    recommendedAction: handoffRecovery.recommendedAction,
-    nextRetryAt: handoffRecovery.nextRetryAt,
-    reason: readyForWriter ? "clean-single-event-dossier-ready" : "held-before-writer-insufficient-clean-event-facts",
-    representative: cleanRepresentative,
-    supporting,
-    facts,
-    sourcePool,
-    topicIsolation,
-    eventSubDossier,
-    draftEligibility,
-    diagnostic: {
-      workerFinishMode: !!options.workerFinishMode,
-      clusterKey: options.cluster?.eventId || options.cluster?.key || reportClusterKey(cleanRepresentative),
-      inputCandidateCount: allCandidates.length,
-      rejectedGenericCount: genericRejected.length,
-      rejectedMixedTopicCount: topicIsolation.rejected.length + Math.max(0, sourcePool.length - supporting.length),
-      acceptedSameEventCount: supporting.length,
-      sourcePoolCount: sourcePool.length,
-      eventSubDossierReady: Boolean(eventSubDossier.readiness?.readyForMainDossier),
-      eventSubDossierWritingSources: Number(eventSubDossier.sourceSeparation?.writingSourceCount || 0),
-      eventSubDossierVerificationSources: Number(eventSubDossier.sourceSeparation?.verificationSourceCount || 0),
-      eventSubDossierKeywordOnlyRejected: Number(eventSubDossier.sourceSeparation?.keywordOnlyRejectedCount || 0),
-      intraSourceMultiEventCount: Number(eventSubDossier.sourceSegmentation?.multiEventSourceCount || 0) + Number(eventSubDossier.sourceSegmentation?.representativeHasMultipleEvents ? 1 : 0),
-      segmentedEvidenceRecordCount: Number(eventSubDossier.sourceSegmentation?.segmentedEvidenceRecordCount || 0),
-      factCount: facts.length,
-      eventAnchorRule: "Holiday/date/common-context overlap is not enough. Support sources must share strong actor/action/place/outcome anchors with the representative event.",
-      rule: "One clean event dossier must be built before the first draft. Mixed-topic, generic, search-page, or process-language fragments are excluded before Writer sees the story."
-    }
-  };
-}
-
-function newsLabClusterWritingScore(cluster = {}) {
-  const representative = cleanNewsLabSourceStory(cluster.representative || {});
-  const topicIsolation = newsLabTopicIsolatedStories(representative, [...(cluster.supportingStories || []), ...(cluster.absorbedStories || [])]);
-  const eligibility = newsLabClusterDraftEligible(representative, topicIsolation.accepted);
-  const uniqueSourceCount = Array.isArray(cluster.sources) ? cluster.sources.length : newsLabSources([representative, ...topicIsolation.accepted]).length;
-  return {
-    cluster,
-    eligibility,
-    acceptedSupportCount: topicIsolation.accepted.length,
-    rejectedSupportCount: topicIsolation.rejected.length,
-    score: eligibility.score
-      + eligibility.fullReadCount * 10
-      + eligibility.usableSummaryCount * 4
-      + uniqueSourceCount * 2
-      + Number(cluster.reportCount || 0)
-      - topicIsolation.rejected.length
-  };
-}
-
-function newsLabRankWritingClusters(clusters = []) {
-  return clusters
-    .map(newsLabClusterWritingScore)
-    .sort((a, b) => b.score - a.score)
-    .map(item => item.cluster);
-}
-function newsLabCurrentPublicTabCountsForWorkers() {
-  const cached = readJsonFile(newsLabApiResponseCacheFile, null);
-  const cachedStories = Array.isArray(cached?.responses?.all?.ownedStories) ? cached.responses.all.ownedStories : [];
-  const published = readJsonFile(newsLabPublishedPayloadFile, null);
-  const publishedStories = Array.isArray(published?.ownedStories) ? published.ownedStories : [];
-  const stories = cachedStories.length ? cachedStories : publishedStories;
-  const counts = Object.fromEntries(newsLabSectionCategories.map(category => [category, 0]));
-  stories.forEach(story => {
-    const category = newsLabCategory(story);
-    if (Object.prototype.hasOwnProperty.call(counts, category)) counts[category] += 1;
-  });
-  return counts;
-}
-
-function newsLabUnderfilledPublicCategories(target = 7) {
-  const counts = newsLabCurrentPublicTabCountsForWorkers();
-  return Object.entries(counts)
-    .map(([category, count]) => ({ category, count, needed: Math.max(0, target - count) }))
-    .filter(item => item.needed > 0)
-    .sort((a, b) => b.needed - a.needed || a.count - b.count || a.category.localeCompare(b.category));
-}
-
-function newsLabClusterMatchesCategory(cluster = {}, category = "") {
-  const stories = newsLabClusterStories(cluster);
-  if (category === "sports") {
-    return newsLabCanonicalCategoryFromIdentity(cluster.representative || {}).category === "sports"
-      || stories.some(story => newsLabCanonicalCategoryFromIdentity(story).category === "sports");
-  }
-  return newsLabCategory(cluster.representative || {}) === category
-    || stories.some(story => newsLabCategory(story) === category);
-}
-
-function newsLabPrioritizeUnderfilledCategoryClusters(clusters = [], limit = newsLabClusterLimit, target = 7) {
-  const underfilled = newsLabUnderfilledPublicCategories(target);
-  if (!underfilled.length) return clusters.slice(0, limit);
-  const selected = [];
-  const used = new Set();
-  underfilled.forEach(({ category }) => {
-    const matchIndex = clusters.findIndex((cluster, index) => !used.has(index) && newsLabClusterMatchesCategory(cluster, category));
-    if (matchIndex >= 0) {
-      selected.push(clusters[matchIndex]);
-      used.add(matchIndex);
-    }
-  });
-  clusters.forEach((cluster, index) => {
-    if (selected.length < limit && !used.has(index)) selected.push(cluster);
-  });
-  return selected.slice(0, limit);
-}
-
-function newsLabPrioritizeUnderfilledStoriesForEditor(stories = [], target = 7) {
-  const underfilled = newsLabUnderfilledPublicCategories(target);
-  if (!underfilled.length) return stories;
-  const selected = [];
-  const used = new Set();
-  const storyKey = story => String(story?.id || story?.topicKey || story?.eventId || story?.title || "");
-  underfilled.forEach(({ category, needed }) => {
-    stories
-      .filter(story => newsLabCanonicalCategoryFromIdentity(story).category === category || newsLabCategory(story) === category)
-      .slice(0, Math.max(1, Math.min(needed, 4)))
-      .forEach(story => {
-        const key = storyKey(story);
-        if (used.has(key)) return;
-        used.add(key);
-        selected.push({
-          ...story,
-          tabProductionPriority: {
-            ...(story.tabProductionPriority || {}),
-            applied: true,
-            category,
-            neededBeforeCycle: needed,
-            stage: "editor-handoff",
-            rule: "Underfilled public tabs must receive editor-reviewable candidates before global popularity sorting can consume every slot."
-          }
-        });
-      });
-  });
-  stories.forEach(story => {
-    const key = storyKey(story);
-    if (!used.has(key)) {
-      used.add(key);
-      selected.push(story);
-    }
-  });
-  return selected;
-}
-function newsLabTopicKeyFromStories(stories = []) {
-  const terms = new Map();
-  stories
-    .filter(Boolean)
-    .forEach(story => {
-      newsLabTerms(story).slice(0, 18).forEach((term, index) => {
-        const weight = Math.max(1, 18 - index);
-        terms.set(term, (terms.get(term) || 0) + weight);
-      });
-    });
-  const category = newsLabCategory(stories[0] || {});
-  const keyTerms = [...terms.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, 5)
-    .map(([term]) => term);
-  return `${category}:${keyTerms.join("-") || reportClusterKey(stories[0] || {})}`;
-}
-
-function newsLabEventSignature(stories = []) {
-  const cleanStories = stories.filter(Boolean);
-  const category = newsLabCategory(cleanStories[0] || {});
-  const representative = newsLabBestEventRepresentative(cleanStories);
-  const canonical = newsLabCanonicalEventSignatureFromStory(representative || cleanStories[0] || {});
-  const coherence = cleanStories.length
-    ? newsLabEventCoherenceAssessment(cleanStories, representative || cleanStories[0])
-    : null;
-  const entityCounts = new Map();
-  const termCounts = new Map();
-  cleanStories.forEach(story => {
-    storyNamedEntities(story).forEach((entity, index) => {
-      const normalized = entity.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
-      if (normalized.length >= 4) entityCounts.set(normalized, (entityCounts.get(normalized) || 0) + Math.max(1, 12 - index));
-    });
-    newsLabTerms(story).slice(0, 18).forEach((term, index) => {
-      termCounts.set(term, (termCounts.get(term) || 0) + Math.max(1, 18 - index));
-    });
-  });
-  const entities = [...entityCounts.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, 5)
-    .map(([entity]) => entity);
-  const terms = [...termCounts.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, 8)
-    .map(([term]) => term);
-  const anchor = entities.length ? entities.slice(0, 3) : terms.slice(0, 4);
-  const action = terms.filter(term => !anchor.some(entity => entity.includes(term))).slice(0, 4);
-  const canonicalEventId = canonical.extractionConfidence >= 65 ? canonical.eventId : "";
-  const eventId = `${category}:${canonicalEventId || `event:${[...anchor, ...action].join("-") || newsLabTopicKeyFromStories(cleanStories)}`}`.replace(/[^a-z0-9:_-]+/gi, "-");
-  return {
-    category,
-    eventId,
-    canonicalEventId: canonical.eventId,
-    canonical,
-    eventCoherence: coherence ? coherence.eventCoherence : 1,
-    contaminationScore: coherence ? coherence.contaminationScore : 0,
-    readyForWriting: coherence ? coherence.readyForWriting : true,
-    entities,
-    terms,
-    sourceArticleCount: cleanStories.length
-  };
-}
-
-function newsLabClusterStories(cluster = {}) {
-  const stories = [
-    cluster.representative,
-    ...(cluster.stories || []),
-    ...(cluster.supportingStories || []),
-    ...(cluster.absorbedStories || [])
-  ].filter(Boolean);
-  const seen = new Set();
-  return stories.filter(story => {
-    const key = story.url || `${story.source || ""}:${story.title || ""}`;
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-function newsLabSameEventSignature(left = {}, right = {}) {
-  if (!left.eventSignature || !right.eventSignature) return false;
-  const leftCanonical = left.eventSignature.canonical || null;
-  const rightCanonical = right.eventSignature.canonical || null;
-  if (leftCanonical && rightCanonical) {
-    const canonicalAgreement = newsLabCanonicalEventAgreement(
-      { ...(left.representative || {}), canonicalEventSignature: leftCanonical },
-      { ...(right.representative || {}), canonicalEventSignature: rightCanonical }
-    );
-    if (canonicalAgreement.canMerge) return true;
-  }
-  if (left.eventId && right.eventId && left.eventId === right.eventId) return true;
-  const leftEntities = new Set(left.eventSignature.entities || []);
-  const rightEntities = right.eventSignature.entities || [];
-  const sharedEntities = rightEntities.filter(entity => leftEntities.has(entity)).length;
-  const leftTerms = new Set(left.eventSignature.terms || []);
-  const rightTerms = right.eventSignature.terms || [];
-  const sharedTerms = rightTerms.filter(term => leftTerms.has(term)).length;
-  const representativeBridge = newsLabStrictSameNewsEvent(left.representative || {}, right.representative || {});
-  const sameCategory = left.eventSignature.category === right.eventSignature.category;
-  return sameCategory && ((sharedEntities >= 2 && sharedTerms >= 2)
-    || (sharedEntities >= 1 && sharedTerms >= 5)
-    || (representativeBridge && (sharedEntities >= 1 || sharedTerms >= 5)));
-}
-
-function newsLabBestEventRepresentative(stories = []) {
-  return [...stories].sort((a, b) =>
-    newsLabSourceMaterialScore(b) - newsLabSourceMaterialScore(a)
-    || Number(b.engagementScore || 0) - Number(a.engagementScore || 0)
-    || storyDate(b.published) - storyDate(a.published)
-  )[0] || stories[0] || {};
-}
-
-function newsLabMergeEventClusters(clusters = []) {
-  const merged = [];
-  clusters.forEach(cluster => {
-    const clusterStories = newsLabClusterStories(cluster);
-    const eventSignature = newsLabEventSignature(clusterStories);
-    const eventCluster = {
-      ...cluster,
-      key: eventSignature.eventId || cluster.key,
-      eventId: eventSignature.eventId,
-      eventSignature,
-      eventSourceArticleCount: clusterStories.length
-    };
-    const existing = merged.find(item => newsLabSameEventSignature(item, eventCluster));
-    if (!existing) {
-      merged.push(eventCluster);
-      return;
-    }
-    const combinedStories = newsLabClusterStories(existing).concat(clusterStories);
-    const uniqueStories = newsLabClusterStories({ stories: combinedStories });
-    const representative = newsLabBestEventRepresentative(uniqueStories);
-    const signature = newsLabEventSignature(uniqueStories);
-    const sources = [...new Set(uniqueStories.map(story => story.source).filter(Boolean))];
-    existing.key = signature.eventId || existing.key;
-    existing.eventId = signature.eventId;
-    existing.eventSignature = signature;
-    existing.eventSourceArticleCount = uniqueStories.length;
-    existing.representative = representative;
-    existing.sources = sources;
-    existing.reportCount = uniqueStories.length;
-    existing.reportingScore = Math.max(Number(existing.reportingScore || 0), Number(cluster.reportingScore || 0))
-      + (sources.length * 12)
-      + uniqueStories.length;
-    existing.absorbedStories = uniqueStories
-      .filter(story => story.url !== representative.url)
-      .slice(0, 24)
-      .map(story => ({
-        title: story.title,
-        source: story.source,
-        url: story.url,
-        summary: story.summary,
-        articleSummary: story.articleSummary,
-        category: story.category,
-        published: story.published,
-        sourceDepth: story.sourceDepth || "",
-        articleReadStatus: story.articleReadStatus || "",
-        articleTextLength: story.articleTextLength || 0
-      }));
-    existing.supportingStories = uniqueStories
-      .filter(story => story.url !== representative.url && newsLabStrictSameNewsEvent(representative, story))
-      .slice(0, 12)
-      .map(story => ({
-        title: story.title,
-        source: story.source,
-        url: story.url,
-        summary: story.summary,
-        articleSummary: story.articleSummary,
-        category: story.category
-      }));
-  });
-  return merged.sort((a, b) => b.reportingScore - a.reportingScore);
-}
-
-function newsLabClusterFromStoryGroup(stories = [], parentCluster = {}, splitIndex = 0) {
-  const uniqueStories = newsLabClusterStories({ stories });
-  if (!uniqueStories.length) return null;
-  const representative = newsLabBestEventRepresentative(uniqueStories);
-  const signature = newsLabEventSignature(uniqueStories);
-  const coherence = newsLabEventCoherenceAssessment(uniqueStories, representative);
-  const sources = [...new Set(uniqueStories.map(story => story.source).filter(Boolean))];
-  return {
-    ...parentCluster,
-    key: signature.eventId || `${parentCluster.key || "cluster"}:split:${splitIndex + 1}`,
-    eventId: signature.eventId || `${parentCluster.eventId || parentCluster.key || "event"}:split:${splitIndex + 1}`,
-    eventSignature: signature,
-    eventCoherence: coherence,
-    eventSourceArticleCount: uniqueStories.length,
-    representative,
-    sources,
-    reportCount: uniqueStories.length,
-    reportingScore: Math.max(Number(parentCluster.reportingScore || 0), 0) + sources.length * 12 + uniqueStories.length * 10,
-    absorbedStories: uniqueStories.filter(story => story.url !== representative.url).slice(0, 24),
-    supportingStories: uniqueStories
-      .filter(story => story.url !== representative.url && newsLabCleanSameEventSource(representative, story))
-      .slice(0, 12),
-    clusterSplit: {
-      active: Boolean(parentCluster.key || parentCluster.eventId),
-      parentKey: parentCluster.key || parentCluster.eventId || "",
-      splitIndex,
-      sourceCountBefore: Number(newsLabClusterStories(parentCluster).length || uniqueStories.length),
-      sourceCountAfter: uniqueStories.length,
-      eventCoherence: coherence.eventCoherence,
-      contaminationScore: coherence.contaminationScore,
-      rule: "Mixed clusters are split into smaller canonical event dossiers instead of being rejected as one contaminated draft."
-    }
-  };
-}
-
-function newsLabSplitMixedEventCluster(cluster = {}) {
-  const stories = newsLabClusterStories(cluster);
-  if (stories.length <= 1) {
-    return [{ ...cluster, eventCoherence: newsLabEventCoherenceAssessment(stories, cluster.representative || stories[0]) }];
-  }
-  const coherence = newsLabEventCoherenceAssessment(stories, cluster.representative || stories[0]);
-  if (coherence.eventCoherence >= 0.8) return [{ ...cluster, eventCoherence: coherence }];
-  const groups = [];
-  stories.forEach(story => {
-    const cleanStory = cleanNewsLabSourceStory(story);
-    let group = groups.find(item => newsLabCanonicalEventAgreement(item.representative, cleanStory).canMerge);
-    if (!group) {
-      group = { representative: cleanStory, stories: [] };
-      groups.push(group);
-    }
-    group.stories.push(cleanStory);
-    group.representative = newsLabBestEventRepresentative(group.stories);
-  });
-  const splitClusters = groups
-    .map((group, index) => newsLabClusterFromStoryGroup(group.stories, cluster, index))
-    .filter(Boolean)
-    .filter(item => item.eventCoherence?.eventCoherence >= 0.6 || item.eventSourceArticleCount === 1);
-  return splitClusters.length ? splitClusters : [{ ...cluster, eventCoherence: coherence }];
-}
-
-function newsLabSplitMixedEventClusters(clusters = []) {
-  const splitClusters = [];
-  let splitSourceClusterCount = 0;
-  let splitYield = 0;
-  clusters.forEach(cluster => {
-    const pieces = newsLabSplitMixedEventCluster(cluster);
-    if (pieces.length > 1) {
-      splitSourceClusterCount += 1;
-      splitYield += pieces.length;
-    }
-    splitClusters.push(...pieces);
-  });
-  return {
-    clusters: splitClusters.sort((a, b) => Number(b.reportingScore || 0) - Number(a.reportingScore || 0)),
-    metrics: {
-      inputClusters: clusters.length,
-      outputClusters: splitClusters.length,
-      splitSourceClusterCount,
-      clusterSplitYield: splitYield,
-      eventCoherenceRate: splitClusters.length
-        ? Number((splitClusters.filter(cluster => Number(cluster.eventCoherence?.eventCoherence || cluster.eventSignature?.eventCoherence || 0) >= 0.8).length / splitClusters.length).toFixed(2))
-        : 1,
-      contaminationRate: splitClusters.length
-        ? Number((splitClusters.filter(cluster => Number(cluster.eventCoherence?.contaminationScore || cluster.eventSignature?.contaminationScore || 0) >= 0.4).length / splitClusters.length).toFixed(2))
-        : 0,
-      rule: "Split mixed clusters before writing; do not lower source intake or publishable event count."
-    }
-  };
-}
-
-async function newsLabEventClusterWorkerPass(rawClusters = []) {
-  if (!rawClusters.length) return [];
-  const chunks = newsLabChunkItems(rawClusters, newsLabClusteringWorkers);
-  const partials = await newsLabConcurrentMap(
-    chunks,
-    newsLabClusteringWorkers,
-    async chunk => newsLabMergeEventClusters(chunk)
-  );
-  return newsLabMergeEventClusters(partials.flat().filter(Boolean));
-}
-
-function newsLabTopicIntegrity(representative = {}, supporting = []) {
-  const checked = supporting
-    .filter(story => story?.title || story?.summary || story?.articleSummary)
-    .map(story => {
-      const identity = storyIdentityOverlap(representative, story);
-      const titleOverlap = keywordOverlap({ title: representative.title || "" }, { title: story.title || "" });
-      const termOverlap = newsLabOverlap(representative, story);
-      const sameEvent = newsLabSameStory(representative, story);
-      return {
-        title: story.title || "",
-        source: story.source || "",
-        url: story.url || "",
-        sameEvent,
-        titleOverlap,
-        termOverlap,
-        identityTermOverlap: identity.termOverlap,
-        entityOverlap: identity.entityOverlap
-      };
-    });
-  const sameTopicCount = checked.filter(item => item.sameEvent).length;
-  const offTopic = checked.filter(item => !item.sameEvent);
-  const score = checked.length
-    ? Math.round((sameTopicCount / checked.length) * 100)
-    : 100;
-  return {
-    score,
-    checkedSourceCount: checked.length,
-    sameTopicCount,
-    offTopicCount: offTopic.length,
-    offTopicSources: offTopic.slice(0, 5),
-    checkedSources: checked.slice(0, 8),
-    passed: offTopic.length === 0
-  };
-}
-
-function newsLabReportedStoryClusters(stories = []) {
-  const candidates = stories
-    .filter(story => story?.title && story?.url)
-    .filter(story => !isGenericStory(story))
-    .filter(isPublishableStory)
-    .sort((a, b) => (b.engagementScore || 0) - (a.engagementScore || 0) || storyDate(b.published) - storyDate(a.published));
-  const clusters = [];
-
-  candidates.forEach(story => {
-    const storyEventSignature = newsLabEventSignature([story]);
-    let cluster = clusters.find(item =>
-      newsLabCanonicalEventAgreement(item.representative, story).canMerge
-      || newsLabSameStory(item.representative, story)
-      || newsLabSameEventSignature(
-        { representative: item.representative, eventId: item.eventId, eventSignature: item.eventSignature },
-        { representative: story, eventId: storyEventSignature.eventId, eventSignature: storyEventSignature }
-      )
-    );
-    if (!cluster) {
-      cluster = {
-        key: storyEventSignature.eventId || reportClusterKey(story),
-        eventId: storyEventSignature.eventId,
-        eventSignature: storyEventSignature,
-        representative: story,
-        stories: []
-      };
-      clusters.push(cluster);
-    }
-    cluster.stories.push(story);
-    cluster.eventSignature = newsLabEventSignature(cluster.stories);
-    cluster.eventId = cluster.eventSignature.eventId;
-    cluster.key = cluster.eventId || cluster.key;
-  });
-
-  return clusters
-    .map(cluster => {
-      const uniqueSources = [...new Set(cluster.stories.map(story => story.source).filter(Boolean))];
-      const representative = [...cluster.stories].sort((a, b) =>
-        (b.engagementScore || 0) - (a.engagementScore || 0)
-        || storyDate(b.published) - storyDate(a.published)
-      )[0] || cluster.representative;
-      const eventSignature = newsLabEventSignature(cluster.stories);
-      return {
-        key: eventSignature.eventId || newsLabTopicKeyFromStories(cluster.stories) || cluster.key,
-        eventId: eventSignature.eventId,
-        eventSignature,
-        eventSourceArticleCount: cluster.stories.length,
-        representative,
-        reportingScore: (uniqueSources.length * 35) + (cluster.stories.length * 12) + Number(representative.engagementScore || 0),
-        reportCount: cluster.stories.length,
-        sources: uniqueSources,
-        absorbedStories: cluster.stories
-          .filter(story => story.url !== representative.url)
-          .slice(0, 18)
-          .map(story => ({
-            title: story.title,
-            source: story.source,
-            url: story.url,
-            summary: story.summary,
-            articleSummary: story.articleSummary,
-            category: story.category,
-            published: story.published,
-            sourceDepth: story.sourceDepth || "",
-            articleReadStatus: story.articleReadStatus || "",
-            articleTextLength: story.articleTextLength || 0
-          })),
-        supportingStories: cluster.stories
-          .filter(story => story.url !== representative.url && newsLabSameStory(representative, story))
-          .slice(0, 10)
-          .map(story => ({
-            title: story.title,
-            source: story.source,
-            url: story.url,
-            summary: story.summary,
-            articleSummary: story.articleSummary,
-            category: story.category
-          }))
-      };
-    })
-    .sort((a, b) => b.reportingScore - a.reportingScore);
-}
-
-function defaultDailyArticleMemory() {
-  return {
-    version: 1,
-    updatedAt: new Date().toISOString(),
-    days: {}
-  };
-}
-
-function defaultArticleIntelligenceStore() {
-  return {
-    version: 1,
-    updatedAt: new Date().toISOString(),
-    days: {}
-  };
-}
-
-function articleMemoryStore() {
-  const memory = readJsonFile(dailyArticleMemoryFile, defaultDailyArticleMemory());
-  return {
-    ...defaultDailyArticleMemory(),
-    ...memory,
-    days: memory && typeof memory.days === "object" && memory.days ? memory.days : {}
-  };
-}
-
-function readDailyArticleMemory(dayId = creatorDayWindow().id) {
-  return articleMemoryStore().days?.[dayId] || null;
-}
-
-function articleIntelligenceStore() {
-  const store = readJsonFile(articleIntelligenceFile, defaultArticleIntelligenceStore());
-  return {
-    ...defaultArticleIntelligenceStore(),
-    ...store,
-    days: store && typeof store.days === "object" && store.days ? store.days : {}
-  };
-}
-
-function readArticleIntelligence(dayId = creatorDayWindow().id) {
-  return articleIntelligenceStore().days?.[dayId] || null;
-}
-
-function sentenceList(value = "", limit = 3) {
-  return String(value || "")
-    .split(/(?<=[.!?])\s+/)
-    .map(sentence => sentence.replace(/\s+/g, " ").trim())
-    .filter(Boolean)
-    .slice(0, limit);
-}
-
-function storyPublicConsequence(story = {}) {
-  const matter = storyMatter(story);
-  const angle = creatorStoryAngle(story);
-  return cleanCreatorEditorialParagraph(`This story matters as ${matter}; the public impact, responsible parties, response underway, and measurable next step should be clear to the reader. ${angle.issue || ""}`);
-}
-
-function storyLearningProfile(story = {}) {
-  const angle = creatorStoryAngle(story);
-  const responseQuestions = sentenceList(angle.questions, 4);
-  const valueTags = storyLearningFeatures(story).filter(Boolean).slice(0, 10);
-  return {
-    sourceDepth: story.articleSummary ? "publisher-article-read" : "feed-summary-read",
-    matter: storyMatter(story),
-    valueTags,
-    publicConsequence: storyPublicConsequence(story).slice(0, 520),
-    responseQuestions,
-    opinionFrame: String(angle.opinion || "").replace(/\s+/g, " ").trim().slice(0, 520),
-    improvementFrame: String(angle.improvement || "").replace(/\s+/g, " ").trim().slice(0, 420),
-    specificIssue: String(angle.issue || "").replace(/\s+/g, " ").trim().slice(0, 360)
-  };
-}
-
-function compactStoryObservation(story = {}) {
-  const profile = storyLearningProfile(story);
-  return {
-    at: new Date().toISOString(),
-    title: story.title || "Untitled story",
-    source: story.source || "",
-    url: story.url || "",
-    sourceDepth: profile.sourceDepth,
-    matter: profile.matter,
-    valueTags: profile.valueTags,
-    publicConsequence: profile.publicConsequence,
-    responseQuestions: profile.responseQuestions,
-    editorialAngle: profile.opinionFrame,
-    improvementFrame: profile.improvementFrame,
-    articleSummary: story.articleSummary ? String(story.articleSummary).replace(/\s+/g, " ").trim().slice(0, 520) : ""
-  };
-}
-
-function articleMemoryStory(story = {}, existing = {}) {
-  const now = new Date().toISOString();
-  const profile = storyLearningProfile(story);
-  const observation = compactStoryObservation(story);
-  const sources = [...new Set([...(existing.sources || []), story.source].filter(Boolean))];
-  const urls = [...new Set([...(existing.urls || []), story.url].filter(Boolean))].slice(-8);
-  const summaries = [...new Set([...(existing.summaries || []), story.summary, story.articleSummary].filter(Boolean))]
-    .map(summary => String(summary).replace(/\s+/g, " ").trim())
-    .filter(Boolean)
-    .slice(-5);
-  const observations = [...(existing.observations || []), observation]
-    .filter(item => item && item.title)
-    .slice(-10);
-  const responseQuestions = [...new Set([
-    ...(existing.responseQuestions || []),
-    ...(profile.responseQuestions || [])
-  ].filter(Boolean))].slice(0, 10);
-  const learningSignals = [...new Set([
-    ...(existing.learningSignals || []),
-    profile.matter,
-    profile.specificIssue,
-    profile.publicConsequence,
-    profile.improvementFrame
-  ].filter(Boolean))].slice(0, 12);
-  const valueTags = [...new Set([
-    ...(existing.valueTags || []),
-    ...(profile.valueTags || [])
-  ].filter(Boolean))].slice(0, 14);
-  return {
-    key: existing.key || reportClusterKey(story),
-    title: story.title || existing.title || "Untitled story",
-    source: story.source || existing.source || "",
-    category: story.category || existing.category || "news",
-    url: story.url || existing.url || "",
-    published: story.published || existing.published || now,
-    firstSeenAt: existing.firstSeenAt || now,
-    lastSeenAt: now,
-    seenCount: Number(existing.seenCount || 0) + 1,
-    sources,
-    urls,
-    summaries,
-    lastArticleSummary: story.articleSummary || existing.lastArticleSummary || "",
-    fullArticleReads: Number(existing.fullArticleReads || 0) + (story.articleSummary ? 1 : 0),
-    observations,
-    learningSignals,
-    responseQuestions,
-    valueTags,
-    publicConsequence: profile.publicConsequence || existing.publicConsequence || "",
-    opinionFrame: profile.opinionFrame || existing.opinionFrame || "",
-    improvementFrame: profile.improvementFrame || existing.improvementFrame || "",
-    sourceDepth: story.articleSummary ? "publisher-article-read" : existing.sourceDepth || "feed-summary-read",
-    keywords: [...new Set([...(existing.keywords || []), ...storyTerms(story), ...valueTags].filter(Boolean))].slice(0, 28),
-    engagementScore: Math.max(Number(existing.engagementScore || 0), Number(story.engagementScore || 0)),
-    hasFeedImage: Boolean(existing.hasFeedImage || story.hasFeedImage),
-    isDiscovery: Boolean(existing.isDiscovery || story.isDiscovery || isAggregatorLink(story.url || "")),
-    image: hasPublisherImage(story.image) ? story.image : existing.image || story.image || "./assets/logo.png"
-  };
-}
-
-function dailyArticleClustersFromStories(stories = []) {
-  return reportedStoryClusters(stories)
-    .slice(0, 18)
-    .map(cluster => ({
-      key: cluster.key,
-      reportingScore: cluster.reportingScore,
-      reportCount: cluster.reportCount,
-      sources: cluster.sources,
-      representative: {
-        ...cluster.representative,
-        dayLearningContext: "This story kept surfacing across the day's coverage."
-      },
-      supportingStories: cluster.supportingStories
-    }));
-}
-
-function compactArticleMemoryStoryForStorage(story = {}) {
-  return {
-    key: story.key || reportClusterKey(story),
-    title: cleanArticleText(story.title || "", 180) || cleanPublicText(story.title || "Untitled story", 180),
-    source: cleanPublicText(story.source || "", 80),
-    category: story.category || "news",
-    url: story.url || "",
-    published: story.published || "",
-    firstSeenAt: story.firstSeenAt || "",
-    lastSeenAt: story.lastSeenAt || "",
-    seenCount: Number(story.seenCount || 0),
-    sources: (story.sources || []).slice(-6),
-    urls: (story.urls || []).slice(-4),
-    summaries: (story.summaries || []).map(summary => cleanArticleText(summary, 260)).filter(Boolean).slice(-2),
-    lastArticleSummary: cleanArticleText(story.lastArticleSummary || "", 360),
-    fullArticleReads: Number(story.fullArticleReads || 0),
-    learningSignals: (story.learningSignals || []).map(signal => cleanCreatorEditorialParagraph(signal)).filter(Boolean).slice(0, 6),
-    responseQuestions: (story.responseQuestions || []).map(question => cleanCreatorEditorialParagraph(question)).filter(Boolean).slice(0, 5),
-    valueTags: (story.valueTags || []).slice(0, 8),
-    publicConsequence: cleanCreatorEditorialParagraph(story.publicConsequence || "").slice(0, 260),
-    opinionFrame: cleanCreatorEditorialParagraph(story.opinionFrame || "").slice(0, 260),
-    improvementFrame: cleanCreatorEditorialParagraph(story.improvementFrame || "").slice(0, 260),
-    sourceDepth: story.sourceDepth || "",
-    keywords: (story.keywords || []).slice(0, 12),
-    engagementScore: Number(story.engagementScore || 0),
-    hasFeedImage: Boolean(story.hasFeedImage),
-    isDiscovery: Boolean(story.isDiscovery),
-    image: story.image || "./assets/logo.png"
-  };
-}
-
-function compactArticleMemoryDayForStorage(day = {}) {
-  const stories = Object.values(day.stories || {})
-    .sort((a, b) => Number(b.seenCount || 0) - Number(a.seenCount || 0) || Number(b.engagementScore || 0) - Number(a.engagementScore || 0))
-    .slice(0, articleMemoryStoriesPerDay)
-    .map(compactArticleMemoryStoryForStorage);
-  return {
-    ...day,
-    deployCompact: true,
-    storyCount: stories.length,
-    stories: Object.fromEntries(stories.map(story => [story.key || story.url || story.title, story])),
-    clusters: (day.clusters || []).slice(0, 12).map(cluster => ({
-      key: cluster.key,
-      reportingScore: cluster.reportingScore,
-      reportCount: cluster.reportCount,
-      sources: (cluster.sources || []).slice(0, 8),
-      representative: cluster.representative ? compactArticleMemoryStoryForStorage(cluster.representative) : null,
-      supportingStories: (cluster.supportingStories || []).slice(0, 4).map(compactArticleMemoryStoryForStorage)
-    })),
-    topStories: (day.topStories || []).slice(0, 5).map(story => ({
-      title: cleanArticleText(story.title || "", 180),
-      source: story.source || "",
-      url: story.url || "",
-      matter: story.matter || "",
-      publicConsequence: cleanCreatorEditorialParagraph(story.publicConsequence || "").slice(0, 240),
-      opinionFrame: cleanCreatorEditorialParagraph(story.opinionFrame || "").slice(0, 240),
-      improvementFrame: cleanCreatorEditorialParagraph(story.improvementFrame || "").slice(0, 240)
-    }))
-  };
-}
-
-function pruneArticleMemoryDays(store) {
-  const ordered = Object.entries(store.days || {})
-    .sort((a, b) => String(a[0]).localeCompare(String(b[0])))
-    .slice(-articleMemoryRetainedDays)
-    .map(([dayId, day]) => [dayId, compactArticleMemoryDayForStorage(day)]);
-  store.days = Object.fromEntries(ordered);
-  store.deployCompact = true;
-  store.retainedDayCount = ordered.length;
-  store.articleMemoryStoriesPerDay = articleMemoryStoriesPerDay;
-  store.compactedAt = new Date().toISOString();
-  return store;
-}
-
-function absorbDailyArticleMemory(stories = [], targetDate = new Date(), reason = "feed-refresh") {
-  const sharedStories = stories
-    .filter(story => story?.title && story?.url)
-    .filter(story => !isGenericStory(story))
-    .filter(story => {
-      try {
-        const parsed = new URL(story.url);
-        return ["http:", "https:"].includes(parsed.protocol);
-      } catch {
-        return false;
-      }
-    });
-  if (!sharedStories.length) return readDailyArticleMemory(creatorDayWindow(targetDate).id);
-
-  const day = creatorDayWindow(targetDate);
-  const store = articleMemoryStore();
-  const existingDay = store.days[day.id] || {};
-  const now = new Date().toISOString();
-  const storyMap = { ...(existingDay.stories || {}) };
-
-  sharedStories.forEach(story => {
-    const key = reportClusterKey(story);
-    storyMap[key] = articleMemoryStory(story, storyMap[key]);
-  });
-
-  const learnedStories = Object.values(storyMap)
-    .map(item => {
-      const summary = item.summaries?.[item.summaries.length - 1] || "The framework saw this article during the day's coverage.";
-      const storyForProfile = {
-        title: item.title,
-        summary,
-        articleSummary: item.lastArticleSummary || "",
-        category: item.category,
-        source: item.source || item.sources?.[0] || "",
-        url: item.url || item.urls?.[0] || ""
-      };
-      const profile = storyLearningProfile(storyForProfile);
-      return {
-        title: item.title,
-        source: item.source || item.sources?.[0] || "",
-        category: item.category,
-        url: item.url || item.urls?.[0] || "",
-        image: item.image || "./assets/logo.png",
-        hasFeedImage: item.hasFeedImage,
-        isDiscovery: item.isDiscovery,
-        summary,
-        published: item.published,
-        engagementScore: Number(item.engagementScore || 0) + Number(item.seenCount || 0) * 8,
-        absorbedSeenCount: item.seenCount,
-        absorbedSources: item.sources || [],
-        learningSignals: item.learningSignals?.length ? item.learningSignals : [profile.matter, profile.specificIssue, profile.publicConsequence, profile.improvementFrame].filter(Boolean),
-        responseQuestions: item.responseQuestions?.length ? item.responseQuestions : profile.responseQuestions,
-        valueTags: item.valueTags?.length ? item.valueTags : profile.valueTags,
-        publicConsequence: item.publicConsequence || profile.publicConsequence,
-        opinionFrame: item.opinionFrame || profile.opinionFrame,
-        improvementFrame: item.improvementFrame || profile.improvementFrame,
-        sourceDepth: item.sourceDepth || profile.sourceDepth,
-        articleSummary: item.lastArticleSummary || "",
-        whySelected: `Absorbed throughout the day from ${(item.sources || []).length || 1} source${(item.sources || []).length === 1 ? "" : "s"} over ${item.seenCount} sighting${item.seenCount === 1 ? "" : "s"}.`
-      };
-    });
-
-  const dayMemory = {
-    dayId: day.id,
-    dateLabel: day.dateLabel,
-    startedAt: existingDay.startedAt || now,
-    updatedAt: now,
-    lastAbsorptionReason: reason,
-    absorptionCount: Number(existingDay.absorptionCount || 0) + 1,
-    articleCount: Object.keys(storyMap).length,
-    fullArticleReadCount: Object.values(storyMap).filter(item => item.sourceDepth === "publisher-article-read" && item.lastArticleSummary).length,
-    repeatedArticleReadCount: Object.values(storyMap).reduce((count, item) => count + Number(item.fullArticleReads || 0), 0),
-    learningSignalCount: Object.values(storyMap).reduce((count, item) => count + Number((item.learningSignals || []).length), 0),
-    sourceCounts: sharedStories.reduce((counts, story) => {
-      if (story.source) counts[story.source] = Number(counts[story.source] || 0) + 1;
-      return counts;
-    }, { ...(existingDay.sourceCounts || {}) }),
-    categoryCounts: sharedStories.reduce((counts, story) => {
-      const category = story.category || "news";
-      counts[category] = Number(counts[category] || 0) + 1;
-      return counts;
-    }, { ...(existingDay.categoryCounts || {}) }),
-    stories: storyMap,
-    clusters: dailyArticleClustersFromStories(learnedStories),
-    topStories: learnedStories
-      .sort((a, b) => Number(b.engagementScore || 0) - Number(a.engagementScore || 0) || storyDate(b.published) - storyDate(a.published))
-      .slice(0, 12)
-      .map(story => ({
-        title: story.title,
-        source: story.source,
-        category: story.category,
-        url: story.url,
-        seenCount: story.absorbedSeenCount,
-        sources: story.absorbedSources,
-        summary: story.summary,
-        sourceDepth: story.sourceDepth,
-        learningSignals: (story.learningSignals || []).slice(0, 6),
-        responseQuestions: (story.responseQuestions || []).slice(0, 4),
-        valueTags: (story.valueTags || []).slice(0, 8),
-        publicConsequence: story.publicConsequence,
-        opinionFrame: story.opinionFrame,
-        improvementFrame: story.improvementFrame
-      }))
-  };
-
-  store.days[day.id] = dayMemory;
-  store.updatedAt = now;
-  writeJsonFile(dailyArticleMemoryFile, pruneArticleMemoryDays(store));
-  updateArticleIntelligence(dayMemory, reason);
-  return dayMemory;
-}
-
-function dailyArticleMemoryStories(dayMemory = null) {
-  if (!dayMemory?.stories) return [];
-  return Object.values(dayMemory.stories).map(item => {
-    const summary = item.summaries?.[item.summaries.length - 1] || "The framework absorbed this article during the day.";
-    const profile = storyLearningProfile({
-      title: item.title,
-      summary,
-      articleSummary: item.lastArticleSummary || "",
-      category: item.category || "news",
-      source: item.source || item.sources?.[0] || "Daily article memory",
-      url: item.url || item.urls?.[0] || ""
-    });
-    return {
-      title: item.title,
-      source: item.source || item.sources?.[0] || "Daily article memory",
-      category: item.category || "news",
-      url: item.url || item.urls?.[0] || "",
-      image: item.image || "./assets/logo.png",
-      hasFeedImage: item.hasFeedImage,
-      isDiscovery: item.isDiscovery,
-      summary,
-      published: item.published,
-      engagementScore: Number(item.engagementScore || 0) + Number(item.seenCount || 0) * 8,
-      absorbedSeenCount: item.seenCount,
-      absorbedSources: item.sources || [],
-      learningSignals: item.learningSignals?.length ? item.learningSignals : [profile.matter, profile.specificIssue, profile.publicConsequence, profile.improvementFrame].filter(Boolean),
-      responseQuestions: item.responseQuestions?.length ? item.responseQuestions : profile.responseQuestions,
-      valueTags: item.valueTags?.length ? item.valueTags : profile.valueTags,
-      publicConsequence: item.publicConsequence || profile.publicConsequence,
-      opinionFrame: item.opinionFrame || profile.opinionFrame,
-      improvementFrame: item.improvementFrame || profile.improvementFrame,
-      sourceDepth: item.sourceDepth || profile.sourceDepth,
-      articleSummary: item.lastArticleSummary || "",
-      whySelected: "This story kept surfacing across the day's coverage."
-    };
-  }).filter(story => story.title && story.url);
-}
-
-function dailyArticleMemorySearchStories(dayMemory = null) {
-  if (!dayMemory?.stories) return [];
-  const storyCount = Object.keys(dayMemory.stories || {}).length;
-  const key = `${dayMemory.dayId || ""}:${dayMemory.updatedAt || ""}:${storyCount}`;
-  if (searchArticleMemoryCache.key === key && Date.now() < searchArticleMemoryCache.expires) {
-    return searchArticleMemoryCache.stories;
-  }
-  const stories = Object.values(dayMemory.stories)
-    .map(item => {
-      const summary = item.lastArticleSummary || item.summaries?.[item.summaries.length - 1] || item.summary || "";
-      return {
-        title: item.title,
-        source: item.source || item.sources?.[0] || "Source",
-        category: item.category || "news",
-        url: item.url || item.urls?.[0] || "",
-        summary,
-        articleSummary: item.lastArticleSummary || "",
-        published: item.published || item.lastSeenAt || item.firstSeenAt || "",
-        absorbedSeenCount: item.seenCount,
-        reportCount: item.reportCount,
-        seenCount: item.seenCount
-      };
-    })
-    .filter(story => story.title && story.url);
-  searchArticleMemoryCache = {
-    key,
-    expires: Date.now() + searchArticleMemoryCacheMs,
-    stories
-  };
-  return stories;
-}
-
-function sourceAngleForStory(story = {}) {
-  const text = `${story.title || ""} ${story.summary || ""} ${story.articleSummary || ""}`.toLowerCase();
-  const signals = [];
-  if (/official|administration|white house|governor|mayor|city|county|police|agency|department|spokes/.test(text)) signals.push("official-response");
-  if (/cleanup|clean up|restore|restoration|repair|crews|utility|outage|shelter|relief|damage|emergency/.test(text)) signals.push("response-and-cleanup");
-  if (/critic|critics|opponent|lawmakers|republican|democrat|progressive|conservative|backlash|condemn|supporters/.test(text)) signals.push("political-reaction");
-  if (/family|parent|children|school|student|father|mother|community|neighborhood|resident|local/.test(text)) signals.push("family-and-community-impact");
-  if (/cost|tax|budget|funding|spending|price|economic|jobs|business|market/.test(text)) signals.push("cost-and-incentives");
-  if (/court|lawsuit|judge|legal|rights|constitution|settlement|defamation/.test(text)) signals.push("legal-accountability");
-  if (/security|border|war|military|iran|israel|ukraine|china|russia|visa|foreign/.test(text)) signals.push("security-and-foreign-policy");
-  if (/analysis|opinion|editorial|column|why it matters|explainer/.test(text)) signals.push("analysis-or-opinion");
-  return [...new Set(signals)].slice(0, 6);
-}
-
-function articleIntelligenceQuestionSet(cluster = {}) {
-  const text = `${cluster.representative?.title || ""} ${cluster.representative?.summary || ""} ${cluster.representative?.articleSummary || ""}`.toLowerCase();
-  const questions = [
-    "What happened beyond the headline?",
-    "Who is responsible for the decision, response, or failure?",
-    "Who is directly affected, and what are they being asked to accept?",
-    "What concrete action would improve the situation?"
-  ];
-  if (/storm|weather|flood|outage|cleanup|utility|damage|disaster/.test(text)) {
-    questions.push("Which utility, city, county, volunteer, church, or private cleanup response is visible, and where is the response weak?");
-  }
-  if (/tax|budget|spending|debt|funding|subsid/.test(text)) {
-    questions.push("Who pays, who benefits, and does the policy restore responsibility or create dependency?");
-  }
-  if (/school|student|parent|child|children|family/.test(text)) {
-    questions.push("Were parents informed early enough, and did institutions respect family authority?");
-  }
-  if (/court|law|rights|constitution|settlement|defamation/.test(text)) {
-    questions.push("Does the legal outcome protect liberty and truth, or reward institutional avoidance?");
-  }
-  if (/war|military|iran|israel|ukraine|russia|china|border|visa/.test(text)) {
-    questions.push("Does leadership show strength, clarity, and national interest, or just messaging?");
-  }
-  return questions.slice(0, 7);
-}
-
-function intelligenceSentenceList(text = "") {
-  return String(text || "")
-    .replace(/\s+/g, " ")
-    .split(/(?<=[.!?])\s+/)
-    .map(sentence => sentence.trim())
-    .filter(sentence => sentence.length >= 45 && sentence.length <= 320)
-    .filter(sentence => !/click here|subscribe|advertisement|read more|copyright|all rights reserved/i.test(sentence))
-    .slice(0, 24);
-}
-
-function intelligenceClaimKey(sentence = "") {
-  const terms = sentence
-    .toLowerCase()
-    .replace(/&[a-z0-9#]+;/g, " ")
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .filter(word => word.length > 4)
-    .filter(word => ![
-      "about", "after", "again", "could", "their", "there", "these", "those", "where", "which",
-      "would", "while", "through", "because", "reported", "reports", "according", "official",
-      "statement", "people", "story", "latest", "update", "video", "watch"
-    ].includes(word))
-    .slice(0, 8);
-  return terms.sort().slice(0, 5).join(":") || sentence.toLowerCase().slice(0, 60);
-}
-
-function intelligenceNumbers(text = "") {
-  return [...String(text || "").matchAll(/\b\d+(?:[.,]\d+)?%?\b/g)].map(match => match[0]).slice(0, 8);
-}
-
-function intelligenceDateFromStory(story = {}) {
-  const parsed = storyDate(story.published || story.publishedAt || story.lastSeenAt || story.firstSeenAt);
-  return parsed ? new Date(parsed).toISOString() : "";
-}
-
-function buildEventIntelligenceWorkspace(cluster = {}, sourceAngles = [], angleTags = []) {
-  const representative = cluster.representative || {};
-  const stories = [
-    representative,
-    ...(cluster.supportingStories || []).filter(story => sameNewsEvent(representative, story))
-  ].filter(story => story?.title);
-  const claimMap = new Map();
-  const timelineCandidates = [];
-  stories.forEach(story => {
-    const source = story.source || publisherNameFromUrl(story.url || "") || "Unknown source";
-    const text = `${story.articleSummary || ""} ${story.summary || ""}`.trim();
-    intelligenceSentenceList(text).forEach(sentence => {
-      const key = intelligenceClaimKey(sentence);
-      const current = claimMap.get(key) || {
-        claim: sentence,
-        sources: [],
-        urls: [],
-        numbers: [],
-        firstSeenAt: intelligenceDateFromStory(story),
-        sourceCount: 0
-      };
-      if (!current.sources.includes(source)) current.sources.push(source);
-      if (story.url && !current.urls.includes(story.url)) current.urls.push(story.url);
-      current.numbers = [...new Set([...current.numbers, ...intelligenceNumbers(sentence)])].slice(0, 12);
-      current.sourceCount = current.sources.length;
-      if (!current.firstSeenAt || (intelligenceDateFromStory(story) && intelligenceDateFromStory(story) < current.firstSeenAt)) {
-        current.firstSeenAt = intelligenceDateFromStory(story);
-      }
-      claimMap.set(key, current);
-    });
-    timelineCandidates.push({
-      at: intelligenceDateFromStory(story) || new Date().toISOString(),
-      source,
-      title: story.title || representative.title || "Article update",
-      url: story.url || "",
-      summary: String(story.articleSummary || story.summary || "").replace(/\s+/g, " ").slice(0, 280)
-    });
-  });
-
-  const claims = Array.from(claimMap.values())
-    .sort((a, b) => b.sourceCount - a.sourceCount || b.numbers.length - a.numbers.length)
-    .slice(0, 18);
-  const sharedClaims = claims.filter(claim => claim.sourceCount >= 2).slice(0, 8);
-  const singleSourceClaims = claims.filter(claim => claim.sourceCount === 1).slice(0, 8);
-  const possibleContradictions = [];
-  claims.forEach((claim, index) => {
-    claims.slice(index + 1).forEach(other => {
-      const sameIssue = keywordOverlap({ title: claim.claim }, { title: other.claim }) >= 2;
-      const differentNumbers = claim.numbers.length && other.numbers.length && claim.numbers.join("|") !== other.numbers.join("|");
-      const oppositeLanguage = /\bdenies|denied|rejects|false|unconfirmed|disputed|contradict|unclear\b/i.test(`${claim.claim} ${other.claim}`)
-        || (/\bwill\b/i.test(claim.claim) && /\bwill not|won't\b/i.test(other.claim))
-        || (/\bclosed\b/i.test(claim.claim) && /\bopen|reopened\b/i.test(other.claim));
-      if (sameIssue && (differentNumbers || oppositeLanguage)) {
-        possibleContradictions.push({
-          issue: intelligenceClaimKey(`${claim.claim} ${other.claim}`).replace(/:/g, " "),
-          firstClaim: claim.claim,
-          firstSources: claim.sources,
-          secondClaim: other.claim,
-          secondSources: other.sources,
-          reason: differentNumbers ? "same issue with different numbers/details" : "same issue with conflicting language"
-        });
-      }
-    });
-  });
-
-  const timeline = timelineCandidates
-    .filter(item => item.title || item.summary)
-    .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
-    .filter((item, index, all) => all.findIndex(match => match.url && match.url === item.url) === index)
-    .slice(-10);
-  const sourceCount = [...new Set(sourceAngles.map(item => item.source).filter(Boolean))].length;
-  const deepReadCount = sourceAngles.filter(item => item.readStatus === "publisher-article-read" || Number(item.articleTextLength || 0) >= 600).length;
-  const agreementScore = Math.min(100, Math.round((sharedClaims.length * 14) + (sourceCount * 8) + (deepReadCount * 5)));
-  const contradictionScore = Math.min(100, Math.round(possibleContradictions.length * 18 + singleSourceClaims.length * 3));
-  const confidenceScore = Math.max(12, Math.min(96, Math.round(
-    28
-    + Math.min(28, sourceCount * 7)
-    + Math.min(22, sharedClaims.length * 5)
-    + Math.min(18, deepReadCount * 4)
-    + Math.min(10, angleTags.length * 2)
-    - Math.min(24, possibleContradictions.length * 8)
-  )));
-
-  return {
-    eventKey: cluster.key || reportClusterKey(representative),
-    eventTitle: representative.title || "Developing event",
-    status: confidenceScore >= 72 ? "high-confidence-developing-file" : confidenceScore >= 52 ? "needs-more-evidence" : "early-fragment",
-    sourceCount,
-    articleCount: stories.length,
-    deepReadCount,
-    agreementScore,
-    contradictionScore,
-    confidenceScore,
-    confidenceLabel: confidenceLabel(confidenceScore),
-    sharedClaims,
-    sourceSpecificClaims: singleSourceClaims,
-    possibleContradictions: possibleContradictions.slice(0, 6),
-    timeline,
-    updateRule: "When a new article arrives, regroup the event, remeasure shared claims, recheck contradictions, append timeline evidence, and recalculate confidence before the Brain writes or updates coverage.",
-    nextIntelligenceAction: possibleContradictions.length
-      ? "Assign Article Intelligence to verify contradictions before publication or editorial use."
-      : sharedClaims.length
-        ? "Use shared claims as the factual spine; cite only source-specific claims when they remain unique."
-        : "Keep absorbing sources before treating this as a settled story."
-  };
-}
-
-function buildDailyIntelligenceWorkspace(clusters = []) {
-  const events = clusters
-    .map(cluster => cluster.eventWorkspace || buildEventIntelligenceWorkspace({
-      key: cluster.key,
-      representative: cluster.representative || {
-        title: cluster.title,
-        category: cluster.category,
-        source: (cluster.sources || [])[0] || "",
-        summary: cluster.brainBriefing || ""
-      },
-      supportingStories: (cluster.sourceAngles || []).map(angle => ({
-        title: angle.title || cluster.title,
-        source: angle.source,
-        url: angle.url || "",
-        summary: angle.summary || ""
-      }))
-    }, cluster.sourceAngles || [], cluster.angleTags || []))
-    .filter(Boolean)
-    .sort((a, b) => b.confidenceScore - a.confidenceScore || b.sourceCount - a.sourceCount)
-    .slice(0, 12);
-  const contradictionCount = events.reduce((sum, event) => sum + Number((event.possibleContradictions || []).length), 0);
-  return {
-    mode: "intelligence-workspace",
-    workflow: [
-      "Breaking Event",
-      "Articles arrive",
-      "Brain groups similar stories",
-      "Brain measures agreement",
-      "Brain finds contradictions",
-      "Brain creates timeline",
-      "Brain scores confidence",
-      "Brain updates as new evidence arrives"
-    ],
-    eventCount: events.length,
-    highConfidenceEventCount: events.filter(event => event.confidenceScore >= 72).length,
-    contradictionCount,
-    events,
-    brainOperatingRule: "The Brain should treat each major news topic as a living intelligence file, not a one-time article summary.",
-    publishingRule: "Use shared claims as CE Media reporting. Use source attribution only for unique or disputed claims. Delay strong conclusions when confidence is low or contradictions are unresolved."
-  };
-}
-
-function buildArticleIntelligenceCluster(cluster = {}, existing = {}) {
-  const representative = cluster.representative || {};
-  const allStories = [
-    representative,
-    ...(cluster.supportingStories || [])
-  ].filter(story => story?.title);
-  const sources = [...new Set([
-    ...(existing.sources || []),
-    ...(cluster.sources || []),
-    ...allStories.map(story => story.source)
-  ].filter(Boolean))];
-  const sourceAngles = allStories.map(story => ({
-    source: story.source || publisherNameFromUrl(story.url || "") || "Unknown source",
-    title: story.title || representative.title || "Untitled story",
-    url: story.url || "",
-    angleTags: sourceAngleForStory(story),
-    readStatus: story.articleReadStatus || (story.articleSummary ? "publisher-article-read" : "feed-summary-read"),
-    articleTextLength: Number(story.articleTextLength || String(story.articleSummary || "").length || 0),
-    summary: String(story.articleSummary || story.summary || "").replace(/\s+/g, " ").trim().slice(0, 900)
-  }));
-  const angleTags = [...new Set(sourceAngles.flatMap(item => item.angleTags || []))];
-  const eventWorkspace = buildEventIntelligenceWorkspace(cluster, sourceAngles, angleTags);
-  const profile = storyLearningProfile(representative);
-  const disagreements = [];
-  if (angleTags.includes("official-response") && angleTags.includes("political-reaction")) disagreements.push("official explanation versus political/public challenge");
-  if (angleTags.includes("response-and-cleanup") && angleTags.includes("cost-and-incentives")) disagreements.push("practical response versus cost and incentive tradeoffs");
-  if (angleTags.includes("family-and-community-impact") && angleTags.includes("official-response")) disagreements.push("institutional framing versus household/community impact");
-  if (angleTags.includes("analysis-or-opinion") && sources.length >= 2) disagreements.push("straight reporting versus interpretation or opinion framing");
-  const agreements = [
-    profile.matter,
-    profile.specificIssue,
-    `${sources.length} source${sources.length === 1 ? "" : "s"} treated this as worth attention`
-  ].filter(Boolean).slice(0, 5);
-  const briefing = [
-    `Clustered story: ${representative.title || "Untitled story"}.`,
-    `The Article Intelligence subsystem found ${sources.length} source${sources.length === 1 ? "" : "s"} and ${sourceAngles.length} angle sample${sourceAngles.length === 1 ? "" : "s"}.`,
-    angleTags.length ? `Coverage angles include ${angleTags.join(", ")}.` : "Coverage angle is still thin; keep absorbing more reports before publishing a strong take.",
-    disagreements.length ? `Differing frames to compare: ${disagreements.join("; ")}.` : "No clear conflict between source frames yet; look for more reporting or a local consequence angle.",
-    `Values lens: ${profile.opinionFrame || "Judge responsibility, incentives, consequences, and whether families or free speech are being pressured."}`
-  ].join(" ");
-  return {
-    key: cluster.key || existing.key || reportClusterKey(representative),
-    title: representative.title || existing.title || "Untitled story",
-    category: representative.category || existing.category || "news",
-    representative: {
-      title: representative.title || "",
-      source: representative.source || "",
-      url: representative.url || "",
-      summary: String(representative.articleSummary || representative.summary || "").slice(0, 1400),
-      category: representative.category || "news"
-    },
-    sources,
-    reportCount: Math.max(Number(existing.reportCount || 0), Number(cluster.reportCount || sourceAngles.length || 1)),
-    angleTags,
-    agreementScore: eventWorkspace.agreementScore,
-    contradictionScore: eventWorkspace.contradictionScore,
-    confidenceScore: eventWorkspace.confidenceScore,
-    confidenceLabel: eventWorkspace.confidenceLabel,
-    eventWorkspace,
-    sourceAngles: [...(existing.sourceAngles || []), ...sourceAngles]
-      .filter((item, index, all) => item.url ? all.findIndex(match => match.url === item.url) === index : index < 12)
-      .slice(-16),
-    agreements,
-    differingFrames: [...new Set([...(existing.differingFrames || []), ...disagreements].filter(Boolean))].slice(0, 8),
-    brainBriefing: briefing.slice(0, 1200),
-    ownerValueQuestions: articleIntelligenceQuestionSet({ ...cluster, representative }),
-    opinionSeed: profile.opinionFrame,
-    improvementSeed: profile.improvementFrame,
-    publicConsequence: profile.publicConsequence,
-    recommendedAction: angleTags.length >= 2 || sources.length >= 2
-      ? "Ready for Brain synthesis and values-based editorial comparison."
-      : "Continue absorbing coverage; assign Article Intelligence to look for more source angles.",
-    updatedAt: new Date().toISOString()
-  };
-}
-
-function buildArticleSubsystemTasks(clusters = []) {
-  const topClusters = clusters.slice(0, 6);
-  return [
-    {
-      subsystem: "Article Intelligence",
-      status: "active",
-      task: "Read every absorbed article, cluster duplicate coverage, compare source angles, and preserve where outlets agree or disagree.",
-      evidence: `${clusters.length} story cluster${clusters.length === 1 ? "" : "s"} analyzed today.`
-    },
-    {
-      subsystem: "Brain",
-      status: "active",
-      task: "Use the Article Intelligence briefing as a strong input when choosing editorial subjects, while still applying owner values, reporting strength, and public consequence.",
-      evidence: topClusters.map(cluster => cluster.title).join(" | ") || "No clusters ready yet."
-    },
-    {
-      subsystem: "Editorial Synthesis",
-      status: topClusters.length ? "ready" : "waiting",
-      task: "Turn the Brain-selected clusters into unique commentary that explains the facts first, then gives a specific opinion through the owner value system.",
-      evidence: topClusters.map(cluster => cluster.opinionSeed).filter(Boolean).slice(0, 3)
-    },
-    {
-      subsystem: "News Creation",
-      status: topClusters.length ? "ready" : "waiting",
-      task: "Create original Censored Expressions news/commentary from the organized briefing without copying source wording or exposing internal source directions.",
-      evidence: topClusters.map(cluster => cluster.publicConsequence).filter(Boolean).slice(0, 3)
-    }
-  ];
-}
-
-function updateArticleIntelligence(dayMemory = null, reason = "article-memory-absorption") {
-  if (!dayMemory?.dayId) return null;
-  const store = articleIntelligenceStore();
-  const existingDay = store.days?.[dayMemory.dayId] || {};
-  const now = new Date().toISOString();
-  const learnedStories = dailyArticleMemoryStories(dayMemory);
-  const clusters = articleIntelligenceClustersFromStories(learnedStories)
-    .map(cluster => buildArticleIntelligenceCluster(cluster, (existingDay.clusters || []).find(item => item.key === cluster.key)))
-    .sort((a, b) => Number(b.reportCount || 0) - Number(a.reportCount || 0) || Number((b.sources || []).length) - Number((a.sources || []).length))
-    .slice(0, 18);
-  const topReadyClusters = clusters.filter(cluster => cluster.sources.length >= 2 || cluster.angleTags.length >= 2).slice(0, 5);
-  const dayRecord = {
-    dayId: dayMemory.dayId,
-    dateLabel: dayMemory.dateLabel,
-    startedAt: existingDay.startedAt || dayMemory.startedAt || now,
-    updatedAt: now,
-    reason,
-    articleCount: dayMemory.articleCount || learnedStories.length,
-    absorptionCount: dayMemory.absorptionCount || 0,
-    clusterCount: clusters.length,
-    readyClusterCount: topReadyClusters.length,
-    clusters,
-    intelligenceWorkspace: buildDailyIntelligenceWorkspace(clusters),
-    brainBriefing: topReadyClusters.length
-      ? topReadyClusters.map((cluster, index) => `${index + 1}. ${cluster.brainBriefing}`).join("\n")
-      : "Article Intelligence is still absorbing coverage. The Brain should wait for stronger source diversity before a major editorial decision unless the public consequence is urgent.",
-    subsystemTasks: buildArticleSubsystemTasks(clusters),
-    learningProof: {
-      issueDetected: "The Brain needs more than headlines; it needs multi-source article understanding before producing a unique point of view.",
-      frameworkChoice: "Deploy Article Intelligence to read, cluster, compare, build event timelines, measure agreement, identify contradictions, score confidence, and brief the Brain.",
-      expectedMetric: "More editorials should mention specific responsibilities, source-frame differences, public consequences, and practical improvements.",
-      verification: "Compare Creator Desk output against Article Intelligence brainBriefing and ownerValueQuestions."
-    }
-  };
-  store.days[dayMemory.dayId] = dayRecord;
-  store.updatedAt = now;
-  writeJsonFile(articleIntelligenceFile, pruneArticleMemoryDays(store));
-  saveFrameworkLearningProofEntry({
-    at: now,
-    source: "article-intelligence-subsystem",
-    facet: "newsIntake",
-    trigger: reason,
-    issue: "Article intake required a dedicated subsystem to compare multiple reports and brief the Brain before editorial synthesis.",
-    action: "Updated article-intelligence.json with clusters, source angles, differing frames, Brain briefing, and subsystem tasking.",
-    result: `${clusters.length} clusters analyzed; ${topReadyClusters.length} ready for Brain synthesis.`,
-    verification: "Private /api/article-intelligence exposes the current briefing and subsystem tasks.",
-    confidence: topReadyClusters.length ? 0.9 : 0.72,
-    tags: ["article-intelligence", "subsystem", "brain-briefing", "editorial-synthesis"]
-  });
-  return dayRecord;
-}
-
-function articleIntelligenceSummary(dayId = creatorDayWindow().id) {
-  const store = articleIntelligenceStore();
-  const intelligence = store.days?.[dayId] || null;
-  return {
-    dayId,
-    availableDays: Object.keys(store.days || {}).sort(),
-    intelligence: intelligence ? {
-      dayId: intelligence.dayId,
-      dateLabel: intelligence.dateLabel,
-      updatedAt: intelligence.updatedAt,
-      articleCount: intelligence.articleCount || 0,
-      absorptionCount: intelligence.absorptionCount || 0,
-      clusterCount: intelligence.clusterCount || 0,
-      readyClusterCount: intelligence.readyClusterCount || 0,
-      articleReadTelemetry: {
-        attempts: Number(runtimeState.articleReadAttemptCount || 0),
-        fullArticleReads: Number(runtimeState.articleReadSuccessCount || 0),
-        failures: Number(runtimeState.articleReadFailureCount || 0),
-        timeoutMs: articleReadTimeoutMs,
-        concurrency: articleReadConcurrency,
-        lastAttemptAt: runtimeState.articleReadLastAttemptAt || "",
-        recentFailures: Object.values(runtimeState.articleReadTelemetry || {})
-          .filter(item => item.status === "read-failed" || item.status === "read-blocked" || item.status === "read-empty")
-          .slice(-8)
-          .map(item => ({
-            source: item.source,
-            title: item.title,
-            url: item.url,
-            status: item.status,
-            errorType: item.errorType || "",
-            httpStatus: item.httpStatus || ""
-          }))
-      },
-      brainBriefing: intelligence.brainBriefing || "",
-      intelligenceWorkspace: intelligence.intelligenceWorkspace || buildDailyIntelligenceWorkspace(intelligence.clusters || []),
-      subsystemTasks: intelligence.subsystemTasks || [],
-      clusters: (intelligence.clusters || []).slice(0, 8).map(cluster => ({
-        key: cluster.key,
-        title: cluster.title,
-        category: cluster.category,
-        sources: cluster.sources,
-        reportCount: cluster.reportCount,
-        angleTags: cluster.angleTags,
-        agreementScore: cluster.agreementScore || cluster.eventWorkspace?.agreementScore || 0,
-        contradictionScore: cluster.contradictionScore || cluster.eventWorkspace?.contradictionScore || 0,
-        confidenceScore: cluster.confidenceScore || cluster.eventWorkspace?.confidenceScore || 0,
-        confidenceLabel: cluster.confidenceLabel || cluster.eventWorkspace?.confidenceLabel || "",
-        agreements: cluster.agreements,
-        differingFrames: cluster.differingFrames,
-        eventWorkspace: cluster.eventWorkspace ? {
-          status: cluster.eventWorkspace.status,
-          sourceCount: cluster.eventWorkspace.sourceCount,
-          articleCount: cluster.eventWorkspace.articleCount,
-          deepReadCount: cluster.eventWorkspace.deepReadCount,
-          agreementScore: cluster.eventWorkspace.agreementScore,
-          contradictionScore: cluster.eventWorkspace.contradictionScore,
-          confidenceScore: cluster.eventWorkspace.confidenceScore,
-          confidenceLabel: cluster.eventWorkspace.confidenceLabel,
-          sharedClaims: (cluster.eventWorkspace.sharedClaims || []).slice(0, 4),
-          possibleContradictions: (cluster.eventWorkspace.possibleContradictions || []).slice(0, 4),
-          timeline: (cluster.eventWorkspace.timeline || []).slice(-5),
-          nextIntelligenceAction: cluster.eventWorkspace.nextIntelligenceAction
-        } : null,
-        sourceAngles: (cluster.sourceAngles || []).slice(-6).map(angle => ({
-          source: angle.source,
-          title: angle.title,
-          readStatus: angle.readStatus || "",
-          articleTextLength: angle.articleTextLength || 0,
-          summary: angle.summary
-        })),
-        ownerValueQuestions: cluster.ownerValueQuestions,
-        recommendedAction: cluster.recommendedAction,
-        brainBriefing: cluster.brainBriefing
-      })),
-      learningProof: intelligence.learningProof
-    } : null
-  };
-}
-
-function articleIntelligenceForStory(story = {}, intelligence = null) {
-  if (!story?.title || !intelligence?.clusters?.length) return null;
-  return (intelligence.clusters || []).find(cluster =>
-    cluster.key === reportClusterKey(story)
-    || cluster.representative?.url === story.url
-    || keywordOverlap({ title: cluster.title, summary: cluster.brainBriefing, category: cluster.category }, story) >= 2
-  ) || null;
-}
-
-function articleIntelligenceClustersFromStories(stories = []) {
-  const reported = dailyArticleClustersFromStories(stories);
-  if (reported.length) return reported;
-
-  const clusters = [];
-  stories
-    .filter(story => story?.title && story?.url)
-    .filter(story => !isGenericStory(story))
-    .forEach(story => {
-      const key = reportClusterKey(story);
-      let cluster = clusters.find(item =>
-        item.key === key
-        || item.stories.some(existing => sameNewsEvent(existing, story))
-      );
-      if (!cluster) {
-        cluster = { key, stories: [] };
-        clusters.push(cluster);
-      }
-      cluster.stories.push(story);
-    });
-
-  return clusters.map(cluster => {
-    const sources = [...new Set(cluster.stories.map(story => story.source).filter(Boolean))];
-    const representative = [...cluster.stories].sort((a, b) =>
-      Number(b.engagementScore || 0) - Number(a.engagementScore || 0)
-      || Number(b.absorbedSeenCount || b.seenCount || 0) - Number(a.absorbedSeenCount || a.seenCount || 0)
-      || storyDate(b.published) - storyDate(a.published)
-    )[0];
-    return {
-      key: cluster.key,
-      representative: {
-        ...representative,
-        dayLearningContext: "Article Intelligence formed this cluster from absorbed coverage even when publishing-grade source diversity was limited."
-      },
-      reportingScore: (sources.length * 20) + (cluster.stories.length * 10) + Number(representative.engagementScore || 0),
-      reportCount: cluster.stories.length,
-      sources,
-      supportingStories: cluster.stories
-        .filter(story => story.url !== representative.url)
-        .slice(0, 5)
-        .map(story => ({
-          title: story.title,
-          source: story.source,
-          url: story.url,
-          summary: story.summary,
-          articleSummary: story.articleSummary || ""
-        }))
-    };
-  }).sort((a, b) => b.reportingScore - a.reportingScore);
-}
-
-function dedupeStoryCluster(stories) {
-  const seenUrls = new Set();
-  const seenClusters = new Set();
-  const sorted = [...stories].sort((a, b) => (b.engagementScore || 0) - (a.engagementScore || 0) || storyDate(b.published) - storyDate(a.published));
-  return sorted.filter(story => {
-    const urlKey = story.url;
-    const clusterKey = `${story.category}:${storyFingerprint(story)}`;
-    if (seenUrls.has(urlKey) || seenClusters.has(clusterKey)) return false;
-    seenUrls.add(urlKey);
-    seenClusters.add(clusterKey);
-    return true;
-  });
-}
-
-function applyDiscoverySignals(stories) {
-  const discoveryStories = stories.filter(story => story.isDiscovery);
-  if (!discoveryStories.length) return stories;
-
-  return stories.map(story => {
-    if (!isPublishableStory(story)) return story;
-    const discoveryScore = discoveryStories.reduce((score, lead) => {
-      if (lead.category !== story.category) return score;
-      const overlap = keywordOverlap(story, lead);
-      return score + (overlap >= 2 ? overlap * 6 : 0);
-    }, 0);
-    return discoveryScore ? { ...story, discoveryScore } : story;
-  });
-}
-
-function addEngagementSignals(stories) {
-  const keywordCounts = new Map();
-  stories.forEach(story => {
-    storyKeywords(story).forEach(word => {
-      keywordCounts.set(word, (keywordCounts.get(word) || 0) + 1);
-    });
-  });
-
-  return stories.map(story => {
-    const hoursOld = Math.max(0, (Date.now() - storyDate(story.published)) / 36e5);
-    const recencyScore = Math.max(0, 40 - hoursOld * 3);
-    const overlapScore = storyKeywords(story).reduce((score, word) => score + Math.max(0, (keywordCounts.get(word) || 1) - 1) * 8, 0);
-    const localBonus = story.category === "local" ? 18 : 0;
-    const imageBonus = story.hasFeedImage ? 8 : 0;
-    const discoveryBonus = Number(story.discoveryScore || 0);
-    const commentLikelyWords = ["mayor", "police", "school", "crime", "housing", "tax", "election", "storm", "traffic", "court"];
-    const discussionBonus = commentLikelyWords.some(word => `${story.title} ${story.summary}`.toLowerCase().includes(word)) ? 12 : 0;
-    const engagementScore = Math.round(recencyScore + overlapScore + discoveryBonus + localBonus + imageBonus + discussionBonus);
-
-    return {
-      ...story,
-      engagementScore,
-      engagementLabel: story.category === "local" && engagementScore >= 55 ? "Local Pulse" : ""
-    };
-  });
-}
-
-function categoryCounts(stories) {
-  return newsLabBalancedCategoryOrder.filter(category => category !== "top").reduce((counts, category) => {
-    counts[category] = stories.filter(story => story.category === category).length;
-    return counts;
-  }, {});
-}
-
-function imageCounts(stories) {
-  return newsLabBalancedCategoryOrder.filter(category => category !== "top").reduce((counts, category) => {
-    const categoryStories = stories.filter(story => story.category === category);
-    counts[category] = {
-      total: categoryStories.length,
-      withImages: categoryStories.filter(story => story.hasFeedImage || hasPublisherImage(story.image)).length
-    };
-    return counts;
-  }, {});
-}
-
-function storyIntegrityFindings(stories) {
-  const findings = [];
-  const duplicateUrls = stories.length - new Set(stories.map(story => story.url)).size;
-  const googleUrls = stories.filter(story => /news\.google\.com/i.test(story.url)).length;
-  const flawedImages = stories.filter(story => /googleusercontent\.com\/J6_coFbogxhRI9iM864NL_liGXvsQp2AupsKei7z0cNNfDvGUmWUy20nuUhkREQyrpY4bEeIBuc/i.test(story.image || "")).length;
-  const invalidUrls = stories.filter(story => {
-    try {
-      const parsed = new URL(story.url);
-      return !["http:", "https:"].includes(parsed.protocol);
-    } catch {
-      return true;
-    }
-  }).length;
-
-  if (duplicateUrls) findings.push({ severity: "medium", code: "duplicate_urls", message: `${duplicateUrls} duplicate story URLs detected.` });
-  if (googleUrls) findings.push({ severity: "medium", code: "aggregator_urls", message: `${googleUrls} Google News URLs remain in final stories.` });
-  if (flawedImages) findings.push({ severity: "high", code: "flawed_shared_images", message: `${flawedImages} shared Google preview images detected.` });
-  if (invalidUrls) findings.push({ severity: "high", code: "invalid_urls", message: `${invalidUrls} invalid story URLs detected.` });
-  return findings;
-}
-
-function byteLength(value = "") {
-  return Buffer.byteLength(String(value || ""), "utf8");
-}
-
-async function measureLocalFileResponse(pathname, label) {
-  const started = Date.now();
-  const requestedPath = pathname === "/" ? "/index.html" : pathname;
-  const filePath = path.normalize(path.join(publicDir, requestedPath));
-  const relativePath = path.relative(publicDir, filePath);
-  const dataRelativePath = path.relative(dataDir, filePath);
-  if (relativePath.startsWith("..") || path.isAbsolute(relativePath) || (!dataRelativePath.startsWith("..") && !path.isAbsolute(dataRelativePath))) {
-    return { label, path: pathname, ok: false, status: "blocked", ms: Date.now() - started, bytes: 0 };
-  }
-  try {
-    const stat = await fs.promises.stat(filePath);
-    return { label, path: pathname, ok: stat.isFile(), status: stat.isFile() ? "ok" : "not-file", ms: Date.now() - started, bytes: stat.size };
-  } catch (error) {
-    return { label, path: pathname, ok: false, status: "missing", ms: Date.now() - started, bytes: 0, error: error.code || error.message };
-  }
-}
-
-function readPublicTextFile(relativePath) {
-  try {
-    const filePath = path.normalize(path.join(publicDir, relativePath));
-    const relative = path.relative(publicDir, filePath);
-    if (relative.startsWith("..") || path.isAbsolute(relative)) return "";
-    return fs.readFileSync(filePath, "utf8");
-  } catch {
-    return "";
-  }
-}
-
-function searchProbeQuery(stories = []) {
-  const candidate = stories
-    .map(story => `${story.title || ""} ${story.summary || ""}`)
-    .map(text => searchTerms(text).filter(term => term.length >= 4).slice(0, 3).join(" "))
-    .find(Boolean);
-  return candidate || "news";
-}
-
-function functionalityFindings(functionality = {}) {
-  const checks = functionality.checks || [];
-  const findings = [];
-  const byKey = key => checks.find(check => check.key === key);
-  const unhealthy = key => byKey(key) && !byKey(key).ok;
-
-  if (unhealthy("runtime-freshness")) findings.push({
-    severity: "critical",
-    code: "runtime_contract_stale",
-    message: byKey("runtime-freshness").message || "The live site runtime is not serving the expected current contract.",
-    behaviorRule: "Before changing feature logic for any broken page, API, download, feed, comment tool, newsletter, Creator Desk, ad surface, or performance issue, verify that the live server is serving the current runtime contract. If it is stale, restart the process serving the public port and clear stale browser/service-worker cache first."
-  });
-  if (unhealthy("search")) findings.push({ severity: "high", code: "search_function_unhealthy", message: byKey("search").message || "Site search did not return usable results." });
-  if (unhealthy("search-ui")) findings.push({ severity: "high", code: "search_ui_unwired", message: byKey("search-ui").message || "The search form exists but frontend search wiring is incomplete." });
-  if (unhealthy("search-contract")) findings.push({
-    severity: "critical",
-    code: "search_contract_stale",
-    message: byKey("search-contract").message || "The live search API is missing the expected response contract.",
-    behaviorRule: "When the search API response shape is missing current contract fields, restart the live server process from the current project root and clear browser/service-worker cache before making more search ranking changes."
-  });
-  if (unhealthy("news")) findings.push({ severity: "critical", code: "news_function_unhealthy", message: byKey("news").message || "The public news feed is not returning usable stories." });
-  if (unhealthy("creator-desk")) findings.push({ severity: "high", code: "creator_desk_unhealthy", message: byKey("creator-desk").message || "Creator Desk page, archive, or comments are not healthy." });
-  if (unhealthy("newsletter")) findings.push({ severity: "high", code: "newsletter_unhealthy", message: byKey("newsletter").message || "Newsletter page or archive is not healthy." });
-  if (unhealthy("comments")) findings.push({ severity: "medium", code: "comments_unhealthy", message: byKey("comments").message || "Creator Desk comments are not healthy." });
-  if (unhealthy("legal")) findings.push({ severity: "critical", code: "legal_download_unhealthy", message: byKey("legal").message || "Legal center pages or required PDFs are not healthy." });
-  return findings;
-}
-
-function revenueGrowthFindings(revenue = {}) {
-  const findings = [];
-  const checks = revenue.checks || [];
-  const byKey = key => checks.find(check => check.key === key);
-  const unhealthy = key => byKey(key) && !byKey(key).ok;
-
-  if (unhealthy("adsense-readiness")) {
-    findings.push({ severity: "high", code: "adsense_readiness_unhealthy", message: byKey("adsense-readiness").message || "AdSense readiness is incomplete." });
-  }
-  if (unhealthy("ad-policy-safety")) {
-    findings.push({ severity: "critical", code: "ad_policy_risk", message: byKey("ad-policy-safety").message || "Ad policy risk detected." });
-  }
-  if (unhealthy("ad-density")) {
-    findings.push({ severity: "medium", code: "ad_density_risk", message: byKey("ad-density").message || "Ad density may interfere with content." });
-  }
-  if (unhealthy("organic-growth")) {
-    findings.push({ severity: "medium", code: "traffic_growth_gap", message: byKey("organic-growth").message || "Organic traffic growth opportunities are missing." });
-  }
-  if (unhealthy("search-interest")) {
-    findings.push({ severity: "low", code: "search_interest_gap", message: byKey("search-interest").message || "Visitor search-interest signals need follow-up content planning." });
-  }
-  return findings;
-}
-
-function organicGrowthActions({ searchSummary = searchLearningSummary(8), stories = [] } = {}) {
-  const topQueries = (searchSummary.topQueries || []).slice(0, 5).map(item => item.query).filter(Boolean);
-  const searchGaps = (searchSummary.recentNoResultQueries || []).slice(0, 5).map(item => item.query).filter(Boolean);
-  const categories = Object.entries(categoryCounts(stories))
-    .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))
-    .slice(0, 3)
-    .map(([category, count]) => `${category} (${count})`);
-  return [
-    topQueries.length ? `Create follow-up coverage around searched topics: ${topQueries.join(", ")}.` : "Seed search-learning by watching real visitor searches before making topic decisions.",
-    searchGaps.length ? `Turn no-result searches into coverage candidates: ${searchGaps.join(", ")}.` : "Use no-result searches as future article and newsletter opportunities once they appear.",
-    categories.length ? `Promote strong current coverage categories: ${categories.join(", ")}.` : "Keep balanced category coverage so SEO traffic has multiple entry points.",
-    "Draft daily policy-safe social posts that link to original site pages, not ad clicks.",
-    "Use Creator Desk editorials, newsletters, and internal links to build repeat visits and direct traffic.",
-    "Keep page speed and mobile layout strong so ad scripts do not damage reader experience."
-  ];
-}
-
-async function revenueGrowthDiagnostics(payload = {}) {
-  const started = Date.now();
-  const indexText = readPublicTextFile("index.html");
-  const creatorText = readPublicTextFile("creator-desk.html");
-  const newsletterText = readPublicTextFile("newsletter.html");
-  const merchText = readPublicTextFile("merch.html");
-  const legalText = readPublicTextFile("legal.html");
-  const legalDocumentsText = readPublicTextFile("legal-documents.html");
-  const publicAdText = `${indexText} ${creatorText} ${newsletterText} ${merchText} ${legalText} ${legalDocumentsText}`;
-  const adsTxt = readPublicTextFile("ads.txt");
-  const searchSummary = searchLearningSummary(8);
-  const stories = Array.isArray(payload.stories) ? payload.stories : [];
-  const publisherMatch = indexText.match(/ca-pub-\d+/);
-  const publisherId = publisherMatch ? publisherMatch[0] : "";
-  const adSlots = (publicAdText.match(/class="adsbygoogle"/g) || []).length;
-  const ezoicSlots = (publicAdText.match(/ezoic-pub-ad-placeholder-/g) || []).length;
-  const ezoicLoaderPresent = /www\.ezojs\.com\/ezoic\/sa\.min\.js/i.test(publicAdText);
-  const adsenseReadySlots = (publicAdText.match(/data-ad-provider="adsense"/g) || []).length;
-  const monetizationSlots = adSlots + ezoicSlots + adsenseReadySlots;
-  const adLabels = (publicAdText.match(/Advertisement|Sponsored Links/g) || []).length;
-  const localAdsTxtOk = /google\.com,\s*pub-\d+,\s*DIRECT/i.test(adsTxt);
-  const managedAdsTxtOk = Boolean(adsTxtManagerUrl && /srv\.adstxtmanager\.com\/19390\/censoredexpressions\.com/i.test(adsTxtManagerUrl));
-  const riskyAdLanguage = /click (the )?(ad|ads)|support (us )?by clicking|please click|visit our advertisers|paid to click|bot traffic|auto.?click|artificial impression/i.test(publicAdText);
-  const legalLinksPresent = /Privacy/i.test(indexText)
-    || /Privacy/i.test(legalText);
-  const searchOpportunityCount = Number(searchSummary.topQueries?.length || 0) + Number(searchSummary.recentNoResultQueries?.length || 0);
-  const originalContentSignals = readCreatorPosts().length + readJsonFile(newslettersFile, []).length;
-  const organicSignals = [
-    /<meta\s+name="description"/i.test(indexText),
-    /creator-desk\.html/i.test(indexText),
-    /newsletter\.html/i.test(indexText),
-    /twitter\.com\/intent\/follow|x\.com/i.test(indexText),
-    /facebook\.com/i.test(indexText),
-    searchOpportunityCount > 0,
-    stories.length >= 20
-  ];
-  const checks = [
-    {
-      key: "adsense-readiness",
-      label: "AdSense readiness",
-      ok: Boolean(publisherId && monetizationSlots >= 1 && (!ezoicSlots || ezoicLoaderPresent) && adLabels >= Math.max(1, ezoicSlots) && legalLinksPresent && (localAdsTxtOk || managedAdsTxtOk)),
-      publisherId,
-      adSlots,
-      ezoicSlots,
-      ezoicLoaderPresent,
-      adsenseReadySlots,
-      monetizationSlots,
-      adLabels,
-      adsTxtPresent: Boolean(adsTxt.trim() || managedAdsTxtOk),
-      adsTxtMode: managedAdsTxtOk ? "managed-redirect" : "local-file",
-      adsTxtManagerUrl: managedAdsTxtOk ? adsTxtManagerUrl : "",
-      message: publisherId
-        ? `AdSense publisher ${publisherId} found with ${monetizationSlots} monetization placement${monetizationSlots === 1 ? "" : "s"}, including ${ezoicSlots} Ezoic slot${ezoicSlots === 1 ? "" : "s"} and ${adsenseReadySlots} AdSense-ready reserve marker${adsenseReadySlots === 1 ? "" : "s"}.`
-        : "AdSense publisher ID was not found."
-    },
-    {
-      key: "ad-policy-safety",
-      label: "Ad policy safety",
-      ok: !riskyAdLanguage,
-      message: riskyAdLanguage
-        ? "Potentially risky ad-click encouragement or artificial traffic language was detected."
-        : "No click encouragement, artificial traffic language, or misleading ad wording detected."
-    },
-    {
-      key: "ad-density",
-      label: "Ad density",
-      ok: ezoicSlots <= 12 && stories.length >= 10,
-      visibleAdSlots: ezoicSlots,
-      message: `${ezoicSlots} visible ad placement${ezoicSlots === 1 ? "" : "s"} detected across public pages against ${stories.length} public stor${stories.length === 1 ? "y" : "ies"}.`
-    },
-    {
-      key: "organic-growth",
-      label: "Organic traffic growth",
-      ok: organicSignals.filter(Boolean).length >= 5 && originalContentSignals >= 1,
-      signalsPassed: organicSignals.filter(Boolean).length,
-      message: "Checks for SEO description, Creator Desk, newsletter, social follow paths, search-interest learning, and content depth."
-    },
-    {
-      key: "search-interest",
-      label: "Search-interest opportunities",
-      ok: searchOpportunityCount > 0,
-      queryCount: searchSummary.queryCount || 0,
-      topQueries: searchSummary.topQueries || [],
-      recentNoResultQueries: searchSummary.recentNoResultQueries || [],
-      message: searchOpportunityCount
-        ? `${searchOpportunityCount} search-interest signal${searchOpportunityCount === 1 ? "" : "s"} available for content planning.`
-        : "No search-interest signals yet; keep collecting visitor searches before using them for content planning."
-    }
-  ];
-  const diagnostics = {
-    generatedAt: new Date().toISOString(),
-    mode: "revenue-growth",
-    ok: checks.every(check => check.ok || check.key === "search-interest"),
-    checkedInMs: Date.now() - started,
-    policyGuardrails: [
-      "Do not request, reward, automate, or pressure ad clicks.",
-      "Do not create artificial impressions, bot traffic, paid-to-click traffic, or forced ad views.",
-      "Keep ads clearly distinguishable from navigation, search controls, pagination, and content actions.",
-      "Use organic traffic growth: original content, SEO, newsletter, social distribution, internal links, and fast pages."
-    ],
-    actions: organicGrowthActions({ searchSummary, stories }),
-    checks
-  };
-  return {
-    ...diagnostics,
-    findings: revenueGrowthFindings(diagnostics)
-  };
-}
-
-async function functionalityDiagnostics(payload = {}) {
-  const started = Date.now();
-  const stories = Array.isArray(payload.stories) ? payload.stories : [];
-  const [indexPage, appScript, creatorPage, creatorScript, newsletterPage, legalPage, privacyPdf, termsPdf] = await Promise.all([
-    measureLocalFileResponse("/", "homepage"),
-    measureLocalFileResponse("/app.js", "app script"),
-    measureLocalFileResponse("/creator-desk.html", "creator desk page"),
-    measureLocalFileResponse("/creator-desk.js", "creator desk script"),
-    measureLocalFileResponse("/newsletter.html", "newsletter page"),
-    measureLocalFileResponse("/legal.html", "legal center"),
-    measureLocalFileResponse("/Privacy_Policy.pdf", "privacy policy"),
-    measureLocalFileResponse("/Terms_of_Service.pdf", "terms of service")
-  ]);
-
-  const indexText = readPublicTextFile("index.html");
-  const appText = readPublicTextFile("app.js");
-  const creatorText = readPublicTextFile("creator-desk.js");
-  const newsletterTextSource = readPublicTextFile("newsletter.js");
-  const query = searchProbeQuery(stories);
-  const searchResults = searchTerms(query).length ? siteSearchResults(query, stories) : [];
-  const searchApiPayload = searchTerms(query).length
-    ? await searchPayload(query, 1).catch(error => ({ error: error.message, totalResults: 0, results: [] }))
-    : { totalResults: 0, results: [] };
-  const searchContractMissingFields = expectedSearchContractFields.filter(field => !(field in (searchApiPayload.relevance || {})));
-  const searchContractOk = searchApiPayload.serverContractVersion === serverContractVersion
-    && searchContractMissingFields.length === 0;
-  const runtimeContractChecks = [
-    {
-      surface: "server",
-      expected: expectedRuntimeContracts.site,
-      actual: serverContractVersion,
-      ok: serverContractVersion === expectedRuntimeContracts.site
-    },
-    {
-      surface: "search-api",
-      expected: expectedRuntimeContracts.search,
-      actual: searchApiPayload.serverContractVersion || "missing",
-      ok: searchApiPayload.serverContractVersion === expectedRuntimeContracts.search
-    }
-  ];
-  const runtimeContractOk = runtimeContractChecks.every(check => check.ok);
-  const creatorPosts = readCreatorPosts();
-  const newsletters = readJsonFile(newslettersFile, []);
-  const comments = readCreatorComments();
-
-  const searchUiOk = indexText.includes("data-site-search-form")
-    && indexText.includes("data-search-results")
-    && appText.includes("runSiteSearch")
-    && appText.includes("/api/search")
-    && appText.includes("renderSearchPages")
-    && appText.includes("data-search-interest");
-  const commentsOk = Array.isArray(comments)
-    && creatorText.includes("/api/creator/comments")
-    && creatorText.includes("data-comment-form");
-  const checks = [
-    {
-      key: "runtime-freshness",
-      label: "Runtime freshness",
-      ok: runtimeContractOk,
-      expectedContract: expectedRuntimeContracts.site,
-      contractChecks: runtimeContractChecks,
-      message: runtimeContractOk
-        ? `Live runtime is serving current site contract ${expectedRuntimeContracts.site}.`
-        : `Live runtime contract mismatch detected: ${runtimeContractChecks.filter(check => !check.ok).map(check => `${check.surface} expected ${check.expected} got ${check.actual}`).join("; ")}.`
-    },
-    {
-      key: "search",
-      label: "Site search",
-      ok: searchUiOk
-        && searchResults.length > 0
-        && searchResults.every(result => result.title && result.url)
-        && Number(searchApiPayload.totalResults || 0) > 0
-        && (searchApiPayload.results || []).every(result => result.title && result.url),
-      query,
-      resultCount: searchResults.length,
-      apiResultCount: Number(searchApiPayload.totalResults || 0),
-      message: searchUiOk
-        ? `Search probe "${query}" returned ${searchResults.length} site result${searchResults.length === 1 ? "" : "s"} and ${Number(searchApiPayload.totalResults || 0)} API result${Number(searchApiPayload.totalResults || 0) === 1 ? "" : "s"}.`
-        : "Search frontend wiring is incomplete."
-    },
-    {
-      key: "search-contract",
-      label: "Search API freshness",
-      ok: searchContractOk,
-      expectedContract: serverContractVersion,
-      actualContract: searchApiPayload.serverContractVersion || "missing",
-      missingFields: searchContractMissingFields,
-      message: searchContractOk
-        ? `Search API is serving current contract ${serverContractVersion}.`
-        : `Search API contract is stale or incomplete. Expected ${serverContractVersion}; got ${searchApiPayload.serverContractVersion || "missing"}. Missing fields: ${searchContractMissingFields.join(", ") || "none"}.`
-    },
-    {
-      key: "search-ui",
-      label: "Search UI wiring",
-      ok: Boolean(indexPage.ok && appScript.ok && searchUiOk),
-      message: "Search requires markup, app.js handler, /api/search fetch, result rendering, pagination, and interest tracking."
-    },
-    {
-      key: "news",
-      label: "News feed",
-      ok: stories.length >= 5,
-      storyCount: stories.length,
-      status: payload.status || "",
-      message: `News payload has ${stories.length} stor${stories.length === 1 ? "y" : "ies"} with status ${payload.status || "unknown"}.`
-    },
-    {
-      key: "creator-desk",
-      label: "Creator Desk",
-      ok: Boolean(creatorPage.ok && creatorScript.ok && Array.isArray(creatorPosts) && commentsOk),
-      postCount: creatorPosts.length,
-      message: `Creator Desk page=${creatorPage.status}, posts=${creatorPosts.length}, comments=${commentsOk ? "wired" : "not wired"}.`
-    },
-    {
-      key: "comments",
-      label: "Creator comments",
-      ok: commentsOk,
-      commentCount: comments.length,
-      message: `Creator comments storage has ${comments.length} item${comments.length === 1 ? "" : "s"} and frontend wiring is ${commentsOk ? "present" : "incomplete"}.`
-    },
-    {
-      key: "newsletter",
-      label: "Newsletter",
-      ok: Boolean(newsletterPage.ok && newsletterTextSource.includes("/api/newsletter/archive") && Array.isArray(newsletters)),
-      newsletterCount: Array.isArray(newsletters) ? newsletters.length : 0,
-      message: `Newsletter page=${newsletterPage.status}, archive data=${Array.isArray(newsletters) ? "readable" : "unreadable"}.`
-    },
-    {
-      key: "legal",
-      label: "Legal downloads",
-      ok: Boolean(legalPage.ok && privacyPdf.ok && termsPdf.ok),
-      message: `Legal page=${legalPage.status}, Privacy PDF=${privacyPdf.status}, Terms PDF=${termsPdf.status}.`
-    }
-  ];
-
-  const diagnostics = {
-    generatedAt: new Date().toISOString(),
-    mode: "functionality-assurance",
-    ok: checks.every(check => check.ok),
-    checkedInMs: Date.now() - started,
-    checks
-  };
-  return {
-    ...diagnostics,
-    findings: functionalityFindings(diagnostics)
-  };
-}
-
-function connectivityFindings(connectivity = {}) {
-  const findings = [];
-  if (!connectivity.ok) {
-    findings.push({ severity: "critical", code: "connectivity_unhealthy", message: "One or more required site resources are unavailable." });
-  }
-  if (Number(connectivity.feedRefreshMs || 0) > 12000) {
-    findings.push({ severity: "high", code: "feed_refresh_slow", message: `Feed refresh took ${connectivity.feedRefreshMs}ms.` });
-  }
-  if (Number(connectivity.apiNewsMs || 0) > 1200) {
-    findings.push({ severity: "medium", code: "api_news_slow", message: `News API payload assembly took ${connectivity.apiNewsMs}ms.` });
-  }
-  if (Number(connectivity.homepageBytes || 0) > 250000) {
-    findings.push({ severity: "medium", code: "homepage_payload_large", message: `Homepage shell is ${connectivity.homepageBytes} bytes before assets.` });
-  }
-  if (Number(connectivity.newsPayloadBytes || 0) > 500000) {
-    findings.push({ severity: "medium", code: "news_payload_large", message: `News JSON payload is ${connectivity.newsPayloadBytes} bytes.` });
-  }
-  if ((connectivity.requiredResources || []).some(item => !item.ok)) {
-    findings.push({ severity: "critical", code: "required_asset_missing", message: "A required page, script, stylesheet, or legal document is missing from the public root." });
-  }
-  if (connectivity.status === "fallback") {
-    findings.push({ severity: "high", code: "connectivity_fallback_mode", message: "The public feed is using fallback data instead of live source connectivity." });
-  }
-  if (Number(connectivity.transientNetworkErrorCount || 0) > 0) {
-    findings.push({
-      severity: "high",
-      code: "transient_upstream_socket_errors",
-      message: `${connectivity.transientNetworkErrorCount} transient upstream socket error${Number(connectivity.transientNetworkErrorCount || 0) === 1 ? "" : "s"} captured without crashing the site.`
-    });
-  }
-  return findings;
-}
-
-async function connectivityDiagnostics(payload = {}, forceRefresh = false) {
-  const started = Date.now();
-  const requiredResources = await Promise.all([
-    measureLocalFileResponse("/", "homepage"),
-    measureLocalFileResponse("/styles.css", "styles"),
-    measureLocalFileResponse("/app.js", "app script"),
-    measureLocalFileResponse("/creator-desk.html", "creator desk"),
-    measureLocalFileResponse("/legal.html", "legal center"),
-    measureLocalFileResponse("/legal-downloads.js", "embedded legal downloads"),
-    measureLocalFileResponse("/Privacy_Policy.pdf", "privacy policy")
-  ]);
-  const homepage = requiredResources.find(item => item.label === "homepage");
-  const newsPayloadBytes = byteLength(JSON.stringify({
-    generatedAt: payload.generatedAt,
-    status: payload.status,
-    stories: payload.stories || [],
-    ticker: payload.ticker || []
-  }));
-  const diagnostics = {
-    generatedAt: new Date().toISOString(),
-    mode: "connectivity-assurance",
-    ok: requiredResources.every(item => item.ok) && payload.status !== "fallback",
-    status: payload.status,
-    checkedInMs: Date.now() - started,
-    apiNewsMs: Number(runtimeState.lastRefreshMs || 0),
-    feedRefreshMs: Number(runtimeState.lastRefreshMs || 0),
-    lastRefreshAt: runtimeState.lastRefreshAt || "",
-    consecutiveRefreshFailures: runtimeState.consecutiveRefreshFailures || 0,
-    transientNetworkErrorCount: Number(runtimeState.transientNetworkErrorCount || 0),
-    lastTransientNetworkErrorAt: runtimeState.lastTransientNetworkErrorAt || "",
-    lastTransientNetworkError: runtimeState.lastTransientNetworkError || "",
-    homepageBytes: homepage?.bytes || 0,
-    newsPayloadBytes,
-    downloadSpeedHint: newsPayloadBytes ? Math.round(newsPayloadBytes / Math.max(1, Number(runtimeState.lastRefreshMs || 1)) * 1000) : 0,
-    requiredResources,
-    actions: [
-      "Keep serving cached public stories during feed failures.",
-      "Force refresh news payload during maintenance when cache or source connectivity degrades.",
-      "Keep critical legal downloads available at the public root and through embedded fallback data.",
-      "Track payload size so slow visitor downloads can be reduced by trimming oversized public data."
-    ],
-    forceRefresh
-  };
-  return {
-    ...diagnostics,
-    findings: connectivityFindings(diagnostics)
-  };
-}
-
-function aiShieldEvaluate(snapshot) {
-  const findings = [];
-  const recommendations = [];
-  const counts = snapshot.categoryCounts;
-  const images = snapshot.imageCounts;
-
-  newsLabBalancedCategoryOrder.filter(category => category !== "top").forEach(category => {
-    if ((counts[category] || 0) < (["world", "politics", "business", "technology", "entertainment"].includes(category) ? 4 : 8)) {
-      findings.push({ severity: "high", code: `${category}_thin`, message: `${category} coverage is below target.` });
-      recommendations.push(`Refresh ${category} feeds and use discovery-to-publisher matching as backup.`);
-    }
-    const imageRate = images[category]?.total ? images[category].withImages / images[category].total : 0;
-    if (imageRate < 0.35) {
-      findings.push({ severity: "medium", code: `${category}_low_images`, message: `${category} image coverage is below target.` });
-      recommendations.push(`Prioritize direct publisher RSS and preview metadata for ${category} images.`);
-    }
-  });
-
-  if (snapshot.cacheAgeMs > cacheMs * 2) {
-    findings.push({ severity: "high", code: "stale_cache", message: "News cache is older than expected." });
-    recommendations.push("Force refresh /api/news and rebuild the story cache.");
-  }
-  if (runtimeState.consecutiveRefreshFailures >= 2) {
-    findings.push({ severity: "critical", code: "refresh_failures", message: "Repeated refresh failures detected." });
-    recommendations.push("Check network access and feed endpoint availability.");
-  }
-  if (Number(runtimeState.transientNetworkErrorCount || 0) > 0) {
-    findings.push({
-      severity: "high",
-      code: "upstream_socket_error_contained",
-      message: `${runtimeState.transientNetworkErrorCount} upstream socket error${Number(runtimeState.transientNetworkErrorCount || 0) === 1 ? "" : "s"} were contained instead of crashing the runtime.`
-    });
-    recommendations.push("Feed Reliability and Site Performance subsystems should isolate the remote source, keep cached stories online, and verify /api/feed-status plus /api/health?refresh=1.");
-  }
-
-  findings.push(...snapshot.integrityFindings);
-  findings.push(...(snapshot.connectivity?.findings || []));
-  findings.push(...(snapshot.functionality?.findings || []));
-  findings.push(...(snapshot.revenueGrowth?.findings || []));
-
-  if (snapshot.connectivity?.findings?.length) {
-    recommendations.push("Run connectivity assurance: verify root files, legal downloads, homepage shell, news API size, and feed refresh latency.");
-  }
-  if (snapshot.functionality?.findings?.length) {
-    recommendations.push("Run functionality assurance: verify search, news, Creator Desk, comments, newsletter, and legal-download behavior end to end.");
-  }
-  if (snapshot.revenueGrowth?.findings?.length) {
-    recommendations.push("Run revenue growth assurance: verify AdSense readiness, ad policy safety, organic traffic signals, search-interest opportunities, and ad density.");
-  }
-
-  const severityRank = { critical: 4, high: 3, medium: 2, low: 1 };
-  const maxSeverity = findings.reduce((max, finding) => Math.max(max, severityRank[finding.severity] || 0), 0);
-  const status = maxSeverity >= 4 ? "critical" : maxSeverity >= 3 ? "attention" : maxSeverity >= 2 ? "watch" : "optimal";
-  const score = Math.max(0, 100 - findings.reduce((sum, finding) => sum + ({ critical: 30, high: 18, medium: 9, low: 4 }[finding.severity] || 0), 0));
-
-  return {
-    name: "Censored Expressions AI Shield",
-    mode: "rules-first-ai-ready",
-    status,
-    score,
-    findings,
-    recommendations: [...new Set(recommendations)].slice(0, 8),
-    policy: {
-      storyIntegrity: "Prefer direct publisher URLs; use discovery feeds only as signals or fallback.",
-      imageIntegrity: "Use publisher RSS/media images first; reject known shared aggregator placeholders.",
-      uptime: "Serve cached stories during feed failures; refresh in bounded intervals.",
-      connectivity: "Verify required public files, source feeds, API latency, and payload size during maintenance.",
-      functionality: "Treat broken public features as optimization findings, not just visual bugs.",
-      revenueGrowth: "Grow real audience traffic through content, SEO, newsletter, social distribution, and compliant ad delivery only.",
-      security: "Block non-web links and spam-pattern stories before public display."
-    }
-  };
-}
-
-async function enrichMissingImages(stories) {
-  const candidates = stories
-    .filter(story => !story.hasFeedImage && !isAggregatorLink(story.url))
-    .sort((a, b) => (b.engagementScore || 0) - (a.engagementScore || 0) || storyDate(b.published) - storyDate(a.published))
-    .slice(0, 24);
-
-  const enrichedImages = await Promise.allSettled(candidates.map(async story => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4500);
-    try {
-      const response = await fetch(story.url, {
-        headers: { "user-agent": "Mozilla/5.0 CensoredExpressionsPreview/1.0" },
-        signal: controller.signal
-      });
-      if (!response.ok) return [story.url, ""];
-      return [story.url, previewImageFromHtml(await response.text())];
-    } catch {
-      return [story.url, ""];
-    } finally {
-      clearTimeout(timeout);
-    }
-  }));
-
-  const imageByUrl = new Map(
-    enrichedImages
-      .filter(result => result.status === "fulfilled" && result.value[1])
-      .map(result => result.value)
-  );
-
-  if (!imageByUrl.size) return stories;
-  return stories.map(story => {
-    const image = imageByUrl.get(story.url);
-    return image ? { ...story, image, hasFeedImage: true } : story;
-  });
-}
-
-function categoryPool(stories, category, limit) {
-  const categoryStories = stories.filter(story => story.category === category);
-  const publishable = categoryStories.filter(isPublishableStory);
-  const pool = dedupeStoryCluster(publishable.length ? publishable : categoryStories);
-
-  return pool
-    .sort((a, b) => {
-      const scoreDiff = (b.engagementScore || 0) - (a.engagementScore || 0);
-      if (Math.abs(scoreDiff) >= 12) return scoreDiff;
-      const imageDiff = Number(Boolean(b.hasFeedImage)) - Number(Boolean(a.hasFeedImage));
-      return imageDiff || scoreDiff || storyDate(b.published) - storyDate(a.published);
-    })
-    .slice(0, limit);
-}
-
-function ensureCategoryCoverage(stories) {
-  const categories = newsLabBalancedCategoryOrder.filter(category => category !== "top");
-  const covered = [...stories];
-
-  categories.forEach(category => {
-    if (!covered.some(story => story.category === category)) {
-      covered.push(...fallbackStories.filter(story => story.category === category));
-    }
-  });
-
-  return covered;
-}
-
-function buildStoryPayload(stories) {
-  const assessed = stories.map(assessStory);
-  runtimeState.blockedStoryCount += assessed.filter(story => story.guardStatus !== "cleared").length;
-  const cleared = assessed
-    .filter(story => story.guardStatus === "cleared")
-    .filter((story, index, all) => all.findIndex(match => match.url === story.url) === index);
-
-  const grouped = [
-    ...categoryPool(cleared, "world", 18),
-    ...categoryPool(cleared, "politics", 18),
-    ...categoryPool(cleared, "business", 14),
-    ...categoryPool(cleared, "technology", 14),
-    ...categoryPool(cleared, "entertainment", 14),
-    ...categoryPool(cleared, "sports", 18),
-    ...categoryPool(cleared, "local", 60)
-  ];
-
-  return grouped
-    .filter((story, index, all) => all.findIndex(match => match.url === story.url) === index)
-    .sort((a, b) => {
-      const scoreDiff = (b.engagementScore || 0) - (a.engagementScore || 0);
-      if (Math.abs(scoreDiff) >= 12) return scoreDiff;
-      const imageDiff = Number(Boolean(b.hasFeedImage)) - Number(Boolean(a.hasFeedImage));
-      return imageDiff || scoreDiff || storyDate(b.published) - storyDate(a.published);
-    })
-    .slice(0, 100);
-}
-
-function buildNewsLabDossierSourcePayload(stories = []) {
-  const assessed = stories.map(assessStory);
-  const safeStatuses = new Set(["cleared", "blocked-generic", "blocked-low-signal"]);
-  const dossierReady = assessed
-    .filter(story => safeStatuses.has(story.guardStatus || "cleared") || ["business", "technology", "entertainment"].includes(story.category || ""))
-    .filter(story => story?.title || story?.summary || story?.articleSummary)
-    .filter(story => story.url || story.source)
-    .filter((story, index, all) => {
-      const key = story.url || `${story.source || ""}:${story.title || ""}`;
-      return key && all.findIndex(item => (item.url || `${item.source || ""}:${item.title || ""}`) === key) === index;
-    });
-  const categories = newsLabBalancedCategoryOrder.filter(category => category !== "top");
-  const balanced = [];
-  categories.forEach(category => {
-    balanced.push(...categoryPool(dossierReady, category, category === "local" ? 90 : 45));
-  });
-  return [
-    ...balanced,
-    ...dossierReady.filter(story => !balanced.some(item => (item.url || item.title) === (story.url || story.title)))
-  ]
-    .filter((story, index, all) => {
-      const key = story.url || `${story.source || ""}:${story.title || ""}`;
-      return key && all.findIndex(item => (item.url || `${item.source || ""}:${item.title || ""}`) === key) === index;
-    })
-    .slice(0, 500);
-}
-
-function sourceErrorKey(source = {}) {
-  return `${source.name || "unknown"}::${source.feed || source.homepage || ""}`;
-}
-
-function feedSourceDomain(source = {}) {
-  const rawUrl = String(source.feed || source.homepage || "");
-  try {
-    return new URL(rawUrl).hostname.replace(/^www\./i, "").toLowerCase();
-  } catch {
-    return "";
-  }
-}
-
-function feedSourceProvider(source = {}) {
-  const domain = feedSourceDomain(source);
-  const name = String(source.name || "").trim();
-  if (/news\.google\.com/i.test(domain) || /\bgoogle news\b/i.test(name)) return "Google News";
-  if (/abcnews\.go\.com|abc7|abc13|6abc|abc11/i.test(domain) || /\babc\b/i.test(name)) return name || "ABC News";
-  if (/nbcnews\.com|nbc/i.test(domain) || /\bnbc\b/i.test(name)) return name || "NBC News";
-  if (/cbsnews\.com|cbssports\.com|cbs/i.test(domain) || /\bcbs\b/i.test(name)) return name || "CBS";
-  if (/cnn\.com/i.test(domain) || /\bcnn\b/i.test(name)) return "CNN";
-  if (/foxnews\.com|foxsports\.com/i.test(domain) || /\bfox\b/i.test(name)) return name || "Fox";
-  if (/espn\.com/i.test(domain) || /\bespn\b/i.test(name)) return "ESPN";
-  if (name) return name.slice(0, 90);
-  if (!domain) return "Unknown provider";
-  const parts = domain.split(".").filter(Boolean);
-  return (parts.length > 1 ? parts[parts.length - 2] : domain).slice(0, 90);
-}
-
-function feedSourceCacheEntry(source = {}) {
-  return runtimeState.feedSourceStoryCache?.[sourceErrorKey(source)] || null;
-}
-
-function rememberFeedSourceStories(source = {}, stories = [], durationMs = 0) {
-  const key = sourceErrorKey(source);
-  const trimmedStories = (stories || []).slice(0, 12).map(story => ({
-    ...story,
-    cachedFromSource: source.name || story.source || "",
-    cachedAt: new Date().toISOString()
-  }));
-  runtimeState.feedSourceStoryCache = {
-    ...(runtimeState.feedSourceStoryCache || {}),
-    [key]: {
-      name: source.name || "Unknown source",
-      category: source.category || "",
-      feed: source.feed || "",
-      homepage: source.homepage || "",
-      savedAt: new Date().toISOString(),
-      durationMs,
-      storyCount: trimmedStories.length,
-      stories: trimmedStories
-    }
-  };
-  return runtimeState.feedSourceStoryCache[key];
-}
-
-function cachedFeedStoriesForSource(source = {}, reason = "source-fallback") {
-  const entry = feedSourceCacheEntry(source);
-  if (!entry?.stories?.length) return [];
-  runtimeState.feedSourceCacheHitCount = Number(runtimeState.feedSourceCacheHitCount || 0) + 1;
-  const at = new Date().toISOString();
-  feedSourceTelemetryRecord(source, {
-    lastAttemptAt: at,
-    durationMs: 0,
-    status: reason,
-    storyCount: entry.stories.length,
-    cacheHit: true,
-    cachedStoryCount: entry.stories.length,
-    lastCacheHitAt: at,
-    slow: false
-  });
-  return entry.stories.map(story => ({
-    ...story,
-    sourceFallback: true,
-    sourceFallbackReason: reason,
-    sourceFallbackAt: at
-  }));
-}
-
-function feedSourceCacheSummary() {
-  return Object.fromEntries(Object.entries(runtimeState.feedSourceStoryCache || {}).map(([key, entry]) => [key, {
-    name: entry.name || "",
-    category: entry.category || "",
-    feed: entry.feed || "",
-    savedAt: entry.savedAt || "",
-    storyCount: Number(entry.storyCount || 0),
-    durationMs: Number(entry.durationMs || 0)
-  }]));
-}
-
-function publicRuntimeState() {
-  return {
-    ...runtimeState,
-    feedSourceStoryCache: feedSourceCacheSummary(),
-    feedSourceAttribution: feedFailureAttribution(12)
-  };
-}
-
-function clampNumber(value, min, max) {
-  return Math.max(min, Math.min(max, Number(value || 0)));
-}
-
-function activeFeedTimeoutMs(source = null) {
-  if (source) {
-    const provider = feedSourceProvider(source);
-    const providerTimeout = Number(runtimeState.feedProviderTimeouts?.[provider] || 0);
-    if (providerTimeout > 0) return providerTimeout;
-  }
-  return Number(feedFetchTimeoutMs || configuredFeedFetchTimeoutMs || 8000);
-}
-
-function feedSourceConcurrencyLimit(source = {}) {
-  const provider = feedSourceProvider(source);
-  return Math.max(1, Number(runtimeState.feedProviderConcurrency?.[provider] || feedFetchConcurrency));
-}
-
-function feedAdaptiveCooldownActive(key = "", now = Date.now()) {
-  const until = runtimeState.feedAdaptiveCooldowns?.[key] ? new Date(runtimeState.feedAdaptiveCooldowns[key]).getTime() : 0;
-  return Boolean(until && until > now);
-}
-
-function setFeedAdaptiveCooldown(key = "", durationMs = 30 * 60 * 1000, now = Date.now()) {
-  runtimeState.feedAdaptiveCooldowns = {
-    ...(runtimeState.feedAdaptiveCooldowns || {}),
-    [key]: new Date(now + durationMs).toISOString()
-  };
-}
-
-function rememberFeedAdaptiveAction(action = {}) {
-  const entry = {
-    at: new Date().toISOString(),
-    type: "feed-reliability-adaptive-optimization",
-    ...action
-  };
-  runtimeState.feedAdaptiveActions = [
-    ...(runtimeState.feedAdaptiveActions || []),
-    entry
-  ].slice(-120);
-  saveFrameworkActionLogEntry({
-    type: "feed-reliability-adaptive-optimization",
-    actionKey: `feed-adaptive-${entry.action || "observe"}`,
-    reason: entry.reason || "Feed Reliability used source-level telemetry to make a bounded operational decision.",
-    trigger: entry.trigger || {},
-    bounded: true,
-    reversible: true,
-    safeExecution: true,
-    autonomous: true,
-    status: entry.status || "runtime-correction-applied",
-    verified: true,
-    message: entry.message || "Feed Reliability applied a bounded source-level runtime optimization.",
-    beforeMetric: entry.beforeMetric || {},
-    afterMetric: entry.afterMetric || {},
-    details: entry,
-    preventionMemory: "Use provider/domain attribution to quarantine, throttle, or tune only the problematic feed source instead of changing the entire feed system."
-  });
-  return entry;
-}
-
-function adaptiveFeedDecisionForSource(source = {}, reason = "feed-reliability-adaptive-loop") {
-  const status = feedSourceRuntimeStatus(source);
-  const telemetry = status.telemetry || {};
-  const error = status.error || {};
-  const attempts = Math.max(Number(telemetry.attempts || 0), Number(status.failureCount || 0) + Number(status.successCount || 0));
-  if (attempts < 5) return null;
-  const provider = telemetry.provider || feedSourceProvider(source);
-  const domain = telemetry.domain || feedSourceDomain(source);
-  const key = status.key || sourceErrorKey(source);
-  const providerCooldownKey = `provider:${provider}`;
-  const sourceCooldownKey = `source:${key}`;
-  const now = Date.now();
-  if (feedAdaptiveCooldownActive(providerCooldownKey, now) || feedAdaptiveCooldownActive(sourceCooldownKey, now)) return null;
-  const failures = Number(status.failureCount || telemetry.failureCount || 0);
-  const slowCount = Number(telemetry.slowCount || 0) + Number(status.slow ? 1 : 0);
-  const transientNetworkCount = Number(status.transientNetworkCount || telemetry.transientNetworkCount || 0);
-  const http2SessionErrorCount = Number(status.http2SessionErrorCount || telemetry.http2SessionErrorCount || 0);
-  const cacheHitCount = Number(telemetry.cacheHitCount || 0);
-  const storyCount = Number(telemetry.lastStoryCount || status.cache?.storyCount || 0);
-  const errorRate = Math.min(1, failures / attempts);
-  const slowRate = Math.min(1, slowCount / attempts);
-  const beforeMetric = {
-    provider,
-    domain,
-    source: source.name || telemetry.name || "Unknown source",
-    attempts,
-    failures,
-    errorRate,
-    slowCount,
-    slowRate,
-    transientNetworkCount,
-    http2SessionErrorCount,
-    cacheHitCount,
-    storyCount,
-    timeoutMs: activeFeedTimeoutMs(source),
-    providerConcurrency: feedSourceConcurrencyLimit(source),
-    quarantined: status.quarantined
-  };
-
-  if (errorRate >= 0.65 || (failures >= 4 && storyCount === 0)) {
-    const until = new Date(now + 20 * 60 * 1000).toISOString();
-    runtimeState.feedSourceQuarantine = {
-      ...(runtimeState.feedSourceQuarantine || {}),
-      [key]: {
-        name: source.name || telemetry.name || "Unknown source",
-        category: source.category || telemetry.category || "",
-        domain,
-        provider,
-        feed: source.feed || telemetry.feed || "",
-        reason: "adaptive-high-source-error-rate",
-        failureCount: failures,
-        transientNetworkCount,
-        http2SessionErrorCount,
-        slow: status.slow,
-        startedAt: new Date(now).toISOString(),
-        until,
-        triggeredBy: reason
-      }
-    };
-    setFeedAdaptiveCooldown(sourceCooldownKey, 30 * 60 * 1000, now);
-    return rememberFeedAdaptiveAction({
-      action: "quarantine-source",
-      provider,
-      domain,
-      reason: "A single feed source crossed the high error-rate threshold.",
-      message: `Feed Reliability quarantined ${source.name || provider} until ${until} because its error rate reached ${Math.round(errorRate * 100)}%.`,
-      trigger: beforeMetric,
-      beforeMetric,
-      afterMetric: { ...beforeMetric, quarantined: true, quarantinedUntil: until },
-      expectedBenefit: "Stop one unstable feed from slowing or interrupting the rest of the refresh.",
-      rollbackCondition: "Quarantine expires automatically; cached stories are used when available."
-    });
-  }
-
-  if (http2SessionErrorCount >= 2 || transientNetworkCount >= 3 || (errorRate >= 0.35 && failures >= 3)) {
-    const previous = feedSourceConcurrencyLimit(source);
-    const next = Math.max(1, previous - 1);
-    if (next < previous) {
-      runtimeState.feedProviderConcurrency = {
-        ...(runtimeState.feedProviderConcurrency || {}),
-        [provider]: next
-      };
-      setFeedAdaptiveCooldown(providerCooldownKey, 30 * 60 * 1000, now);
-      return rememberFeedAdaptiveAction({
-        action: "reduce-provider-concurrency",
-        provider,
-        domain,
-        reason: http2SessionErrorCount >= 2 ? "A provider produced repeated HTTP/2 session failures." : "A provider produced repeated socket or source failures.",
-        message: `Feed Reliability reduced ${provider} concurrency from ${previous} to ${next} for a bounded cooldown window.`,
-        trigger: beforeMetric,
-        beforeMetric,
-        afterMetric: { ...beforeMetric, providerConcurrency: next },
-        expectedBenefit: "Reduce upstream socket closures without slowing every provider.",
-        rollbackCondition: "Restore provider concurrency if story count or refresh duration worsens after the next cycle."
-      });
-    }
-  }
-
-  if (slowRate >= 0.3 && storyCount > 0) {
-    const previous = activeFeedTimeoutMs(source);
-    const next = Math.min(9000, previous + 1500);
-    if (next > previous) {
-      runtimeState.feedProviderTimeouts = {
-        ...(runtimeState.feedProviderTimeouts || {}),
-        [provider]: next
-      };
-      setFeedAdaptiveCooldown(providerCooldownKey, 30 * 60 * 1000, now);
-      return rememberFeedAdaptiveAction({
-        action: "increase-provider-timeout",
-        provider,
-        domain,
-        reason: "A provider is slow but still returns useful stories.",
-        message: `Feed Reliability increased ${provider} timeout from ${previous}ms to ${next}ms without changing global timeout.`,
-        trigger: beforeMetric,
-        beforeMetric,
-        afterMetric: { ...beforeMetric, timeoutMs: next },
-        expectedBenefit: "Keep useful slow providers available while protecting the rest of the feed.",
-        rollbackCondition: "Restore provider timeout if refresh duration worsens or the provider still fails."
-      });
-    }
-  }
-
-  return null;
-}
-
-function extendFeedRefreshBackoff(reason = "upstream-transient-error", durationMs = 90 * 1000) {
-  const now = Date.now();
-  const currentUntil = runtimeState.feedRefreshBackoffUntil ? new Date(runtimeState.feedRefreshBackoffUntil).getTime() : 0;
-  const boundedDurationMs = clampNumber(durationMs, 30 * 1000, 3 * 60 * 1000);
-  const nextUntil = Math.max(currentUntil || 0, now + boundedDurationMs);
-  runtimeState.feedRefreshBackoffUntil = new Date(nextUntil).toISOString();
-  runtimeState.feedRefreshBackoffMs = Math.max(0, nextUntil - now);
-  runtimeState.feedRefreshBackoffReason = reason;
-  return {
-    reason,
-    until: runtimeState.feedRefreshBackoffUntil,
-    durationMs: runtimeState.feedRefreshBackoffMs
-  };
-}
-
-function feedSourceRuntimeStatus(source = {}) {
-  const key = sourceErrorKey(source);
-  const telemetry = runtimeState.feedSourceTelemetry?.[key] || {};
-  const error = runtimeState.feedSourceErrors?.[key] || {};
-  const quarantine = runtimeState.feedSourceQuarantine?.[key] || {};
-  const cacheEntry = runtimeState.feedSourceStoryCache?.[key] || {};
-  const quarantinedUntil = quarantine.until ? new Date(quarantine.until).getTime() : 0;
-  return {
-    key,
-    telemetry,
-    error,
-    quarantine,
-    cache: {
-      savedAt: cacheEntry.savedAt || "",
-      storyCount: Number(cacheEntry.storyCount || 0)
-    },
-    failureCount: Number(error.count || telemetry.failureCount || 0),
-    successCount: Number(telemetry.successCount || 0),
-    transientNetworkCount: Number(error.transientNetworkCount || telemetry.transientNetworkCount || 0),
-    http2SessionErrorCount: Number(error.http2SessionErrorCount || telemetry.http2SessionErrorCount || 0),
-    slow: Boolean(telemetry.slow),
-    quarantined: quarantinedUntil > Date.now(),
-    quarantinedUntil: quarantine.until || "",
-    reason: quarantine.reason || ""
-  };
-}
-
-function feedFailureAttribution(limit = 10) {
-  const telemetryEntries = Object.entries(runtimeState.feedSourceTelemetry || {});
-  const errorEntries = Object.entries(runtimeState.feedSourceErrors || {});
-  const keys = new Set([...telemetryEntries.map(([key]) => key), ...errorEntries.map(([key]) => key)]);
-  const slowThresholdMs = Math.max(2000, activeFeedTimeoutMs() * 0.75);
-  const sourceRows = Array.from(keys).map(key => {
-    const telemetry = runtimeState.feedSourceTelemetry?.[key] || {};
-    const error = runtimeState.feedSourceErrors?.[key] || {};
-    const feed = telemetry.feed || error.feed || "";
-    const source = {
-      name: telemetry.name || error.name || "Unknown source",
-      category: telemetry.category || error.category || "",
-      feed,
-      homepage: telemetry.homepage || error.homepage || ""
-    };
-    const domain = telemetry.domain || error.domain || feedSourceDomain(source);
-    const provider = telemetry.provider || error.provider || feedSourceProvider(source);
-    const quarantinedUntil = runtimeState.feedSourceQuarantine?.[key]?.until || "";
-    const quarantined = quarantinedUntil ? new Date(quarantinedUntil).getTime() > Date.now() : false;
-    const failureCount = Number(error.count || telemetry.failureCount || 0);
-    const slowCount = Number(telemetry.slowCount || 0) + Number(telemetry.slow ? 1 : 0);
-    const lastDurationMs = Number(telemetry.lastDurationMs || error.durationMs || 0);
-    return {
-      key,
-      name: source.name,
-      provider,
-      domain,
-      category: source.category,
-      feed,
-      homepage: source.homepage,
-      failureCount,
-      slowCount,
-      slow: Boolean(telemetry.slow || lastDurationMs >= slowThresholdMs),
-      transientNetworkCount: Number(error.transientNetworkCount || telemetry.transientNetworkCount || 0),
-      http2SessionErrorCount: Number(error.http2SessionErrorCount || telemetry.http2SessionErrorCount || 0),
-      cacheHitCount: Number(telemetry.cacheHitCount || 0),
-      skippedCount: Number(telemetry.skippedCount || 0),
-      successCount: Number(telemetry.successCount || 0),
-      lastDurationMs,
-      lastStatus: telemetry.lastStatus || (failureCount ? "failed" : "unknown"),
-      lastErrorType: error.type || telemetry.lastErrorType || "",
-      lastErrorCode: error.code || telemetry.lastErrorCode || "",
-      lastErrorMessage: error.message || telemetry.lastErrorMessage || "",
-      lastFailedAt: error.lastFailedAt || telemetry.lastFailedAt || "",
-      lastSuccessAt: telemetry.lastSuccessAt || "",
-      quarantined,
-      quarantinedUntil
-    };
-  });
-
-  const aggregateBy = (field, fallback) => {
-    const map = new Map();
-    sourceRows.forEach(row => {
-      const key = row[field] || fallback;
-      const current = map.get(key) || {
-        [field]: key,
-        sourceCount: 0,
-        failureCount: 0,
-        slowCount: 0,
-        transientNetworkCount: 0,
-        http2SessionErrorCount: 0,
-        cacheHitCount: 0,
-        quarantinedSourceCount: 0,
-        lastDurationMs: 0,
-        worstSource: ""
-      };
-      current.sourceCount += 1;
-      current.failureCount += row.failureCount;
-      current.slowCount += row.slowCount + Number(row.slow);
-      current.transientNetworkCount += row.transientNetworkCount;
-      current.http2SessionErrorCount += row.http2SessionErrorCount;
-      current.cacheHitCount += row.cacheHitCount;
-      current.quarantinedSourceCount += Number(row.quarantined);
-      if (row.lastDurationMs > current.lastDurationMs) {
-        current.lastDurationMs = row.lastDurationMs;
-        current.worstSource = row.name;
-      }
-      map.set(key, current);
-    });
-    return Array.from(map.values())
-      .sort((a, b) => b.failureCount - a.failureCount || b.slowCount - a.slowCount || b.transientNetworkCount - a.transientNetworkCount || b.lastDurationMs - a.lastDurationMs)
-      .slice(0, limit);
-  };
-
-  const rankedSources = sourceRows
-    .sort((a, b) => b.failureCount - a.failureCount || b.http2SessionErrorCount - a.http2SessionErrorCount || b.slowCount - a.slowCount || b.transientNetworkCount - a.transientNetworkCount || b.lastDurationMs - a.lastDurationMs)
-    .slice(0, limit);
-
-  return {
-    generatedAt: new Date().toISOString(),
-    slowThresholdMs,
-    observedSourceCount: sourceRows.length,
-    errorSourceCount: sourceRows.filter(row => row.failureCount > 0).length,
-    slowSourceCount: sourceRows.filter(row => row.slow || row.slowCount > 0).length,
-    worstSources: rankedSources,
-    worstDomains: aggregateBy("domain", "unknown-domain"),
-    worstProviders: aggregateBy("provider", "Unknown provider"),
-    slowSources: sourceRows
-      .filter(row => row.slow || row.slowCount > 0)
-      .sort((a, b) => b.slowCount - a.slowCount || b.lastDurationMs - a.lastDurationMs || b.failureCount - a.failureCount)
-      .slice(0, limit)
-  };
-}
-
-function compactFeedSourceQuarantine() {
-  const now = Date.now();
-  const active = {};
-  Object.entries(runtimeState.feedSourceQuarantine || {}).forEach(([key, item]) => {
-    const until = item?.until ? new Date(item.until).getTime() : 0;
-    if (until > now) active[key] = item;
-  });
-  runtimeState.feedSourceQuarantine = active;
-  return active;
-}
-
-function tuneFeedTimeout(targetMs, reason = "feed-reliability-action") {
-  const before = activeFeedTimeoutMs();
-  const next = Math.round(clampNumber(targetMs, 3000, Math.max(3000, configuredFeedFetchTimeoutMs)));
-  feedFetchTimeoutMs = next;
-  runtimeState.activeFeedFetchTimeoutMs = next;
-  return {
-    changed: before !== next,
-    before,
-    after: next,
-    reason
-  };
-}
-
-function quarantineFeedSourcesForReliability(reason = "feed-reliability-action") {
-  compactFeedSourceQuarantine();
-  const now = Date.now();
-  const quarantineMs = 15 * 60 * 1000;
-  const candidates = feedSources
-    .map(source => ({ source, ...feedSourceRuntimeStatus(source) }))
-    .filter(item => item.failureCount >= 2 || item.transientNetworkCount >= 1 || item.slow)
-    .filter(item => !item.quarantined)
-    .sort((a, b) => Number(b.transientNetworkCount || 0) - Number(a.transientNetworkCount || 0) || Number(b.failureCount || 0) - Number(a.failureCount || 0) || Number(b.slow) - Number(a.slow))
-    .slice(0, 8);
-  const next = { ...(runtimeState.feedSourceQuarantine || {}) };
-  candidates.forEach(item => {
-    next[item.key] = {
-      name: item.source.name || item.telemetry.name || "Unknown source",
-      category: item.source.category || item.telemetry.category || "",
-      domain: item.telemetry.domain || feedSourceDomain(item.source),
-      provider: item.telemetry.provider || feedSourceProvider(item.source),
-      feed: item.source.feed || item.telemetry.feed || "",
-      reason: item.transientNetworkCount ? "transient-upstream-socket-error" : item.slow ? "slow-or-failing-source" : "repeated-source-errors",
-      failureCount: item.failureCount,
-      transientNetworkCount: item.transientNetworkCount,
-      slow: item.slow,
-      sourceErrorType: item.error.type || item.telemetry.lastErrorType || "",
-      startedAt: new Date(now).toISOString(),
-      until: new Date(now + quarantineMs).toISOString(),
-      triggeredBy: reason
-    };
-  });
-  runtimeState.feedSourceQuarantine = next;
-  return candidates.map(item => next[item.key]);
-}
-
-function rankedFeedSourcesForReliability(sources = []) {
-  compactFeedSourceQuarantine();
-  const ranked = sources.map((source, index) => {
-    const status = feedSourceRuntimeStatus(source);
-    const discoveryPenalty = isDiscoverySource(source) ? 5 : 0;
-    const failurePenalty = Math.min(50, status.failureCount * 9);
-    const transientPenalty = Math.min(35, status.transientNetworkCount * 12);
-    const slowPenalty = status.slow ? 12 : 0;
-    const quarantinePenalty = status.quarantined ? 1000 : 0;
-    const successBonus = Math.min(20, status.successCount * 2);
-    return {
-      source,
-      index,
-      priority: quarantinePenalty + discoveryPenalty + failurePenalty + transientPenalty + slowPenalty - successBonus
-    };
-  }).sort((a, b) => a.priority - b.priority || a.index - b.index);
-  const active = ranked.filter(item => !feedSourceRuntimeStatus(item.source).quarantined).map(item => item.source);
-  const minimum = Math.min(sources.length, Math.max(35, Math.ceil(sources.length * 0.45)));
-  const limit = Math.min(sources.length, Math.max(minimum, feedRefreshSourceLimit));
-  if (active.length >= minimum) return active.slice(0, limit);
-  return ranked.slice(0, limit).map(item => item.source);
-}
-
-function subsystemRuntimeActionMetrics(diagnostics = {}) {
-  return {
-    feedSourceErrors: Number(diagnostics.runtime?.feedSourceErrorCount || runtimeState.feedSourceErrorCount || 0),
-    slowFeedSources: Number(diagnostics.runtime?.feedSourceSlowCount || runtimeState.feedSourceSlowCount || 0),
-    transientFeedSourceErrors: Number(diagnostics.runtime?.transientFeedSourceErrorCount || runtimeState.transientFeedSourceErrorCount || 0),
-    consecutiveRefreshFailures: Number(diagnostics.runtime?.consecutiveRefreshFailures || runtimeState.consecutiveRefreshFailures || 0),
-    attemptedSources: Object.keys(diagnostics.runtime?.feedSourceTelemetry || runtimeState.feedSourceTelemetry || {}).length,
-    timeoutMs: activeFeedTimeoutMs(),
-    concurrency: feedFetchConcurrency,
-    sourceLimit: feedRefreshSourceLimit,
-    fastSourceLimit: fastFeedRefreshSourceLimit,
-    feedRefreshMs: Number(diagnostics.connectivity?.feedRefreshMs || diagnostics.runtime?.lastRefreshMs || runtimeState.lastRefreshMs || 0),
-    health: diagnostics.health || "",
-    score: Number(diagnostics.publicHealth?.score || diagnostics.score || diagnostics.aiShield?.score || 0),
-    requiredResourcesOk: (diagnostics.connectivity?.requiredResources || []).every(item => item.ok)
-  };
-}
-
-function recentSubsystemAction(actionKey = "", withinMs = 5 * 60 * 1000) {
-  const recent = (runtimeState.subsystemImprovementActions || [])
-    .filter(action => action.actionKey === actionKey)
-    .slice(-1)[0];
-  const time = recent?.at ? new Date(recent.at).getTime() : 0;
-  return Boolean(time && Date.now() - time < withinMs);
-}
-
-function executeSubsystemRuntimeCorrections(diagnostics = {}, reason = "subsystem-cycle") {
-  const beforeMetric = subsystemRuntimeActionMetrics(diagnostics);
-  const actions = [];
-  const needsFeedAction = beforeMetric.feedSourceErrors >= 8
-    || beforeMetric.slowFeedSources > 0
-    || beforeMetric.transientFeedSourceErrors > 0
-    || beforeMetric.feedRefreshMs > 8000
-    || beforeMetric.consecutiveRefreshFailures > 0;
-  const needsSitePerformanceAction = beforeMetric.score < 70
-    || beforeMetric.health === "attention"
-    || beforeMetric.feedRefreshMs > 8000;
-
-  if (needsFeedAction) {
-    const adaptiveReviewSources = feedSources
-      .map(source => ({ source, status: feedSourceRuntimeStatus(source) }))
-      .filter(item => Number(item.status.failureCount || 0) || Number(item.status.transientNetworkCount || 0) || item.status.slow)
-      .sort((a, b) =>
-        Number(b.status.transientNetworkCount || 0) - Number(a.status.transientNetworkCount || 0)
-        || Number(b.status.failureCount || 0) - Number(a.status.failureCount || 0)
-        || Number(b.status.slow) - Number(a.status.slow)
-      )
-      .slice(0, 8)
-      .map(item => item.source);
-    const adaptiveActions = adaptiveReviewSources
-      .map(source => adaptiveFeedDecisionForSource(source, reason))
-      .filter(Boolean)
-      .slice(0, 8);
-    const quarantined = quarantineFeedSourcesForReliability(reason);
-    const targetTimeout = beforeMetric.feedRefreshMs > 10000 || beforeMetric.feedSourceErrors > 25
-      ? Math.max(3000, Math.round(activeFeedTimeoutMs() * 0.75))
-      : activeFeedTimeoutMs();
-    const timeoutChange = tuneFeedTimeout(targetTimeout, reason);
-    if (quarantined.length || timeoutChange.changed || !recentSubsystemAction("feed-reliability-isolate-failing-sources")) {
-      actions.push(saveFrameworkActionLogEntry({
-      type: "subsystem-runtime-correction",
-      actionKey: "feed-reliability-isolate-failing-sources",
-      reason: "Feed Reliability saw repeated source errors, slow feeds, or high refresh time and took a bounded runtime action.",
-      trigger: beforeMetric,
-      bounded: true,
-      reversible: true,
-      safeExecution: true,
-      autonomous: true,
-      status: quarantined.length || timeoutChange.changed ? "runtime-correction-applied" : "runtime-correction-reviewed",
-      verified: true,
-      message: `Feed Reliability applied ${adaptiveActions.length} targeted provider/source adjustment(s), quarantined ${quarantined.length} failing/slow source(s), and set active feed timeout to ${timeoutChange.after}ms.`,
-      beforeMetric,
-      afterMetric: {
-        ...beforeMetric,
-        timeoutMs: timeoutChange.after,
-        quarantinedSourceCount: Object.keys(runtimeState.feedSourceQuarantine || {}).length,
-        timeoutChanged: timeoutChange.changed,
-        providerTimeoutCount: Object.keys(runtimeState.feedProviderTimeouts || {}).length,
-        providerConcurrencyCount: Object.keys(runtimeState.feedProviderConcurrency || {}).length
-      },
-      details: {
-        adaptiveActions: adaptiveActions.slice(0, 12),
-        providerTimeouts: runtimeState.feedProviderTimeouts || {},
-        providerConcurrency: runtimeState.feedProviderConcurrency || {},
-        quarantinedSources: quarantined.slice(0, 12),
-        timeoutChange,
-        correctionType: "runtime-only-reversible"
-      },
-      preventionMemory: "When Feed Reliability sees many failing or slow sources, attribute the problem to provider/domain/source, apply targeted timeout/concurrency/quarantine adjustments first, continue serving cache/fallback, then re-check latency and source errors."
-      }));
-    }
-  }
-
-  if (needsSitePerformanceAction && (actions.length || !recentSubsystemAction("site-performance-clear-stale-diagnostics-after-feed-action"))) {
-    diagnosticsCache = { expires: 0, payload: null };
-    actions.push(saveFrameworkActionLogEntry({
-      type: "subsystem-runtime-correction",
-      actionKey: "site-performance-clear-stale-diagnostics-after-feed-action",
-      reason: "Site Performance was low and feed latency was a likely contributor, so the Brain cleared diagnostics for a fresh verification pass.",
-      trigger: beforeMetric,
-      bounded: true,
-      reversible: true,
-      safeExecution: true,
-      autonomous: true,
-      status: "verification-prepared",
-      verified: true,
-      message: "Site Performance cleared stale diagnostics so the next health check measures the current feed reliability correction.",
-      beforeMetric,
-      afterMetric: {
-        diagnosticsCacheFresh: false,
-        requiredResourcesOk: beforeMetric.requiredResourcesOk,
-        timeoutMs: activeFeedTimeoutMs(),
-        quarantinedSourceCount: Object.keys(runtimeState.feedSourceQuarantine || {}).length
-      },
-      preventionMemory: "When Site Performance is low but required assets are OK, check feed latency and clear stale diagnostics after runtime feed corrections so verification uses current state."
-    }));
-  }
-
-  if (actions.length) {
-    runtimeState.lastSubsystemActionAt = new Date().toISOString();
-    runtimeState.lastSubsystemAction = actions.map(action => `${action.actionKey}:${action.status}`).join(", ");
-    runtimeState.subsystemImprovementActions = [
-      ...(runtimeState.subsystemImprovementActions || []),
-      ...actions.map(action => ({
-        at: action.at,
-        actionKey: action.actionKey,
-        status: action.status,
-        message: action.message,
-        beforeMetric: action.beforeMetric,
-        afterMetric: action.afterMetric
-      }))
-    ].slice(-100);
-    runtimeState.feedReliabilityActions = (runtimeState.subsystemImprovementActions || [])
-      .filter(action => /feed-reliability/.test(action.actionKey || ""))
-      .slice(-30);
-    runtimeState.sitePerformanceActions = (runtimeState.subsystemImprovementActions || [])
-      .filter(action => /site-performance/.test(action.actionKey || ""))
-      .slice(-30);
-  }
-  return actions;
-}
-
-function verifyFeedAdaptiveActionResults(diagnostics = {}) {
-  const pending = (runtimeState.feedAdaptiveActions || []).filter(action => !action.measuredResult).slice(-20);
-  if (!pending.length) return [];
-  const measuredAt = new Date().toISOString();
-  const metric = subsystemRuntimeActionMetrics(diagnostics);
-  const updated = [];
-  runtimeState.feedAdaptiveActions = (runtimeState.feedAdaptiveActions || []).map(action => {
-    if (action.measuredResult || !pending.includes(action)) return action;
-    const before = action.beforeMetric || action.trigger || {};
-    const result = {
-      measuredAt,
-      feedRefreshMs: metric.feedRefreshMs,
-      feedSourceErrors: metric.feedSourceErrors,
-      slowFeedSources: metric.slowFeedSources,
-      transientFeedSourceErrors: metric.transientFeedSourceErrors,
-      health: metric.health,
-      score: metric.score,
-      timeoutMs: metric.timeoutMs,
-      providerTimeouts: runtimeState.feedProviderTimeouts || {},
-      providerConcurrency: runtimeState.feedProviderConcurrency || {},
-      quarantinedSourceCount: Object.keys(runtimeState.feedSourceQuarantine || {}).length,
-      interpretation: metric.score >= 70 && metric.consecutiveRefreshFailures === 0
-        ? "verified-stable"
-        : "needs-next-cycle-review"
-    };
-    const next = { ...action, measuredResult: result };
-    updated.push(next);
-    return next;
-  });
-  if (updated.length) {
-    saveFrameworkActionLogEntry({
-      type: "feed-reliability-adaptive-measurement",
-      actionKey: "feed-adaptive-measured-result",
-      reason: "The Brain measured the effect of recent bounded feed reliability actions after a fresh diagnostics pass.",
-      trigger: { measuredActionCount: updated.length },
-      bounded: true,
-      reversible: true,
-      safeExecution: true,
-      autonomous: true,
-      status: "measured-result-recorded",
-      verified: true,
-      message: `Feed Reliability measured ${updated.length} adaptive action(s): score=${metric.score}, feedRefreshMs=${metric.feedRefreshMs}, sourceErrors=${metric.feedSourceErrors}.`,
-      beforeMetric: updated.map(action => action.beforeMetric || action.trigger || {}).slice(0, 8),
-      afterMetric: metric,
-      details: { measuredActions: updated.slice(0, 8) },
-      preventionMemory: "After every bounded runtime feed action, record measured results on the next health/feed cycle so the Brain can keep, adjust, or roll back the optimization."
-    });
-  }
-  return updated;
-}
-
-function classifyFeedSourceError(error) {
-  const name = String(error?.name || "");
-  const message = String(error?.message || error?.cause?.message || "");
-  const code = String(error?.code || error?.cause?.code || "");
-  if (isHttp2SessionError(error)) return "http2-session";
-  if (isTransientNetworkError(error)) return "transient-socket";
-  if (name === "AbortError" || /abort|timeout|timed out/i.test(message)) return "timeout";
-  if (/responded\s+\d{3}/i.test(message)) return "http-status";
-  if (/parse|xml|rss|feed/i.test(message)) return "parse";
-  if (code || /socket|network|fetch|dns|enotfound|econn|tls/i.test(`${message} ${code}`)) return "network";
-  return "unknown";
-}
-
-function feedSourceTelemetryRecord(source = {}, patch = {}) {
-  const key = sourceErrorKey(source);
-  const previous = runtimeState.feedSourceTelemetry?.[key] || {};
-  const domain = feedSourceDomain(source) || previous.domain || "";
-  const provider = feedSourceProvider(source) || previous.provider || "";
-  const next = {
-    name: source.name || previous.name || "Unknown source",
-    category: source.category || previous.category || "",
-    feed: source.feed || previous.feed || "",
-    homepage: source.homepage || previous.homepage || "",
-    domain,
-    provider,
-    attempts: Number(previous.attempts || 0) + Number(patch.countAttempt ? 1 : 0),
-    successCount: Number(previous.successCount || 0) + Number(patch.success ? 1 : 0),
-    failureCount: Number(previous.failureCount || 0) + Number(patch.failure ? 1 : 0),
-    recoveryCount: Number(previous.recoveryCount || 0) + Number(patch.recovered ? 1 : 0),
-    transientNetworkCount: Number(previous.transientNetworkCount || 0) + Number(patch.transientNetwork ? 1 : 0),
-    http2SessionErrorCount: Number(previous.http2SessionErrorCount || 0) + Number(patch.http2SessionError ? 1 : 0),
-    lastAttemptAt: patch.lastAttemptAt || previous.lastAttemptAt || "",
-    lastSuccessAt: patch.lastSuccessAt || previous.lastSuccessAt || "",
-    lastFailedAt: patch.lastFailedAt || previous.lastFailedAt || "",
-    lastTransientNetworkAt: patch.lastTransientNetworkAt || previous.lastTransientNetworkAt || "",
-    lastHttp2SessionErrorAt: patch.lastHttp2SessionErrorAt || previous.lastHttp2SessionErrorAt || "",
-    lastDurationMs: Number(patch.durationMs ?? previous.lastDurationMs ?? 0),
-    lastStoryCount: Number(patch.storyCount ?? previous.lastStoryCount ?? 0),
-    lastStatus: patch.status || previous.lastStatus || "unknown",
-    lastErrorType: patch.errorType || previous.lastErrorType || "",
-    lastErrorCode: patch.errorCode || previous.lastErrorCode || "",
-    lastErrorMessage: patch.errorMessage || previous.lastErrorMessage || "",
-    slow: Boolean(patch.slow ?? previous.slow ?? false),
-    slowCount: Number(previous.slowCount || 0) + Number(patch.slow ? 1 : 0),
-    cacheHitCount: Number(previous.cacheHitCount || 0) + Number(patch.cacheHit ? 1 : 0),
-    skippedCount: Number(previous.skippedCount || 0) + Number(patch.skipped ? 1 : 0),
-    cachedStoryCount: Number(patch.cachedStoryCount ?? previous.cachedStoryCount ?? 0),
-    lastCacheHitAt: patch.lastCacheHitAt || previous.lastCacheHitAt || "",
-    timeoutMs: activeFeedTimeoutMs(source)
-  };
-  runtimeState.feedSourceTelemetry = {
-    ...(runtimeState.feedSourceTelemetry || {}),
-    [key]: next
-  };
-  runtimeState.feedSourceLastAttemptAt = next.lastAttemptAt || runtimeState.feedSourceLastAttemptAt || "";
-  runtimeState.feedSourceSlowCount = Object.values(runtimeState.feedSourceTelemetry || {}).filter(item => item.slow).length;
-  return next;
-}
-
-function queueArticleMemoryAbsorption(stories = [], reason = "background-feed-refresh-deep-read") {
-  if (runtimeState.articleMemoryBackgroundActive) return;
-  const selectedStories = Array.isArray(stories) && articleMemoryReadLimit > 0 ? stories.slice(0, articleMemoryReadLimit) : [];
-  if (!selectedStories.length) return;
-  runtimeState.articleMemoryBackgroundActive = true;
-  runtimeState.articleMemoryBackgroundLastStartedAt = new Date().toISOString();
-  runtimeState.articleMemoryBackgroundLastStatus = "running";
-  setTimeout(async () => {
-    try {
-      const articleReadStories = await readStoriesForMemory(selectedStories);
-      const payloadStories = buildStoryPayload(addEngagementSignals(articleReadStories));
-      const dayMemory = absorbDailyArticleMemory(payloadStories, new Date(), reason);
-      const articleIntelligence = readArticleIntelligence(dayMemory?.dayId || creatorDayWindow().id);
-      runtimeState.articleMemoryBackgroundLastStatus = `completed:${payloadStories.length}:clusters=${articleIntelligence?.clusterCount || 0}`;
-      runtimeState.articleMemoryBackgroundLastFinishedAt = new Date().toISOString();
-    } catch (error) {
-      runtimeState.articleMemoryBackgroundLastStatus = `failed:${error?.message || "article memory background failed"}`.slice(0, 250);
-      runtimeState.articleMemoryBackgroundLastFinishedAt = new Date().toISOString();
-    } finally {
-      runtimeState.articleMemoryBackgroundActive = false;
-    }
-  }, 0);
-}
-
-function rememberFeedSourceError(source = {}, error, durationMs = 0) {
-  const key = sourceErrorKey(source);
-  const previous = runtimeState.feedSourceErrors?.[key] || {};
-  const errorType = classifyFeedSourceError(error);
-  const transientNetwork = isTransientNetworkError(error);
-  const http2SessionError = isHttp2SessionError(error);
-  const errorCode = String(error?.code || error?.cause?.code || "");
-  const domain = feedSourceDomain(source);
-  const provider = feedSourceProvider(source);
-  const message = error?.name === "AbortError"
-    ? `Feed timed out after ${activeFeedTimeoutMs(source)}ms`
-    : error?.message || "Feed unavailable";
-  const lastFailedAt = new Date().toISOString();
-  if (transientNetwork) {
-    runtimeState.transientFeedSourceErrorCount = Number(runtimeState.transientFeedSourceErrorCount || 0) + 1;
-    runtimeState.lastTransientFeedSourceErrorAt = lastFailedAt;
-    runtimeState.lastTransientFeedSourceError = `${source.name || "Unknown source"}: ${errorCode || errorType} ${message}`.slice(0, 500);
-    extendFeedRefreshBackoff(http2SessionError ? "feed-source-http2-session-error" : "feed-source-transient-socket-error", Math.min(3 * 60 * 1000, 60 * 1000 + Number(previous.count || 0) * 30 * 1000));
-  }
-  runtimeState.feedSourceErrors = {
-    ...(runtimeState.feedSourceErrors || {}),
-    [key]: {
-      name: source.name || "Unknown source",
-      category: source.category || "",
-      feed: source.feed || "",
-      homepage: source.homepage || "",
-      domain,
-      provider,
-      message,
-      type: errorType,
-      code: errorCode,
-      transientNetwork,
-      transientNetworkCount: Number(previous.transientNetworkCount || 0) + Number(transientNetwork ? 1 : 0),
-      http2SessionError,
-      http2SessionErrorCount: Number(previous.http2SessionErrorCount || 0) + Number(http2SessionError ? 1 : 0),
-      lastFailedAt,
-      durationMs,
-      count: Number(previous.count || 0) + 1
-    }
-  };
-  runtimeState.feedSourceErrorCount = Object.keys(runtimeState.feedSourceErrors).length;
-  feedSourceTelemetryRecord(source, {
-    countAttempt: true,
-    failure: true,
-    lastAttemptAt: lastFailedAt,
-    lastFailedAt,
-    lastTransientNetworkAt: transientNetwork ? lastFailedAt : "",
-    lastHttp2SessionErrorAt: http2SessionError ? lastFailedAt : "",
-    durationMs,
-    status: "failed",
-    errorType,
-    errorCode,
-    errorMessage: message,
-    transientNetwork,
-    http2SessionError,
-    storyCount: 0,
-    slow: durationMs > Math.max(2000, activeFeedTimeoutMs(source) * 0.75)
-  });
-}
-
-function clearFeedSourceError(source = {}) {
-  const key = sourceErrorKey(source);
-  const hadError = Boolean(runtimeState.feedSourceErrors?.[key]);
-  if (!hadError) return;
-  const next = { ...(runtimeState.feedSourceErrors || {}) };
-  delete next[key];
-  runtimeState.feedSourceErrors = next;
-  runtimeState.feedSourceErrorCount = Object.keys(next).length;
-}
-
-async function fetchWithTimeout(url, options = {}, timeoutMs = feedFetchTimeoutMs) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    return await fetch(url, {
-      ...options,
-      headers: {
-        "user-agent": "CensoredExpressions/1.0 (+https://censoredexpressions.com)",
-        ...(options.headers || {})
-      },
-      signal: controller.signal
-    });
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-async function responseTextWithTimeout(response, timeoutMs = articleReadTimeoutMs) {
-  let timeout;
-  try {
-    return await Promise.race([
-      response.text(),
-      new Promise((_, reject) => {
-        timeout = setTimeout(() => reject(new Error(`Response body timed out after ${timeoutMs}ms`)), Math.max(1000, Number(timeoutMs) || 1000));
-      })
-    ]);
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-async function loadFeed(source, options = {}) {
-  const adaptive = options.adaptive !== false;
-  const started = Date.now();
-  const status = feedSourceRuntimeStatus(source);
-  if (status.quarantined) {
-    runtimeState.feedSourceSkippedCount = Number(runtimeState.feedSourceSkippedCount || 0) + 1;
-    const cachedStories = cachedFeedStoriesForSource(source, "quarantined-source-cache");
-    if (cachedStories.length) return cachedStories;
-    feedSourceTelemetryRecord(source, {
-      countAttempt: true,
-      lastAttemptAt: new Date().toISOString(),
-      durationMs: 0,
-      status: "quarantined-skip-no-cache",
-      storyCount: 0,
-      skipped: true,
-      slow: false
-    });
-    return [];
-  }
-  try {
-    if (!source?.feed) throw new Error("Feed URL missing.");
-    if (adaptive) adaptiveFeedDecisionForSource(source, "pre-fetch-source-review");
-    const response = await fetchWithTimeout(source.feed, {}, activeFeedTimeoutMs(source));
-    if (!response.ok) throw new Error(`${source.name} responded ${response.status}`);
-    const stories = source.newsData
-      ? parseNewsDataFeed(await response.json(), source)
-      : parseFeed(await response.text(), source);
-    const durationMs = Date.now() - started;
-    if (stories.length) rememberFeedSourceStories(source, stories, durationMs);
-    const recovered = Boolean(runtimeState.feedSourceErrors?.[sourceErrorKey(source)]);
-    clearFeedSourceError(source);
-    feedSourceTelemetryRecord(source, {
-      countAttempt: true,
-      success: true,
-      recovered,
-      lastAttemptAt: new Date().toISOString(),
-      lastSuccessAt: new Date().toISOString(),
-      durationMs,
-      status: stories.length ? "ok" : "empty",
-      storyCount: stories.length,
-      errorType: "",
-      errorMessage: "",
-      slow: durationMs > Math.max(2000, activeFeedTimeoutMs(source) * 0.75)
-    });
-    return stories;
-  } catch (error) {
-    rememberFeedSourceError(source, error, Date.now() - started);
-    if (adaptive) {
-      adaptiveFeedDecisionForSource(source, "post-fetch-source-error");
-    }
-    return cachedFeedStoriesForSource(source, "failed-source-cache");
-  }
-}
-
-async function runFeedSourcesWithAdaptiveConcurrency(sources = [], loader = loadFeed) {
-  const queue = [...sources];
-  const results = [];
-  const activeByProvider = {};
-  let activeTotal = 0;
-  return await new Promise(resolve => {
-    const pump = () => {
-      while (queue.length && activeTotal < newsLabCollectorWorkers) {
-        const index = queue.findIndex(source => {
-          const provider = feedSourceProvider(source);
-          return Number(activeByProvider[provider] || 0) < feedSourceConcurrencyLimit(source);
-        });
-        if (index < 0) break;
-        const [source] = queue.splice(index, 1);
-        const provider = feedSourceProvider(source);
-        activeByProvider[provider] = Number(activeByProvider[provider] || 0) + 1;
-        activeTotal += 1;
-        Promise.resolve(loader(source))
-          .then(value => results.push({ status: "fulfilled", value, source }))
-          .catch(reason => results.push({ status: "rejected", reason, source }))
-          .finally(() => {
-            activeByProvider[provider] = Math.max(0, Number(activeByProvider[provider] || 0) - 1);
-            activeTotal -= 1;
-            if (!queue.length && activeTotal === 0) resolve(results);
-            else pump();
-          });
-      }
-      if (!queue.length && activeTotal === 0) resolve(results);
-    };
-    pump();
-  });
-}
-
-async function loadFeeds(sources, options = {}) {
-  const sourceLimit = Number(options.sourceLimit || 0);
-  const prioritizedSources = rankedFeedSourcesForReliability(sources)
-    .slice(0, sourceLimit > 0 ? Math.min(sourceLimit, sources.length) : undefined);
-  const results = await runFeedSourcesWithAdaptiveConcurrency(prioritizedSources, loadFeed);
-  return results.flatMap(result => (result.status === "fulfilled" ? result.value : []));
-}
-
-function newsLabDedupeCollectorStories(stories = []) {
-  const seen = new Set();
-  return stories.filter(story => {
-    const key = String(story.url || `${story.source || ""}:${story.title || ""}`).toLowerCase();
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-function newsLabCollectorTabTerms(category = "top") {
-  const terms = {
-    business: /\b(market|markets|stock|stocks|shares|wall street|earnings|revenue|inflation|tariff|fed|federal reserve|jobs|housing|mortgage|business|economy|company|companies|ceo|merger|bank|crypto|oil|gas|consumer|retail|price|prices)\b/i,
-    technology: /\b(technology|tech|ai|artificial intelligence|software|hardware|startup|cyber|cybersecurity|privacy|data|platform|app|apps|chip|semiconductor|cloud|google|apple|microsoft|openai|meta|tesla|amazon|nvidia|robot|security flaw|hack|breach)\b/i,
-    sports: /\b(game|match|playoff|championship|world cup|fifa|nba|nfl|mlb|nhl|ncaa|team|coach|player|score|scores|wins|beats|defeats|draft|trade|injury|standings|tournament|golf|tennis|soccer|baseball|basketball|football|hockey)\b/i,
-    entertainment: /\b(movie|film|music|album|song|tour|concert|celebrity|actor|actress|singer|artist|streaming|netflix|disney|hollywood|festival|trailer|box office|tv|television|show|culture|wedding|fashion|award)\b/i,
-    world: /\b(world|international|global|foreign|iran|israel|gaza|ukraine|russia|china|europe|nato|united nations|war|military|ceasefire|sanctions|diplomacy|border|minister|prime minister)\b/i,
-    politics: /\b(trump|biden|white house|congress|senate|house|supreme court|election|campaign|vote|voters|governor|mayor|lawmakers|bill|policy|administration|republican|democrat|gop|court ruling)\b/i,
-    local: /\b(police|sheriff|fire|school district|city|county|local|traffic|storm|weather|cleanup|neighborhood|residents|crash|shooting|arrested|charged|power outage|road|community)\b/i
-  };
-  return terms[String(category || "top").toLowerCase()] || /./i;
-}
-
-function newsLabCollectorStoryRelevance(story = {}, category = "top") {
-  const normalized = String(category || "top").toLowerCase();
-  if (normalized === "top") return { score: 100, role: "top-review-source", reason: "top collector reviews strongest current stories across tabs" };
-  const originalCategory = String(story.originalCategory || story.sourceCategory || story.feedCategory || story.category || "").toLowerCase();
-  const text = `${story.title || ""} ${story.summary || ""} ${story.articleSummary || ""} ${story.source || ""} ${originalCategory}`.toLowerCase();
-  const inferred = typeof newsLabCategory === "function" ? newsLabCategory({ ...story, category: originalCategory || story.category }) : originalCategory;
-  const termMatch = newsLabCollectorTabTerms(normalized).test(text);
-  let score = 0;
-  if (originalCategory === normalized) score += 45;
-  if (inferred === normalized) score += 35;
-  if (termMatch) score += 35;
-  if (String(story.collectorCategory || "").toLowerCase() === normalized && (termMatch || inferred === normalized || originalCategory === normalized)) score += 10;
-  if (originalCategory && originalCategory !== normalized && inferred !== normalized && !termMatch) score -= 55;
-  if (/\b(latest .*headlines|open current|pulse)\b/i.test(text)) score -= 30;
-  const role = score >= 65 ? "tab-writing-source" : score >= 30 ? "tab-context-source" : "tab-review-only-source";
-  return {
-    score: clampScore(score),
-    role,
-    reason: role === "tab-writing-source"
-      ? "original source, inferred category, or tab terms match strongly enough for direct writing evidence"
-      : role === "tab-context-source"
-        ? "kept as tab context for comparison and future clustering"
-        : "remembered but not promoted into direct writing evidence for this tab"
-  };
-}
-
-function newsLabBuildCategorySubDossier(category = "top", stories = [], sources = [], collectorLearning = {}) {
-  const normalized = String(category || "top").toLowerCase();
-  const assessed = newsLabDedupeCollectorStories(stories)
-    .map(story => ({
-      ...story,
-      collectorCategory: normalized,
-      subDossierRelevance: newsLabCollectorStoryRelevance(story, normalized)
-    }))
-    .sort((a, b) => Number(b.subDossierRelevance?.score || 0) - Number(a.subDossierRelevance?.score || 0)
-      || storyDate(b.published) - storyDate(a.published));
-  const accepted = assessed.filter(story => story.subDossierRelevance.role === "tab-writing-source");
-  const context = assessed.filter(story => story.subDossierRelevance.role === "tab-context-source");
-  const reviewOnly = assessed.filter(story => story.subDossierRelevance.role === "tab-review-only-source");
-  const factCandidates = [...accepted, ...context].flatMap(story => newsLabRelevantFactSentences(story).map(fact => ({
-    fact,
-    title: story.title || "",
-    source: story.source || "",
-    url: story.url || ""
-  })));
-  const entities = storyNamedEntities({
-    title: accepted.map(story => story.title).join(" "),
-    summary: accepted.map(story => `${story.summary || ""} ${story.articleSummary || ""}`).join(" ")
-  }).slice(0, 24);
-  const timeline = accepted
-    .map(story => ({
-      at: story.published || story.updatedAt || "",
-      title: story.title || "",
-      source: story.source || "",
-      url: story.url || ""
-    }))
-    .filter(item => item.title)
-    .sort((a, b) => storyDate(b.at) - storyDate(a.at))
-    .slice(0, 30);
-  return {
-    generatedAt: new Date().toISOString(),
-    category: normalized,
-    mode: "collector-sub-dossier",
-    collector: {
-      sourceCount: sources.length,
-      reviewedStoryCount: assessed.length,
-      acceptedStoryCount: accepted.length,
-      contextStoryCount: context.length,
-      reviewOnlyStoryCount: reviewOnly.length
-    },
-    sourceCategories: sources.reduce((counts, source) => {
-      const key = source.category || "uncategorized";
-      counts[key] = Number(counts[key] || 0) + 1;
-      return counts;
-    }, {}),
-    tabRelevanceRule: "Each collector builds a tab-specific sub-dossier before handing evidence to the main Story Dossier. Strong tab matches may feed writing; context/review sources remain memory and comparison material.",
-    collectorDirective: "Actively seek category-relevant stories, retain non-duplicate context, and prevent mixed-topic evidence from crossing into the wrong tab.",
-    knownFacts: factCandidates
-      .filter((item, index, all) => all.findIndex(match => newsLabTextOverlap(match.fact, item.fact) >= 0.72) === index)
-      .slice(0, 40),
-    entities,
-    timeline,
-    acceptedStoryKeys: new Set(accepted.map(story => story.url || `${story.source || ""}:${story.title || ""}`)),
-    contextStoryKeys: new Set(context.map(story => story.url || `${story.source || ""}:${story.title || ""}`)),
-    rejectedStoryKeys: new Set(reviewOnly.map(story => story.url || `${story.source || ""}:${story.title || ""}`)),
-    editorLearning: {
-      directives: (collectorLearning.directives || []).slice(0, 6),
-      issueCounts: collectorLearning.issueCounts || {}
-    },
-    handoff: {
-      to: "Story Dossier Builder",
-      rule: "The main dossier receives tab-relevant accepted/context sources first, then compares against other categories only as background or contradiction material."
-    }
-  };
-}
-
-function newsLabSerializableSubDossier(subDossier = {}) {
-  return {
-    ...subDossier,
-    acceptedStoryKeys: Array.from(subDossier.acceptedStoryKeys || []),
-    contextStoryKeys: Array.from(subDossier.contextStoryKeys || []),
-    rejectedStoryKeys: Array.from(subDossier.rejectedStoryKeys || [])
-  };
-}
-
-function readNewsLabCollectorCache(category = "") {
-  const normalized = String(category || "").toLowerCase();
-  if (!normalized) return null;
-  const record = readJsonFile(newsLabCollectorCacheFile(normalized), null);
-  if (!record || !Array.isArray(record.stories)) return null;
-  return record;
-}
-
-function newsLabCollectorCacheMaxAgeMs(options = {}) {
-  const configured = Number(process.env.CE_NEWS_LAB_COLLECTOR_CACHE_MAX_AGE_MS || 0);
-  const requested = Number(options.maxAgeMs || 0);
-  const minimumUsefulWindow = Math.max(cacheMs * 4, 4 * 60 * 60 * 1000);
-  return Math.max(requested, configured || 0, minimumUsefulWindow);
-}
-
-function readNewsLabCollectorCaches(maxAgeMs = null) {
-  const now = Date.now();
-  const activeMaxAgeMs = newsLabCollectorCacheMaxAgeMs({ maxAgeMs });
-  return newsLabCollectorCategories()
-    .map(category => readNewsLabCollectorCache(category))
-    .filter(Boolean)
-    .filter(record => {
-      const generated = new Date(record.generatedAt || 0).getTime();
-      return generated && now - generated <= activeMaxAgeMs;
-    });
-}
-
-function newsLabCollectorCacheSubDossier(record = {}) {
-  const raw = record.subDossier || null;
-  if (!raw) return null;
-  return {
-    ...raw,
-    acceptedStoryKeys: new Set(raw.acceptedStoryKeys || []),
-    contextStoryKeys: new Set(raw.contextStoryKeys || []),
-    rejectedStoryKeys: new Set(raw.rejectedStoryKeys || [])
-  };
-}
-
-function newsLabStoryMergeKey(story = {}) {
-  return String(story.url || story.id || story.topicKey || `${story.source || ""}:${story.title || ""}`).toLowerCase();
-}
-
-function newsLabPrioritizeCollectorMergedStories(stories = []) {
-  const input = Array.isArray(stories) ? stories.filter(Boolean) : [];
-  const categories = Array.isArray(newsLabSectionCategories) && newsLabSectionCategories.length
-    ? newsLabSectionCategories
-    : ["world", "politics", "business", "technology", "sports", "entertainment", "local"];
-  const seen = new Set();
-  const output = [];
-  const pushStory = story => {
-    const key = newsLabStoryMergeKey(story);
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    output.push(story);
-    return true;
-  };
-  const takeCategoryPass = (role, passLimit = 1) => {
-    for (let pass = 0; pass < passLimit; pass += 1) {
-      categories.forEach(category => {
-        const found = input.find(story => {
-          const subDossier = story.collectorSubDossier || {};
-          return String(subDossier.category || story.collectorCategory || "").toLowerCase() === category
-            && String(subDossier.role || "") === role
-            && !seen.has(newsLabStoryMergeKey(story));
-        });
-        if (found) pushStory(found);
-      });
-    }
-  };
-  takeCategoryPass("tab-writing-source", 3);
-  takeCategoryPass("tab-context-source", 1);
-  input.forEach(pushStory);
-  return output;
-}
-
-function newsLabPrioritizeSourceStoriesForTabProduction(stories = [], limit = newsLabMicroCycleSourceLimit, target = 7) {
-  const input = Array.isArray(stories) ? stories.filter(Boolean) : [];
-  const underfilled = newsLabUnderfilledPublicCategories(target).filter(item => item.category !== "top");
-  if (!underfilled.length || input.length <= limit) return input.slice(0, limit);
-  const selected = [];
-  const used = new Set();
-  const storyKey = story => newsLabStoryMergeKey(story);
-  const push = story => {
-    const key = storyKey(story);
-    if (!key || used.has(key)) return false;
-    used.add(key);
-    selected.push(story);
-    return true;
-  };
-  underfilled.forEach(({ category, needed }) => {
-    input
-      .filter(story => newsLabCanonicalCategoryFromIdentity(story).category === category || newsLabCategory(story) === category)
-      .sort((a, b) => Number(b.collectorSubDossier?.role === "tab-writing-source") - Number(a.collectorSubDossier?.role === "tab-writing-source")
-        || storyDate(b.published) - storyDate(a.published))
-      .slice(0, Math.max(2, Math.min(needed + 1, 8)))
-      .forEach(story => push({
-        ...story,
-        tabProductionSourcePriority: {
-          applied: true,
-          category,
-          neededBeforeCycle: needed,
-          rule: "Underfilled tab workers get source-slice priority before clustering so each tab can produce dossier-ready candidates."
-        }
-      }));
-  });
-  input.forEach(story => {
-    if (selected.length < limit) push(story);
-  });
-  return selected.slice(0, limit);
-}
-function mergeNewsLabCollectorStories(stories = [], options = {}) {
-  const activeMaxAgeMs = newsLabCollectorCacheMaxAgeMs(options);
-  const now = Date.now();
-  const collectorCaches = readNewsLabCollectorCaches(activeMaxAgeMs);
-  const cacheAges = collectorCaches
-    .map(record => now - new Date(record.generatedAt || 0).getTime())
-    .filter(age => Number.isFinite(age) && age >= 0);
-  const subDossiers = collectorCaches
-    .map(newsLabCollectorCacheSubDossier)
-    .filter(Boolean);
-  const collectorStories = collectorCaches.flatMap(record => (record.stories || []).map(story => ({
-    ...story,
-    collectorCategory: record.category,
-    collectorGeneratedAt: record.generatedAt,
-    collectorWorker: true,
-    collectorSubDossier: (() => {
-      const subDossier = subDossiers.find(item => item.category === record.category);
-      const key = story.url || `${story.source || ""}:${story.title || ""}`;
-      const accepted = subDossier?.acceptedStoryKeys?.has(key);
-      const context = subDossier?.contextStoryKeys?.has(key);
-      return subDossier ? {
-        category: subDossier.category,
-        role: accepted ? "tab-writing-source" : context ? "tab-context-source" : "tab-review-only-source",
-        knownFactCount: Number(subDossier.knownFacts?.length || 0),
-        reviewedStoryCount: Number(subDossier.collector?.reviewedStoryCount || 0),
-        rule: subDossier.tabRelevanceRule || ""
-      } : null;
-    })()
-  })));
-  const mergedStories = newsLabPrioritizeCollectorMergedStories(newsLabDedupeCollectorStories([...collectorStories, ...stories]));
-  return {
-    stories: mergedStories,
-    collectorSummary: {
-      activeCategories: collectorCaches.map(record => record.category),
-      cacheCount: collectorCaches.length,
-      cacheMaxAgeMs: activeMaxAgeMs,
-      newestCacheAgeMs: cacheAges.length ? Math.min(...cacheAges) : null,
-      oldestCacheAgeMs: cacheAges.length ? Math.max(...cacheAges) : null,
-      collectedStoryCount: collectorStories.length,
-      prioritizedStoryCount: mergedStories.filter(story => story.collectorSubDossier?.role === "tab-writing-source").length,
-      subDossierCount: subDossiers.length,
-      subDossiers: subDossiers.map(subDossier => ({
-        category: subDossier.category,
-        reviewedStoryCount: Number(subDossier.collector?.reviewedStoryCount || 0),
-        acceptedStoryCount: Number(subDossier.collector?.acceptedStoryCount || 0),
-        contextStoryCount: Number(subDossier.collector?.contextStoryCount || 0),
-        knownFactCount: Number(subDossier.knownFacts?.length || 0),
-        entityCount: Number(subDossier.entities?.length || 0),
-        rule: subDossier.tabRelevanceRule
-      })),
-      storyCountByCategory: collectorCaches.reduce((counts, record) => {
-        counts[record.category] = Number(record.stories?.length || 0);
-        return counts;
-      }, {})
-    }
-  };
-}
-
-function writeNewsLabCollectorStatus(category = "top", extra = {}) {
-  const status = {
-    generatedAt: new Date().toISOString(),
-    mode: "category-collector-worker",
-    category,
-    pid: process.pid,
-    cycleMs: newsLabCollectorCycleMs,
-    sourceLimit: newsLabCollectorSourceLimit,
-    storyLimit: newsLabCollectorStoryLimit,
-    ...extra
-  };
-  try {
-    writeJsonFile(newsLabCollectorStatusFile(category), status);
-  } catch {
-    // Collector status is diagnostic only.
-  }
-  if (process.send) {
-    try {
-      process.send({ type: "news-lab-collector-status", category, status });
-    } catch {
-      // Parent process may be gone during shutdown.
-    }
-  }
-  return status;
-}
-
-async function runNewsLabCollectorCycle(category = newsLabCollectorWorkerCategory, reason = "scheduled-category-collection") {
-  const normalized = String(category || "top").toLowerCase();
-  const started = Date.now();
-  writeNewsLabCollectorStatus(normalized, { lastStatus: "started", lastReason: reason });
-  try {
-    const collectorLearning = newsLabEditorLearningForSubsystem("Collector") || {};
-    const collectorIssueCounts = collectorLearning.issueCounts || {};
-    const factGapCount = Number(collectorIssueCounts["insufficient-full-article-facts"] || 0);
-    const topicDriftCount = Number(collectorIssueCounts["article-body-topic-drift"] || collectorIssueCounts["paragraph-topic-contamination"] || 0);
-    const sources = newsLabCollectorSourcesForCategory(normalized);
-    const categoryAggression = {
-      top: 220,
-      business: 220,
-      technology: 220,
-      sports: 200,
-      entertainment: 200,
-      world: 180,
-      politics: 180,
-      local: 180
-    };
-    const activeSourceLimit = Math.min(
-      sources.length,
-      Math.max(
-        newsLabCollectorSourceLimit + Math.min(80, factGapCount + topicDriftCount),
-        categoryAggression[normalized] || 160
-      )
-    );
-    const activeStoryLimit = Math.max(
-      newsLabCollectorStoryLimit + Math.min(180, (factGapCount * 3) + (topicDriftCount * 2)),
-      normalized === "top" ? 260 : 220
-    );
-    let loaded = await loadFeeds(sources, { sourceLimit: activeSourceLimit });
-    const minimumUsefulStories = normalized === "top" ? 80 : 24;
-    let backfillStoryCount = 0;
-    if (loaded.length < minimumUsefulStories) {
-      const backfillSources = newsLabCollectorBackfillSourcesForCategory(normalized);
-      const backfillLoaded = await loadFeeds(backfillSources, {
-        sourceLimit: Math.min(backfillSources.length, Math.max(activeSourceLimit, categoryAggression[normalized] || 160))
-      });
-      backfillStoryCount = backfillLoaded.length;
-      loaded = newsLabDedupeCollectorStories([...loaded, ...backfillLoaded]);
-    }
-    const categoryStories = loaded
-      .map(story => ({
-        ...story,
-        originalCategory: story.originalCategory || story.sourceCategory || story.feedCategory || story.category || "",
-        category: normalized === "top" ? story.category : normalized,
-        collectorCategory: normalized,
-        collectorWorker: true
-      }));
-    let stories = newsLabDedupeCollectorStories(categoryStories)
-      .sort((a, b) => storyDate(b.published) - storyDate(a.published))
-      .slice(0, activeStoryLimit);
-    const previousCollectorRecord = readNewsLabCollectorCache(normalized);
-    const previousStories = Array.isArray(previousCollectorRecord?.stories) ? previousCollectorRecord.stories : [];
-    const carriedForward = stories.length < Math.min(12, minimumUsefulStories) && previousStories.length > stories.length;
-    if (carriedForward) {
-      stories = newsLabDedupeCollectorStories([
-        ...stories,
-        ...previousStories.map(story => ({
-          ...story,
-          collectorCarriedForward: true,
-          collectorCarryReason: "current collector cycle was too thin, so the last usable tab cache stayed available for the sub-dossier"
-        }))
-      ])
-        .sort((a, b) => storyDate(b.published) - storyDate(a.published))
-        .slice(0, activeStoryLimit);
-    }
-    const subDossier = newsLabBuildCategorySubDossier(normalized, stories, sources.slice(0, activeSourceLimit), collectorLearning);
-    const record = {
-      generatedAt: new Date().toISOString(),
-      category: normalized,
-      reason,
-      sourceCount: sources.length,
-      activeSourceLimit,
-      activeStoryLimit,
-      storyCount: stories.length,
-      backfillStoryCount,
-      carriedForward,
-      buildMs: Date.now() - started,
-      editorLearning: {
-        directives: (collectorLearning.directives || []).slice(0, 5),
-        issueCounts: collectorIssueCounts,
-        rule: "Collectors expand source/story intake when editor decisions show drafts lack enough verified facts or drift from topic."
-      },
-      subDossier: newsLabSerializableSubDossier(subDossier),
-      stories
-    };
-    writeJsonFile(newsLabCollectorCacheFile(normalized), record);
-    writeNewsLabCollectorStatus(normalized, {
-      lastStatus: "cache-refreshed",
-      lastReason: reason,
-      lastFinishedAt: new Date().toISOString(),
-      lastMetrics: {
-        sourceCount: sources.length,
-        activeSourceLimit,
-        activeStoryLimit,
-        storyCount: stories.length,
-        backfillStoryCount,
-        carriedForward,
-        subDossierAcceptedStories: Number(subDossier.collector?.acceptedStoryCount || 0),
-        subDossierContextStories: Number(subDossier.collector?.contextStoryCount || 0),
-        subDossierKnownFacts: Number(subDossier.knownFacts?.length || 0),
-        buildMs: Date.now() - started,
-        editorLearningDirectives: (collectorLearning.directives || []).slice(0, 3)
-      }
-    });
-    return record;
-  } catch (error) {
-    writeNewsLabCollectorStatus(normalized, {
-      lastStatus: "failed",
-      lastReason: reason,
-      lastError: error.message || String(error),
-      lastMetrics: { buildMs: Date.now() - started }
-    });
-    return null;
-  }
-}
-
-function startNewsLabCollectorLoop() {
-  const category = newsLabCollectorWorkerCategory || "top";
-  writeNewsLabCollectorStatus(category, {
-    lastStatus: "collector-loop-started",
-    parentPid: Number(process.env.CE_NEWS_LAB_COLLECTOR_PARENT_PID || 0)
-  });
-  runNewsLabCollectorCycle(category, "startup-category-collection");
-  setInterval(() => runNewsLabCollectorCycle(category, "scheduled-category-collection"), newsLabCollectorCycleMs);
-}
-
-function newsLabChunkItems(items = [], chunkCount = 1) {
-  const chunks = Array.from({ length: Math.max(1, Math.min(chunkCount, items.length || 1)) }, () => []);
-  items.forEach((item, index) => {
-    chunks[index % chunks.length].push(item);
-  });
-  return chunks.filter(chunk => chunk.length);
-}
-
-function searchTerms(query = "") {
-  return String(query || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .map(term => term.trim())
-    .filter(term => term.length >= 2)
-    .filter(term => !["the", "and", "for", "with", "from", "that", "this", "are", "was", "were"].includes(term))
-    .slice(0, 12);
-}
-
-function searchIntentTerms(terms = []) {
-  const genericTerms = new Set(["news", "local", "latest", "current", "coverage", "story", "stories", "article", "articles", "update", "updates", "live", "today"]);
-  const specificTerms = terms.filter(term => !genericTerms.has(term));
-  return specificTerms.length ? specificTerms : terms;
-}
-
-function searchLearningSummary(limit = 10) {
-  const memory = readSearchLearning();
-  const topTerms = Object.entries(memory.terms || {})
-    .sort((a, b) => Number(b[1].count || 0) - Number(a[1].count || 0))
-    .slice(0, limit)
-    .map(([term, data]) => ({ term, count: data.count || 0, lastSearchedAt: data.lastSearchedAt || "" }));
-  const topQueries = Object.entries(memory.queries || {})
-    .sort((a, b) => Number(b[1].count || 0) - Number(a[1].count || 0))
-    .slice(0, limit)
-    .map(([query, data]) => ({ query, count: data.count || 0, lastSearchedAt: data.lastSearchedAt || "", lastResultCount: data.lastResultCount || 0 }));
-  const topClicks = Object.values(memory.clickedResults || {})
-    .sort((a, b) => Number(b.count || 0) - Number(a.count || 0))
-    .slice(0, limit)
-    .map(item => ({
-      title: item.title,
-      source: item.source,
-      type: item.type,
-      url: item.url,
-      count: item.count || 0,
-      lastClickedAt: item.lastClickedAt || ""
-    }));
-  return {
-    updatedAt: memory.updatedAt,
-    queryCount: memory.queryCount || 0,
-    topTerms,
-    topQueries,
-    topClicks,
-    recentNoResultQueries: (memory.noResultQueries || []).slice(-limit).reverse()
-  };
-}
-
-function searchInterestDigest(limit = 8) {
-  const summary = searchLearningSummary(limit);
-  const terms = summary.topTerms.map(item => `${item.term} (${item.count})`).join(", ");
-  const queries = summary.topQueries.map(item => `${item.query} (${item.count})`).join(", ");
-  const clicks = summary.topClicks.map(item => `${item.title || item.url} (${item.count})`).join(", ");
-  return [
-    terms ? `Visitor search terms: ${terms}.` : "",
-    queries ? `Common searches: ${queries}.` : "",
-    clicks ? `Opened search results: ${clicks}.` : "",
-    summary.recentNoResultQueries.length ? `Search gaps: ${summary.recentNoResultQueries.map(item => item.query).join(", ")}.` : ""
-  ].filter(Boolean).join(" ");
-}
-
-function searchScore(item = {}, terms = []) {
-  const title = String(item.title || "").toLowerCase();
-  const summary = String(item.summary || item.snippet || "").toLowerCase();
-  const source = String(item.source || "").toLowerCase();
-  return terms.reduce((score, term) => {
-    if (title.includes(term)) score += 8;
-    if (summary.includes(term)) score += 3;
-    if (source.includes(term)) score += 1;
-    return score;
-  }, 0);
-}
-
-function searchMatchMeta(item = {}, terms = []) {
-  const intentTerms = searchIntentTerms(terms);
-  const title = String(item.title || "").toLowerCase();
-  const summary = String(item.summary || item.snippet || item.text || "").toLowerCase();
-  const source = String(item.source || "").toLowerCase();
-  const searchable = `${title} ${summary} ${source}`;
-  const matchedTerms = terms.filter(term => searchable.includes(term));
-  const matchedIntentTerms = intentTerms.filter(term => searchable.includes(term));
-  const titleMatches = terms.filter(term => title.includes(term)).length;
-  const summaryMatches = terms.filter(term => summary.includes(term)).length;
-  const sourceMatches = terms.filter(term => source.includes(term)).length;
-  const coverage = terms.length ? matchedTerms.length / terms.length : 0;
-  const intentCoverage = intentTerms.length ? matchedIntentTerms.length / intentTerms.length : 0;
-  return {
-    matchedTerms,
-    matchedIntentTerms,
-    matchCount: matchedTerms.length,
-    intentMatchCount: matchedIntentTerms.length,
-    coverage,
-    intentCoverage,
-    titleMatches,
-    summaryMatches,
-    sourceMatches,
-    relevanceScore: Math.round((coverage * 35) + (intentCoverage * 35) + (titleMatches * 20) + (summaryMatches * 8) + (sourceMatches * 3))
-  };
-}
-
-function passesSearchIntent(result = {}, terms = []) {
-  if (!Number(result.matchCount || 0)) return false;
-  const intentTerms = searchIntentTerms(terms);
-  if (intentTerms.length === 2) return Number(result.intentCoverage || 0) >= 1;
-  if (intentTerms.length > 2) return Number(result.intentCoverage || 0) >= 0.67;
-  if (terms.length > 1 && intentTerms.length === 1) return Number(result.intentMatchCount || 0) >= 1;
-  return Number(result.intentMatchCount || result.matchCount || 0) >= 1;
-}
-
-function searchLearningBoost(result = {}, terms = [], memory = readSearchLearning(), adaptiveWeights = learningMemory().adaptiveWeights) {
-  if (!Number(result.matchCount || 0)) return 0;
-  const visitorInfluence = normalizeAdaptiveWeights(adaptiveWeights).values.visitorSearchInfluence;
-  const clicked = memory.clickedResults?.[String(result.url || "").toLowerCase()];
-  const clickBoost = clicked ? Math.min(18, Number(clicked.count || 0) * 3) : 0;
-  const termBoost = terms.reduce((score, term) => {
-    const learned = memory.terms?.[term];
-    return score + Math.min(6, Number(learned?.count || 0) / 5);
-  }, 0);
-  const typeBoost = /editorial|newsletter/i.test(result.type || "") ? 3 : 0;
-  return Number(((clickBoost + termBoost + typeBoost) * visitorInfluence).toFixed(2));
-}
-
-function searchInterestScoreForStory(story = {}, memory = readSearchLearning()) {
-  const text = `${story.title || ""} ${story.summary || ""} ${story.source || ""} ${story.category || ""}`.toLowerCase();
-  if (!text.trim()) return 0;
-  const termScore = Object.entries(memory.terms || {}).reduce((score, [term, data]) => {
-    if (!term || !text.includes(term)) return score;
-    return score + Math.min(4, Number(data.count || 0) / 4) + Math.min(2, Number(data.clickCount || 0));
-  }, 0);
-  const queryScore = Object.entries(memory.queries || {}).reduce((score, [query, data]) => {
-    const terms = searchTerms(query);
-    if (!terms.length) return score;
-    const hits = terms.filter(term => text.includes(term)).length;
-    if (!hits) return score;
-    return score + Math.min(4, hits * Number(data.count || 0) / 6);
-  }, 0);
-  return Math.min(10, termScore + queryScore);
-}
-
-function searchSnippet(value = "", terms = []) {
-  const text = stripTags(String(value || "")).replace(/\s+/g, " ").trim();
-  if (!text) return "";
-  const lower = text.toLowerCase();
-  const firstMatch = terms.map(term => lower.indexOf(term)).filter(index => index >= 0).sort((a, b) => a - b)[0] || 0;
-  const start = Math.max(0, firstMatch - 90);
-  const snippet = text.slice(start, start + 260).trim();
-  return `${start > 0 ? "..." : ""}${snippet}${start + 260 < text.length ? "..." : ""}`;
-}
-
-function normalizeSearchResult(item = {}, terms = [], defaults = {}) {
-  const title = cleanPublicText(item.title || defaults.title || "Search result", 180);
-  const url = String(item.url || defaults.url || "").trim();
-  if (!title || !url) return null;
-  const match = searchMatchMeta({ ...defaults, ...item, title }, terms);
-  if (!match.matchCount) return null;
-  const exactQueryBonus = terms.length > 1 && match.coverage >= 1 ? 12 : 0;
-  return {
-    title,
-    url,
-    source: cleanPublicText(item.source || defaults.source || "Source", 80),
-    type: cleanPublicText(item.type || defaults.type || "web", 40),
-    summary: searchSnippet(item.summary || item.snippet || item.text || defaults.summary || "", terms)
-      || cleanPublicText(item.summary || item.snippet || defaults.summary || "Open result for more.", 260),
-    published: item.published || item.generatedAt || defaults.published || "",
-    matchedTerms: match.matchedTerms,
-    matchedIntentTerms: match.matchedIntentTerms,
-    matchCount: match.matchCount,
-    intentMatchCount: match.intentMatchCount,
-    matchCoverage: Number(match.coverage.toFixed(2)),
-    intentCoverage: Number(match.intentCoverage.toFixed(2)),
-    relevanceScore: match.relevanceScore,
-    score: match.relevanceScore + exactQueryBonus + Number(item.score || 0) + searchScore(item, terms)
-  };
-}
-
-function siteSearchResults(query = "", currentStories = []) {
-  const terms = searchTerms(query);
-  if (!terms.length) return [];
-  const newsletters = readJsonFile(newslettersFile, []);
-  const creatorPosts = readCreatorPosts();
-  const storyResults = currentStories
-    .map(story => normalizeSearchResult({
-      title: story.title,
-      source: story.source,
-      url: story.url,
-      summary: story.summary,
-      published: story.published,
-      type: "Live news",
-      score: Number(story.engagementScore || 0) / 10
-    }, terms))
-    .filter(Boolean);
-  const creatorResults = creatorPosts.map(post => normalizeSearchResult({
-    title: post.title || "Creator Desk",
-    source: "Creator Desk",
-    url: `./creator-desk.html#${encodeURIComponent(post.id || post.dayId || post.weekId || "")}`,
-    summary: post.text || post.html || (post.body || []).flatMap(section => section.paragraphs || []).join(" "),
-    published: post.generatedAt || post.dayId,
-    type: "Editorial mention",
-    score: 12
-  }, terms)).filter(Boolean);
-  const newsletterResults = (Array.isArray(newsletters) ? newsletters : []).map(newsletter => normalizeSearchResult({
-    title: newsletter.subject || newsletter.title || "Newsletter",
-    source: "Newsletter",
-    url: "./newsletter.html",
-    summary: newsletter.text || newsletter.html || newsletter.preview || "",
-    published: newsletter.generatedAt || newsletter.sentAt || "",
-    type: "Newsletter mention",
-    score: 10
-  }, terms)).filter(Boolean);
-  return [...storyResults, ...creatorResults, ...newsletterResults]
-    .filter(result => passesSearchIntent(result, terms) && result.score > 0)
-    .sort((a, b) => b.intentCoverage - a.intentCoverage || b.matchCoverage - a.matchCoverage || b.relevanceScore - a.relevanceScore || b.score - a.score || storyDate(b.published) - storyDate(a.published));
-}
-
-function newsLabGeneratedSearchResults(query = "", newsLabPayload = null) {
-  const terms = searchTerms(query);
-  if (!terms.length || !newsLabPayload) return [];
-  return newsLabAllSearchablePayloadStories(newsLabPayload)
-    .map(story => normalizeSearchResult({
-      title: story.title,
-      source: "CE Media",
-      url: `./news-lab-story.html?id=${encodeURIComponent(story.id || story.title || "story")}`,
-      summary: [story.summary, ...(story.body || [])].filter(Boolean).join(" "),
-      published: story.generatedAt,
-      type: "CE generated article",
-      score: 35 + Number(story.popularity?.uniqueSourceCount || 0) * 8 + Number(story.popularity?.relatedArticleCount || 0) * 3
-    }, terms))
-    .filter(Boolean);
-}
-
-function newsLabContextSourceSearchResults(query = "", newsLabPayload = null) {
-  const terms = searchTerms(query);
-  if (!terms.length || !newsLabPayload) return [];
-  const contextRecords = [];
-  newsLabAllSearchablePayloadStories(newsLabPayload).forEach(story => {
-    const ceTitle = story.title || "";
-    const storyUrl = `./news-lab-story.html?id=${encodeURIComponent(story.id || story.title || "story")}`;
-    const addRecord = (source = {}, defaults = {}) => {
-      const title = source.title || source.claim || source.statement || defaults.title || "";
-      const url = source.url || defaults.url || "";
-      const provider = source.source || source.provider || defaults.source || "";
-      if (!title || !url || !provider) return;
-      contextRecords.push({
-        title,
-        source: provider,
-        url,
-        summary: [
-          source.summary,
-          source.articleSummary,
-          source.statement,
-          source.claim,
-          defaults.summary,
-          ceTitle ? `Context source used by CE Media while building: ${ceTitle}` : ""
-        ].filter(Boolean).join(" "),
-        published: source.publishedAt || source.published || source.updatedAt || story.generatedAt || "",
-        type: "Context source article",
-        score: 24 + Number(story.popularity?.uniqueSourceCount || 0) * 2,
-        ceStoryUrl: storyUrl
-      });
-    };
-    (story.sources || []).forEach(source => addRecord(source, { source: source.source, title: source.title }));
-    (story.storyDossier?.sourcePool || []).forEach(source => addRecord(source, { source: source.source, title: source.title }));
-    (story.storyDossier?.independentSources || []).forEach(source => addRecord(source, { source: source.source, title: source.title }));
-    (story.storyDossier?.officialSources || []).forEach(source => addRecord(source, { source: source.source, title: source.title }));
-    (story.storyDossier?.officialStatements || []).forEach(source => addRecord(source, {
-      source: source.source,
-      title: source.statement || `Official statement related to ${ceTitle}`,
-      summary: source.statement
-    }));
-    (story.writerDossierInput?.independentReports || []).forEach(source => addRecord(source, { source: source.source, title: source.title }));
-    (story.writerDossierInput?.officialStatements || []).forEach(source => addRecord(source, {
-      source: source.source,
-      title: source.statement || `Official statement related to ${ceTitle}`,
-      summary: source.statement
-    }));
-  });
-  return contextRecords
-    .map(record => normalizeSearchResult(record, terms))
-    .filter(Boolean);
-}
-
-function cachedNewsLabPayloadIsFresh() {
-  const cachedAt = runtimeState.newsLabSearchPayloadAt ? new Date(runtimeState.newsLabSearchPayloadAt).getTime() : 0;
-  return Boolean(runtimeState.newsLabSearchPayload && cachedAt && Date.now() - cachedAt < searchNewsLabCacheMs);
-}
-
-function newsLabStoryContinuityKey(story = {}) {
-  const topic = cleanArticleText(story.topicKey || story.originalHeadline || story.title || story.id || "", 220)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 140);
-  const category = String(story.category || "top").toLowerCase();
-  return `${category}:${topic || safeFileSlug(story.id || story.title || "story")}`;
-}
-
-function newsLabStorySignature(story = {}) {
-  return crypto
-    .createHash("sha1")
-    .update([
-      story.title || "",
-      story.summary || "",
-      ...(Array.isArray(story.body) ? story.body : []),
-      story.storyEvolution?.latestUpdateAt || "",
-      JSON.stringify((story.sourceAgreement?.sharedClaims || []).slice(0, 5)),
-      JSON.stringify((story.contradictionDetection?.possibleContradictions || []).slice(0, 3))
-    ].join("\n"))
-    .digest("hex");
-}
-
-function newsLabUpdateSummary(story = {}) {
-  const latestTimeline = (story.storyEvolution?.timeline || []).slice(-1)[0] || {};
-  return cleanArticleText(
-    latestTimeline.summary
-      || latestTimeline.title
-      || story.summary
-      || (Array.isArray(story.body) ? story.body[0] : "")
-      || "New information was added to this developing story.",
-    360
-  );
-}
-
-function newsLabLocalDateKey(value = "", timeZone = "America/New_York") {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "";
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).formatToParts(date);
-  const lookup = Object.fromEntries(parts.map(part => [part.type, part.value]));
-  return lookup.year && lookup.month && lookup.day
-    ? `${lookup.year}-${lookup.month}-${lookup.day}`
-    : "";
-}
-
-function newsLabTodayDateKey() {
-  return newsLabLocalDateKey(new Date().toISOString());
-}
-
-function newsLabValidStoryDateValue(value = "") {
-  if (!value) return "";
-  const time = new Date(value).getTime();
-  if (!time || Number.isNaN(time)) return "";
-  const now = Date.now();
-  if (time > now + 6 * 60 * 60 * 1000) return "";
-  return new Date(time).toISOString();
-}
-
-function newsLabEarliestValidDate(values = []) {
-  const dated = values
-    .map(value => newsLabValidStoryDateValue(value))
-    .filter(Boolean)
-    .map(value => ({ value, time: new Date(value).getTime() }))
-    .filter(item => item.time && !Number.isNaN(item.time))
-    .sort((a, b) => a.time - b.time);
-  return dated[0]?.value || "";
-}
-
-function newsLabStorySourceDateCandidates(story = {}) {
-  const candidates = [];
-  const add = value => {
-    const normalized = newsLabValidStoryDateValue(value);
-    if (normalized) candidates.push(normalized);
-  };
-  add(story.originalPublishedAt);
-  add(story.firstReportedAt);
-  add(story.firstSeenAt);
-  add(story.publishedAt);
-  add(story.published);
-  add(story.date);
-  add(story.originalArticle?.originalPublishedAt);
-  add(story.originalArticle?.firstSeenAt);
-  add(story.originalArticle?.publishedAt);
-  add(story.originalArticle?.published);
-  (story.sources || []).forEach(source => {
-    add(source.firstReportedAt);
-    add(source.firstSeenAt);
-    add(source.publishedAt);
-    add(source.published);
-    add(source.pubDate);
-    add(source.date);
-    add(source.updatedAt);
-  });
-  const dossier = story.storyDossier || story.writerDossierInput || {};
-  (dossier.sourcePool || []).forEach(source => {
-    add(source.firstReportedAt);
-    add(source.firstSeenAt);
-    add(source.publishedAt);
-    add(source.published);
-    add(source.pubDate);
-    add(source.updatedAt);
-  });
-  (dossier.timeline || dossier.historicalTimeline || []).forEach(item => add(item.at || item.date || item.publishedAt || item.firstSeenAt));
-  (story.storyEvolution?.timeline || []).forEach(item => add(item.at || item.date || item.publishedAt || item.firstSeenAt));
-  return candidates;
-}
-
-function newsLabStoryOriginalPublishedAt(story = {}) {
-  const explicitOriginal = newsLabValidStoryDateValue(story.originalPublishedAt || story.firstReportedAt || story.firstSeenAt || "");
-  if (explicitOriginal) return explicitOriginal;
-  const sourceFirstDate = newsLabEarliestValidDate(newsLabStorySourceDateCandidates(story));
-  if (sourceFirstDate) return sourceFirstDate;
-  return newsLabEarliestValidDate([
-    story.publishedAt,
-    story.published,
-    story.generatedAt,
-    story.createdAt,
-    story.savedAt,
-    story.updatedAt,
-    story.lastUpdatedAt
-  ]);
-}
-
-function newsLabSignificantFactualUpdate(update = {}) {
-  const title = String(update.title || "");
-  const summary = String(update.summary || "");
-  const text = `${title} ${summary}`.toLowerCase();
-  if (!text.trim()) return false;
-  if (/adds new confirmed details|report adds new confirmed details/i.test(title) && summary.length < 90) return false;
-  if (Number(update.sourceCount || 0) >= 2) return true;
-  if (Number(update.confidence || 0) >= 55) return true;
-  if (/\b(arrested|charged|confirmed|died|killed|ruled|ruling|ordered|signed|approved|evacuated|closed|opened|won|lost|filed|settled|indicted|officials said|police said|court|agency|statement)\b/i.test(text)) return true;
-  return summary.length >= 140;
-}
-
-function newsLabLatestSignificantUpdate(story = {}) {
-  const updates = Array.isArray(story.storyUpdates) ? story.storyUpdates : [];
-  const significant = updates
-    .filter(newsLabSignificantFactualUpdate)
-    .sort((a, b) => new Date(b.updatedAt || b.latestUpdateAt || 0) - new Date(a.updatedAt || a.latestUpdateAt || 0))[0];
-  if (significant) return significant;
-  if (story.lastUpdatedAt && story.updateMode === "original-with-updates") {
-    return {
-      updatedAt: story.lastUpdatedAt,
-      title: story.title || "Story update",
-      summary: story.summary || "",
-      confidence: Number(story.brainConfidence?.score || story.qualityGate?.score || 0),
-      sourceCount: Number(story.popularity?.uniqueSourceCount || story.sources?.length || 0)
-    };
-  }
-  return null;
-}
-
-function newsLabVisibleShelfAgeDays(story = {}) {
-  const originalPublishedAt = newsLabStoryOriginalPublishedAt(story);
-  const originalTime = originalPublishedAt ? new Date(originalPublishedAt).getTime() : 0;
-  if (!originalTime || Number.isNaN(originalTime)) return 0;
-  return Math.max(0, Math.floor((Date.now() - originalTime) / 86400000));
-}
-
-function newsLabAnnotateBoardVisibility(story = {}) {
-  const todayKey = newsLabTodayDateKey();
-  const originalPublishedAt = newsLabStoryOriginalPublishedAt(story);
-  const originalDateKey = newsLabLocalDateKey(originalPublishedAt);
-  const update = newsLabLatestSignificantUpdate(story);
-  const significantUpdateAt = update?.updatedAt || update?.latestUpdateAt || "";
-  const significantUpdateDateKey = significantUpdateAt ? newsLabLocalDateKey(significantUpdateAt) : "";
-  const ageDays = newsLabVisibleShelfAgeDays({ ...story, originalPublishedAt });
-  const boardRetentionDays = Math.max(1, Number(process.env.CE_NEWS_LAB_BOARD_RETENTION_DAYS || 7));
-  const currentOriginal = originalDateKey === todayKey;
-  const currentUpdate = significantUpdateDateKey === todayKey;
-  const withinRetentionWindow = Boolean(originalPublishedAt) && ageDays < boardRetentionDays;
-  const visible = currentOriginal || currentUpdate || withinRetentionWindow;
-  return {
-    ...story,
-    originalPublishedAt,
-    lastUpdatedAt: story.lastUpdatedAt || significantUpdateAt || "",
-    boardVisibility: {
-      visible,
-      reason: currentOriginal
-        ? "original-published-today"
-        : currentUpdate
-          ? "current-significant-factual-update"
-          : withinRetentionWindow
-            ? "approved-story-within-seven-day-board-window"
-            : "expired-searchable-archive",
-      rule: "News Lab board accumulates approved CE Media articles instead of replacing them early. Articles remain visible for 7 days, unless a newer same-story replacement passes review or the board reaches its limit. Expired articles leave news tabs but remain searchable.",
-      currentDateKey: todayKey,
-      originalDateKey,
-      originalPublishedAt,
-      ageDays,
-      boardRetentionDays,
-      expiresAt: originalPublishedAt ? new Date(new Date(originalPublishedAt).getTime() + boardRetentionDays * 86400000).toISOString() : "",
-      latestUpdateAt: story.lastUpdatedAt || significantUpdateAt || "",
-      significantUpdateAt,
-      significantUpdateTitle: update?.title || ""
-    }
-  };
-}
-function newsLabHeadlineRiskProfile(issues = []) {
-  const unique = [...new Set(issues || [])];
-  const copyrightIssues = unique.filter(issue => [
-    "publisher-headline-too-close",
-    "coach-copied-headline-risk"
-  ].includes(issue));
-  const qualityIssues = unique.filter(issue => [
-    "headline-word-salad",
-    "generic-weak-headline",
-    "title-looks-truncated",
-    "headline-source-no-overlap",
-    "headline-editor-needs-rewrite",
-    "headline-unnatural-grammar",
-    "headline-keyword-salad",
-    "headline-subject-too-stacked"
-  ].includes(issue));
-  return {
-    copyrightRisk: copyrightIssues,
-    qualityRisk: qualityIssues,
-    rule: "Copyright headline risks require wording distance from the publisher. Quality headline risks require a new fact-led headline from the Headline Dossier."
-  };
-}
-
-const headlineRepairIssueCodes = [
-  "headline-word-salad",
-  "headline-editor-needs-rewrite",
-  "publisher-headline-too-close",
-  "coach-copied-headline-risk",
-  "generic-weak-headline",
-  "title-looks-truncated",
-  "headline-source-no-overlap",
-  "headline-unnatural-grammar",
-  "headline-keyword-salad",
-  "headline-subject-too-stacked",
-  "semantic-title-source-mismatch",
-  "headline-body-primary-entity-mismatch"
-];
-
-function newsLabHeadlineIssues(issues = []) {
-  const issueSet = new Set(headlineRepairIssueCodes);
-  return [...new Set(issues || [])].filter(issue => issueSet.has(issue));
-}
-
-function defaultNewsLabHeadlineRepairQueue() {
-  return {
-    version: "20260706-headline-repair-queue-v1",
-    updatedAt: "",
-    totals: {
-      rejected: 0,
-      repairAttempted: 0,
-      repairSuccessful: 0,
-      resubmitted: 0,
-      approved: 0,
-      published: 0,
-      stillFailed: 0
-    },
-    reasonCounts: {},
-    repairTypeSuccess: {},
-    active: [],
-    archived: [],
-    recentTransitions: [],
-    rule: "Rejected headlines are recoverable workflow states: Rejected -> Repair Needed -> Repair Running -> Waiting Validation -> Editorial Passed -> Ready Publish -> Published."
-  };
-}
-
-function newsLabHeadlineRepairQueueSummary(queue = readJsonFile(newsLabHeadlineRepairQueueFile, null) || defaultNewsLabHeadlineRepairQueue()) {
-  const totals = queue.totals || {};
-  const rejected = Number(totals.rejected || 0);
-  const repairAttempted = Number(totals.repairAttempted || 0);
-  const repairSuccessful = Number(totals.repairSuccessful || 0);
-  const approved = Number(totals.approved || 0);
-  const published = Number(totals.published || 0);
-  const reasonRanking = Object.entries(queue.reasonCounts || {})
-    .map(([reason, count]) => ({
-      reason,
-      count: Number(count || 0),
-      repairable: true
-    }))
-    .sort((a, b) => b.count - a.count);
-  return {
-    updatedAt: queue.updatedAt || "",
-    totals,
-    recoveryRates: {
-      repairAttemptRate: Number((repairAttempted / Math.max(1, rejected)).toFixed(2)),
-      repairSuccessRate: Number((repairSuccessful / Math.max(1, repairAttempted)).toFixed(2)),
-      approvalAfterRejectionRate: Number((approved / Math.max(1, rejected)).toFixed(2)),
-      publicationAfterRejectionRate: Number((published / Math.max(1, rejected)).toFixed(2))
-    },
-    reasonRanking,
-    repairTypeSuccess: queue.repairTypeSuccess || {},
-    active: (queue.active || []).slice(0, 30),
-    archived: (queue.archived || []).slice(0, 30),
-    recentTransitions: (queue.recentTransitions || []).slice(0, 40),
-    rule: queue.rule || defaultNewsLabHeadlineRepairQueue().rule
-  };
-}
-
-function newsLabHeadlineRepairLifecycleRecord(story = {}, context = {}) {
-  const attempts = story.editorRepairReview?.attempts || story.qualityGate?.repairReview?.attempts || [];
-  const firstAttempt = attempts[0] || {};
-  const finalIssues = [...new Set([
-    ...(story.qualityGate?.remainingIssues || []),
-    ...(story.qualityGate?.issues || []),
-    ...newsLabPublicArticleIssues(story)
-  ])];
-  const firstHeadlineIssues = newsLabHeadlineIssues(firstAttempt.beforeIssues || []);
-  const finalHeadlineIssues = newsLabHeadlineIssues(finalIssues);
-  const repairedHeadlineIssues = newsLabHeadlineIssues(firstAttempt.correctedIssues || story.qualityGate?.correctedIssues || []);
-  const allHeadlineIssues = [...new Set([...firstHeadlineIssues, ...finalHeadlineIssues, ...repairedHeadlineIssues])];
-  if (!allHeadlineIssues.length) return null;
-  const repairAttempted = Boolean(story.editorRepairReview?.applied || attempts.length);
-  const repairSuccessful = repairedHeadlineIssues.length > 0 || (repairAttempted && finalHeadlineIssues.length === 0);
-  const editorialPassed = Boolean(story.qualityGate?.passed && finalHeadlineIssues.length === 0);
-  const state = context.published
-    ? "Published"
-    : editorialPassed
-      ? "Ready Publish"
-      : repairAttempted
-        ? "Still Failed"
-        : "Repair Needed";
-  return {
-    headlineId: String((story.id || story.topicKey || cleanArticleText(story.title || "", 80)) + ":" + cleanArticleText(story.title || "", 80)).replace(/\s+/g, "-").slice(0, 180),
-    articleId: story.id || story.topicKey || "",
-    title: cleanArticleText(story.title || "", 180),
-    originalHeadline: cleanArticleText(story.originalHeadline || story.sources?.[0]?.title || "", 180),
-    reason: allHeadlineIssues[0],
-    reasons: allHeadlineIssues,
-    repairAttempt: Number(story.editorRepairReview?.attemptCount || attempts.length || 0),
-    repairMethod: story.qualityGate?.action || story.headlineAudit?.action || story.headlineAudit?.headlinePreEditor?.action || "",
-    validation: finalHeadlineIssues.length ? "failed-validation" : "passed-validation",
-    editorResult: editorialPassed ? "editorial-passed" : "editorial-held",
-    published: Boolean(context.published),
-    state,
-    score: Number(story.qualityGate?.score || 0),
-    transitions: [
-      "Headline Created",
-      "Editorial Review",
-      "Rejected",
-      repairAttempted ? "Repair Running" : "Repair Needed",
-      repairAttempted ? "Waiting Validation" : "",
-      finalHeadlineIssues.length ? "Validation Failed" : "Validation Passed",
-      editorialPassed ? "Editorial Passed" : "Editorial Held",
-      context.published ? "Published" : editorialPassed ? "Ready Publish" : "Still Failed"
-    ].filter(Boolean),
-    attempts: attempts.map(attempt => ({
-      attempt: attempt.attempt,
-      beforeHeadlineIssues: newsLabHeadlineIssues(attempt.beforeIssues || []),
-      afterHeadlineIssues: newsLabHeadlineIssues(attempt.afterIssues || []),
-      correctedHeadlineIssues: newsLabHeadlineIssues(attempt.correctedIssues || []),
-      passed: Boolean(attempt.passed),
-      action: attempt.action || ""
-    })),
-    storySnapshot: newsLabRepairSnapshot(story),
-    snapshotReady: Boolean(Array.isArray(story.body) && story.body.length && (story.storyDossier || story.evidenceEngine || (story.sources || []).length)),
-    updatedAt: new Date().toISOString()
-  };
-}
-
-function recordNewsLabHeadlineRepairQueue(stories = [], context = {}) {
-  const queue = readJsonFile(newsLabHeadlineRepairQueueFile, null) || defaultNewsLabHeadlineRepairQueue();
-  const records = (Array.isArray(stories) ? stories : [])
-    .map(story => newsLabHeadlineRepairLifecycleRecord(story, context))
-    .filter(Boolean);
-  if (!records.length) {
-    queue.updatedAt = new Date().toISOString();
-    writeJsonFile(newsLabHeadlineRepairQueueFile, queue);
-    return queue;
-  }
-  const activeById = new Map([...(queue.active || []), ...(queue.archived || [])].map(item => [item.headlineId, item]));
-  records.forEach(record => {
-    const previous = activeById.get(record.headlineId) || {};
-    activeById.set(record.headlineId, {
-      ...previous,
-      ...record,
-      firstSeenAt: previous.firstSeenAt || record.updatedAt,
-      updatedAt: record.updatedAt
-    });
-  });
-  const store = readJsonFile(newsLabStoryObjectsFile, null) || defaultNewsLabStoryObjects();
-  const storyObjects = store.stories && typeof store.stories === "object" ? store.stories : {};
-  const allRecords = [...activeById.values()].map(record => {
-    const storyObject = storyObjects[record.articleId] || storyObjects[record.storyId] || null;
-    const objectSnapshot = storyObject?.snapshot || null;
-    const snapshot = (record.storySnapshot && Array.isArray(record.storySnapshot.body) && record.storySnapshot.body.length)
-      ? record.storySnapshot
-      : objectSnapshot || record.storySnapshot || null;
-    const hasExecutableSnapshot = Boolean(snapshot
-      && Array.isArray(snapshot.body)
-      && snapshot.body.length
-      && (snapshot.storyDossier || snapshot.evidenceEngine || (Array.isArray(snapshot.sources) && snapshot.sources.length)));
-    const aggregateRecord = /^aggregate-blocked-/i.test(String(record.articleId || record.headlineId || ""));
-    const retiredNonExecutable = !record.published
-      && record.state !== "Published"
-      && (aggregateRecord || !hasExecutableSnapshot)
-      && Number(record.repairAttempt || 0) > 0;
-    return {
-      ...record,
-      storySnapshot: snapshot || record.storySnapshot || null,
-      snapshotReady: hasExecutableSnapshot,
-      nonExecutableRetired: retiredNonExecutable,
-      validation: retiredNonExecutable ? "retired-non-executable" : record.validation,
-      state: retiredNonExecutable ? "Retired - Missing Story Snapshot" : record.state,
-      nextAction: retiredNonExecutable
-        ? "Do not keep headline-only or aggregate records active. Future repairs must start from a saved Story Object with body, dossier/evidence, and sources."
-        : record.nextAction
-    };
-  });
-  const archived = allRecords
-    .filter(record => record.published || record.state === "Published" || record.nonExecutableRetired)
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, 500);
-  const active = allRecords
-    .filter(record => !record.published && record.state !== "Published" && !record.nonExecutableRetired)
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, 500);
-  const counted = [...archived, ...active].filter(record => !record.nonExecutableRetired);
-  const retiredNonExecutableCount = allRecords.filter(record => record.nonExecutableRetired).length;
-  const reasonCounts = {};
-  const repairTypeSuccess = {};
-  counted.forEach(record => {
-    (record.reasons || [record.reason]).filter(Boolean).forEach(reason => {
-      reasonCounts[reason] = Number(reasonCounts[reason] || 0) + 1;
-      const slot = repairTypeSuccess[reason] || { attempted: 0, successful: 0, published: 0 };
-      if (record.repairAttempt > 0) slot.attempted += 1;
-      if (record.validation === "passed-validation") slot.successful += 1;
-      if (record.published) slot.published += 1;
-      repairTypeSuccess[reason] = slot;
-    });
-  });
-  Object.keys(repairTypeSuccess).forEach(reason => {
-    const slot = repairTypeSuccess[reason];
-    slot.successRate = Number((slot.successful / Math.max(1, slot.attempted)).toFixed(2));
-    slot.publicationRate = Number((slot.published / Math.max(1, slot.attempted)).toFixed(2));
-  });
-  queue.updatedAt = new Date().toISOString();
-  queue.active = active;
-  queue.archived = archived;
-  queue.reasonCounts = reasonCounts;
-  queue.repairTypeSuccess = repairTypeSuccess;
-  queue.totals = {
-    rejected: counted.length,
-    repairAttempted: counted.filter(record => record.repairAttempt > 0).length,
-    repairSuccessful: counted.filter(record => record.validation === "passed-validation").length,
-    resubmitted: counted.filter(record => record.repairAttempt > 0 && record.editorResult).length,
-    approved: counted.filter(record => record.editorResult === "editorial-passed").length,
-    published: counted.filter(record => record.published).length,
-    stillFailed: counted.filter(record => record.state === "Still Failed").length,
-    retiredNonExecutable: retiredNonExecutableCount
-  };
-  queue.recentTransitions = [
-    ...records.map(record => ({
-      at: record.updatedAt,
-      articleId: record.articleId,
-      headline: record.title,
-      reason: record.reason,
-      state: record.state,
-      transitions: record.transitions
-    })),
-    ...(queue.recentTransitions || [])
-  ].slice(0, 200);
-  writeJsonFile(newsLabHeadlineRepairQueueFile, queue);
-  return queue;
-}
-
-function defaultNewsLabApprovalRecoveryQueue() {
-  return {
-    version: "20260706-approval-recovery-queue-v1",
-    updatedAt: "",
-    scope: "editorial-and-publisher-approval",
-    totals: {
-      rejected: 0,
-      repairAttempted: 0,
-      repairSuccessful: 0,
-      resubmitted: 0,
-      approved: 0,
-      published: 0,
-      stillFailed: 0
-    },
-    stageCounts: {},
-    reasonCounts: {},
-    repairTypeSuccess: {},
-    active: [],
-    archived: [],
-    recentTransitions: [],
-    rule: "Every editorial or publisher rejection is a recoverable state: Rejected -> Repair Needed -> Repair Running -> Waiting Validation -> Waiting Editorial/Publisher -> Approved -> Published."
-  };
-}
-
-function defaultNewsLabDossierRecoveryQueue() {
-  return {
-    version: "20260730-dossier-recovery-queue-v1",
-    updatedAt: "",
-    scope: "collector-to-dossier-readiness",
-    totals: {
-      queued: 0,
-      fullArticleReady: 0,
-      developingBriefReady: 0,
-      needsEnrichment: 0,
-      needsClusterRepair: 0,
-      needsIdentityResolution: 0,
-      duplicateEvent: 0,
-      rejected: 0
-    },
-    reasonCounts: {},
-    actionCounts: {},
-    active: [],
-    archived: [],
-    recentTransitions: [],
-    rule: "Blocked dossiers are not terminal. Each one receives a readiness class, missing evidence, owner subsystem, next action, retry schedule, and prevention lesson."
-  };
-}
-
-function newsLabDossierRecoveryAction(readinessClass = "NEEDS_ENRICHMENT", reasons = []) {
-  const reasonText = (Array.isArray(reasons) ? reasons : []).join(" ").toLowerCase();
-  if (readinessClass === "FULL_ARTICLE") return "lock-dossier-and-write-full-article";
-  if (readinessClass === "READY_FOR_DEVELOPING_BRIEF") return "route-to-developing-brief-lane";
-  if (readinessClass === "NEEDS_CLUSTER_REPAIR") return "split-or-merge-cluster-before-dossier-retry";
-  if (readinessClass === "NEEDS_IDENTITY_RESOLUTION") return "resolve-primary-actor-action-time-location";
-  if (readinessClass === "DUPLICATE_EVENT") return "attach-to-existing-dossier-revision";
-  if (readinessClass === "REJECTED") return "discard-or-distill-learning-only";
-  if (/source|confirmation|primary|official/.test(reasonText)) return "collect-primary-or-independent-source-evidence";
-  if (/timeline|time|date/.test(reasonText)) return "collect-event-time-and-timeline-anchor";
-  if (/fact|context|consequence/.test(reasonText)) return "extract-source-claims-and-promote-usable-facts";
-  return "enrich-dossier-with-same-event-evidence";
-}
-
-function newsLabDossierReadinessClassFromEvidence(evidence = {}) {
-  const reasons = [...new Set([...(evidence.missing || []), ...(evidence.holdReasons || []), ...(evidence.blockingReasons || [])].filter(Boolean))];
-  const warning = [...new Set([...(evidence.warning || []), ...(evidence.warnings || [])].filter(Boolean))];
-  const metrics = evidence.metrics || {};
-  const factCount = Number(metrics.uniqueFactCount || metrics.directWritingFactCount || metrics.knownFactCount || evidence.factCount || 0);
-  const sourceCount = Number(metrics.sourceCount || metrics.independentSourceCount || evidence.sourceCount || 0);
-  const primarySourcePresent = Boolean(metrics.primarySourcePresent || evidence.primarySourcePresent);
-  const reasonText = reasons.join(" ").toLowerCase();
-  const mixedOrGeneric = Boolean(metrics.mixedOrGeneric || evidence.mixedOrGeneric || /mixed|contamination|generic|keyword-only|intra-source-event-segmentation|multi-event/.test(reasonText));
-  const hasIdentityProblem = /identity|primary-event|actor-action|representative|unclear/.test(reasonText);
-  const hasCoreEvidenceGap = /needs-source-context|needs-two-unique-verified-facts|needs-writer-evidence-pack|needs-clear-actor-action-event|needs-primary-event|needs-completed-story-dossier|missing-attribution/i.test(reasonText);
-  const canUseDevelopingBrief = !mixedOrGeneric
-    && !hasIdentityProblem
-    && !hasCoreEvidenceGap
-    && (
-      evidence.readyForWriter
-      || evidence.readinessTier === "READY_FOR_BREAKING_BRIEF"
-      || (factCount >= 2 && sourceCount >= 1)
-      || (factCount >= 1 && primarySourcePresent)
-    );
-  let readinessClass = "NEEDS_ENRICHMENT";
-  if (evidence.readyForWriter && (evidence.readinessTier === "READY_FOR_DEEP_ARTICLE" || evidence.readinessTier === "READY_FOR_STANDARD_ARTICLE" || evidence.readyForStandardArticle)) readinessClass = "FULL_ARTICLE";
-  else if (canUseDevelopingBrief) readinessClass = "READY_FOR_DEVELOPING_BRIEF";
-  else if (mixedOrGeneric) readinessClass = hasIdentityProblem ? "NEEDS_IDENTITY_RESOLUTION" : "NEEDS_CLUSTER_REPAIR";
-  else if (hasIdentityProblem) readinessClass = "NEEDS_IDENTITY_RESOLUTION";
-  else if (/duplicate|fragmented/.test(reasonText)) readinessClass = "DUPLICATE_EVENT";
-  else if (/stale|unsafe|defamatory|unsupported-central-claim/.test(reasonText)) readinessClass = "REJECTED";
-  const blockingReasons = readinessClass === "READY_FOR_DEVELOPING_BRIEF"
-    ? reasons.filter(reason => /mixed|identity|unsupported|contradiction/.test(reason))
-    : reasons;
-  return {
-    readinessClass,
-    blockingReasons,
-    warnings: warning,
-    missingEvidence: reasons.filter(reason => /needs-|missing|source|fact|timeline|context|confirmation|primary/i.test(reason)),
-    recommendedAction: newsLabDossierRecoveryAction(readinessClass, reasons),
-    nextRetryAt: ["FULL_ARTICLE", "READY_FOR_DEVELOPING_BRIEF", "REJECTED"].includes(readinessClass) ? null : new Date(Date.now() + 10 * 60 * 1000).toISOString()
-  };
-}
-
-function newsLabRecoverySourceRegistry(dossier = {}, record = {}) {
-  const sources = [
-    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
-    ...(Array.isArray(dossier.sourceContext) ? dossier.sourceContext : []),
-    ...(Array.isArray(dossier.sourceRecords) ? dossier.sourceRecords : []),
-    ...(Array.isArray(record.acceptedSources) ? record.acceptedSources : [])
-  ]
-    .map((source, index) => typeof source === "string" ? {
-      sourceId: `source_${index + 1}`,
-      title: source,
-      source,
-      summary: source,
-      url: ""
-    } : {
-      sourceId: source.sourceId || source.id || `source_${index + 1}`,
-      title: cleanArticleText(source.title || source.headline || "", 220),
-      source: cleanArticleText(source.source || source.name || source.publisher || "", 120),
-      url: source.url || source.sourceUrl || "",
-      summary: cleanArticleText(source.summary || source.articleSummary || source.description || "", 360),
-      publishedAt: source.published || source.publishedAt || source.date || "",
-      category: source.category || record.category || dossier.category || "",
-      role: source.role || source.dossierRole || (index === 0 ? "primary-source" : "supporting-source"),
-      articleReadStatus: source.articleReadStatus || source.sourceDepth || "",
-      articleTextLength: Number(source.articleTextLength || String(source.articleSummary || source.summary || "").length || 0)
-    })
-    .filter(source => source.title || source.summary || source.url || source.source)
-    .filter((source, index, all) => all.findIndex(item => (item.url && item.url === source.url) || (item.title && item.title === source.title && item.source === source.source)) === index)
-    .slice(0, 20);
-  return sources.map((source, index) => ({
-    ...source,
-    sourceId: source.sourceId || `source_${index + 1}`
-  }));
-}
-
-function newsLabRecoveryEntityRecords(dossier = {}, representative = {}) {
-  const list = value => Array.isArray(value) ? value : value ? [value] : [];
-  const text = [
-    dossier.whatHappened,
-    ...list(dossier.knownFacts),
-    ...list(dossier.facts),
-    representative.title,
-    representative.summary,
-    representative.articleSummary
-  ].filter(Boolean).join(" ");
-  const named = storyNamedEntities({ title: text, summary: text });
-  return {
-    people: [...new Set([...list(dossier.people), ...list(dossier.whoIsInvolved), ...named.filter(item => !/inc|corp|agency|department|court|team|league/i.test(item))])].slice(0, 16),
-    organizations: [...new Set([...list(dossier.organizations), ...named.filter(item => /inc|corp|agency|department|court|team|league|senate|house|company|university/i.test(item))])].slice(0, 16),
-    locations: [...new Set([...list(dossier.locations), ...list(dossier.where), ...named.filter(item => /\b(city|county|state|washington|new york|california|texas|florida|ukraine|russia|china|iran|israel|gaza|europe)\b/i.test(`${item} ${text}`))])].slice(0, 12),
-    relationships: list(dossier.knowledgeGraphRelationships || dossier.entities?.relationships).slice(0, 20)
-  };
-}
-
-function newsLabBuildRecoveryDossierSnapshot(dossierInput = {}, record = {}) {
-  const dossier = dossierInput && typeof dossierInput === "object" ? JSON.parse(JSON.stringify(dossierInput)) : {};
-  const sourceRegistry = newsLabRecoverySourceRegistry(dossier, record);
-  const representative = sourceRegistry[0] || cleanNewsLabSourceStory({
-    title: record.title || dossier.representative || dossier.whatHappened || "",
-    summary: Array.isArray(dossier.facts) ? dossier.facts[0] || "" : "",
-    category: record.category || dossier.category || "top"
-  });
-  const facts = [
-    ...(Array.isArray(dossier.knownFacts) ? dossier.knownFacts : []),
-    ...(Array.isArray(dossier.writerInput?.directWritingFacts) ? dossier.writerInput.directWritingFacts : []),
-    ...(Array.isArray(dossier.facts) ? dossier.facts : []),
-    ...(Array.isArray(record.facts) ? record.facts : [])
-  ]
-    .map(fact => typeof fact === "string" ? fact : fact.statement || fact.claim || fact.summary || "")
-    .map(newsLabCleanDossierFactSentence)
-    .filter(Boolean)
-    .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.78) === index)
-    .slice(0, 20);
-  const eventSignature = dossier.canonicalEventSignature
-    || dossier.eventSignature?.canonical
-    || newsLabCanonicalEventSignatureFromStory({
-      ...representative,
-      title: representative.title || record.title || dossier.whatHappened || "",
-      summary: [dossier.whatHappened, ...facts].filter(Boolean).join(" "),
-      category: record.category || dossier.category || representative.category || "top"
-    });
-  const eventId = dossier.eventId
-    || dossier.storyId
-    || record.eventId
-    || record.clusterId
-    || eventSignature.eventId
-    || safeFileSlug(record.title || dossier.whatHappened || "dossier-recovery");
-  const timeline = (Array.isArray(dossier.timeline) && dossier.timeline.length ? dossier.timeline : sourceRegistry.slice(0, 8).map((source, index) => ({
-    id: `recovery-timeline-${index + 1}`,
-    at: source.publishedAt || record.createdAt || record.updatedAt || new Date().toISOString(),
-    source: source.source || "",
-    title: source.title || facts[0] || record.title || "",
-    url: source.url || ""
-  }))).filter(Boolean).slice(0, 12);
-  const factLedger = dossier.factLedger || newsLabBuildCanonicalFactLedger({
-    eventId,
-    eventSignature: { canonical: eventSignature },
-    representative,
-    facts,
-    sourceRecords: sourceRegistry,
-    sourceSpecificClaims: dossier.disagreement?.sourceSpecificClaims || dossier.sourceSpecificClaims || [],
-    disputedClaims: dossier.contradictions || []
-  });
-  const writerFactIds = factLedger.writingEligibleFactIds
-    || (factLedger.facts || []).filter(fact => fact.writingEligible).map(fact => fact.factId);
-  const enriched = {
-    ...dossier,
-    dossierId: dossier.dossierId || dossier.storyId || eventId,
-    storyId: dossier.storyId || eventId,
-    eventId,
-    revision: Number(dossier.revision || dossier.dossierRevision || dossier.dossierLock?.revision || 1),
-    dossierRevisionId: dossier.dossierRevisionId || dossier.dossierLock?.revisionId || dossier.canonicalDossierIntelligence?.revision?.id || `dossier_${safeFileSlug(`${eventId}:${facts.join("|").slice(0, 220)}`).slice(0, 96)}`,
-    canonicalEventSignature: eventSignature,
-    eventSignature: dossier.eventSignature || { canonical: eventSignature },
-    eventCoherence: dossier.eventCoherence || null,
-    contaminationCheck: dossier.contaminationCheck || {
-      contaminationScore: Number(dossier.eventCoherence?.contaminationScore || 0),
-      eventCoherence: Number(dossier.eventCoherence?.eventCoherence || 1),
-      conflictingEventIds: dossier.eventCoherence?.conflictingEventIds || [],
-      readyForWriting: dossier.eventCoherence?.readyForWriting !== false
-    },
-    whatHappened: cleanArticleText(dossier.whatHappened || facts[0] || record.title || representative.title || "", 420),
-    facts,
-    knownFacts: facts,
-    claims: (dossier.claims || dossier.sourceSpecificClaims || dossier.disagreement?.sourceSpecificClaims || []).slice(0, 24),
-    factLedger,
-    timeline,
-    entities: dossier.entities || newsLabRecoveryEntityRecords(dossier, representative),
-    people: dossier.people || [],
-    organizations: dossier.organizations || [],
-    locations: dossier.locations || [],
-    contradictions: (dossier.contradictions || dossier.disputedClaims || dossier.disagreement?.contradictions || []).slice(0, 12),
-    knownUnknowns: [...new Set([
-      ...(dossier.knownUnknowns || []),
-      ...(dossier.unknownFacts || []),
-      ...(dossier.stillUnknown || [])
-    ].filter(Boolean))].slice(0, 12),
-    sourceRegistry,
-    sourcePool: sourceRegistry,
-    sourceContext: sourceRegistry,
-    sourceProvenance: {
-      sourceCount: sourceRegistry.length,
-      independentSourceCount: new Set(sourceRegistry.map(source => newsLabDossierSourceKey(source) || source.sourceId).filter(Boolean)).size,
-      rule: "Recovery resumes from the preserved source registry. It adds missing intelligence instead of rebuilding the dossier from raw feed fragments."
-    },
-    categoryClassification: dossier.categoryClassification || {
-      collectorHint: record.category || dossier.category || "",
-      sourceHint: representative.category || "",
-      semanticPrimary: dossier.category || record.category || "top",
-      confidence: 0.5,
-      rule: "Recovery keeps category as a dossier decision. Collector/feed category remains a hint."
-    },
-    readiness: dossier.readiness || dossier.readinessContract || {
-      readinessClass: record.readinessClass || "",
-      blockingReasons: record.blockingReasons || [],
-      missingEvidence: record.missingEvidence || [],
-      recommendedAction: record.recommendedAction || "",
-      nextRetryAt: record.nextRetryAt || null
-    },
-    readinessByLayer: {
-      eventIdentity: Boolean(eventSignature.primaryActor && eventSignature.primaryAction),
-      evidence: Boolean((factLedger.facts || []).length),
-      timeline: Boolean(timeline.length),
-      entities: Boolean(newsLabRecoveryEntityRecords(dossier, representative).people.length || newsLabRecoveryEntityRecords(dossier, representative).organizations.length),
-      context: Boolean(dossier.historicalContext || dossier.context || dossier.storyIntelligenceDossier?.contextLayer),
-      uncertainty: Boolean((dossier.unknownFacts || []).length || (dossier.contradictions || []).length),
-      productionContract: Boolean(dossier.canonicalLayers?.layer7ProductionContract || dossier.writerInput)
-    },
-    imageInstructions: dossier.imageInstructions || dossier.imageDossier || dossier.canonicalLayers?.layer7ProductionContract?.imageBrief || dossier.publicationPlanning?.imageBrief || null,
-    writerContract: {
-      ...(dossier.writerContract || dossier.canonicalDossierIntelligence?.writerContract || {}),
-      allowedFactIds: writerFactIds,
-      requiredAttributions: sourceRegistry.map(source => source.source || source.title).filter(Boolean).slice(0, 8),
-      prohibitedClaims: (dossier.contradictions || dossier.disputedClaims || []).slice(0, 8),
-      dossierRevisionId: dossier.dossierRevisionId || dossier.dossierLock?.revisionId || dossier.canonicalDossierIntelligence?.revision?.id || "",
-      rule: "Recovery writer contracts preserve fact IDs, attributions, prohibited claims, and dossier revision so no stage writes from loose fragments."
-    },
-    recoveryRequirements: [...new Set([
-      ...(record.blockingReasons || []),
-      ...(record.missingEvidence || []),
-      record.recommendedAction || "",
-      record.nextAction || ""
-    ].filter(Boolean))].slice(0, 20),
-    recoverySnapshot: {
-      version: "20260806-full-recovery-dossier-snapshot-v1",
-      createdAt: new Date().toISOString(),
-      source: "approval-or-dossier-recovery-queue",
-      rule: "Held dossiers retain canonical intelligence state. Recovery adds missing intelligence; it does not rebuild from a thin partial record."
-    }
-  };
-  const readiness = newsLabDossierReadinessContract(enriched, { sources: sourceRegistry, eventId });
-  const canonicalIntelligence = enriched.canonicalDossierIntelligence
-    || enriched.canonicalIntelligence
-    || newsLabBuildCanonicalDossierIntelligence(enriched, readiness, {
-      eventId,
-      canonicalStoryIdentity: newsLabCanonicalStoryIdentity({ ...representative, storyDossier: enriched }, enriched, { representative })
-    });
-  enriched.readiness = {
-    ...enriched.readiness,
-    ...readiness
-  };
-  enriched.canonicalDossierIntelligence = compactNewsLabCanonicalDossierIntelligence(canonicalIntelligence);
-  enriched.canonicalIntelligence = enriched.canonicalDossierIntelligence;
-  enriched.storyUnderstanding = enriched.canonicalDossierIntelligence?.storyUnderstanding || canonicalIntelligence.storyUnderstanding || null;
-  enriched.fingerprint = newsLabDossierFingerprint(enriched);
-  return enriched;
-}
-
-function newsLabDossierFingerprint(dossier = {}) {
-  const sourceIds = [
-    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []),
-    ...(Array.isArray(dossier.sourceContext) ? dossier.sourceContext : []),
-    ...(Array.isArray(dossier.sourceRecords) ? dossier.sourceRecords : [])
-  ].map(source => typeof source === "string" ? source : (source.url || source.sourceUrl || source.source || source.title || ""))
-    .filter(Boolean)
-    .sort();
-  const promotedFacts = [
-    ...(Array.isArray(dossier.knownFacts) ? dossier.knownFacts : []),
-    ...(Array.isArray(dossier.writerInput?.directWritingFacts) ? dossier.writerInput.directWritingFacts : [])
-  ].map(fact => cleanArticleText(fact, 260).toLowerCase()).filter(Boolean).sort();
-  const timelineRevision = (Array.isArray(dossier.timeline) ? dossier.timeline : [])
-    .map(item => `${item.at || item.date || ""}:${cleanArticleText(item.title || item.summary || "", 120).toLowerCase()}`)
-    .filter(Boolean)
-    .sort();
-  const contradictionIds = (Array.isArray(dossier.contradictions) ? dossier.contradictions : [])
-    .map(item => cleanArticleText(typeof item === "string" ? item : item.claim || item.summary || "", 180).toLowerCase())
-    .filter(Boolean)
-    .sort();
-  const identity = [
-    dossier.eventId || dossier.storyId || "",
-    dossier.whatHappened || "",
-    ...(Array.isArray(dossier.people) ? dossier.people : []),
-    ...(Array.isArray(dossier.organizations) ? dossier.organizations : []),
-    ...(Array.isArray(dossier.locations) ? dossier.locations : [])
-  ].join("|");
-  return crypto.createHash("sha1").update(JSON.stringify({
-    identity: cleanArticleText(identity, 800).toLowerCase(),
-    promotedFacts,
-    sourceIds,
-    timelineRevision,
-    contradictionIds
-  })).digest("hex");
-}
-
-function newsLabDossierRecoveryPriority(item = {}) {
-  const missing = Array.isArray(item.missingEvidence) ? item.missingEvidence : [];
-  const blocking = Array.isArray(item.blockingReasons) ? item.blockingReasons : [];
-  const categoryUnderfilled = newsLabUnderfilledPublicCategories(7).some(row => row.category === item.category);
-  const freshnessScore = (() => {
-    const date = newsLabValidStoryDateValue(item.updatedAt || item.createdAt || "");
-    if (!date) return 0;
-    const ageHours = Math.max(0, (Date.now() - new Date(date).getTime()) / 36e5);
-    return Math.max(0, 24 - Math.min(24, ageHours));
-  })();
-  return Math.round(
-    Number(item.factCount || 0) * 10
-    + Number(item.acceptedSourceCount || 0) * 8
-    + (/primary|official|court|filing|agency/i.test([...(item.acceptedSources || []).map(source => source.source || source.title || ""), ...missing].join(" ")) ? 20 : 0)
-    + freshnessScore
-    + (categoryUnderfilled ? 15 : 0)
-    + (item.readinessClass === "READY_FOR_DEVELOPING_BRIEF" ? 18 : 0)
-    + (item.readinessClass === "FULL_ARTICLE" ? 28 : 0)
-    - missing.length * 7
-    - blocking.filter(reason => /identity|mixed|unsupported|contradiction/i.test(reason)).length * 9
-    - Number(item.retryCount || 0) * 4
-  );
-}
-
-function newsLabNormalizePartialDossier(item = {}, sourceStories = []) {
-  const partial = item.partialDossier && typeof item.partialDossier === "object" ? JSON.parse(JSON.stringify(item.partialDossier)) : {};
-  const acceptedSources = (item.acceptedSources || []).map(source => cleanNewsLabSourceStory({
-    title: source.title || item.title || "",
-    summary: source.summary || "",
-    articleSummary: source.articleSummary || source.summary || "",
-    source: source.source || source.name || "",
-    url: source.url || "",
-    category: item.category || source.category || ""
-  })).filter(source => source.title || source.summary || source.url || source.source);
-  const eventText = [
-    item.title,
-    partial.whatHappened,
-    ...(Array.isArray(partial.knownFacts) ? partial.knownFacts : []),
-    ...(Array.isArray(partial.writerInput?.directWritingFacts) ? partial.writerInput.directWritingFacts : [])
-  ].filter(Boolean).join(" ");
-  const sameEventSources = sourceStories
-    .filter(source => !item.category || source.category === item.category || item.category === "top")
-    .filter(source => newsLabTextOverlap(eventText, [source.title, source.summary, source.articleSummary].filter(Boolean).join(" ")) >= 0.08)
-    .slice(0, 8);
-  const sourcePool = [...acceptedSources, ...sameEventSources, ...(Array.isArray(partial.sourcePool) ? partial.sourcePool : [])]
-    .map(source => typeof source === "string" ? { title: source, source: source, summary: source } : source)
-    .filter(Boolean)
-    .filter((source, index, all) => all.findIndex(match => (match.url && match.url === source.url) || (match.title && match.title === source.title && match.source === source.source)) === index)
-    .slice(0, 16);
-  const facts = [
-    ...(Array.isArray(partial.knownFacts) ? partial.knownFacts : []),
-    ...(Array.isArray(partial.writerInput?.directWritingFacts) ? partial.writerInput.directWritingFacts : []),
-    ...(Array.isArray(partial.facts) ? partial.facts : []),
-    ...sourcePool.flatMap(source => newsLabRelevantFactSentences(source))
-  ].map(newsLabCleanDossierFactSentence)
-    .filter(Boolean)
-    .filter((fact, index, all) => all.findIndex(match => newsLabTextOverlap(match, fact) >= 0.78) === index)
-    .slice(0, 12);
-  return {
-    ...partial,
-    storyId: partial.storyId || partial.eventId || item.eventId || item.clusterId || safeFileSlug(item.title || "recovered-dossier"),
-    eventId: partial.eventId || item.eventId || item.clusterId || safeFileSlug(item.title || "recovered-dossier"),
-    whatHappened: cleanArticleText(partial.whatHappened || facts[0] || item.title || "", 420),
-    knownFacts: facts,
-    sourcePool,
-    sourceContext: sourcePool,
-    category: partial.category || item.category || "top",
-    timeline: (Array.isArray(partial.timeline) && partial.timeline.length ? partial.timeline : sourcePool.slice(0, 5).map((source, index) => ({
-      id: `recovery-timeline-${index + 1}`,
-      at: source.published || source.publishedAt || item.createdAt || item.updatedAt || new Date().toISOString(),
-      source: source.source || source.name || "",
-      title: source.title || facts[0] || item.title || "",
-      url: source.url || ""
-    }))).filter(Boolean),
-    writerInput: {
-      ...(partial.writerInput || {}),
-      directWritingFacts: facts,
-      readiness: {
-        readyForWriter: facts.length >= 2 && sourcePool.length >= 1,
-        writingFactCount: facts.length,
-        sourceCount: sourcePool.length,
-        rule: "Recovery jobs promote reusable same-event claims into the writer evidence pack before retrying."
-      }
-    },
-    dossierRecovery: {
-      active: true,
-      recoveredFromQueueId: item.id || item.eventId || "",
-      nextAction: item.nextAction || "",
-      retryCount: Number(item.retryCount || 0),
-      rule: "Partial dossiers are authoritative continuation points. Recovery enriches and rescored them instead of rebuilding the event from scratch."
-    }
-  };
-}
-
-function newsLabExecuteDossierRecoveryAction(item = {}, sourceStories = []) {
-  const action = item.nextAction || newsLabDossierRecoveryAction(item.readinessClass, item.blockingReasons || []);
-  let dossier = newsLabNormalizePartialDossier(item, sourceStories);
-  const beforeFingerprint = item.fingerprint || newsLabDossierFingerprint(item.partialDossier || {});
-  if (action === "collect-event-time-and-timeline-anchor" && (!Array.isArray(dossier.timeline) || !dossier.timeline.length)) {
-    dossier.timeline = (dossier.sourcePool || []).slice(0, 5).map((source, index) => ({
-      id: `timeline-recovered-${index + 1}`,
-      at: source.published || source.publishedAt || item.createdAt || item.updatedAt || new Date().toISOString(),
-      source: source.source || source.name || "",
-      title: source.title || dossier.whatHappened || item.title || "",
-      url: source.url || ""
-    }));
-  }
-  if (action === "resolve-primary-actor-action-time-location" && !dossier.whatHappened) {
-    dossier.whatHappened = cleanArticleText(item.title || dossier.knownFacts?.[0] || "", 360);
-  }
-  if (action === "split-or-merge-cluster-before-dossier-retry") {
-    dossier.writerDossierHandoff = {
-      ...(dossier.writerDossierHandoff || {}),
-      clusterRepairAttempted: true,
-      mixedEvent: false,
-      topicContamination: false,
-      rule: "Recovery narrows the partial dossier back to same-event evidence before retrying readiness."
-    };
-  }
-  const readiness = newsLabDossierReadinessContract(dossier, {
-    sources: dossier.sourcePool || [],
-    eventId: dossier.eventId || dossier.storyId
-  });
-  const afterFingerprint = newsLabDossierFingerprint(dossier);
-  return {
-    item,
-    action,
-    dossier,
-    readiness,
-    beforeFingerprint,
-    afterFingerprint,
-    changed: beforeFingerprint !== afterFingerprint,
-    ready: readiness.readyForWriter && readiness.readinessTier !== "HOLD_FOR_EVIDENCE"
-  };
-}
-
-function newsLabStoryFromRecoveredDossier(recovery = {}, index = 0) {
-  const dossier = recovery.dossier || {};
-  const readiness = recovery.readiness || {};
-  if (!recovery.ready) return null;
-  const lockedDossier = dossier.dossierLock?.active ? dossier : newsLabLockDossierForWriting(dossier, readiness, {
-    eventId: dossier.eventId || dossier.storyId
-  });
-  const sources = (lockedDossier.sourcePool || []).map(source => cleanNewsLabSourceStory({
-    title: source.title || lockedDossier.whatHappened || "",
-    summary: source.summary || source.articleSummary || "",
-    articleSummary: source.articleSummary || source.summary || "",
-    source: source.source || source.name || "",
-    url: source.url || "",
-    category: source.category || lockedDossier.category || recovery.item?.category || ""
-  })).filter(source => source.title || source.summary || source.url || source.source);
-  const representative = sources[0] || cleanNewsLabSourceStory({
-    title: lockedDossier.whatHappened || recovery.item?.title || "",
-    summary: lockedDossier.knownFacts?.[0] || "",
-    source: "Recovered dossier",
-    category: lockedDossier.category || recovery.item?.category || "top"
-  });
-  let body = newsLabStraightBody({
-    representative,
-    supporting: sources.slice(1),
-    facts: lockedDossier.knownFacts || [],
-    dossier: lockedDossier
-  });
-  body = newsLabConstrainBodyToDossierCapacity(body, readiness, lockedDossier);
-  body = newsLabEnsureCompleteNewsBody(body, representative, sources.slice(1), lockedDossier.knownFacts || [])
-    .filter(paragraph => !newsLabIsMetaOnlyParagraph(paragraph))
-    .slice(0, readiness.articleFormat === "breaking-brief" ? 4 : 7);
-  if (body.join(" ").length < (readiness.articleFormat === "breaking-brief" ? 220 : 360)) return null;
-  const category = lockedDossier.category || recovery.item?.category || newsLabCategory(representative);
-  const baseStory = {
-    title: lockedDossier.whatHappened || recovery.item?.title || "",
-    originalHeadline: recovery.item?.title || "",
-    summary: body[0] || lockedDossier.knownFacts?.[0] || "",
-    articleSummary: body.join(" "),
-    body,
-    category,
-    storyDossier: lockedDossier,
-    canonicalDossierIntelligence: lockedDossier.canonicalDossierIntelligence || lockedDossier.canonicalIntelligence || null,
-    dossierRevisionId: lockedDossier.dossierLock?.revisionId || lockedDossier.canonicalDossierIntelligence?.revision?.id || lockedDossier.canonicalIntelligence?.revision?.id || "",
-    sources,
-    writerDossierInput: newsLabWriterDossierInput(lockedDossier, { story: representative }),
-    evidenceSupportedArticleCapacity: readiness,
-    articleCapacityTier: readiness.readinessTier,
-    articleFormat: readiness.articleFormat,
-    recoveredDossierPublicationLane: {
-      active: true,
-      action: recovery.action,
-      readinessClass: readiness.readinessClass,
-      beforeFingerprint: recovery.beforeFingerprint,
-      afterFingerprint: recovery.afterFingerprint,
-      changed: recovery.changed,
-      rule: "Recovered dossiers that pass integrity are routed into the article lane as briefs or full articles according to depth capacity."
-    }
-  };
-  const title = newsLabSelectPassingHeadline(baseStory, newsLabEventHeadlineFromDossier(baseStory) || newsLabHeadlineFromCompletedArticle(baseStory, index) || baseStory.title);
-  return enforceNewsLabEditorCategory({
-    ...baseStory,
-    id: `news_lab_recovered_${category}_${index}_${safeFileSlug(title || baseStory.title).slice(0, 52)}`,
-    eventId: lockedDossier.eventId || lockedDossier.storyId || recovery.item?.eventId || recovery.item?.id || "",
-    topicKey: lockedDossier.eventId || lockedDossier.storyId || recovery.item?.eventId || title || baseStory.title,
-    title: newsLabEnsureOwnedHeadline(title || baseStory.title, baseStory, index),
-    categoryLabel: newsLabCategoryLabel(category),
-    image: newsLabNormalizeStoryImage(baseStory, representative.image),
-    publicationLane: readiness.articleFormat === "breaking-brief" ? "developing-brief" : "standard-or-deep-article"
-  });
-}
-
-function newsLabRunBoundedDossierRecoveryPhase(sourceStories = [], options = {}) {
-  const queue = readJsonFile(newsLabDossierRecoveryQueueFile, null) || defaultNewsLabDossierRecoveryQueue();
-  const limit = Math.max(0, Number(options.limit || process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_LIMIT || 3));
-  if (!limit) return { generatedAt: new Date().toISOString(), attempted: 0, promotedStories: [], metrics: {} };
-  const started = Date.now();
-  const budgetMs = Math.max(500, Number(options.budgetMs || process.env.CE_NEWS_LAB_DOSSIER_RECOVERY_BUDGET_MS || 8000));
-  const candidates = (queue.active || [])
-    .filter(item => item && item.state !== "learning-only")
-    .filter(item => !item.nextRetryAt || new Date(item.nextRetryAt).getTime() <= Date.now())
-    .map(item => ({ ...item, priorityScore: newsLabDossierRecoveryPriority(item) }))
-    .sort((a, b) => b.priorityScore - a.priorityScore)
-    .slice(0, limit * 3);
-  const attempted = [];
-  const promotedStories = [];
-  const transitions = [];
-  for (const item of candidates) {
-    if (attempted.length >= limit || Date.now() - started >= budgetMs) break;
-    const recovery = newsLabExecuteDossierRecoveryAction(item, sourceStories);
-    attempted.push(recovery);
-    const story = newsLabStoryFromRecoveredDossier(recovery, attempted.length - 1);
-    if (story) promotedStories.push(story);
-    transitions.push({
-      at: new Date().toISOString(),
-      eventId: item.eventId || item.id || "",
-      action: recovery.action,
-      priorityScore: item.priorityScore,
-      changed: recovery.changed,
-      ready: recovery.ready,
-      readinessTier: recovery.readiness.readinessTier,
-      articleFormat: recovery.readiness.articleFormat,
-      promoted: Boolean(story),
-      beforeFingerprint: recovery.beforeFingerprint,
-      afterFingerprint: recovery.afterFingerprint
-    });
-  }
-  const active = (queue.active || []).map(item => {
-    const transition = transitions.find(row => row.eventId === (item.eventId || item.id || ""));
-    if (!transition) return item;
-    return {
-      ...item,
-      fingerprint: transition.afterFingerprint || item.fingerprint,
-      previousFingerprint: transition.beforeFingerprint || item.previousFingerprint,
-      retryCount: Number(item.retryCount || 0) + 1,
-      state: transition.promoted ? "promoted-to-editor-candidate" : transition.ready ? "ready-route" : transition.changed ? "needs-recovery" : "unchanged-held",
-      nextRetryAt: transition.promoted ? null : new Date(Date.now() + (transition.changed ? 10 : 30) * 60 * 1000).toISOString(),
-      lastRecoveryAction: transition.action,
-      updatedAt: transition.at
-    };
-  });
-  const metrics = {
-    attempted: attempted.length,
-    promoted: promotedStories.length,
-    unchanged: transitions.filter(row => !row.changed).length,
-    readyAfterRecovery: transitions.filter(row => row.ready).length,
-    elapsedMs: Date.now() - started,
-    budgetMs,
-    briefReady: transitions.filter(row => row.articleFormat === "breaking-brief").length,
-    standardReady: transitions.filter(row => row.readinessTier === "READY_FOR_STANDARD_ARTICLE" || row.readinessTier === "READY_FOR_DEEP_ARTICLE").length
-  };
-  writeJsonFile(newsLabDossierRecoveryQueueFile, {
-    ...queue,
-    updatedAt: new Date().toISOString(),
-    active,
-    executableRecovery: {
-      ...(queue.executableRecovery || {}),
-      latest: { generatedAt: new Date().toISOString(), metrics, transitions },
-      totals: {
-        attempted: Number(queue.executableRecovery?.totals?.attempted || 0) + metrics.attempted,
-        promoted: Number(queue.executableRecovery?.totals?.promoted || 0) + metrics.promoted,
-        unchanged: Number(queue.executableRecovery?.totals?.unchanged || 0) + metrics.unchanged
-      },
-      rule: "Recovery classifications are executable workflow routes. Bounded recovery prioritizes closest-to-publication dossiers and does not rerun unchanged fingerprints indefinitely."
-    }
-  });
-  return {
-    generatedAt: new Date().toISOString(),
-    attempted: attempted.length,
-    promotedStories,
-    metrics,
-    transitions
-  };
-}
-
-function recordNewsLabDossierRecovery(record = {}) {
-  const queue = readJsonFile(newsLabDossierRecoveryQueueFile, null) || defaultNewsLabDossierRecoveryQueue();
-  const now = new Date().toISOString();
-  const readinessClass = record.readinessClass || "NEEDS_ENRICHMENT";
-  const eventId = String(record.eventId || record.clusterId || record.storyId || record.title || crypto.randomUUID()).slice(0, 220);
-  const recoveryDossierSnapshot = newsLabBuildRecoveryDossierSnapshot(record.partialDossier || {}, {
-    ...record,
-    eventId
-  });
-  const fingerprint = recoveryDossierSnapshot.fingerprint || newsLabDossierFingerprint(recoveryDossierSnapshot || {});
-  const existing = (queue.active || []).find(item => item.id === eventId || item.eventId === eventId || item.clusterId === (record.clusterId || eventId));
-  const compact = {
-    id: eventId,
-    eventId,
-    clusterId: record.clusterId || eventId,
-    title: cleanArticleText(record.title || "", 220),
-    category: record.category || "",
-    readinessClass,
-    holdReason: (record.blockingReasons || record.missingEvidence || [record.reason || "needs-dossier-recovery"])[0] || "needs-dossier-recovery",
-    blockingReasons: [...new Set(record.blockingReasons || [])].slice(0, 12),
-    warnings: [...new Set(record.warnings || [])].slice(0, 12),
-    missingEvidence: [...new Set(record.missingEvidence || [])].slice(0, 12),
-    acceptedSourceCount: Number(record.acceptedSourceCount || recoveryDossierSnapshot.sourceRegistry?.length || recoveryDossierSnapshot.sourcePool?.length || 0),
-    rejectedSourceCount: Number(record.rejectedSourceCount || 0),
-    factCount: Number(record.factCount || recoveryDossierSnapshot.factLedger?.metrics?.writingEligibleCount || recoveryDossierSnapshot.factLedger?.writingEligibleFactIds?.length || recoveryDossierSnapshot.knownFacts?.length || 0),
-    acceptedSources: (record.acceptedSources || []).slice(0, 6),
-    rejectedSources: (record.rejectedSources || []).slice(0, 6),
-    partialDossier: recoveryDossierSnapshot || null,
-    dossierRevisionId: recoveryDossierSnapshot.dossierRevisionId || recoveryDossierSnapshot.canonicalDossierIntelligence?.revision?.id || "",
-    canonicalEventSignature: recoveryDossierSnapshot.canonicalEventSignature || null,
-    canonicalDossierIntelligence: recoveryDossierSnapshot.canonicalDossierIntelligence || null,
-    recoveryRequirements: recoveryDossierSnapshot.recoveryRequirements || [],
-    nextAction: record.recommendedAction || newsLabDossierRecoveryAction(readinessClass, record.blockingReasons || []),
-    fingerprint,
-    unchangedSinceLastRecovery: Boolean(existing?.fingerprint && existing.fingerprint === fingerprint),
-    priorityScore: 0,
-    retryCount: Number(record.retryCount || existing?.retryCount || 0),
-    nextRetryAt: record.nextRetryAt || null,
-    state: ["FULL_ARTICLE", "READY_FOR_DEVELOPING_BRIEF"].includes(readinessClass) ? "ready-route" : readinessClass === "REJECTED" ? "learning-only" : "needs-recovery",
-    updatedAt: now,
-    createdAt: record.createdAt || now,
-    preventionLesson: record.preventionLesson || "Collector, Cluster, and Dossier Builder should prevent this failure class before Writer handoff by separating same-event facts, resolving identity, and choosing brief format when evidence is thin.",
-    retentionRule: "This recovery record retains the canonical dossier snapshot: event signature, fact ledger, source provenance, timeline, entities, uncertainty, readiness, image instructions, writer contract, and revision identity."
-  };
-  compact.priorityScore = newsLabDossierRecoveryPriority(compact);
-  const compactTitleKey = cleanArticleText(compact.title || "", 220).toLowerCase();
-  const active = [compact, ...(queue.active || []).filter(item => {
-    if (item.id === compact.id || item.eventId === compact.eventId || item.clusterId === compact.clusterId) return false;
-    const itemTitleKey = cleanArticleText(item.title || "", 220).toLowerCase();
-    return !(compactTitleKey && itemTitleKey === compactTitleKey && String(item.category || "") === String(compact.category || ""));
-  })].slice(0, 250);
-  const reasonCounts = {};
-  const actionCounts = {};
-  active.forEach(item => {
-    reasonCounts[item.holdReason] = Number(reasonCounts[item.holdReason] || 0) + 1;
-    actionCounts[item.nextAction] = Number(actionCounts[item.nextAction] || 0) + 1;
-  });
-  const totals = {
-    queued: active.length,
-    fullArticleReady: active.filter(item => item.readinessClass === "FULL_ARTICLE").length,
-    developingBriefReady: active.filter(item => item.readinessClass === "READY_FOR_DEVELOPING_BRIEF").length,
-    needsEnrichment: active.filter(item => item.readinessClass === "NEEDS_ENRICHMENT").length,
-    needsClusterRepair: active.filter(item => item.readinessClass === "NEEDS_CLUSTER_REPAIR").length,
-    needsIdentityResolution: active.filter(item => item.readinessClass === "NEEDS_IDENTITY_RESOLUTION").length,
-    duplicateEvent: active.filter(item => item.readinessClass === "DUPLICATE_EVENT").length,
-    rejected: active.filter(item => item.readinessClass === "REJECTED").length
-  };
-  const next = {
-    ...queue,
-    updatedAt: now,
-    totals,
-    reasonCounts,
-    actionCounts,
-    active,
-    recentTransitions: [{ at: now, eventId, readinessClass, nextAction: compact.nextAction, holdReason: compact.holdReason }, ...(queue.recentTransitions || [])].slice(0, 200)
-  };
-  writeJsonFile(newsLabDossierRecoveryQueueFile, next);
-  return compact;
-}
-function newsLabApprovalRecoveryQueueSummary(queue = readJsonFile(newsLabApprovalRecoveryQueueFile, null) || defaultNewsLabApprovalRecoveryQueue()) {
-  const totals = queue.totals || {};
-  const rejected = Number(totals.rejected || 0);
-  const attempted = Number(totals.repairAttempted || 0);
-  const successful = Number(totals.repairSuccessful || 0);
-  const approved = Number(totals.approved || 0);
-  const published = Number(totals.published || 0);
-  return {
-    updatedAt: queue.updatedAt || "",
-    scope: queue.scope || "editorial-and-publisher-approval",
-    totals,
-    recoveryRates: {
-      repairAttemptRate: Number((attempted / Math.max(1, rejected)).toFixed(2)),
-      repairSuccessRate: Number((successful / Math.max(1, attempted)).toFixed(2)),
-      approvalAfterRejectionRate: Number((approved / Math.max(1, rejected)).toFixed(2)),
-      publicationAfterRejectionRate: Number((published / Math.max(1, rejected)).toFixed(2))
-    },
-    stageRanking: Object.entries(queue.stageCounts || {}).map(([stage, count]) => ({ stage, count: Number(count || 0) })).sort((a, b) => b.count - a.count),
-    reasonRanking: Object.entries(queue.reasonCounts || {}).map(([reason, count]) => ({ reason, count: Number(count || 0), repairable: true })).sort((a, b) => b.count - a.count),
-    repairTypeSuccess: queue.repairTypeSuccess || {},
-    active: (queue.active || []).slice(0, 30),
-    archived: (queue.archived || []).slice(0, 30),
-    recentTransitions: (queue.recentTransitions || []).slice(0, 50),
-    rule: queue.rule || defaultNewsLabApprovalRecoveryQueue().rule
-  };
-}
-
-function newsLabAggregateApprovalRecord(record = {}) {
-  return /^aggregate-blocked-/i.test(String(record.articleId || record.recordId || record.storyId || ""));
-}
-
-function newsLabExecutableApprovalRecord(record = {}) {
-  return !newsLabAggregateApprovalRecord(record) && newsLabCanExecuteApprovalRepair(record);
-}
-
-function newsLabArchiveNonExecutableApprovalRecord(record = {}, now = new Date().toISOString()) {
-  return {
-    ...record,
-    state: "Needs Fresh Story Object",
-    validation: "blocked-missing-story-snapshot",
-    approvalResult: "approval-held",
-    published: false,
-    repairMethod: (record.repairMethod || "approval-repair") + "+story-object-required",
-    nextAction: "Do not keep aggregate or missing-snapshot records active. The next build must create an exact article ID with a saved Story Object before repair can run.",
-    updatedAt: now,
-    transitions: [...new Set([...(record.transitions || []), "Repair Paused", "Needs Fresh Story Object"])]
-  };
-}
-
-function newsLabApprovalRecoveryRecord(story = {}, context = {}) {
-  const storyId = newsLabStoryObjectId(story);
-  const savedObject = storyId ? getNewsLabStoryObject(storyId) : null;
-  const savedSnapshot = savedObject?.snapshot || null;
-  const incomingSnapshot = story.storySnapshot || newsLabRepairSnapshot(story);
-  const hydratedSnapshot = savedSnapshot
-    ? {
-        ...savedSnapshot,
-        ...incomingSnapshot,
-        body: Array.isArray(incomingSnapshot.body) && incomingSnapshot.body.length ? incomingSnapshot.body : (savedSnapshot.body || []),
-        sources: Array.isArray(incomingSnapshot.sources) && incomingSnapshot.sources.length ? incomingSnapshot.sources : (savedSnapshot.sources || []),
-        storyDossier: incomingSnapshot.storyDossier && Object.keys(incomingSnapshot.storyDossier || {}).length ? incomingSnapshot.storyDossier : (savedSnapshot.storyDossier || null),
-        evidenceEngine: incomingSnapshot.evidenceEngine && Object.keys(incomingSnapshot.evidenceEngine || {}).length ? incomingSnapshot.evidenceEngine : (savedSnapshot.evidenceEngine || null),
-        hydratedFromStoryObject: true
-      }
-    : incomingSnapshot;
-  story = {
-    ...(savedSnapshot || {}),
-    ...story,
-    body: Array.isArray(story.body) && story.body.length ? story.body : (hydratedSnapshot.body || []),
-    sources: Array.isArray(story.sources) && story.sources.length ? story.sources : (hydratedSnapshot.sources || []),
-    storyDossier: story.storyDossier || hydratedSnapshot.storyDossier || null,
-    evidenceEngine: story.evidenceEngine || hydratedSnapshot.evidenceEngine || null,
-    storySnapshot: hydratedSnapshot
-  };
-  const attempts = story.editorRepairReview?.attempts || story.qualityGate?.repairReview?.attempts || [];
-  const initialIssues = [...new Set([
-    ...(attempts[0]?.beforeIssues || []),
-    ...(story.approvalRecoveryInitialIssues || [])
-  ])];
-  const finalIssues = [...new Set([
-    ...(story.qualityGate?.remainingIssues || []),
-    ...(story.qualityGate?.issues || []),
-    ...(context.finalIssues || []),
-    ...newsLabBlockingFinalIssues(story),
-    ...newsLabBlockingEditorFinalIssues(story)
-  ])];
-  const allIssues = [...new Set([...initialIssues, ...finalIssues])].filter(Boolean);
-  if (!allIssues.length && !context.forceRecord) return null;
-  const repairAttempted = Boolean(story.editorRepairReview?.applied || attempts.length || story.qualityGate?.correctedIssues?.length);
-  const correctedIssues = [...new Set([
-    ...(story.qualityGate?.correctedIssues || []),
-    ...attempts.flatMap(attempt => attempt.correctedIssues || [])
-  ])];
-  const repairSuccessful = correctedIssues.length > 0 || (repairAttempted && finalIssues.length === 0);
-  const approvalPassed = Boolean((story.qualityGate?.passed || context.approved) && finalIssues.length === 0);
-  const published = Boolean(context.published);
-  const stage = context.stage || "approval-gate";
-  const state = published
-    ? "Published"
-    : approvalPassed
-      ? "Ready Publish"
-      : repairAttempted
-        ? "Still Failed"
-        : "Repair Needed";
-  const recordId = String((story.id || story.topicKey || cleanArticleText(story.title || "", 80)) + ":" + stage).replace(/\s+/g, "-").slice(0, 180);
-  return {
-    recordId,
-    articleId: story.id || story.topicKey || "",
-    stage,
-    title: cleanArticleText(story.title || "", 180),
-    storySnapshot: story.storySnapshot || newsLabRepairSnapshot(story),
-    fullRejectPackage: newsLabFullRejectPackage(story, stage),
-    reason: allIssues[0] || "",
-    reasons: allIssues,
-    repairAttempt: Number(story.editorRepairReview?.attemptCount || attempts.length || 0),
-    repairMethod: story.qualityGate?.action || story.editorialCoach?.action || context.repairMethod || "",
-    validation: finalIssues.length ? "failed-validation" : "passed-validation",
-    approvalResult: approvalPassed ? "approval-passed" : "approval-held",
-    published,
-    state,
-    score: Number(story.qualityGate?.score || 0),
-    transitions: [
-      "Draft Created",
-      stage === "final-publisher-gate" ? "Publisher Review" : "Editorial Review",
-      "Rejected",
-      repairAttempted ? "Repair Running" : "Repair Needed",
-      repairAttempted ? "Waiting Validation" : "",
-      finalIssues.length ? "Validation Failed" : "Validation Passed",
-      approvalPassed ? "Approval Passed" : "Approval Held",
-      published ? "Published" : approvalPassed ? "Ready Publish" : "Still Failed"
-    ].filter(Boolean),
-    attempts: attempts.map(attempt => ({
-      attempt: attempt.attempt,
-      beforeIssues: attempt.beforeIssues || [],
-      afterIssues: attempt.afterIssues || [],
-      correctedIssues: attempt.correctedIssues || [],
-      passed: Boolean(attempt.passed),
-      action: attempt.action || ""
-    })),
-    updatedAt: new Date().toISOString()
-  };
-}
-
-function recordNewsLabApprovalRecoveryQueue(stories = [], context = {}) {
-  const queue = readJsonFile(newsLabApprovalRecoveryQueueFile, null) || defaultNewsLabApprovalRecoveryQueue();
-  const records = (Array.isArray(stories) ? stories : []).map(story => newsLabApprovalRecoveryRecord(story, context)).filter(Boolean);
-  if (!records.length) {
-    queue.updatedAt = new Date().toISOString();
-    writeJsonFile(newsLabApprovalRecoveryQueueFile, queue);
-    return queue;
-  }
-  const byId = new Map([...(queue.active || []), ...(queue.archived || [])].map(item => [item.recordId, item]));
-  records.forEach(record => {
-    const previous = byId.get(record.recordId) || {};
-    byId.set(record.recordId, { ...previous, ...record, firstSeenAt: previous.firstSeenAt || record.updatedAt, updatedAt: record.updatedAt });
-  });
-  const now = new Date().toISOString();
-  const allRecords = [...byId.values()].map(record => {
-    if (record.published || record.state === "Published") return record;
-    if (!newsLabExecutableApprovalRecord(record)) return newsLabArchiveNonExecutableApprovalRecord(record, now);
-    return record;
-  });
-  const archived = allRecords
-    .filter(record => record.published || record.state === "Published" || record.state === "Needs Fresh Story Object")
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, 800);
-  const active = allRecords
-    .filter(record => !record.published && record.state !== "Published" && record.state !== "Needs Fresh Story Object" && newsLabExecutableApprovalRecord(record))
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, 800);
-  const counted = [...archived, ...active];
-  const stageCounts = {};
-  const reasonCounts = {};
-  const repairTypeSuccess = {};
-  counted.forEach(record => {
-    stageCounts[record.stage || "unknown"] = Number(stageCounts[record.stage || "unknown"] || 0) + 1;
-    (record.reasons || [record.reason]).filter(Boolean).forEach(reason => {
-      reasonCounts[reason] = Number(reasonCounts[reason] || 0) + 1;
-      const slot = repairTypeSuccess[reason] || { attempted: 0, successful: 0, approved: 0, published: 0 };
-      if (record.repairAttempt > 0) slot.attempted += 1;
-      if (record.validation === "passed-validation") slot.successful += 1;
-      if (newsLabApprovalPassedState(record.approvalResult)) slot.approved += 1;
-      if (record.published) slot.published += 1;
-      repairTypeSuccess[reason] = slot;
-    });
-  });
-  Object.keys(repairTypeSuccess).forEach(reason => {
-    const slot = repairTypeSuccess[reason];
-    slot.successRate = Number((slot.successful / Math.max(1, slot.attempted)).toFixed(2));
-    slot.approvalRate = Number((slot.approved / Math.max(1, slot.attempted)).toFixed(2));
-    slot.publicationRate = Number((slot.published / Math.max(1, slot.attempted)).toFixed(2));
-  });
-  queue.updatedAt = now;
-  queue.stageCounts = stageCounts;
-  queue.reasonCounts = reasonCounts;
-  queue.repairTypeSuccess = repairTypeSuccess;
-  queue.active = active;
-  queue.archived = archived;
-  queue.totals = {
-    rejected: counted.length,
-    repairAttempted: counted.filter(record => record.repairAttempt > 0).length,
-    repairSuccessful: counted.filter(record => record.validation === "passed-validation").length,
-    resubmitted: counted.filter(record => record.repairAttempt > 0 && record.approvalResult).length,
-    approved: counted.filter(record => newsLabApprovalPassedState(record.approvalResult)).length,
-    published: counted.filter(record => record.published).length,
-    stillFailed: counted.filter(record => record.state === "Still Failed").length
-  };
-  queue.recentTransitions = [
-    ...records.map(record => ({
-      at: record.updatedAt,
-      articleId: record.articleId,
-      title: record.title,
-      stage: record.stage,
-      reason: record.reason,
-      state: record.state,
-      transitions: record.transitions
-    })),
-    ...(queue.recentTransitions || [])
-  ].slice(0, 250);
-  writeJsonFile(newsLabApprovalRecoveryQueueFile, queue);
-  return queue;
-}
-
-
-function newsLabRecentRejectedStoryObjectsForRepair(limit = 24) {
-  const store = readJsonFile(newsLabStoryObjectsFile, null) || defaultNewsLabStoryObjects();
-  const stories = store.stories && typeof store.stories === "object" ? Object.values(store.stories) : [];
-  return stories
-    .filter(item => String(item.status || "").includes("rejected"))
-    .filter(item => {
-      const snapshot = item.snapshot || {};
-      return Array.isArray(snapshot.body) && snapshot.body.length
-        && Array.isArray(snapshot.sources) && snapshot.sources.length
-        && snapshot.storyDossier;
-    })
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, Math.max(1, Number(limit || 24)))
-    .map(item => {
-      const snapshot = item.snapshot || {};
-      const issues = [...new Set([
-        ...(item.editorialNotes?.issues || []),
-        ...(snapshot.qualityGate?.remainingIssues || []),
-        ...(snapshot.qualityGate?.issues || [])
-      ].filter(Boolean))];
-      return {
-        ...snapshot,
-        id: snapshot.id || item.storyId,
-        title: item.currentHeadline || snapshot.title || item.title || "",
-        storySnapshot: snapshot,
-        qualityGate: {
-          ...(snapshot.qualityGate || {}),
-          issues,
-          remainingIssues: issues,
-          passed: false,
-          action: "durable-rejected-story-object-queued-for-repair"
-        },
-        durableRejectedStoryObject: {
-          storyId: item.storyId,
-          status: item.status,
-          loadedAt: new Date().toISOString(),
-          rule: "Rejected Story Objects with body, sources, and dossier must re-enter approval repair until they pass or record a specific non-repairable reason."
-        }
-      };
-    });
-}
-
-function newsLabRepairSnapshot(story = {}) {
-  return {
-    id: story.id || "",
-    topicKey: story.topicKey || "",
-    eventId: story.eventId || "",
-    category: story.category || "",
-    title: story.title || "",
-    originalHeadline: story.originalHeadline || "",
-    summary: story.summary || "",
-    articleSummary: story.articleSummary || "",
-    body: Array.isArray(story.body) ? story.body.slice(0, 10) : [],
-    sources: (story.sources || []).slice(0, 12),
-    storyDossier: story.storyDossier || null,
-    evidenceEngine: story.evidenceEngine || null,
-    contextEngine: story.contextEngine || null,
-    sourceIntelligence: story.sourceIntelligence || null,
-    articleReadDepth: story.articleReadDepth || null,
-    qualityGate: story.qualityGate || null,
-    editorialCoach: story.editorialCoach || null,
-    headlineAudit: story.headlineAudit || null,
-    image: story.image || null,
-    imageProvenance: story.imageProvenance || null,
-    popularity: story.popularity || null,
-    generatedAt: story.generatedAt || new Date().toISOString()
-  };
-}
-
-
-function defaultNewsLabStoryObjects() {
-  return {
-    version: "20260706-story-objects-v1",
-    updatedAt: "",
-    purpose: "Permanent article state store so repair can reopen the Story object with dossier, evidence, body, headline history, and editorial notes.",
-    stories: {},
-    recentStoryIds: [],
-    rule: "Repair must load the Story object first. A rejected headline cannot be repaired from keywords alone."
-  };
-}
-
-function newsLabStoryObjectId(story = {}) {
-  return String(story.id || story.topicKey || story.eventId || story.title || "")
-    .replace(/\s+/g, "-")
-    .slice(0, 220);
-}
-
-function newsLabStoryObjectFromStory(story = {}, context = {}) {
-  const id = newsLabStoryObjectId(story);
-  if (!id) return null;
-  const issues = [...new Set([
-    ...(story.qualityGate?.remainingIssues || []),
-    ...(story.qualityGate?.issues || []),
-    ...newsLabBlockingFinalIssues(story),
-    ...newsLabBlockingEditorFinalIssues(story)
-  ])];
-  return {
-    storyId: id,
-    updatedAt: new Date().toISOString(),
-    status: context.status || (issues.length ? "rejected" : "approved"),
-    stage: context.stage || "article-approval",
-    category: story.category || "",
-    title: story.title || "",
-    currentHeadline: story.title || "",
-    originalHeadline: story.originalHeadline || story.sources?.[0]?.title || "",
-    rejectedHeadlines: issues.length ? [...new Set([story.title, ...(story.headlineAudit?.rejectedHeadlines || [])].filter(Boolean))].slice(-20) : [...new Set([...(story.headlineAudit?.rejectedHeadlines || [])].filter(Boolean))].slice(-20),
-    repairHistory: [
-      ...(story.repairHistory || []),
-      ...(story.editorRepairReview?.attempts || []).map(attempt => ({
-        at: new Date().toISOString(),
-        type: "editor-repair-review",
-        beforeIssues: attempt.beforeIssues || [],
-        afterIssues: attempt.afterIssues || [],
-        correctedIssues: attempt.correctedIssues || [],
-        passed: Boolean(attempt.passed),
-        action: attempt.action || ""
-      }))
-    ].slice(-40),
-    editorialNotes: {
-      issues,
-      qualityGate: story.qualityGate || null,
-      editorialCoach: story.editorialCoach || null,
-      finalSemanticReview: story.finalSemanticReview || null,
-      approvalRecoveryReview: story.approvalRecoveryReview || null
-    },
-    snapshot: newsLabRepairSnapshot(story),
-    headlineRepairInput: {
-      storyId: id,
-      primaryActor: story.storyDossier?.entities?.people?.[0] || story.storyDossier?.entities?.organizations?.[0] || "",
-      action: story.storyDossier?.whatHappened || story.storyDossier?.knownFacts?.[0] || story.summary || "",
-      consequence: story.storyDossier?.whyItMatters || story.storyDossier?.knownFacts?.[1] || "",
-      bodyLead: Array.isArray(story.body) ? story.body[0] || "" : "",
-      evidenceFacts: [
-        ...(story.storyDossier?.knownFacts || []),
-        ...(story.storyDossier?.agreement?.sharedClaims || []),
-        ...(story.evidenceEngine?.classifiedFacts || []).map(item => item.fact)
-      ].filter(Boolean).slice(0, 12),
-      sourceSummary: (story.sources || []).slice(0, 6).map(source => ({
-        source: source.source || source.name || "",
-        title: source.title || "",
-        summary: source.summary || source.articleSummary || "",
-        url: source.url || ""
-      }))
-    }
-  };
-}
-
-function recordNewsLabStoryObjects(stories = [], context = {}) {
-  const store = readJsonFile(newsLabStoryObjectsFile, null) || defaultNewsLabStoryObjects();
-  const existingStories = store.stories && typeof store.stories === "object" ? store.stories : {};
-  const recentIds = Array.isArray(store.recentStoryIds) ? store.recentStoryIds : [];
-  (Array.isArray(stories) ? stories : []).forEach(story => {
-    const object = newsLabStoryObjectFromStory(story, context);
-    if (!object) return;
-    const previous = existingStories[object.storyId] || {};
-    const previousSnapshot = previous.snapshot || {};
-    const objectSnapshot = object.snapshot || {};
-    const mergedSnapshot = {
-      ...previousSnapshot,
-      ...objectSnapshot,
-      body: Array.isArray(objectSnapshot.body) && objectSnapshot.body.length ? objectSnapshot.body : (previousSnapshot.body || []),
-      sources: Array.isArray(objectSnapshot.sources) && objectSnapshot.sources.length ? objectSnapshot.sources : (previousSnapshot.sources || []),
-      storyDossier: objectSnapshot.storyDossier && Object.keys(objectSnapshot.storyDossier || {}).length ? objectSnapshot.storyDossier : (previousSnapshot.storyDossier || null),
-      evidenceEngine: objectSnapshot.evidenceEngine && Object.keys(objectSnapshot.evidenceEngine || {}).length ? objectSnapshot.evidenceEngine : (previousSnapshot.evidenceEngine || null),
-      storySnapshotRetained: Boolean((previousSnapshot.body || []).length || (previousSnapshot.sources || []).length || previousSnapshot.storyDossier)
-    };
-    const hydratedTopLevel = {
-      body: Array.isArray(object.body) && object.body.length ? object.body : (mergedSnapshot.body || []),
-      sources: Array.isArray(object.sources) && object.sources.length ? object.sources : (mergedSnapshot.sources || []),
-      storyDossier: object.storyDossier || mergedSnapshot.storyDossier || null,
-      evidenceEngine: object.evidenceEngine || mergedSnapshot.evidenceEngine || null,
-      contextEngine: object.contextEngine || mergedSnapshot.contextEngine || null,
-      image: object.image || mergedSnapshot.image || null,
-      imageProvenance: object.imageProvenance || mergedSnapshot.imageProvenance || null
-    };
-    const incomingHasSnapshot = Boolean(
-      (Array.isArray(objectSnapshot.body) && objectSnapshot.body.length)
-      || (Array.isArray(objectSnapshot.sources) && objectSnapshot.sources.length)
-      || objectSnapshot.storyDossier
-    );
-    const retainedSnapshotOnly = !incomingHasSnapshot && Boolean(
-      (Array.isArray(previousSnapshot.body) && previousSnapshot.body.length)
-      || (Array.isArray(previousSnapshot.sources) && previousSnapshot.sources.length)
-      || previousSnapshot.storyDossier
-    );
-    existingStories[object.storyId] = {
-      ...previous,
-      ...object,
-      ...hydratedTopLevel,
-      snapshot: mergedSnapshot,
-      storyObjectHydration: {
-        hydratedFromSnapshot: Boolean(hydratedTopLevel.body.length || hydratedTopLevel.sources.length || hydratedTopLevel.storyDossier),
-        retainedSnapshotOnly,
-        rule: "Story Objects must remain executable. Compact approval records may update status, but they must not erase body, sources, dossier, evidence, or image state needed for repair/publication."
-      },
-      headlineRepairInput: {
-        ...(previous.headlineRepairInput || {}),
-        ...(object.headlineRepairInput || {}),
-        bodyLead: object.headlineRepairInput?.bodyLead || previous.headlineRepairInput?.bodyLead || mergedSnapshot.body?.[0] || "",
-        evidenceFacts: (object.headlineRepairInput?.evidenceFacts || []).length
-          ? object.headlineRepairInput.evidenceFacts
-          : (previous.headlineRepairInput?.evidenceFacts || mergedSnapshot.storyDossier?.knownFacts || []).slice(0, 12),
-        sourceSummary: (object.headlineRepairInput?.sourceSummary || []).length
-          ? object.headlineRepairInput.sourceSummary
-          : (previous.headlineRepairInput?.sourceSummary || (mergedSnapshot.sources || []).slice(0, 6).map(source => ({
-              source: source.source || source.name || "",
-              title: source.title || "",
-              summary: source.summary || source.articleSummary || "",
-              url: source.url || ""
-            })))
-      },
-      firstSeenAt: previous.firstSeenAt || object.updatedAt,
-      headlineHistory: [...new Set([
-        ...(previous.headlineHistory || []),
-        object.currentHeadline,
-        object.originalHeadline
-      ].filter(Boolean))].slice(-30),
-      repairHistory: [...(previous.repairHistory || []), ...(object.repairHistory || [])].slice(-60)
-    };
-    recentIds.push(object.storyId);
-  });
-  const recentStoryIds = [...new Set(recentIds)].slice(-1200);
-  const allowed = new Set(recentStoryIds);
-  Object.keys(existingStories).forEach(id => {
-    if (!allowed.has(id)) delete existingStories[id];
-  });
-  const executableCount = Object.values(existingStories).filter(item => Array.isArray(item.body) && item.body.length && (item.storyDossier || item.evidenceEngine || (Array.isArray(item.sources) && item.sources.length))).length;
-  const shellCount = Object.values(existingStories).filter(item => !(Array.isArray(item.body) && item.body.length)).length;
-  const next = {
-    ...store,
-    updatedAt: new Date().toISOString(),
-    stories: existingStories,
-    recentStoryIds,
-    storyCount: Object.keys(existingStories).length,
-    executableStoryCount: executableCount,
-    shellStoryCount: shellCount,
-    hydrationRule: "Top-level Story Objects are hydrated from retained snapshots so repair workers, approval recovery, and publisher handoff can execute without losing article context."
-  };
-  writeJsonFile(newsLabStoryObjectsFile, next);
-  return next;
-}
-
-function newsLabLatestDailyMemoryStories(limit = 90) {
-  const memory = readJsonFile(dailyArticleMemoryFile, null) || {};
-  const days = Object.keys(memory.days || {}).sort();
-  const day = memory.days?.[days[days.length - 1]] || {};
-  const stories = Array.isArray(day.stories) ? day.stories : Object.values(day.stories || {});
-  return stories
-    .filter(story => story && (story.title || story.summary || story.lastArticleSummary))
-    .sort((a, b) => Number(b.seenCount || b.engagementScore || 0) - Number(a.seenCount || a.engagementScore || 0))
-    .slice(0, Math.max(1, Number(limit || 90)))
-    .map(story => cleanNewsLabSourceStory({
-      id: story.key || story.id || story.url || story.title,
-      key: story.key || story.id || "",
-      title: story.title || "",
-      originalHeadline: story.title || "",
-      source: story.source || (story.sources || [])[0] || "",
-      category: story.category || "",
-      url: story.url || (story.urls || [])[0] || "",
-      published: story.published || story.firstSeenAt || "",
-      summary: story.lastArticleSummary || (story.summaries || [])[0] || story.summary || "",
-      articleSummary: story.lastArticleSummary || (story.summaries || []).join(" ") || story.summary || "",
-      description: story.lastArticleSummary || (story.summaries || [])[0] || story.summary || "",
-      sources: (story.sources || []).map((source, index) => ({
-        source,
-        title: story.title || "",
-        url: (story.urls || [])[index] || story.url || "",
-        summary: (story.summaries || [])[index] || story.lastArticleSummary || ""
-      })),
-      seenCount: story.seenCount || 0,
-      popularity: {
-        relatedArticleCount: Number(story.seenCount || 1),
-        uniqueSourceCount: Math.max(1, (story.sources || []).length || 1),
-        reportingScore: Number(story.engagementScore || story.seenCount || 1)
-      }
-    }));
-}
-
-function getNewsLabStoryObject(storyId = "") {
-  const store = readJsonFile(newsLabStoryObjectsFile, null) || defaultNewsLabStoryObjects();
-  return store.stories?.[storyId] || null;
-}
-
-function getNewsLabRepairSnapshotForRecord(record = {}) {
-  const recordSnapshot = record.storySnapshot || record.snapshot || null;
-  const storyObject = getNewsLabStoryObject(record.articleId || record.storyId || "");
-  const objectSnapshot = storyObject?.snapshot || null;
-  if (objectSnapshot && recordSnapshot) {
-    return {
-      ...recordSnapshot,
-      ...objectSnapshot,
-      sources: (objectSnapshot.sources && objectSnapshot.sources.length) ? objectSnapshot.sources : (recordSnapshot.sources || []),
-      body: (objectSnapshot.body && objectSnapshot.body.length) ? objectSnapshot.body : (recordSnapshot.body || []),
-      storyDossier: objectSnapshot.storyDossier || recordSnapshot.storyDossier || null,
-      evidenceEngine: objectSnapshot.evidenceEngine || recordSnapshot.evidenceEngine || null,
-      sourceIntelligence: objectSnapshot.sourceIntelligence || recordSnapshot.sourceIntelligence || null,
-      storyObjectLoaded: true
-    };
-  }
-  return objectSnapshot || recordSnapshot || null;
-}
-
-function newsLabSecondPassArticleRepair(story = {}, beforeIssues = [], headlineSecondPass = {}) {
-  const headline = headlineSecondPass?.afterTitle || story.title || "";
-  const rebuiltBody = newsLabRebuildArticleBodyFromDossierForRepair({ ...story, title: headline });
-  const repaired = newsLabCleanRepairedArticleBeforeValidation({
-    ...story,
-    title: headline,
-    body: Array.isArray(rebuiltBody) && rebuiltBody.length ? rebuiltBody : (Array.isArray(story.body) ? story.body : []),
-    summary: cleanArticleText((Array.isArray(rebuiltBody) && rebuiltBody[0]) || story.summary || story.articleSummary || headline, 260),
-    secondPassArticleRepair: {
-      applied: true,
-      repairedAt: new Date().toISOString(),
-      beforeIssues,
-      headlineChanged: Boolean(headlineSecondPass?.afterTitle && headlineSecondPass.afterTitle !== story.title),
-      rule: "Approval repair can rebuild article body from the Story Snapshot/Dossier, then resubmit the repaired article to validation and publication."
-    }
-  });
-  return newsLabPreventKnownApprovalFailures(repaired, {
-    stage: "second-pass-article-repair",
-    beforeIssues
-  });
-}
-
-function newsLabCanExecuteApprovalRepair(record = {}) {
-  if (newsLabAggregateApprovalRecord(record)) return false;
-  const snapshot = getNewsLabRepairSnapshotForRecord(record);
-  if (!snapshot) return false;
-  const hasBodyOrSummary = Boolean((Array.isArray(snapshot.body) && snapshot.body.length) || snapshot.summary || snapshot.articleSummary);
-  const hasEvidenceContext = Boolean(
-    (Array.isArray(snapshot.sources) && snapshot.sources.length)
-    || snapshot.storyDossier
-    || snapshot.evidenceEngine
-    || snapshot.sourceIntelligence
-  );
-  return hasBodyOrSummary && hasEvidenceContext;
-}
-
-
-function newsLabApprovalRepairIssueCounts(records = []) {
-  const counts = {};
-  records.forEach(record => {
-    (record.reasons || [record.reason]).filter(Boolean).forEach(reason => {
-      counts[reason] = Number(counts[reason] || 0) + 1;
-    });
-  });
-  return counts;
-}
-
-function newsLabRecalculateApprovalQueue(queue = defaultNewsLabApprovalRecoveryQueue()) {
-  const now = new Date().toISOString();
-  const incomingActive = Array.isArray(queue.active) ? queue.active : [];
-  const active = incomingActive
-    .map(record => newsLabExecutableApprovalRecord(record) ? record : newsLabArchiveNonExecutableApprovalRecord(record, now))
-    .filter(record => record.state !== "Needs Fresh Story Object");
-  const archived = [
-    ...(Array.isArray(queue.archived) ? queue.archived : []),
-    ...incomingActive
-      .filter(record => !newsLabExecutableApprovalRecord(record))
-      .map(record => newsLabArchiveNonExecutableApprovalRecord(record, now))
-  ].slice(-1000);
-  const counted = [...archived, ...active];
-  const stageCounts = {};
-  const reasonCounts = {};
-  const repairTypeSuccess = {};
-  counted.forEach(record => {
-    stageCounts[record.stage || "unknown"] = Number(stageCounts[record.stage || "unknown"] || 0) + 1;
-    (record.reasons || [record.reason]).filter(Boolean).forEach(reason => {
-      reasonCounts[reason] = Number(reasonCounts[reason] || 0) + 1;
-      const slot = repairTypeSuccess[reason] || { attempted: 0, successful: 0, approved: 0, published: 0 };
-      if (record.repairAttempt > 0) slot.attempted += 1;
-      if (record.validation === "passed-validation") slot.successful += 1;
-      if (newsLabApprovalPassedState(record.approvalResult)) slot.approved += 1;
-      if (record.published) slot.published += 1;
-      repairTypeSuccess[reason] = slot;
-    });
-  });
-  Object.keys(repairTypeSuccess).forEach(reason => {
-    const slot = repairTypeSuccess[reason];
-    slot.successRate = Number((slot.successful / Math.max(1, slot.attempted)).toFixed(2));
-    slot.approvalRate = Number((slot.approved / Math.max(1, slot.attempted)).toFixed(2));
-    slot.publicationRate = Number((slot.published / Math.max(1, slot.attempted)).toFixed(2));
-  });
-  return {
-    ...queue,
-    updatedAt: now,
-    active,
-    archived,
-    stageCounts,
-    reasonCounts,
-    repairTypeSuccess,
-    totals: {
-      rejected: counted.length,
-      repairAttempted: counted.filter(record => record.repairAttempt > 0).length,
-      repairSuccessful: counted.filter(record => record.validation === "passed-validation").length,
-      resubmitted: counted.filter(record => record.repairAttempt > 0 && record.validation && record.validation !== "blocked-missing-story-snapshot").length,
-      approved: counted.filter(record => newsLabApprovalPassedState(record.approvalResult)).length,
-      published: counted.filter(record => record.published).length,
-      stillFailed: counted.filter(record => record.state === "Still Failed").length
-    }
-  };
-}
-
-function newsLabRepairSystemForIssue(issue = "") {
-  const value = String(issue || "").toLowerCase();
-  if (/headline|title|publisher-headline|semantic-title|word-salad|generic-weak/.test(value)) return "Headline Intelligence";
-  if (/story-identity|mixed-source|topic-drift|paragraph-topic|lead-topic|dossier|evidence|fact|context|missing-direct-writing/.test(value)) return "Story Dossier Builder";
-  if (/image|photo|pexels|pixabay|visual/.test(value)) return "Image Intelligence";
-  if (/summary|body|sentence|repetitive|copied|process-language|behind-scenes|template|placeholder|grammar|transition/.test(value)) return "Publishing Editor";
-  if (/source|feed|full-read|provider|latency|timeout/.test(value)) return "Feed Intelligence";
-  return "Application Intelligence";
-}
-
-function newsLabRepairNeedsArticleRewrite(issues = []) {
-  return (Array.isArray(issues) ? issues : []).some(issue =>
-    /story-identity|mixed-source|topic-drift|paragraph-topic|lead-topic|body|summary|context|fact|evidence|template|process-language|sentence|repetitive|copied|source-fragment|missing-reporting/i.test(issue)
-  );
-}
-
-function newsLabRepairNeedsImage(issues = []) {
-  return (Array.isArray(issues) ? issues : []).some(issue => /image/i.test(issue));
-}
-
-function newsLabRepairNeedsHeadlineOnly(issues = []) {
-  const list = Array.isArray(issues) ? issues : [];
-  return list.length > 0 && list.every(issue => /headline|title|publisher-headline|semantic-title|generic-weak/i.test(issue));
-}
-
-
-function newsLabApprovalPassedState(value = "") {
-  return new Set(["approval-passed", "approval-passed-awaiting-publication", "approval-published", "approval-passed-not-visible"]).has(String(value || ""));
-}
-
-function newsLabAcquireReplacementImageForRepair(story = {}, beforeIssues = []) {
-  const normalized = newsLabNormalizeStoryImage(story, null);
-  const sourceText = `${normalized?.source || ""} ${normalized?.license || ""} ${normalized?.provenance?.source || ""}`;
-  const imageText = `${normalized?.primary || ""} ${normalized?.fallback || ""} ${normalized?.alt || ""} ${normalized?.query || ""}`;
-  const approvedProvider = /Pexels|Pixabay|Unsplash|CE-generated|Pexels local asset/i.test(sourceText);
-  const fallbackLike = /logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|placeholder/i.test(`${sourceText} ${imageText}`);
-  const imageFindings = technicalEditorFindings({ ...story, image: normalized }, "news-lab").filter(finding => /image/i.test(finding.code || finding.message || ""));
-  const accepted = approvedProvider && !fallbackLike && imageFindings.length === 0;
-  const imageBrief = {
-    articleId: story.id || story.topicKey || story.storyObject?.storyId || "",
-    title: story.title || "",
-    category: newsLabCategory(story),
-    query: normalized?.query || newsLabImageForStory(story)?.query || story.title || "news reporting",
-    reason: beforeIssues.filter(issue => /image/i.test(issue)).join(", ") || "image-repair-required",
-    status: accepted ? "replacement-image-attached" : "needs-provider-or-generated-image",
-    providers: [pexelsApiKey ? "Pexels" : "Pexels key missing", unsplashAccessKey ? "Unsplash" : "Unsplash key missing", pixabayApiKey ? "Pixabay" : "Pixabay key missing", "CE-generated image brief"],
-    guard: "Replacement image must match story topic and carry approved provenance before it clears image validation."
-  };
-  return {
-    image: normalized,
-    accepted,
-    findings: imageFindings.map(finding => finding.code || finding.message || "image-finding"),
-    workItem: imageBrief
-  };
-}
-
-function newsLabFreshRepairValidation(story = {}, beforeIssues = [], context = {}) {
-  const resetStory = {
-    ...story,
-    qualityGate: {
-      ...(story.qualityGate || {}),
-      issues: [],
-      remainingIssues: [],
-      passed: false
-    },
-    editorEnforcement: {
-      ...(story.editorEnforcement || {}),
-      finalIssues: []
-    },
-    contentLaneQuality: {
-      ...(story.contentLaneQuality || {}),
-      issues: []
-    }
-  };
-  const freshIssues = [...new Set([
-    ...newsLabPublicArticleIssues(resetStory),
-    ...newsLabBlockingFinalIssues(resetStory),
-    ...newsLabBlockingEditorFinalIssues(resetStory)
-  ].filter(Boolean))];
-  const correctedIssues = [...new Set((beforeIssues || []).filter(issue => !freshIssues.includes(issue)))];
-  const complete = newsLabCompleteArticleStory(resetStory);
-  const shelfReady = freshIssues.length === 0 && complete && newsLabShelfDisplayReadyStory({
-    ...resetStory,
-    qualityGate: { ...(resetStory.qualityGate || {}), issues: [], remainingIssues: [], passed: true }
-  });
-  const score = Math.max(Number(resetStory.qualityGate?.score || 0), Number(newsLabPublicArticleScore(resetStory) || 0));
-  return {
-    ...resetStory,
-    qualityGate: {
-      ...(resetStory.qualityGate || {}),
-      issues: freshIssues,
-      remainingIssues: freshIssues,
-      correctedIssues,
-      passed: shelfReady,
-      score,
-      action: freshIssues.length ? (context.failedAction || "fresh-repair-validation-still-blocked") : (context.passedAction || "fresh-repair-validation-passed")
-    },
-    editorEnforcement: {
-      ...(resetStory.editorEnforcement || {}),
-      finalIssues: freshIssues,
-      freshRepairValidation: true
-    },
-    contentLaneQuality: {
-      ...(resetStory.contentLaneQuality || {}),
-      issues: freshIssues,
-      freshRepairValidation: true
-    },
-    repairValidation: {
-      stage: context.stage || "fresh-repair-validation",
-      beforeIssues: beforeIssues || [],
-      freshIssues,
-      correctedIssues,
-      complete,
-      shelfReady,
-      rule: "Post-repair approval must be based on fresh validation from the repaired article, not stale rejection codes copied from the original failure."
-    }
-  };
-}
-function newsLabLifecycleTeachingSignal(story = {}, beforeIssues = [], afterIssues = [], system = "News Lab") {
-  const correctedIssues = (beforeIssues || []).filter(issue => !(afterIssues || []).includes(issue));
-  const remainingIssues = (afterIssues || []).filter(issue => (beforeIssues || []).includes(issue));
-  const responsibleSystems = [...new Set((beforeIssues || []).map(newsLabRepairSystemForIssue))];
-  return {
-    at: new Date().toISOString(),
-    storyId: story.id || story.topicKey || story.storyDossier?.storyId || "",
-    title: story.title || "",
-    system,
-    responsibleSystems,
-    beforeIssues,
-    afterIssues,
-    correctedIssues,
-    remainingIssues,
-    teaching: correctedIssues.map(issue => ({
-      issue,
-      responsibleSystem: newsLabRepairSystemForIssue(issue),
-      recognize: "Detect this issue before publishing by comparing the headline, lead, body, dossier, and source evidence for the same event identity.",
-      fix: /headline|title/i.test(issue)
-        ? "Generate the headline from the Story Dossier and completed article, then re-run the headline editor before the full validator."
-        : /lead-topic|identity|mixed-source|topic/i.test(issue)
-          ? "Rebuild the lead/body from one clean event dossier and move the repair upstream to Cluster or Story Dossier Builder."
-          : "Let the Publishing Editor repair the language issue, then immediately revalidate the draft.",
-      prevent: "Send this teaching signal upstream and downstream so the subsystem that caused the issue changes its next draft behavior."
-    })),
-    rule: "Every repaired article must teach the subsystem that caused the issue, not only the subsystem that detected it."
-  };
-}
-
-function newsLabRepairHeadlineDossier(snapshot = {}, beforeIssues = []) {
-  const dossier = snapshot.storyDossier || {};
-  const facts = [
-    dossier.whatHappened,
-    ...(dossier.knownFacts || []),
-    ...(dossier.agreement?.sharedClaims || []),
-    snapshot.summary,
-    snapshot.articleSummary,
-    ...(Array.isArray(snapshot.body) ? snapshot.body.slice(0, 3) : []),
-    ...(snapshot.sources || []).slice(0, 4).flatMap(source => [source.title, source.summary, source.articleSummary])
-  ].filter(Boolean).join(" ");
-  const entities = [
-    ...(dossier.entities?.people || []),
-    ...(dossier.entities?.organizations || []),
-    ...(storyNamedEntities({ title: snapshot.title || "", summary: facts }) || [])
-  ].filter(Boolean);
-  const locations = [
-    ...(dossier.entities?.locations || []),
-    ...(snapshot.sources || []).map(source => source.location).filter(Boolean)
-  ].filter(Boolean);
-  return {
-    who: cleanArticleText(entities[0] || newsLabHeadlineSubjectFromDossier(snapshot, facts) || "", 80),
-    whatHappened: cleanArticleText(dossier.whatHappened || dossier.knownFacts?.[0] || snapshot.summary || "", 180),
-    where: cleanArticleText(locations[0] || "", 80),
-    whyItMatters: cleanArticleText(dossier.whyItMatters || dossier.knownFacts?.[1] || "", 180),
-    bestVerb: cleanArticleText(newsLabActionPhraseFromText(facts, newsLabCategory(snapshot)), 90),
-    consequence: cleanArticleText(dossier.knownFacts?.[1] || dossier.whyItMatters || snapshot.summary || "", 160),
-    forbiddenCopiedPhrases: [snapshot.originalHeadline, ...(snapshot.sources || []).map(source => source.title)].filter(Boolean).slice(0, 8),
-    beforeIssues
-  };
-}
-
-function newsLabCleanRepairHeadlineCandidate(candidate = "") {
-  let title = newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(candidate || "", 160)).replace(/[,.!?;:]+$/g, "").trim());
-  if (!title) return "";
-  title = title
-    .replace(/\b(Story Focuses On|Story Centers On|Story Is Still Developing As|Story Is Still Developing|More Details Clarify|Adds New Confirmed Details)\b.*$/i, "")
-    .replace(/\b(Update Centers On|Report Adds|Development Focus)\b/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  let words = title.split(/\s+/).filter(Boolean);
-  for (let size = 6; size >= 2; size -= 1) {
-    let changed = true;
-    while (changed) {
-      changed = false;
-      for (let index = 0; index + size * 2 <= words.length; index += 1) {
-        const left = words.slice(index, index + size).join(" ").toLowerCase();
-        const right = words.slice(index + size, index + size * 2).join(" ").toLowerCase();
-        if (left && left === right) {
-          words.splice(index + size, size);
-          changed = true;
-          break;
-        }
-      }
-    }
-  }
-  title = words.join(" ").replace(/\s+/g, " ").trim();
-  return title.replace(/\b(the|does|from|with|and|or|of|to|as|in|on|for|by|at)$/i, "").trim();
-}
-
-function newsLabEventHeadlineFromDossier(story = {}) {
-  const dossier = story.storyDossier || {};
-  const structuredActor = cleanArticleText(
-    dossier.primaryActor
-    || dossier.canonicalEvent?.primaryActor
-    || dossier.storyIdentity?.primaryActor
-    || dossier.writerInput?.storyDNA?.primaryActor
-    || dossier.storyIntelligenceDossier?.storyDNA?.primaryActor
-    || [...(dossier.people || []), ...(dossier.organizations || []), ...(dossier.whoIsInvolved || [])][0]
-    || "",
-    80
-  );
-  const structuredAction = cleanArticleText(
-    dossier.verifiedAction
-    || dossier.canonicalEvent?.verifiedAction
-    || dossier.storyIdentity?.verifiedAction
-    || dossier.writerInput?.storyDNA?.verifiedAction
-    || dossier.storyIntelligenceDossier?.storyDNA?.verifiedAction
-    || newsLabActionPhraseFromText([dossier.whatHappened, ...(dossier.knownFacts || [])].filter(Boolean).join(" "), newsLabCategory(story)),
-    80
-  );
-  const structuredConsequence = cleanArticleText(
-    dossier.verifiedConsequence
-    || dossier.canonicalEvent?.verifiedConsequence
-    || dossier.storyIdentity?.verifiedConsequence
-    || dossier.consequence
-    || dossier.whyItMatters
-    || dossier.writerInput?.storyDNA?.verifiedConsequence
-    || dossier.storyIntelligenceDossier?.storyDNA?.verifiedConsequence
-    || "",
-    90
-  );
-  const structuredLocation = cleanArticleText(
-    dossier.location
-    || dossier.canonicalEvent?.location
-    || dossier.storyIdentity?.location
-    || (Array.isArray(dossier.locations) ? dossier.locations[0] : ""),
-    60
-  );
-  const consequenceWords = structuredConsequence
-    .split(/\s+/)
-    .filter(word => !/^(the|a|an|and|or|but|with|from|that|this|after|before|amid|over)$/i.test(word))
-    .slice(0, 5)
-    .join(" ");
-  const structuredCandidates = [
-    [structuredActor, structuredAction, consequenceWords].filter(Boolean).join(" "),
-    [structuredActor, structuredAction, structuredLocation && !structuredActor.toLowerCase().includes(structuredLocation.toLowerCase()) ? structuredLocation : ""].filter(Boolean).join(" "),
-    [structuredActor, structuredAction].filter(Boolean).join(" ")
-  ]
-    .map(candidate => newsLabCleanPublicHeadlineText(newsLabTitleCase(candidate)).replace(/[,.!?;:]+$/g, "").trim())
-    .filter(candidate => candidate.split(/\s+/).length >= 4)
-    .filter(candidate => !newsLabSecondPassHeadlineFatal(candidate))
-    .filter(candidate => newsLabHeadlineEditor(candidate, { ...story, title: candidate }).passed);
-  if (structuredCandidates.length) return structuredCandidates[0];
-  const text = [
-    story.title,
-    story.originalHeadline,
-    story.summary,
-    story.articleSummary,
-    ...(story.body || []),
-    ...(story.storyDossier?.knownFacts || []),
-    ...(story.storyDossier?.currentDevelopments || []),
-    ...(story.sources || []).flatMap(source => [source.title, source.summary, source.articleSummary])
-  ].filter(Boolean).join(" ");
-  if (/\bWorld Cup\b/i.test(text) && /\bEngland\b/i.test(text) && /\bNorway\b/i.test(text) && /\bArgentina\b/i.test(text)) {
-    return "England Advances to World Cup Semifinal Against Argentina";
-  }
-  if (/\bLindsey Graham\b/i.test(text) && /\bdie|died|dies|death\b/i.test(text)) {
-    return "Sen. Lindsey Graham Dies at 71 After Sudden Illness";
-  }
-  if (/\bToronto\b/i.test(text) && /\bshooting|shot|killed|wounded\b/i.test(text)) {
-    return "Toronto Street Festival Shooting Leaves Multiple Victims";
-  }
-  if (/\bGoogle\b/i.test(text) && /\bEU|European Union\b/i.test(text) && /\bAndroid\b/i.test(text) && /\bfine|appeal\b/i.test(text)) {
-    return "Google Loses Final Appeal Over EU Android Fine";
-  }
-  return "";
-}
-
-function newsLabRepairHeadlineCandidatesFromSnapshot(snapshot = {}, beforeIssues = []) {
-  const story = {
-    ...snapshot,
-    storyDossier: snapshot.storyDossier || {},
-    qualityGate: {
-      ...(snapshot.qualityGate || {}),
-      issues: beforeIssues,
-      remainingIssues: beforeIssues
-    }
-  };
-  const dossier = newsLabRepairHeadlineDossier(story, beforeIssues);
-  const subject = dossier.who || newsLabHeadlineSubjectFromDossier(story, dossier.whatHappened || story.summary || story.title || "");
-  const action = dossier.bestVerb || newsLabActionPhraseFromText(String(dossier.whatHappened || "") + " " + String(dossier.consequence || ""), newsLabCategory(story));
-  const where = dossier.where && !String(subject || "").toLowerCase().includes(String(dossier.where).toLowerCase()) ? dossier.where : "";
-  const consequenceWords = cleanArticleText(dossier.consequence || dossier.whyItMatters || "", 90).split(/\s+/).filter(word => !/^(the|a|an|and|or|but|with|from|that|this)$/i.test(word)).slice(0, 5).join(" ");
-  const direct = newsLabTitleCase(String(subject || "") + " " + String(action || ""));
-  const directWithWhere = newsLabTitleCase(String(subject || "") + " " + String(action || "") + " " + String(where || ""));
-  const directWithConsequence = newsLabTitleCase(String(subject || "") + " " + String(action || "") + " " + String(consequenceWords || ""));
-  return [
-    newsLabEventHeadlineFromDossier(story),
-    direct,
-    directWithWhere,
-    directWithConsequence,
-    newsLabImpactHeadlineFromDossier(story, 0),
-    newsLabHeadlineEditorSuggestion(story, 0, true),
-    newsLabHeadlineEditorSuggestion({ ...story, title: story.originalHeadline || story.title || "" }, 1, false),
-    newsLabEnsureOwnedHeadline(story.title || story.originalHeadline || direct, story, 2)
-  ].map(candidate => newsLabCleanRepairHeadlineCandidate(candidate))
-    .filter(Boolean)
-    .filter(candidate => !newsLabSecondPassHeadlineFatal(candidate))
-    .filter((candidate, index, all) => all.findIndex(item => item.toLowerCase() === candidate.toLowerCase()) === index);
-}
-
-function newsLabSecondPassHeadlineFatal(candidate = "") {
-  const title = newsLabTitleCase(cleanArticleText(candidate || "", 140));
-  if (!title) return true;
-  if (/\b(Story Is Still Developing|More Details Clarify|Adds New Confirmed Details|Comes Into Focus|Development Focus)\b/i.test(title)) return true;
-  if (/\b(Announcement|Development|Story|Update|Report)\b.{0,60}\b(Comes|Moves|Raises|Draws|Faces|Changes)\b.{0,60}\b(Focus|Details|Questions|Attention)\b/i.test(title)) return true;
-  if (/\b(Comes|Moves|Raises|Draws|Faces|Changes|Adds|Brings)\b.{0,45}\b(Comes|Moves|Raises|Draws|Faces|Changes|Adds|Brings)\b/i.test(title)) return true;
-  if (/\b(Focus|Details|Questions|Attention|Pressure|Stakes)\b.{0,40}\b(Focus|Details|Questions|Attention|Pressure|Stakes)\b/i.test(title)) return true;
-  if (newsLabScrambledHeadline(title)) return true;
-  return false;
-}
-
-function newsLabSecondPassHeadlineRepair(snapshot = {}, beforeIssues = [], record = {}) {
-  const candidates = newsLabRepairHeadlineCandidatesFromSnapshot(snapshot, beforeIssues);
-  const sourceHeadlines = [snapshot.originalHeadline, ...(snapshot.sources || []).map(source => source.title)].filter(Boolean);
-  const articleHeadline = newsLabHeadlineFromCompletedArticle(snapshot, 0);
-  const completedHeadline = articleHeadline && !newsLabSecondPassHeadlineFatal(articleHeadline)
-    ? newsLabTitleCase(articleHeadline)
-    : "";
-  const expandedCandidates = [
-    completedHeadline,
-    ...candidates
-  ].filter(Boolean).filter((candidate, index, all) => all.indexOf(candidate) === index);
-  const reviewed = expandedCandidates.map(candidate => {
-    const review = newsLabHeadlineEditor(candidate, { ...snapshot, title: candidate });
-    const tooClose = sourceHeadlines.some(sourceTitle => newsLabHeadlineTooClose(candidate, sourceTitle));
-    const generic = newsLabGenericUpdateHeadline(candidate) || newsLabWeakGenericHeadline(candidate);
-    const passed = review.passed && !tooClose && !generic;
-    return {
-      candidate,
-      passed,
-      issues: [...(review.issues || []), ...(tooClose ? ["publisher-headline-too-close"] : []), ...(generic ? ["generic-weak-headline"] : [])],
-      score: Number(review.score || 0),
-      evidenceSharedTerms: Number(review.evidenceSharedTerms || 0)
-    };
-  });
-  const winner = reviewed.find(item => item.passed) || reviewed.slice().sort((a, b) => b.score - a.score || b.evidenceSharedTerms - a.evidenceSharedTerms)[0] || null;
-  return {
-    attempted: true,
-    method: "story-snapshot-dossier-headline-rebuild",
-    recordId: record.recordId || "",
-    beforeTitle: snapshot.title || record.title || "",
-    afterTitle: winner?.candidate || snapshot.title || record.title || "",
-    passed: Boolean(winner?.passed),
-    selectedIssues: winner?.issues || [],
-    candidates: reviewed.slice(0, 7),
-    dossier: newsLabRepairHeadlineDossier(snapshot, beforeIssues),
-    rule: "Rejected headlines are repaired from the Story Snapshot/Dossier, then resubmitted to the headline editor before final approval."
-  };
-}
-
-
-function newsLabRunApprovalRepairQueue(options = {}) {
-  const limit = Math.max(1, Math.min(50, Number(options.limit || 24)));
-  let queue = readJsonFile(newsLabApprovalRecoveryQueueFile, null) || defaultNewsLabApprovalRecoveryQueue();
-  const durableRejected = options.existingOnly ? [] : newsLabRecentRejectedStoryObjectsForRepair(limit);
-  if (durableRejected.length) {
-    queue = recordNewsLabApprovalRecoveryQueue(durableRejected, {
-      stage: "durable-rejected-story-object",
-      repairMethod: "durable-story-object-second-pass",
-      forceRecord: true
-    });
-  }
-  const headlineRepairStories = newsLabReadRepairQueueRecords(newsLabHeadlineRepairQueueFile)
-    .slice(0, limit)
-    .map(record => {
-      const snapshot = record.storySnapshot || record.snapshot || getNewsLabRepairSnapshotForRecord(record);
-      const issues = [...new Set([
-        ...(record.reasons || []),
-        record.reason,
-        ...(snapshot?.qualityGate?.remainingIssues || []),
-        ...(snapshot?.qualityGate?.issues || [])
-      ].filter(Boolean))];
-      return {
-        ...snapshot,
-        id: snapshot?.id || record.articleId || record.storyId || "",
-        title: record.title || snapshot?.title || "",
-        storySnapshot: snapshot,
-        qualityGate: {
-          ...(snapshot?.qualityGate || {}),
-          issues,
-          remainingIssues: issues,
-          passed: false,
-          action: "headline-repair-queue-bridged-to-approval"
-        },
-        headlineRepairBridge: {
-          recordId: record.recordId || record.headlineId || "",
-          sourceQueue: "headline-repair",
-          loadedAt: new Date().toISOString(),
-          rule: "Headline repair records with Story Snapshots must enter approval recovery so a repaired headline can become a visible public article."
-        }
-      };
-    })
-    .filter(story => story.id && Array.isArray(story.body) && story.body.length && story.storySnapshot);
-  if (headlineRepairStories.length) {
-    queue = recordNewsLabApprovalRecoveryQueue(headlineRepairStories, {
-      stage: "headline-repair-queue",
-      repairMethod: "headline-snapshot-second-pass",
-      forceRecord: true
-    });
-  }
-  const active = (Array.isArray(queue.active) ? queue.active : [])
-    .filter(newsLabExecutableApprovalRecord)
-    .slice()
-    .sort((a, b) => new Date(a.updatedAt || 0) - new Date(b.updatedAt || 0));
-  const archived = Array.isArray(queue.archived) ? queue.archived : [];
-  const previousPayload = readNewsLabPublishedPayload();
-  const approvedStories = [];
-  const processed = [];
-  const stillActive = [];
-  const now = new Date().toISOString();
-  const secondPassMetrics = {
-    attempted: 0,
-    headlinePassed: 0,
-    headlineOnlyRepairApplied: 0,
-    articleRepairApplied: 0,
-    imageRepairApplied: 0,
-    bundledArticleRepairApplied: 0,
-    resubmitted: 0,
-    finalApproved: 0,
-    stillFailed: 0
-  };
-
-  active.forEach(record => {
-    if (processed.length >= limit) {
-      stillActive.push(record);
-      return;
-    }
-    const snapshot = record.storySnapshot || record.snapshot || getNewsLabRepairSnapshotForRecord(record);
-    const beforeIssues = [...new Set(record.reasons || [record.reason].filter(Boolean))];
-    const headlineSecondPass = newsLabSecondPassHeadlineRepair(snapshot, beforeIssues, record);
-    secondPassMetrics.attempted += 1;
-    if (headlineSecondPass.passed) secondPassMetrics.headlinePassed += 1;
-
-    let secondPassBase = {
-      ...snapshot,
-      title: headlineSecondPass.afterTitle || snapshot.title,
-      headlineAudit: {
-        ...(snapshot.headlineAudit || {}),
-        secondPassRepair: headlineSecondPass
-      },
-      approvalRecoveryInitialIssues: beforeIssues,
-      qualityGate: {
-        ...(snapshot.qualityGate || {}),
-        issues: beforeIssues,
-        remainingIssues: beforeIssues,
-        passed: false,
-        action: "approval-queue-second-pass-repair-started"
-      }
-    };
-
-    const headlineOnlyRepair = newsLabRepairNeedsHeadlineOnly(beforeIssues);
-    const needsArticleRewrite = newsLabRepairNeedsArticleRewrite(beforeIssues);
-    const needsImageRepair = newsLabRepairNeedsImage(beforeIssues);
-    if (headlineOnlyRepair) secondPassMetrics.headlineOnlyRepairApplied += 1;
-    if (needsArticleRewrite) {
-      secondPassBase = newsLabSecondPassArticleRepair(secondPassBase, beforeIssues, headlineSecondPass);
-      secondPassMetrics.articleRepairApplied += 1;
-      secondPassMetrics.bundledArticleRepairApplied += 1;
-    }
-    if (needsImageRepair) {
-      const replacement = newsLabAcquireReplacementImageForRepair(secondPassBase, beforeIssues);
-      secondPassBase = {
-        ...secondPassBase,
-        image: replacement.image,
-        imageProvenance: replacement.image?.provenance || secondPassBase.imageProvenance || null,
-        imageRepair: {
-          ...(secondPassBase.imageRepair || {}),
-          replacementAttempted: true,
-          replacementAccepted: replacement.accepted,
-          findings: replacement.findings,
-          workItem: replacement.workItem
-        }
-      };
-      secondPassMetrics.imageRepairApplied += 1;
-    }
-
-    let repaired = newsLabPublishingEditorPass(
-      newsLabAcceptanceRepairPass(newsLabFinalApprovalRepair(enforceContentEditor(secondPassBase, "news-lab"))),
-      { stage: "approval-queue-publishing-editor", attempt: Number(record.repairAttempt || 0) + 1 }
-    );
-    repaired = newsLabSanitizePublicNewsCopy({
-      ...repaired,
-      title: headlineSecondPass.passed ? headlineSecondPass.afterTitle : repaired.title,
-      headlineSecondPass
-    });
-    repaired = newsLabPreventKnownApprovalFailures(repaired, {
-      stage: "approval-queue-before-validation",
-      repairAttempt: Number(record.repairAttempt || 0) + 1
-    });
-    const normalizedRepairedImage = needsImageRepair
-      ? newsLabAcquireReplacementImageForRepair(repaired, beforeIssues)
-      : { image: newsLabNormalizeStoryImage(repaired, repaired.image), accepted: true, findings: [], workItem: null };
-    repaired = {
-      ...repaired,
-      image: normalizedRepairedImage.image,
-      imageProvenance: normalizedRepairedImage.image?.provenance || repaired.imageProvenance || null,
-      imageRepair: normalizedRepairedImage.workItem ? {
-        ...(repaired.imageRepair || {}),
-        replacementAttempted: true,
-        replacementAccepted: normalizedRepairedImage.accepted,
-        findings: normalizedRepairedImage.findings,
-        workItem: normalizedRepairedImage.workItem
-      } : repaired.imageRepair,
-      title: newsLabPublicHeadline(repaired, 0)
-    };
-    repaired = newsLabFreshRepairValidation(repaired, beforeIssues, { stage: "approval-queue-fresh-second-pass-validation" });
-    const afterIssues = repaired.qualityGate?.remainingIssues || [];
-    const imageOnlyIssues = afterIssues.length > 0 && afterIssues.every(issue => /image/i.test(issue));
-    const passed = afterIssues.length === 0 && newsLabCompleteArticleStory(repaired) && newsLabShelfDisplayReadyStory(repaired);
-    const textApprovedImagePending = !passed && imageOnlyIssues && newsLabCompleteArticleStory(repaired);
-    secondPassMetrics.resubmitted += 1;
-    if (passed || textApprovedImagePending) secondPassMetrics.finalApproved += 1;
-    else secondPassMetrics.stillFailed += 1;
-    const updatedRecord = {
-      ...record,
-      title: repaired.title || record.title,
-      repairedTitle: repaired.title || "",
-      repairAttempt: Number(record.repairAttempt || 0) + 1,
-      repairMethod: headlineOnlyRepair
-        ? "approval-queue-processor+headline-only-second-pass"
-        : needsArticleRewrite && needsImageRepair
-          ? "approval-queue-processor+article-and-image-second-pass"
-          : needsArticleRewrite
-            ? "approval-queue-processor+article-second-pass"
-            : needsImageRepair
-              ? "approval-queue-processor+image-second-pass"
-              : "approval-queue-processor+targeted-second-pass",
-      headlineSecondPass,
-      validation: (passed || textApprovedImagePending) ? "passed-validation" : "failed-validation",
-      approvalResult: (passed || textApprovedImagePending) ? "approval-passed-awaiting-publication" : "approval-held",
-      published: false,
-      state: (passed || textApprovedImagePending) ? "Approved" : "Still Failed",
-      score: Number(repaired.qualityGate?.score || newsLabPublicArticleScore(repaired) || record.score || 0),
-      reasons: textApprovedImagePending ? [] : afterIssues,
-      resultIssues: afterIssues,
-      correctedIssues: beforeIssues.filter(issue => !afterIssues.includes(issue)),
-      storySnapshot: newsLabRepairSnapshot(repaired),
-      fullRejectPackage: newsLabFullRejectPackage(repaired, record.stage || "approval-repair-second-pass"),
-      updatedAt: now,
-      transitions: [
-        ...(record.transitions || []),
-        "Repair Executed",
-        "Resubmitted",
-        (passed || textApprovedImagePending) ? "Validation Passed" : "Validation Failed",
-        (passed || textApprovedImagePending) ? "Approval Passed" : "Approval Held",
-        (passed || textApprovedImagePending) ? "Awaiting Publication Merge" : "Still Failed"
-      ]
-    };
-    recordNewsLabStoryObjects([repaired], { stage: "approval-repair-second-pass", status: (passed || textApprovedImagePending) ? "approved-after-repair" : "rejected-after-repair" });
-    if (passed || textApprovedImagePending) approvedStories.push(repaired);
-    archived.push(updatedRecord);
-    processed.push(record);
-  });
-
-  const processedIds = new Set(processed.map(record => record.recordId));
-  const nextActive = [
-    ...stillActive,
-    ...active.filter(record => !processedIds.has(record.recordId))
-  ]
-    .filter(newsLabExecutableApprovalRecord)
-    .filter((record, index, all) => all.findIndex(match => match.recordId === record.recordId) === index);
-
-  let nextQueue = newsLabRecalculateApprovalQueue({
-    ...queue,
-    active: nextActive,
-    archived: archived.slice(-1000),
-    recentTransitions: [
-      ...archived.slice(-processed.length).map(record => ({
-        at: record.updatedAt,
-        articleId: record.articleId,
-        title: record.title,
-        reason: record.reason,
-        state: record.state,
-        validation: record.validation,
-        approvalResult: record.approvalResult,
-        headlineSecondPass: record.headlineSecondPass || null,
-        transitions: record.transitions
-      })),
-      ...(queue.recentTransitions || [])
-    ].slice(0, 300)
-  });
-  writeJsonFile(newsLabApprovalRecoveryQueueFile, nextQueue);
-
-  let publicationAudit = null;
-  if (approvedStories.length) {
-    const merged = mergeNewsLabApprovedStories(approvedStories, previousPayload);
-    const persisted = newsLabDurablyPersistPublicPayload({
-      ...(previousPayload || {}),
-      generatedAt: now,
-      status: "approval-repair-queue-published",
-      ownedStories: merged,
-      articleApprovalRepairRun: {
-        generatedAt: now,
-        processed: processed.length,
-        approved: approvedStories.length,
-        stillActive: nextActive.length,
-        secondPassMetrics
-      }
-    }, { stage: "approval-repair-queue-published" });
-    publicationAudit = newsLabPublicationOutcomeAudit(approvedStories, previousPayload, persisted.ownedStories || []);
-  }
-
-  if (processed.length) {
-    const outcomeByTitle = new Map((publicationAudit?.outcomes || []).map(outcome => [
-      cleanArticleText(String(outcome.title || outcome.storyId || ""), 220).toLowerCase(),
-      outcome
-    ]));
-    const reconciledArchived = (nextQueue.archived || []).map(record => {
-      if (!processed.some(item => item.recordId === record.recordId)) return record;
-      if (record.validation !== "passed-validation") return record;
-      const outcome = outcomeByTitle.get(cleanArticleText(String(record.title || record.storySnapshot?.title || ""), 220).toLowerCase()) || null;
-      if (outcome?.visibleAfterMerge) {
-        return {
-          ...record,
-          state: "Published",
-          published: true,
-          approvalResult: "approval-published",
-          publicationOutcome: outcome,
-          transitions: [...(record.transitions || []), outcome.outcome === "new" ? "Published As New Public Article" : "Visible Public Shelf Confirmed"]
-        };
-      }
-      return {
-        ...record,
-        state: "Publication Failed",
-        published: false,
-        validation: "failed-publication",
-        approvalResult: "approval-passed-not-visible",
-        reasons: ["approval-not-visible-in-public-payload"],
-        reason: "approval-not-visible-in-public-payload",
-        publicationOutcome: outcome,
-        transitions: [...(record.transitions || []), "Publication Visibility Failed"]
-      };
-    });
-    nextQueue = newsLabRecalculateApprovalQueue({
-      ...nextQueue,
-      archived: reconciledArchived,
-      publicationAudit,
-      recentTransitions: [
-        ...((nextQueue.recentTransitions || []).slice(0, 260)),
-        ...reconciledArchived
-          .filter(record => processed.some(item => item.recordId === record.recordId))
-          .map(record => ({
-            at: now,
-            articleId: record.articleId,
-            title: record.title,
-            state: record.state,
-            validation: record.validation,
-            approvalResult: record.approvalResult,
-            publicationOutcome: record.publicationOutcome || null
-          }))
-      ].slice(0, 300)
-    });
-    writeJsonFile(newsLabApprovalRecoveryQueueFile, nextQueue);
-  }
-
-  const articleApproval = newsLabArticleApprovalIntelligence({
-    finalPublishDiagnostics: {
-      finalReviewedCount: Number(nextQueue.totals.rejected || 0),
-      finalCompleteCount: Number(nextQueue.totals.approved || 0),
-      finalBlockedCount: nextActive.length,
-      approvalRecoveryAttempted: Number(nextQueue.totals.repairAttempted || 0),
-      approvalRecoveryResolved: Number(nextQueue.totals.approved || 0),
-      approvalRecoveryStillHeld: nextActive.length,
-      issueCounts: newsLabApprovalRepairIssueCounts(nextActive)
-    },
-    finalReviewed: Number(nextQueue.totals.rejected || 0),
-    finalApproved: Number(nextQueue.totals.approved || 0),
-    finalBlocked: nextActive.length,
-    publishedShelfCount: Number((readNewsLabPublishedPayload()?.ownedStories || []).length || 0),
-    publicationAudit
-  });
-
-  articleApproval.secondPassApproval = {
-    ...secondPassMetrics,
-    headlinePassRate: Number((secondPassMetrics.headlinePassed / Math.max(1, secondPassMetrics.attempted)).toFixed(2)),
-    finalApprovalRate: Number((secondPassMetrics.finalApproved / Math.max(1, secondPassMetrics.attempted)).toFixed(2)),
-    rule: "Second-pass repair rebuilds headlines from Story Snapshot/Dossier, resubmits them, separates headline/body/image repairs, and measures headline pass plus final approval."
-  };
-  writeJsonFile(newsLabArticleApprovalIntelligenceFile, articleApproval);
-
-  return {
-    generatedAt: now,
-    processed: processed.length,
-    approved: approvedStories.length,
-    stillActive: nextActive.length,
-    secondPassMetrics,
-    queue: newsLabApprovalRecoveryQueueSummary(nextQueue),
-    articleApprovalIntelligence: articleApproval
+    rule: "A story dossier can move to writing only when source articles describe the same canonical event rather than adjacent or contaminated topics."
   };
 }
-
-
 
 function newsLabRunFastApprovalRepairQueue(options = {}) {
   const limit = Math.max(1, Math.min(12, Number(options.limit || 1)));
@@ -30799,11 +24128,13 @@ function newsLabCompleteArticleStory(story = {}) {
 function newsLabShelfDisplayReadyStory(story = {}) {
   const body = Array.isArray(story.body) ? story.body : [];
   const bodyText = body.join(" ");
+  const imageOnlyIssues = newsLabImageOnlyIssueSet();
+  const presentation = story.presentationReadiness || {};
   const issues = [...new Set([
     ...(story.qualityGate?.issues || []),
     ...(story.editorEnforcement?.finalIssues || []),
     ...(story.contentLaneQuality?.issues || [])
-  ])];
+  ])].filter(issue => !(presentation.textApproved && (imageOnlyIssues.has(issue) || /image|photo|visual|placeholder/.test(String(issue || "")))));
   const publicationTier = newsLabCandidatePublicationTier(story);
   const shelfLeakPattern = /\b(we are wrapping up|several reports describe|moves through court|moves into voter fight|draws technology scrutiny|changes international response|update centers on|current confidence level|source signals|reporting trail|base story|outlet-only claim|available reporting|dossier includes|full-read signals|confidence level is developing)\b/i;
   const shelfLeakDetected = shelfLeakPattern.test(String(story.title || "")) || shelfLeakPattern.test(bodyText);
@@ -35311,7 +28642,7 @@ async function loadWeatherTickerItems() {
       const period = forecast.properties?.periods?.[0];
       if (!period) throw new Error("Forecast period unavailable");
       return {
-        title: `Weather: ${market.market} ${period.temperature}ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°${period.temperatureUnit}, ${period.shortForecast}`,
+        title: `Weather: ${market.market} ${period.temperature}Ãƒâ€šÃ‚Â°${period.temperatureUnit}, ${period.shortForecast}`,
         url: market.url,
         source: "National Weather Service",
         type: "weather",
@@ -35935,7 +29266,7 @@ function newsLabImageQueryTerms(story = {}) {
 
   const titleQuery = title
     .replace(/\b(live updates|watch|analysis|opinion|here are|what to know)\b/gi, " ")
-    .replace(/['"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â]/g, "")
+    .replace(/['"ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â]/g, "")
     .split(/\s+/)
     .filter(word => word.length > 2)
     .slice(0, 7)
@@ -36329,10 +29660,10 @@ function newsLabImageQualityScore(story = {}, image = {}) {
 
 function newsLabGeneratedImagePromptText(value = "", maxLength = 260) {
   return cleanArticleText(String(value || ""), maxLength)
-    .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢|ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ/g, "'")
-    .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â/g, '"')
-    .replace(/ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¯Ã‚Â¿Ã‚Â½?/g, "-")
-    .replace(/ÃƒÂ¯Ã‚Â¿Ã‚Â½|ÃƒÆ’Ã‚Â¢|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦/g, "")
+    .replace(/Ã¢â‚¬â„¢|Ã¢â‚¬Ëœ|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢|ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“/g, "'")
+    .replace(/Ã¢â‚¬Å“|Ã¢â‚¬Â|ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â/g, '"')
+    .replace(/Ã¢â‚¬â€œ|Ã¢â‚¬â€|ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“|ÃƒÂ¢Ã¢â€šÂ¬Ã¯Â¿Â½?/g, "-")
+    .replace(/Ã¯Â¿Â½|ÃƒÂ¢|Ã¢â‚¬Â¦/g, "")
     .replace(/[^\x20-\x7E]/g, "")
     .replace(/\s+/g, " ")
     .replace(/\band mo\.\s*/gi, "")
@@ -37510,9 +30841,9 @@ function newsLabScrambledHeadline(title = "", story = {}) {
     .filter(index => index >= 0);
   const firstActionIndex = actionIndexes.length ? actionIndexes[0] : -1;
   const subjectWords = firstActionIndex > 0 ? words.slice(0, firstActionIndex) : words.slice(0, Math.min(words.length, 7));
-  const stackedSubject = subjectWords.length >= 5 && subjectWords.filter(word => /^[A-Z][A-Za-z0-9'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢-]+$/.test(word)).length >= 4;
+  const stackedSubject = subjectWords.length >= 5 && subjectWords.filter(word => /^[A-Z][A-Za-z0-9'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢-]+$/.test(word)).length >= 4;
   const fillerEnding = /\b(Draws Industry Attention|Draws Government Scrutiny|Changes Market Outlook|Changes Public Release Plans|Changes Technology Policy|Changes Competitive Stakes|Shifts Tournament Picture|Brings Official Response|Changes Security Situation|Moves Toward Public Decision|Raises Security Questions|Draws Public Attention|Draws Culture Spotlight|Draws Technology Scrutiny|Adds Economic Pressure)\b/i.test(cleanTitle);
-  const mojibake = /ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â|ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½/.test(cleanTitle);
+  const mojibake = /ÃƒÆ’Ã†â€™|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â|ÃƒÂ¯Ã‚Â¿Ã‚Â½/.test(cleanTitle);
   const startsWeak = /^(Weather|Fourth|Care|Clock|Crowd|Account|Celebration|Commercial|Declaration|Alleged|Plus|Them|Large|It|The|America|World|Pictures|Video)\b/i.test(cleanTitle) && subjectWords.length >= 3;
   const noEvidenceAction = Boolean(storyText) && firstActionIndex > 0 && !storyText.includes(words[firstActionIndex].toLowerCase()) && !/(wins?|beats?|strikes?|warns?|approves?|blocks?|allows?|returns?|reopens?|leaves?|loses?|upholds?|rejects?|rules?|orders?|fines?|charges?|arrests?|signs?|passes?|defeats?|falls?|rises?|drops?|jumps?|hits?|cuts?|lifts?|opens?|closes?|clears?|delays?|cancels?|investigates?|settles?|kills?|injures?|files?|sues?|launches?|announces?|reports?|refers?|issues?|gains?|positions?)/i.test(lower);
   const incoherentPairs = /\b(Weather Fourth|Care Clock|Clock Crowd|Account Adam|Commercial Declaration|Paraguay World Fanduel|Fourth Guardian|America Fourth States|Barrag Boys|Leafs Maple|Chargers Best Magsafe|Them Moon|It Simply Allows|The Changes Also Mean|Alleged Plus|Cabo Verde Argentina Messi|Wedding Kelce Swift Garden Travis|Kelce Swift Taylor Travis Case|Touts Raises|Warns .* Touts Raises)\b/i.test(cleanTitle);
@@ -37535,7 +30866,7 @@ function newsLabHeadlineHasNaturalGrammar(title = "") {
   if (/\b(Alleged Moves Into|Next Faces|Fine .* Moves Into|Union .* Government Fight|Government Fight|Political Moves Into Government Fight)\b/i.test(cleanTitle)) return false;
   if (/\b(Touts|Says|Warns|Claims|Reports)\b.{0,70}\b(Raises|Moves|Changes|Draws|Brings|Faces|Adds|Shifts)\b/i.test(cleanTitle)) return false;
   if (/\b(Apple Macbook Next Entry-level|Macbook Next Entry-level|Entry-level Spring Creates|Draws New Public Attention|Creates Market Fallout)\b/i.test(cleanTitle)) return false;
-  if (/\bSays\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?[ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢']s\s+(Raises|Moves|Creates|Draws|Brings|Faces|Adds|Shifts)\b/.test(cleanTitle)) return false;
+  if (/\bSays\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?[ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢']s\s+(Raises|Moves|Creates|Draws|Brings|Faces|Adds|Shifts)\b/.test(cleanTitle)) return false;
   if (/\b(Moves Into Government Fight|Moves Into Policy Fight|Moves Into Political Fight)\b/i.test(cleanTitle)
     && /\b(Google|Android|European|EU|Antitrust|Fine|Appeal|Court)\b/i.test(cleanTitle)) return false;
   if (/\b(Begins Binding|Pictures Shifts|Power Forces|Dangerous Draws|Russian Raises|Vietnamese Films Capture Raises|Citizenship Germany Video)\b/i.test(cleanTitle)) return false;
@@ -37810,7 +31141,7 @@ function newsLabSentenceQualityOk(sentence = "") {
   if (/^(pic\.twitter|more from|read more|watch live|click here|by [A-Z][a-z]+|image source|photo by|video\b|watch:|live:)/i.test(text)) return false;
   if (/skip to main content|skip to navigation|menu espn scores|advertisement|sign up|newsletter|cookies|privacy policy|terms of service|all rights reserved|follow us|share this article|-->|instant reaction|make history|scores nfl nba mlb|sports director|photo gallery|read full article/i.test(text)) return false;
   if (/^[A-Z][A-Z\s-]+:\s/.test(text)) return false;
-  if (/^[A-Z][A-Z\s.'-]{6,}\s+[ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ-]\s+/.test(text)) return false;
+  if (/^[A-Z][A-Z\s.'-]{6,}\s+[ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“-]\s+/.test(text)) return false;
   if (/[,:;]$/.test(text)) return false;
   return true;
 }
@@ -37827,15 +31158,15 @@ function newsLabLooksFactual(value = "") {
 function newsLabFactText(value = "", limit = 360) {
   const text = cleanArticleText(value, limit)
     .replace(/^image source,\s*[^.]+?\s+by\s+[A-Z][^.]+?\s+published\s+\d{1,2}\s+\w+\s+\d{4}\s*/i, "")
-    .replace(/^by\s+[A-Z][A-Za-z\s.'&-]{2,60}[-ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ:]\s*/i, "")
+    .replace(/^by\s+[A-Z][A-Za-z\s.'&-]{2,60}[-ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“:]\s*/i, "")
     .replace(/^by\s+[A-Z][A-Za-z\s.'&-]{2,60}\s*/i, "")
     .replace(/^video\s+/i, "")
-    .replace(/^[A-Z][A-Z\s.'-]{6,}\s+[ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ-]\s+/i, "")
+    .replace(/^[A-Z][A-Z\s.'-]{6,}\s+[ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“-]\s+/i, "")
     .replace(/\s*-->\s*skip to main content[\s\S]*$/i, "")
     .replace(/\s+/g, " ")
     .replace(/\s+([,.!?;:])/g, "$1")
     .trim();
-  if (/\.{3}|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦/.test(text)) return "";
+  if (/\.{3}|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦/.test(text)) return "";
   if (!newsLabLooksFactual(text)) return "";
   return text;
 }
@@ -38197,7 +31528,7 @@ function newsLabHeadlineTruncated(title = "") {
   return !cleaned
     || cleaned.length < 24
     || /\b(the|does|from|with|and|or|of|to|as|in|on|for|by|at|off|into)$/i.test(cleaned)
-    || /[ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¹Ãƒâ€¦Ã¢â‚¬Å“'"][^ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢'"]{1,35}$/i.test(cleaned);
+    || /[ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ'"][^ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢'"]{1,35}$/i.test(cleaned);
 }
 
 function newsLabWeakGenericHeadline(title = "") {
@@ -38663,7 +31994,7 @@ function newsLabNaturalAttribution(stories = [], acceptedText = "") {
     .map((story, index) => {
       const detail = newsLabTrimSentence(story.articleSummary || story.summary || story.title, 220);
       if (!detail) return "";
-      if (/\.\.\.|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦|&[a-z]+;/.test(detail)) return "";
+      if (/\.\.\.|ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦|&[a-z]+;/.test(detail)) return "";
       if (newsLabTextOverlap(acceptedText, detail) >= 0.42) return "";
       const source = story.source || "another outlet";
       if (index === 0) return `${source} also reports: ${detail}`;
@@ -38702,7 +32033,7 @@ function newsLabSourceSpecificDetails(stories = [], acceptedText = "") {
       const detail = newsLabTrimSentence(story.articleSummary || story.summary || "", 260);
       if (!detail) return "";
       if (newsLabTextOverlap(acceptedText, detail) >= 0.48) return "";
-      if (/\.\.\.|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦|&[a-z]+;|read more|sign up|newsletter|advertisement/i.test(detail)) return "";
+      if (/\.\.\.|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦|&[a-z]+;|read more|sign up|newsletter|advertisement/i.test(detail)) return "";
       return `${story.source} reported this additional detail: ${detail}`;
     })
     .filter(Boolean)
@@ -43426,9 +36757,9 @@ function newsLabCleanPublicParagraphSentences(paragraph = "") {
 function newsLabClippedSourceFragmentParagraph(paragraph = "") {
   const text = cleanArticleText(paragraph || "", 900);
   if (!text) return false;
-  const titleCaseRuns = (text.match(/\b[A-Z][a-z]+(?:['ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢][a-z]+)?\b/g) || []).length;
+  const titleCaseRuns = (text.match(/\b[A-Z][a-z]+(?:['Ã¢â‚¬â„¢][a-z]+)?\b/g) || []).length;
   const sentenceCount = text.split(/(?<=[.!?])\s+/).filter(Boolean).length;
-  const hasSourceListSignals = /\b(Returns to Number One|Revolving Door|Welcomes Another|Dismisses Odd Behavior|Trending Stories|Exclusive By|What Really Happened|World Cup Quarterfinal|Performs ['ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢"]?Lights|Baby Rose)\b/i.test(text);
+  const hasSourceListSignals = /\b(Returns to Number One|Revolving Door|Welcomes Another|Dismisses Odd Behavior|Trending Stories|Exclusive By|What Really Happened|World Cup Quarterfinal|Performs ['Ã¢â‚¬â„¢"]?Lights|Baby Rose)\b/i.test(text);
   const hasClippedLocationTail = /\bon\s+L\.A\.$/i.test(text);
   const tooManyHeadlineFragments = sentenceCount <= 2 && titleCaseRuns >= 12 && text.length >= 130;
   return Boolean(hasClippedLocationTail || (hasSourceListSignals && tooManyHeadlineFragments));
@@ -43641,7 +36972,7 @@ function newsLabPublicArticleIssues(story = {}) {
   const headlineEditor = newsLabHeadlineEditor(title, story);
   if (!headlineEditor.passed) issues.push("headline-editor-needs-rewrite");
   if (/\b(the|does|from|with|and|or|of|to|as|in|on|for|by|at)$/i.test(title)) issues.push("title-looks-truncated");
-  if (/[ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ'"][^ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢'"]{1,35}$/i.test(title) || /\b(i will wear|i will|he said|she said|they said)$/i.test(title)) issues.push("title-looks-truncated");
+  if (/[ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“'"][^ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢'"]{1,35}$/i.test(title) || /\b(i will wear|i will|he said|she said|they said)$/i.test(title)) issues.push("title-looks-truncated");
   if (newsLabHeadlineTooClose(title, story.originalHeadline || "")) issues.push("publisher-headline-too-close");
   if (title && story.originalHeadline) {
     const titleCategory = newsLabCategory({ title, category: "news" });
@@ -43774,7 +37105,7 @@ function newsLabPublicArticleIssues(story = {}) {
     .filter(sentence => sentence.length >= 45)
     .filter((sentence, index, all) => all.indexOf(sentence) !== index).length;
   if (repeatedSentenceCount > 0) issues.push("repetitive-sentence-leak");
-  if (body.some(paragraph => /\.\.\.|ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦|&[a-z]+;|skip to main content|advertisement|sign up|newsletter/i.test(paragraph))) {
+  if (body.some(paragraph => /\.\.\.|ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦|&[a-z]+;|skip to main content|advertisement|sign up|newsletter/i.test(paragraph))) {
     issues.push("copied-or-noisy-source-fragment");
   }
   const uniqueParagraphs = body.filter((paragraph, index, all) => all.findIndex(item => newsLabTextOverlap(item, paragraph) >= 0.78) === index);
@@ -43959,7 +37290,7 @@ function newsLabDirectCeHeadlineFromSource(story = {}) {
   if (/china/.test(lower) && /space race|space/.test(lower)) {
     return "China Space Ambitions Test Global Competition";
   }
-  if (/ocean temperatures|el ni[ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±n]o|record highs/.test(lower)) {
+  if (/ocean temperatures|el ni[ÃƒÆ’Ã‚Â±n]o|record highs/.test(lower)) {
     return "Record Ocean Temperatures Raise Climate Concerns";
   }
   if (/dangerous heat|heat wave|extreme heat/.test(lower)) {
@@ -45674,6 +39005,293 @@ function newsLabTargetedRepairRouteFromIssues(issues = [], story = {}) {
   if (values.some(issue => /image|photo|placeholder|visual/i.test(issue))) return { owner: "Image Intelligence Worker", scope: "image-only", maxRepairRounds: budget.image, action: "Find or generate a story-specific image tied to the same canonical identity; keep article public if text is approved." };
   if (values.some(issue => /incomplete|mojibake|grammar|process-language|summary-repeats|copied-or-noisy/i.test(issue))) return { owner: "Publishing Editor", scope: "language-only", maxRepairRounds: budget.body, action: "Clean language, complete sentences, remove internal process terms, and preserve the approved story." };
   return { owner: "Publishing Editor", scope: "targeted-editorial", maxRepairRounds: budget.general, action: "Apply the smallest component repair, then rerun only failed validation checks before full review." };
+}
+
+const NEWS_LAB_QUALITY_PUBLICATION_SPRINT_ID = "quality-publication-20260811-v1";
+const NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION = "news-lab-quality-publication-sprint-v1";
+const NEWS_LAB_HEADLINE_SERVICE_SPRINT_VERSION = "20260811-canonical-headline-service-sprint-hard-gate";
+
+function newsLabSprintCycleId(date = new Date()) {
+  const stamp = date.toISOString().slice(0, 13).replace(/[-:T]/g, "");
+  return `${NEWS_LAB_QUALITY_PUBLICATION_SPRINT_ID}-${stamp}`;
+}
+
+function newsLabStoryFactIds(story = {}) {
+  const dossier = story.storyDossier || {};
+  const intelligence = story.canonicalDossierIntelligence || dossier.canonicalDossierIntelligence || dossier.canonicalIntelligence || {};
+  const facts = [
+    ...(Array.isArray(dossier.knownFacts) ? dossier.knownFacts : []),
+    ...(Array.isArray(dossier.evidence?.usableFacts) ? dossier.evidence.usableFacts : []),
+    ...(Array.isArray(intelligence.factLedger?.facts) ? intelligence.factLedger.facts : [])
+  ];
+  return facts
+    .map((fact, index) => typeof fact === "string"
+      ? { id: `F${index + 1}`, text: fact }
+      : { id: fact.id || fact.factId || `F${index + 1}`, text: fact.text || fact.claim || fact.summary || "" })
+    .filter(fact => fact.text);
+}
+
+function newsLabQualityPublicationDepthLane(story = {}) {
+  const identity = story.canonicalStoryIdentity || newsLabCanonicalStoryIdentity(story, story.storyDossier || {}, {});
+  const dossier = story.storyDossier || {};
+  const facts = newsLabStoryFactIds(story);
+  const sources = Array.isArray(story.sources) ? story.sources : Array.isArray(dossier.sourcePool) ? dossier.sourcePool : [];
+  const fullReads = Number(story.articleReadDepth?.fullReadCount || dossier.evidence?.fullReadCount || sources.filter(source => /full|publisher/i.test(source.readStatus || source.sourceDepth || "")).length || 0);
+  const bodyText = Array.isArray(story.body) ? story.body.join(" ") : "";
+  const identityReady = Boolean(identity.ready || (identity.primaryActor && identity.action && (identity.eventId || story.eventId || dossier.eventId)));
+  const coherence = story.eventCoherence || dossier.eventCoherence || dossier.contaminationCheck || {};
+  const mixedIdentity = Boolean(
+    !identityReady
+    || Number(coherence.contaminationScore || 0) > 0.42
+    || newsLabBlockingFinalIssues(story).some(issue => /mixed-source-topic|article-body-topic-drift|paragraph-topic-contamination|story-identity/i.test(issue))
+  );
+  if (mixedIdentity) {
+    return {
+      lane: "recovery",
+      publishable: false,
+      reason: "weak-or-mixed-canonical-event-identity",
+      identityReady,
+      factCount: facts.length,
+      sourceCount: sources.length,
+      fullReads,
+      minimumWords: 0
+    };
+  }
+  if (facts.length >= 8 && sources.length >= 4 && fullReads >= 2 && bodyText.length >= 900) {
+    return { lane: "deep-article", publishable: true, reason: "rich-evidence", identityReady, factCount: facts.length, sourceCount: sources.length, fullReads, minimumWords: 900 };
+  }
+  if (facts.length >= 4 && sources.length >= 2 && bodyText.length >= 520) {
+    return { lane: "standard-article", publishable: true, reason: "adequate-evidence", identityReady, factCount: facts.length, sourceCount: sources.length, fullReads, minimumWords: 520 };
+  }
+  return { lane: "developing-brief", publishable: true, reason: "strong-identity-limited-evidence", identityReady, factCount: facts.length, sourceCount: sources.length, fullReads, minimumWords: 250 };
+}
+
+function newsLabQualityPublicationReasoningContract(story = {}, depthLane = {}) {
+  const plan = story.writerReasoningPlan || story.writerReasoning?.writerReasoningPlan || {};
+  const verification = story.writerReasoningVerification || {};
+  const identity = story.canonicalStoryIdentity || newsLabCanonicalStoryIdentity(story, story.storyDossier || {}, {});
+  const facts = newsLabStoryFactIds(story);
+  const body = Array.isArray(story.body) ? story.body : [];
+  const bodyText = body.join(" ");
+  const paragraphPlan = Array.isArray(plan.paragraphPlan)
+    ? plan.paragraphPlan
+    : Array.isArray(plan.paragraphs)
+      ? plan.paragraphs
+      : [];
+  const hasCoreQuestions = Boolean(
+    (plan.whatHappened || story.storyDossier?.whatHappened || body[0])
+    && (plan.primaryActor || identity.primaryActor)
+    && (plan.action || identity.action)
+    && facts.length
+  );
+  const paragraphFactBound = depthLane.lane === "developing-brief"
+    ? body.length >= 1 && bodyText.length >= depthLane.minimumWords
+    : paragraphPlan.length
+      ? paragraphPlan.every((paragraph, index) => {
+        const assigned = paragraph.factIds || paragraph.facts || paragraph.allowedFactIds || [];
+        return index >= body.length || assigned.length || paragraph.contextIds?.length || paragraph.purpose;
+      })
+      : Boolean(verification.passed && body.length >= 3);
+  const needsStrictPlan = depthLane.lane === "standard-article" || depthLane.lane === "deep-article";
+  const passed = Boolean(depthLane.publishable && hasCoreQuestions && paragraphFactBound && (!needsStrictPlan || verification.passed || plan.readiness?.ready));
+  const blockers = [
+    !hasCoreQuestions ? "writer-reasoning-contract-missing-core-answers" : "",
+    needsStrictPlan && !(verification.passed || plan.readiness?.ready) ? "writer-reasoning-contract-not-validated" : "",
+    !paragraphFactBound ? "paragraph-fact-contract-failed-before-editor" : ""
+  ].filter(Boolean);
+  return {
+    passed,
+    blockers,
+    planId: plan.planId || plan.id || `reasoning_${story.eventId || story.id || "unknown"}`,
+    dossierRevisionId: plan.dossierRevisionId || story.dossierRevisionId || story.storyDossier?.dossierLock?.revisionId || "",
+    paragraphFactBound,
+    strictPlanRequired: needsStrictPlan,
+    factsAvailable: facts.length,
+    paragraphCount: body.length,
+    rule: "Writer Reasoning proves actor, action, evidence, usable facts, unknowns, context, prohibited inferences, lead choice, next development, and paragraph fact assignments before prose reaches the Editor."
+  };
+}
+
+function newsLabQualityPublicationHeadlineGate(story = {}) {
+  const canonical = story.headlineAudit?.canonicalHeadline || story.canonicalHeadline || {};
+  const validation = Array.isArray(canonical.validation) ? canonical.validation : [];
+  const publicationHeadline = canonical.publicationHeadline || story.headlineAudit?.publicationHeadline || "";
+  const finalTitle = story.title || publicationHeadline;
+  const sourceHeadline = story.originalHeadline || canonical.inputs?.lockedHeadlineCandidate || "";
+  const issues = [...new Set([
+    ...(canonical.finalIssues || []),
+    ...(story.headlineAudit?.headlinePreEditor?.issues || []),
+    ...(newsLabHeadlineEditor(finalTitle || "", story).issues || []),
+    !publicationHeadline ? "canonical-headline-missing-publication-headline" : "",
+    validation.length && validation.every(candidate => !candidate.passed) ? "canonical-headline-no-passing-candidate" : "",
+    newsLabHeadlineTooClose(finalTitle, sourceHeadline) ? "publisher-headline-too-close" : "",
+    newsLabHeadlineTruncated(finalTitle) ? "title-looks-truncated" : "",
+    newsLabWeakGenericHeadline(finalTitle) ? "generic-weak-headline" : "",
+    newsLabScrambledHeadline(finalTitle, story) ? "headline-word-salad" : ""
+  ].filter(Boolean))];
+  return {
+    passed: Boolean(canonical.validationPassed && publicationHeadline && !issues.length),
+    publicationHeadline,
+    headlineServiceVersion: canonical.version || NEWS_LAB_HEADLINE_SERVICE_SPRINT_VERSION,
+    candidateCount: validation.length || canonical.candidates?.length || 0,
+    issues,
+    rule: "Headline problems are fixed before Editor by scoring multiple CE-owned candidates from the locked dossier, completed body, and Writer Reasoning contract."
+  };
+}
+
+function newsLabImagePendingPresentationState(story = {}) {
+  const allIssues = [...new Set([
+    ...(story.qualityGate?.issues || []),
+    ...(story.qualityGate?.remainingIssues || []),
+    ...(story.editorEnforcement?.finalIssues || []),
+    ...(story.contentLaneQuality?.issues || [])
+  ])];
+  const imageIssues = allIssues.filter(issue => newsLabImageOnlyIssueSet().has(issue) || /image|photo|visual|placeholder/.test(String(issue || "")));
+  const textIssues = allIssues.filter(issue => !imageIssues.includes(issue));
+  const imageStatus = newsLabImageStatus(story);
+  const imageResolved = !imageIssues.length && ![IMAGE_STATUS.MISSING, IMAGE_STATUS.GENERATION_QUEUED, IMAGE_STATUS.GENERATING, IMAGE_STATUS.CE_FALLBACK_TEMPORARY].includes(imageStatus);
+  return {
+    textApproved: textIssues.length === 0,
+    imageResolved,
+    status: imageResolved ? "PUBLIC_READY" : "IMAGE_PENDING",
+    imageStatus,
+    imageIssues,
+    textIssues,
+    rule: "Image readiness is presentation work. A missing or temporary image must route to Image Intelligence, not Writer/Editor article repair."
+  };
+}
+
+function newsLabQualityPublicationRepairBudget(story = {}, issues = []) {
+  const route = newsLabTargetedRepairRouteFromIssues(issues, story);
+  const attempts = Number(story.repairBudget?.attempts || story.qualityGate?.repairAttempts || story.editorRepairReview?.attempts?.length || 0);
+  const exhausted = attempts >= Number(route.maxRepairRounds || 1);
+  return {
+    attempts,
+    max: Number(route.maxRepairRounds || 1),
+    exhausted,
+    route,
+    holdAfterExhaustion: exhausted,
+    rule: "Repair components, not whole articles. Exhausted repair budgets hold the candidate, preserve the dossier, and move capacity to the next event."
+  };
+}
+
+function newsLabApplyQualityPublicationSprintGate(story = {}, context = {}) {
+  const now = new Date().toISOString();
+  const depthLane = newsLabQualityPublicationDepthLane(story);
+  const reasoningContract = newsLabQualityPublicationReasoningContract(story, depthLane);
+  const headlineGate = newsLabQualityPublicationHeadlineGate(story);
+  const presentation = newsLabImagePendingPresentationState(story);
+  const integrityIssues = [
+    depthLane.publishable ? "" : "canonical-event-integrity-not-ready",
+    reasoningContract.passed ? "" : "writer-reasoning-contract-failed-before-editor",
+    ...reasoningContract.blockers,
+    headlineGate.passed ? "" : "canonical-headline-hard-gate-failed",
+    ...headlineGate.issues
+  ].filter(Boolean);
+  const textApproved = integrityIssues.length === 0 && presentation.textApproved && newsLabCompleteArticleStory(story);
+  const finalApproval = textApproved && !newsLabBlockingFinalIssues(story).some(issue => !/image|photo|visual|placeholder/.test(issue));
+  const repairBudget = newsLabQualityPublicationRepairBudget(story, integrityIssues.length ? integrityIssues : newsLabBlockingFinalIssues(story));
+  const sprintRecord = {
+    sprintId: NEWS_LAB_QUALITY_PUBLICATION_SPRINT_ID,
+    cycleId: context.cycleId || newsLabSprintCycleId(),
+    workflowVersion: NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION,
+    eventId: story.eventId || story.topicKey || story.id || "",
+    dossierRevisionId: reasoningContract.dossierRevisionId || story.dossierRevisionId || story.storyDossier?.dossierLock?.revisionId || "",
+    reasoningPlanId: reasoningContract.planId,
+    headlineServiceVersion: headlineGate.headlineServiceVersion,
+    articleDepthLane: depthLane.lane,
+    firstPassResult: story.qualityGate?.passed ? "editorial-first-pass-approved" : "editorial-first-pass-held",
+    repairCount: repairBudget.attempts,
+    finalApproval,
+    verifiedVisible: false,
+    presentationStatus: presentation.status,
+    integrityReady: depthLane.publishable,
+    reasoningContractPassed: reasoningContract.passed,
+    headlineGatePassed: headlineGate.passed,
+    textApproved,
+    imagePending: presentation.status === "IMAGE_PENDING",
+    issues: [...new Set([...integrityIssues, ...(presentation.textIssues || [])])],
+    checkedAt: now
+  };
+  const nextQualityGate = {
+    ...(story.qualityGate || {}),
+    issues: [...new Set([...(story.qualityGate?.issues || []), ...integrityIssues])],
+    remainingIssues: [...new Set([...(story.qualityGate?.remainingIssues || []), ...integrityIssues])],
+    passed: finalApproval,
+    score: finalApproval ? Math.max(72, Number(story.qualityGate?.score || newsLabPublicArticleScore(story) || 0)) : Number(story.qualityGate?.score || newsLabPublicArticleScore(story) || 0),
+    action: finalApproval ? "quality-publication-sprint-approved" : "quality-publication-sprint-held"
+  };
+  return {
+    ...story,
+    title: headlineGate.passed && headlineGate.publicationHeadline ? headlineGate.publicationHeadline : story.title,
+    publicationWorkflowVersion: NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION,
+    qualityPublicationSprint: sprintRecord,
+    articleDepthLane: depthLane,
+    writerReasoningContract: reasoningContract,
+    headlineAudit: {
+      ...(story.headlineAudit || {}),
+      sprintHeadlineGate: headlineGate
+    },
+    presentationReadiness: presentation,
+    repairBudget: {
+      ...(story.repairBudget || {}),
+      qualityPublicationSprint: repairBudget
+    },
+    qualityGate: nextQualityGate,
+    editorEnforcement: {
+      ...(story.editorEnforcement || {}),
+      finalIssues: [...new Set([...(story.editorEnforcement?.finalIssues || []), ...integrityIssues])]
+    }
+  };
+}
+
+function newsLabRecordQualityPublicationSprintCohort(candidates = [], publicStories = [], context = {}) {
+  const visibleKeys = new Set((publicStories || []).flatMap(story => [
+    story.id,
+    story.eventId,
+    story.topicKey,
+    newsLabStoryMergeAuditKey(story)
+  ].filter(Boolean)));
+  const records = candidates.map(story => {
+    const record = story.qualityPublicationSprint || {};
+    const keys = [story.id, story.eventId, story.topicKey, newsLabStoryMergeAuditKey(story)].filter(Boolean);
+    return {
+      ...record,
+      verifiedVisible: keys.some(key => visibleKeys.has(key)),
+      imagePending: story.presentationReadiness?.status === "IMAGE_PENDING" || record.imagePending,
+      finalApproval: Boolean(record.finalApproval),
+      repairCount: Number(record.repairCount || 0),
+      cpuMs: Number(story.performance?.cpuMs || story.buildTiming?.elapsedMs || 0),
+      publicationLatencyMs: story.generatedAt || story.publishedAt ? Math.max(0, Date.now() - Date.parse(story.generatedAt || story.publishedAt)) : 0
+    };
+  });
+  const count = records.length || 1;
+  const issueCount = pattern => records.reduce((sum, record) => sum + Number((record.issues || []).some(issue => pattern.test(issue))), 0);
+  const report = {
+    generatedAt: new Date().toISOString(),
+    sprintId: NEWS_LAB_QUALITY_PUBLICATION_SPRINT_ID,
+    workflowVersion: NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION,
+    baselineFrozenAt: context.baselineFrozenAt || new Date().toISOString(),
+    candidateCount: records.length,
+    integrityReadyRate: Number((records.filter(record => record.integrityReady).length / count).toFixed(2)),
+    reasoningContractPassRate: Number((records.filter(record => record.reasoningContractPassed).length / count).toFixed(2)),
+    firstPassEditorialApprovalRate: Number((records.filter(record => /first-pass-approved/.test(record.firstPassResult || "")).length / count).toFixed(2)),
+    finalApprovalRate: Number((records.filter(record => record.finalApproval).length / count).toFixed(2)),
+    verifiedVisibleYield: Number((records.filter(record => record.verifiedVisible).length / count).toFixed(2)),
+    headlineSourceMismatch: issueCount(/headline-source|semantic-title-source|source-evidence/),
+    headlineLeadMismatch: issueCount(/headline-lead|lead-topic/),
+    topicContamination: issueCount(/topic-contamination|topic-drift|mixed-source-topic/),
+    repairPasses: records.reduce((sum, record) => sum + Number(record.repairCount || 0), 0),
+    cpuPerVerifiedVisibleArticle: Number((records.reduce((sum, record) => sum + Number(record.cpuMs || 0), 0) / Math.max(1, records.filter(record => record.verifiedVisible).length)).toFixed(2)),
+    publicationLatencyMsAverage: Number((records.reduce((sum, record) => sum + Number(record.publicationLatencyMs || 0), 0) / count).toFixed(2)),
+    imagePendingCount: records.filter(record => record.imagePending).length,
+    headlineServiceVersions: [...new Set(records.map(record => record.headlineServiceVersion).filter(Boolean))],
+    records: records.slice(0, 80),
+    promotionRule: "Promote only if first-pass and verified-visible output improve while headline mismatch, topic contamination, and factual-integrity failures do not regress.",
+    stopCondition: "Target 50 eligible, 45 integrity-ready dossiers, 40 validated reasoning plans, 35 clean drafts, 28 first-pass approvals, 32 final approvals after bounded repair, and 30 verified-visible articles."
+  };
+  writeJsonFile(newsLabQualityPublicationSprintFile, report);
+  return report;
 }
 
 function newsLabDraftCoordinator(story = {}, context = {}) {
@@ -50745,6 +44363,7 @@ async function buildNewsLabPayload(payload = {}) {
       editorialSubsystems: newsLabEditorialSubsystemTrace(coachRechecked)
     };
   });
+  const qualityPublicationSprintCycleId = newsLabSprintCycleId();
   let finalReviewedStories = newsLabDedupeFinalSemanticStories(reviewedStoriesWithSubsystems
     .map(newsLabEnsureLayeredDossierMetadata)
     .map(story => enforceContentEditor(story, "news-lab"))
@@ -50759,6 +44378,11 @@ async function buildNewsLabPayload(payload = {}) {
     .map(newsLabAcceptanceRepairPass)
     .map(newsLabSanitizePublicNewsCopy)
     .map(story => newsLabPublishingEditorPass(story, { stage: "final-publishing-editor-before-validator" }))
+    .map((story, index) => newsLabApplyQualityPublicationSprintGate(story, {
+      index,
+      cycleId: qualityPublicationSprintCycleId,
+      stage: "final-publisher-gate"
+    }))
     .map(story => ({ ...story, brainPipeline: newsLabBrainPipelineIntelligence(story) })));
   const finalApprovalRecoveryAttempted = finalReviewedStories.filter(story =>
     newsLabBlockingFinalIssues(story).length || newsLabBlockingEditorFinalIssues(story).length
@@ -50772,6 +44396,25 @@ async function buildNewsLabPayload(payload = {}) {
         ])];
         if (!beforeIssues.length) return story;
         const beforePackage = newsLabFullRejectPackage(story, "final-publisher-gate-before-repair");
+        const targetedRepair = newsLabTargetedRepairRouteFromIssues(beforeIssues, story);
+        const repairLimit = Math.max(0, Math.min(2, Number(targetedRepair.maxRepairRounds || 1)));
+        if (repairLimit === 0) {
+          return {
+            ...story,
+            approvalRecoveryReview: {
+              applied: false,
+              stage: "final-publisher-gate",
+              beforeIssues,
+              afterIssues: beforeIssues,
+              correctedIssues: [],
+              passed: false,
+              action: "component-repair-budget-zero-held",
+              targetedRepair,
+              fullRejectPackage: beforePackage,
+              rule: "Image-only and zero-budget repairs are held or routed to their owning subsystem instead of rebuilding the whole article."
+            }
+          };
+        }
         const recovered = newsLabEditorRepairReviewCycle({
           ...story,
           approvalRecoveryInitialIssues: beforeIssues,
@@ -50782,7 +44425,7 @@ async function buildNewsLabPayload(payload = {}) {
             passed: false,
             action: "final-approval-recovery-needed"
           }
-        }, 4);
+        }, repairLimit);
         const rechecked = newsLabPublishingEditorPass(
           newsLabAcceptanceRepairPass(newsLabFinalApprovalRepair(newsLabFinalSemanticEditor(enforceContentEditor(recovered, "news-lab")))),
           { stage: "final-recovery-publishing-editor", attempt: 1 }
@@ -50802,6 +44445,8 @@ async function buildNewsLabPayload(payload = {}) {
             correctedIssues: beforeIssues.filter(issue => !afterIssues.includes(issue)),
             passed: afterIssues.length === 0,
             action: afterIssues.length === 0 ? "final-rejection-repaired-and-resubmitted" : "final-rejection-repaired-still-held",
+            targetedRepair,
+            repairLimit,
             fullRejectPackage: beforePackage,
             afterRejectPackage: afterPackage,
             rule: "Any editorial or publisher rejection must return every known issue at once, repair all issue groups together, revalidate, and resubmit before it is allowed to remain blocked."
@@ -50819,6 +44464,12 @@ async function buildNewsLabPayload(payload = {}) {
         };
       }));
   }
+  finalReviewedStories = newsLabDedupeFinalSemanticStories(finalReviewedStories
+    .map((story, index) => newsLabApplyQualityPublicationSprintGate(story, {
+      index,
+      cycleId: qualityPublicationSprintCycleId,
+      stage: "final-publisher-gate-after-bounded-repair"
+    })));
   recordNewsLabStoryObjects(finalReviewedStories, { stage: "final-publisher-gate", status: "reviewed" });
   const finalApprovalRecoveryResolved = finalReviewedStories.filter(story => story.approvalRecoveryReview?.passed).length;
   const finalApprovalRecoveryStillHeld = finalReviewedStories.filter(story => story.approvalRecoveryReview?.applied && !story.approvalRecoveryReview?.passed).length;
@@ -50956,6 +44607,10 @@ async function buildNewsLabPayload(payload = {}) {
     .filter(newsLabShelfDisplayReadyStory)
     .map(story => ({ ...story, brainPipeline: story.brainPipeline || newsLabBrainPipelineIntelligence(story) }));
   const publicationOutcomeAudit = newsLabPublicationOutcomeAudit(ownedStories, previousPublishedForShelf, finalOwnedStories);
+  const qualityPublicationSprintReport = newsLabRecordQualityPublicationSprintCohort(finalReviewedStories, finalOwnedStories, {
+    cycleId: qualityPublicationSprintCycleId,
+    baselineFrozenAt: new Date(started).toISOString()
+  });
   try {
     writeJsonFile(path.join(dataDir, "news-lab-publication-outcome-audit.json"), publicationOutcomeAudit);
   } catch (error) {
@@ -50991,6 +44646,16 @@ async function buildNewsLabPayload(payload = {}) {
   shelfDiagnostics.approvalToVisiblePublication = publicationOutcomeAudit.counters;
   shelfDiagnostics.mergeOutcomes = publicationOutcomeAudit.outcomes.slice(0, 80);
   shelfDiagnostics.metricRule = "Published means editor-approved, saved, merged/deduped, persisted, and visible in the public shelf. Approved updates and duplicates are measured separately.";
+  shelfDiagnostics.qualityPublicationSprint = {
+    sprintId: qualityPublicationSprintReport.sprintId,
+    candidateCount: qualityPublicationSprintReport.candidateCount,
+    integrityReadyRate: qualityPublicationSprintReport.integrityReadyRate,
+    reasoningContractPassRate: qualityPublicationSprintReport.reasoningContractPassRate,
+    finalApprovalRate: qualityPublicationSprintReport.finalApprovalRate,
+    verifiedVisibleYield: qualityPublicationSprintReport.verifiedVisibleYield,
+    imagePendingCount: qualityPublicationSprintReport.imagePendingCount,
+    reportFile: "data/news-lab-quality-publication-sprint.json"
+  };
   const articleApprovalIntelligence = newsLabArticleApprovalIntelligence({
     generatedCandidates: allOwnedStories.length,
     editorialReviewed: qualityGate.stories.length,
@@ -53186,11 +46851,17 @@ const server = http.createServer(async (request, response) => {
   }
 
   if (url.pathname === "/api/creator/archive") {
-    const posts = readCreatorPosts()
+    const archive = creatorArchivePayload(readCreatorPosts(), 365);
+    const posts = archive.posts
       .map(({ text, editorProfile, aiModel, ...post }) => post)
       .slice(0, 52);
     sendNoStoreJson(response, 200, {
       generatedAt: new Date().toISOString(),
+      version: archive.version,
+      latestEditorialId: archive.latestEditorialId,
+      latestEditorial: archive.latestEditorial ? (({ text, editorProfile, aiModel, ...post }) => post)(archive.latestEditorial) : null,
+      monthlyIndex: archive.monthlyIndex,
+      rule: archive.rule,
       posts
     });
     return;
