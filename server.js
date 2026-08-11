@@ -13764,6 +13764,25 @@ function localDateId(date = new Date()) {
   return local.toISOString().slice(0, 10);
 }
 
+function newsLabTodayDateKey(date = new Date()) {
+  try {
+    const eastern = easternDateParts(date);
+    return `${eastern.year}-${String(eastern.month).padStart(2, "0")}-${String(eastern.day).padStart(2, "0")}`;
+  } catch (error) {
+    if (!runtimeState.newsLabDateKeyFallbackLogged) {
+      runtimeState.newsLabDateKeyFallbackLogged = true;
+      runtimeState.lastFrameworkDependencyFallback = {
+        at: new Date().toISOString(),
+        dependency: "newsLabTodayDateKey",
+        action: "using-utc-date-fallback",
+        error: error.message || String(error)
+      };
+      console.warn("Missing date-key service context. Using UTC date fallback.");
+    }
+    return new Date(date).toISOString().slice(0, 10);
+  }
+}
+
 function dateIdDaysAgo(days = 0) {
   const date = new Date();
   date.setDate(date.getDate() - days);
@@ -34050,6 +34069,94 @@ function newsLabConstrainBodyToDossierCapacity(body = [], capacity = {}, storyDo
     : "Further reporting is expected to clarify the next confirmed step.";
   return newsLabDedupeArticleParagraphs([...brief, updateLine], brief[0] || "").slice(0, 4);
 }
+
+function newsLabDossierReadinessClassFromEvidence(input = {}) {
+  const metrics = input.metrics || {};
+  const missing = [...new Set(input.missing || [])].filter(Boolean);
+  const warning = [...new Set(input.warning || [])].filter(Boolean);
+  const sourceCount = Number(metrics.sourceCount || metrics.independentSourceCount || 0);
+  const knownFactCount = Number(metrics.knownFactCount || metrics.directWritingFactCount || metrics.uniqueFactCount || 0);
+  const mixedOrGeneric = Boolean(metrics.mixedOrGeneric);
+  const readyForWriter = Boolean(input.readyForWriter && !mixedOrGeneric && !missing.length);
+  const readyForStandardArticle = Boolean(input.readyForStandardArticle);
+  const readinessTier = input.readinessTier || "";
+  const nextRetryAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+
+  if (!input || typeof input !== "object") {
+    if (!runtimeState.newsLabReadinessFallbackLogged) {
+      runtimeState.newsLabReadinessFallbackLogged = true;
+      runtimeState.lastFrameworkDependencyFallback = {
+        at: new Date().toISOString(),
+        dependency: "newsLabDossierReadinessClassFromEvidence",
+        action: "using-default-dossier-readiness",
+        error: "invalid-readiness-input"
+      };
+      console.warn("Missing readiness classifier input. Using default dossier readiness.");
+    }
+    return {
+      readinessClass: "HOLD_FOR_EVIDENCE",
+      blockingReasons: ["readiness-classifier-input-missing"],
+      warnings: [],
+      missingEvidence: ["readiness-classifier-input-missing"],
+      recommendedAction: "collect-canonical-event-evidence",
+      nextRetryAt
+    };
+  }
+
+  if (mixedOrGeneric || missing.some(item => /mixed|identity|contamination|primary-event/i.test(item))) {
+    return {
+      readinessClass: "RECOVERY",
+      blockingReasons: missing.length ? missing : ["canonical-event-identity-not-ready"],
+      warnings: warning,
+      missingEvidence: missing.length ? missing : ["canonical-event-identity-not-ready"],
+      recommendedAction: "split-cluster-or-rebuild-canonical-dossier",
+      nextRetryAt
+    };
+  }
+
+  if (readyForWriter && readyForStandardArticle && knownFactCount >= 8 && sourceCount >= 4) {
+    return {
+      readinessClass: "READY_FOR_DEEP_ARTICLE",
+      blockingReasons: [],
+      warnings: warning,
+      missingEvidence: [],
+      recommendedAction: "lock-dossier-and-write-deep-article",
+      nextRetryAt: ""
+    };
+  }
+
+  if (readyForWriter && readyForStandardArticle) {
+    return {
+      readinessClass: "READY_FOR_STANDARD_ARTICLE",
+      blockingReasons: [],
+      warnings: warning,
+      missingEvidence: [],
+      recommendedAction: "lock-dossier-and-write-standard-article",
+      nextRetryAt: ""
+    };
+  }
+
+  if (readyForWriter || readinessTier === "READY_FOR_BREAKING_BRIEF") {
+    return {
+      readinessClass: "READY_FOR_DEVELOPING_BRIEF",
+      blockingReasons: [],
+      warnings: [...new Set([...warning, "developing-brief-depth-only"])],
+      missingEvidence: [],
+      recommendedAction: "write-developing-brief-and-continue-collection",
+      nextRetryAt: ""
+    };
+  }
+
+  return {
+    readinessClass: "HOLD_FOR_EVIDENCE",
+    blockingReasons: missing.length ? missing : ["needs-writer-evidence-pack"],
+    warnings: warning,
+    missingEvidence: missing.length ? missing : ["needs-writer-evidence-pack"],
+    recommendedAction: "collect-source-claims-and-promote-usable-facts",
+    nextRetryAt
+  };
+}
+
 function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   const handoff = context.cleanWriterHandoff?.diagnostic || storyDossier.writerDossierHandoff || {};
   const knownFacts = (storyDossier.knownFacts || []).filter(Boolean);
@@ -34147,6 +34254,50 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
     decision: readyForWriter ? (capacity.readyForStandardArticle ? "lock-dossier-and-write-standard" : "lock-dossier-and-write-brief") : "hold-for-dossier-evidence",
     rule: "The Writer may not draft from raw RSS, mixed fragments, a changing investigation, or a merely existing dossier. Dossier Builder must pass the binary writer gate and identify one primary event plus evidence-supported article capacity before prose generation; thin coherent dossiers become briefs, while incomplete standard/deep dossiers return to evidence collection."
   };
+}
+
+function newsLabFrameworkStartupDependencyValidation(reason = "startup") {
+  const requiredContracts = [
+    ["Dossier Readiness", "newsLabDossierReadinessContract", typeof newsLabDossierReadinessContract === "function"],
+    ["Dossier Readiness Classifier", "newsLabDossierReadinessClassFromEvidence", typeof newsLabDossierReadinessClassFromEvidence === "function"],
+    ["Board Date Key", "newsLabTodayDateKey", typeof newsLabTodayDateKey === "function"],
+    ["Current Board Policy", "newsLabApplyCurrentBoardPolicy", typeof newsLabApplyCurrentBoardPolicy === "function"],
+    ["Writer Handoff", "newsLabDossierToWriterHandoff", typeof newsLabDossierToWriterHandoff === "function"],
+    ["Writer Reasoning Plan", "newsLabBuildWriterReasoningPlan", typeof newsLabBuildWriterReasoningPlan === "function"],
+    ["Canonical Headline Service", "newsLabCanonicalHeadlineService", typeof newsLabCanonicalHeadlineService === "function"]
+  ];
+  const missing = requiredContracts
+    .filter(([, , ok]) => !ok)
+    .map(([label, functionName]) => ({ label, functionName }));
+  const record = {
+    generatedAt: new Date().toISOString(),
+    reason,
+    ok: missing.length === 0,
+    checked: requiredContracts.map(([label, functionName, ok]) => ({ label, functionName, ok })),
+    missing,
+    fallbackPolicy: "Missing Framework helper contracts must degrade gracefully and be reported at boot; publication should continue whenever a safe default exists."
+  };
+  runtimeState.newsLabFrameworkDependencyValidation = record;
+  if (missing.length) {
+    console.warn(`News Lab startup dependency validation found ${missing.length} missing contract(s): ${missing.map(item => item.functionName).join(", ")}`);
+  }
+  try {
+    saveFrameworkActionLogEntry({
+      timestamp: record.generatedAt,
+      type: "news-lab-framework-dependency-validation",
+      subsystem: "Framework OS",
+      status: record.ok ? "healthy" : "attention",
+      reason,
+      summary: record.ok
+        ? "News Lab Framework startup dependency validation passed."
+        : `News Lab Framework startup dependency validation found missing contracts: ${missing.map(item => item.functionName).join(", ")}.`,
+      impact: "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+      details: record
+    });
+  } catch (error) {
+    runtimeState.lastFrameworkDependencyValidationError = error.message || String(error);
+  }
+  return record;
 }
 
 function newsLabLockDossierForWriting(storyDossier = {}, readiness = {}, context = {}) {
@@ -48229,6 +48380,7 @@ if (isKnowledgeDistillationWorkerProcess) {
 } else if (isNewsLabCollectorWorkerProcess) {
   console.log(`Censored Expressions News Lab ${newsLabCollectorWorkerCategory} collector running as pid ${process.pid}`);
   ensureDataFiles();
+  newsLabFrameworkStartupDependencyValidation("news-lab-collector-worker-boot");
   if (isNewsLabCollectorWorkerOnce) {
     runNewsLabCollectorCycle(newsLabCollectorWorkerCategory, process.env.CE_NEWS_LAB_COLLECTOR_REASON || "manual-one-shot-category-collection")
       .then(record => process.exit(record ? 0 : 1))
@@ -48242,14 +48394,17 @@ if (isKnowledgeDistillationWorkerProcess) {
 } else if (isNewsLabApiWorkerProcess) {
   console.log(`Censored Expressions News Lab API response worker running as pid ${process.pid}`);
   ensureDataFiles();
+  newsLabFrameworkStartupDependencyValidation("news-lab-api-worker-boot");
   startNewsLabApiResponseLoop();
 } else if (isNewsLabStuckRescueWorkerProcess) {
   console.log(`Censored Expressions News Lab stuck-rescue worker running as pid ${process.pid}`);
   ensureDataFiles();
+  newsLabFrameworkStartupDependencyValidation("news-lab-stuck-rescue-worker-boot");
   startNewsLabStuckRescueLoop();
 } else if (isNewsLabWorkerProcess) {
   console.log(`Censored Expressions News Lab worker running as pid ${process.pid}`);
   ensureDataFiles();
+  newsLabFrameworkStartupDependencyValidation("news-lab-worker-boot");
   writeNewsLabWorkerStatus({
     active: false,
     lastStatus: "worker-booted",
@@ -48327,6 +48482,7 @@ if (isKnowledgeDistillationWorkerProcess) {
   server.listen(port, () => {
     console.log(`Censored Expressions live feed server running on port ${port}`);
     ensureDataFiles();
+    newsLabFrameworkStartupDependencyValidation("server-listen");
     if (serverStartsBackgroundWorkers) {
       startMaintenanceLoop();
       if (backgroundLoopsEnabled) {
