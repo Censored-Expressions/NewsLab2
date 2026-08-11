@@ -4378,6 +4378,65 @@ function productionIntelligencePreventionRules(blockers = []) {
   return rules.slice(0, 8);
 }
 
+function productionIntelligenceHeadlineVersionMetrics(stories = []) {
+  const grouped = new Map();
+  (Array.isArray(stories) ? stories : []).forEach(story => {
+    const telemetry = story.headlineAudit?.headlineExperimentTelemetry || story.headlineExperimentTelemetry || {};
+    const canonical = story.headlineAudit?.canonicalHeadline || story.canonicalHeadline || {};
+    const version = telemetry.headlineServiceVersion || canonical.version || "unknown";
+    if (!grouped.has(version)) {
+      grouped.set(version, {
+        headlineServiceVersion: version,
+        articlesEvaluated: 0,
+        candidatesGenerated: 0,
+        candidatePassCount: 0,
+        firstCandidatePassCount: 0,
+        wordSalad: 0,
+        genericHeadline: 0,
+        sourceMismatch: 0,
+        leadMismatch: 0,
+        grammarFailure: 0,
+        editorRewrite: 0,
+        firstPassArticleApproval: 0,
+        repairRounds: 0,
+        verifiedVisibleOutput: 0
+      });
+    }
+    const row = grouped.get(version);
+    const candidates = telemetry.candidates || canonical.validation || [];
+    const issues = [
+      ...(story.qualityGate?.issues || []),
+      ...(story.qualityGate?.remainingIssues || []),
+      ...(story.editorEnforcement?.finalIssues || []),
+      ...(canonical.finalIssues || []),
+      ...(telemetry.editorHeadlineIssues || [])
+    ].map(issue => String(issue || ""));
+    row.articlesEvaluated += 1;
+    row.candidatesGenerated += Number(telemetry.candidatesGenerated || candidates.length || 0);
+    row.candidatePassCount += candidates.filter(item => item.passed || item.canonicalValidationPassed || (item.score >= 78 && !(item.issues || []).length)).length;
+    row.firstCandidatePassCount += Number(Boolean(candidates[0]?.passed || (candidates[0]?.score >= 78 && !(candidates[0]?.issues || []).length)));
+    row.wordSalad += Number(issues.some(issue => /word-salad/.test(issue)));
+    row.genericHeadline += Number(issues.some(issue => /generic-weak-headline/.test(issue)));
+    row.sourceMismatch += Number(issues.some(issue => /semantic-title-source|headline-source-no-overlap|source-evidence/.test(issue)));
+    row.leadMismatch += Number(issues.some(issue => /headline-lead-topic|lead-topic/.test(issue)));
+    row.grammarFailure += Number(issues.some(issue => /grammar|unnatural|truncated|display-unsafe/.test(issue)));
+    row.editorRewrite += Number(Boolean(story.publicHeadlineRepaired || /rewrite|repair/i.test(story.headlineAudit?.action || story.qualityGate?.action || "")));
+    row.firstPassArticleApproval += Number(Boolean(story.qualityGate?.passed && !story.qualityGate?.correctedIssues?.length));
+    row.repairRounds += Number(story.repairBudget?.attempts || story.qualityGate?.repairAttempts || story.editorRepairReview?.attempts?.length || 0);
+    row.verifiedVisibleOutput += Number(Boolean(story.publicArticle !== false && story.qualityGate?.passed !== false));
+  });
+  return [...grouped.values()].map(row => ({
+    ...row,
+    candidatePassRate: productionIntelligenceRate(row.candidatePassCount, Math.max(1, row.candidatesGenerated)),
+    firstCandidatePassRate: productionIntelligenceRate(row.firstCandidatePassCount, Math.max(1, row.articlesEvaluated)),
+    editorRewriteRate: productionIntelligenceRate(row.editorRewrite, Math.max(1, row.articlesEvaluated)),
+    firstPassArticleApprovalRate: productionIntelligenceRate(row.firstPassArticleApproval, Math.max(1, row.articlesEvaluated)),
+    verifiedVisibleRate: productionIntelligenceRate(row.verifiedVisibleOutput, Math.max(1, row.articlesEvaluated)),
+    averageHeadlineAttempts: Number((row.candidatesGenerated / Math.max(1, row.articlesEvaluated)).toFixed(2)),
+    rule: "Headline success means final normalized headline passed the canonical gate, passed first Editorial review, and reached publication without headline replacement."
+  })).sort((a, b) => Number(b.articlesEvaluated || 0) - Number(a.articlesEvaluated || 0));
+}
+
 function productionIntelligenceReport(reason = "cycle", options = {}) {
   const productivity = options.productivity || readJsonFile(newsLabProductivityFile, null) || defaultNewsLabProductivityLedger();
   const productivitySummary = newsLabProductivitySummary(productivity);
@@ -4455,6 +4514,7 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
     categoryDrift: semanticReclassification,
     image: imageOptimizationState
   });
+  const headlineVersionMetrics = productionIntelligenceHeadlineVersionMetrics(publicStories);
   const publishedAfterRepair = Number(currentCycle.approvalRecoveryResolved || recovery.approved || recovery.published || 0);
   const draftsCompleted = reviewed;
   const averageRepairPasses = productionIntelligenceRate(repairFrequency, Math.max(1, finalApproved + finalBlocked));
@@ -4515,6 +4575,7 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
     stageEfficiency,
     sharedWorkflowDiagnosis,
     rootCauseWorkOrders,
+    headlineVersionMetrics,
     semanticReclassification,
     imageIntelligence: {
       ...imageOptimizationState,
@@ -38005,6 +38066,11 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     articleSummary: bodyText || story.articleSummary || "",
     originalHeadline: story.originalHeadline || ""
   };
+  const sourceEvidenceText = [
+    serviceStory.originalHeadline,
+    ...(Array.isArray(story.sources) ? story.sources : []).flatMap(source => [source.title, source.summary, source.articleSummary, source.source]),
+    ...(Array.isArray(dossier.sourcePool) ? dossier.sourcePool : []).flatMap(source => [source.title, source.summary, source.articleSummary, source.source])
+  ].filter(Boolean).join(" ");
   const fallbackSubject = cleanArticleText(lockedActor || identity.primaryActor || newsLabCleanHeadlineSubject(bodyText || seed || "CE Media", "Story"), 90);
   const fallbackAction = cleanArticleText(lockedAction || newsLabActionPhraseFromText(bodyText || dossier.whatHappened || "", newsLabCategory(story)), 110);
   const fallbackConsequence = cleanArticleText(lockedConsequence || identity.consequence || dossier.whatHappened || "", 90);
@@ -38015,7 +38081,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     fallbackAction && fallbackConsequence ? `${fallbackAction} ${fallbackConsequence}` : "",
     fallbackSubject && fallbackAction ? `${fallbackSubject} ${fallbackAction} as Details Emerge` : ""
   ];
-  const candidates = [
+  const rawCandidates = [
     lockedHeadlineCandidate,
     newsLabHeadlineFromCompletedArticle(serviceStory, index),
     newsLabPlainFactHeadlineCandidate(serviceStory),
@@ -38025,6 +38091,11 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     ...structuralCandidates,
     seed
   ]
+    .map(candidate => newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(candidate || "", 140)).replace(/[,.!?;:]+$/g, "").trim()))
+    .filter(Boolean)
+    .filter((candidate, candidateIndex, all) => all.findIndex(item => item.toLowerCase() === candidate.toLowerCase()) === candidateIndex);
+  const candidates = rawCandidates
+    .map(candidate => newsLabEnsureOwnedHeadline(candidate, serviceStory, index) || candidate)
     .map(candidate => newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(candidate || "", 140)).replace(/[,.!?;:]+$/g, "").trim()))
     .filter(Boolean)
     .filter((candidate, candidateIndex, all) => all.findIndex(item => item.toLowerCase() === candidate.toLowerCase()) === candidateIndex);
@@ -38038,9 +38109,14 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
       canonicalStoryIdentity: identity
     });
     const bodyOverlap = Number(newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "").toFixed(2));
+    const sourceEvidenceOverlap = Number(newsLabTextOverlap(candidate, sourceEvidenceText || serviceStory.originalHeadline || "").toFixed(2));
+    const candidateEntities = new Set(storyNamedEntities({ title: candidate, summary: candidate }));
+    const sourceEntities = storyNamedEntities({ title: sourceEvidenceText, summary: sourceEvidenceText });
+    const sourceEntityAgreement = sourceEntities.some(entity => candidateEntities.has(entity));
     const issues = [...new Set([
       ...(editor.issues || []),
       ...(distinctness.issues || []),
+      sourceEvidenceText && sourceEvidenceOverlap < 0.04 && !sourceEntityAgreement ? "headline-source-evidence-agreement-failed" : "",
       candidates.length < 5 ? "headline-candidate-pool-too-small" : ""
     ].filter(Boolean))];
     const score = clampScore(
@@ -38049,6 +38125,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
       + Math.min(18, bodyOverlap * 80)
       + (dossierAgreement.ready ? 14 : -18)
       + (distinctness.passed ? 10 : -12)
+      + (sourceEvidenceOverlap >= 0.04 || sourceEntityAgreement ? 10 : -16)
       + (!newsLabHeadlineTooClose(candidate, serviceStory.originalHeadline || "") ? 8 : -16)
       + (!newsLabHeadlineTruncated(candidate) ? 6 : -18)
     );
@@ -38059,6 +38136,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
         && !newsLabWeakGenericHeadline(candidate)
         && !newsLabHeadlineTruncated(candidate)
         && newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "") >= 0.03
+        && (!sourceEvidenceText || sourceEvidenceOverlap >= 0.04 || sourceEntityAgreement)
         && dossierAgreement.ready
         && distinctness.passed
         && candidates.length >= 5
@@ -38066,22 +38144,28 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
       issues,
       score,
       bodyOverlap,
+      sourceEvidenceOverlap,
+      sourceEntityAgreement,
       dossierAgreement,
       distinctness
     };
   });
   const selected = validation.find(item => item.passed)?.candidate
+    || validation.slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0))[0]?.candidate
     || newsLabSelectPassingHeadline(serviceStory, candidates[0] || seed)
     || candidates[0]
     || seed
     || serviceStory.title;
-  const title = newsLabEnsureOwnedHeadline(selected, serviceStory, index);
-  const selectedValidation = validation.find(item => item.candidate === title) || validation.find(item => item.candidate === selected) || null;
+  const selectedValidation = validation.find(item => item.candidate === selected) || null;
   const validationPassed = Boolean(selectedValidation?.passed);
+  const publicationHeadline = validationPassed ? selected : null;
   return {
     active: true,
     version: "20260810-canonical-headline-service-v2-five-candidate-hard-gate",
-    title,
+    title: publicationHeadline || "",
+    selectedCandidate: selected,
+    publicationHeadline,
+    rawCandidates,
     candidates,
     validation,
     validationPassed,
@@ -38097,10 +38181,10 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
       dossierRevisionId: dossier.dossierRevisionId || dossier.dossierLock?.revisionId || productionContract.dossierRevisionId || "",
       lockedHeadlineCandidate
     },
-    dossierHeadlineAgreement: selectedValidation?.dossierAgreement || lockedAgreementForCandidate(title),
-    shelfDistinctness: selectedValidation?.distinctness || newsLabHeadlineDistinctnessCheck(title, {
+    dossierHeadlineAgreement: selectedValidation?.dossierAgreement || lockedAgreementForCandidate(selected),
+    shelfDistinctness: selectedValidation?.distinctness || newsLabHeadlineDistinctnessCheck(selected, {
       ...serviceStory,
-      title,
+      title: selected,
       storyDossier: dossier,
       canonicalStoryIdentity: identity
     }),
@@ -38256,6 +38340,50 @@ function newsLabHeadlineDistinctnessCheck(title = "", story = {}) {
     closest,
     comparisonCount: currentShelf.length,
     rule: "Headlines are generated after the locked dossier and article body, then checked against the current CE shelf so separate stories do not reuse the same wording pattern."
+  };
+}
+
+function newsLabHeadlineExperimentTelemetry({
+  story = {},
+  canonicalHeadline = {},
+  editorResult = "pending",
+  editorHeadlineIssues = [],
+  repairCount = 0,
+  finalApproval = false,
+  published = false,
+  verifiedPublic = false
+} = {}) {
+  const candidates = Array.isArray(canonicalHeadline.validation) ? canonicalHeadline.validation : [];
+  return {
+    active: true,
+    version: "20260811-headline-experiment-telemetry-v1",
+    headlineServiceVersion: canonicalHeadline.version || "",
+    eventId: story.eventId || story.topicKey || story.storyDossier?.eventId || "",
+    dossierRevisionId: canonicalHeadline.inputs?.dossierRevisionId || story.dossierRevisionId || story.storyDossier?.dossierLock?.revisionId || "",
+    reasoningPlanId: story.writerReasoningPlan?.planId || story.writerReasoningPlan?.id || "",
+    candidatesGenerated: candidates.length,
+    candidates: candidates.map(item => ({
+      title: item.candidate || "",
+      score: Number(item.score || 0),
+      grammarPassed: !(item.issues || []).some(issue => /grammar|word-salad|unnatural/.test(issue)),
+      dossierPassed: Boolean(item.dossierAgreement?.ready),
+      bodyOverlap: Number(item.bodyOverlap || 0),
+      sourceOverlap: Number(item.sourceEvidenceOverlap || newsLabTextOverlap(item.candidate || "", story.originalHeadline || story.summary || "").toFixed(2)),
+      leadAgreement: Number(item.dossierAgreement?.leadOverlap || 0),
+      distinctnessPassed: Boolean(item.distinctness?.passed),
+      issues: item.issues || []
+    })),
+    selectedCandidate: canonicalHeadline.selectedCandidate || "",
+    selectedFinalHeadline: canonicalHeadline.publicationHeadline || "",
+    publicationHeadline: canonicalHeadline.publicationHeadline || null,
+    canonicalValidationPassed: Boolean(canonicalHeadline.validationPassed && canonicalHeadline.publicationHeadline),
+    editorResult,
+    editorHeadlineIssues,
+    repairCount,
+    finalApproval: Boolean(finalApproval),
+    published: Boolean(published),
+    verifiedPublic: Boolean(verifiedPublic),
+    headlineSuccessDefinition: "Final normalized headline passed canonical hard gate, passed first Editorial review, and reached publication without headline replacement."
   };
 }
 
@@ -43470,7 +43598,7 @@ function newsLabRepairBudgetExceeded(story = {}) {
     ...(story.qualityGate?.remainingIssues || []),
     ...(story.editorEnforcement?.finalIssues || [])
   ];
-  const route = newsLabTargetedRepairRouteFromIssues(issueList);
+  const route = newsLabTargetedRepairRouteFromIssues(issueList, story);
   const attempts = [
     ...(story.editorRepairReview?.attempts || []),
     ...(story.qualityGate?.repairReview?.attempts || []),
@@ -45451,7 +45579,7 @@ function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) 
       paragraphFactContractViolations.length ? "paragraph-fact-contract-failed" : "",
       !understandingAligned ? "story-understanding-alignment-failed" : "",
       prohibitedInferenceHits.length ? "prohibited-inference-detected" : ""
-    ].filter(Boolean)) : null,
+    ].filter(Boolean), story) : null,
     rule: "After drafting, verify that the article followed the pre-draft reasoning plan before headline/editor review."
   };
 }
@@ -45524,9 +45652,22 @@ function newsLabRecordWriterReasoningRecovery({
   });
 }
 
-function newsLabTargetedRepairRouteFromIssues(issues = []) {
+function newsLabHeadlineMismatchIsHeadlineOnly(story = {}, values = []) {
+  const hasHeadlineMismatch = values.some(issue => /semantic-title-source|headline-source-no-overlap|headline-lead-topic-mismatch|headline|title|generic-weak|word-salad/i.test(issue));
+  if (!hasHeadlineMismatch) return false;
+  const bodyIssues = values.filter(issue => /article-body-topic-drift|paragraph-topic-contamination|paragraph-fact-contract|writer-reasoning-plan-alignment|body-too-short|missing-reporting-context|mixed-source-topic|story-identity/i.test(issue));
+  const bodyDossierHealthy = Boolean(
+    story.writerReasoningVerification?.passed !== false
+    && !bodyIssues.length
+    && (story.storyDossier?.dossierLock?.active || story.dossierRevisionId || story.canonicalDossierIntelligence)
+  );
+  return bodyDossierHealthy;
+}
+
+function newsLabTargetedRepairRouteFromIssues(issues = [], story = {}) {
   const values = (Array.isArray(issues) ? issues : []).map(issue => String(issue || ""));
   const budget = { headline: 2, body: 2, dossier: 1, image: 0, general: 1 };
+  if (newsLabHeadlineMismatchIsHeadlineOnly(story, values)) return { owner: "Headline Editor", scope: "headline-only", maxRepairRounds: budget.headline, causalRoute: "body-dossier-agree-headline-disagrees", action: "Preserve locked dossier, Writer Reasoning plan, and approved body. Generate five new headline candidates, validate final normalized CE-owned text, and replace headline only." };
   if (values.some(issue => /story-identity|semantic-title-source|lead-topic|paragraph-topic|paragraph-fact-contract|topic-drift|dossier-body/i.test(issue))) return { owner: "Story Dossier Builder", scope: "dossier-identity", maxRepairRounds: budget.dossier, action: "Rebuild one canonical event dossier, remove off-event fragments, then regenerate affected lead/body/headline sections." };
   if (values.some(issue => /headline|title|word-salad|generic-weak|source-no-overlap/i.test(issue))) return { owner: "Headline Editor", scope: "headline-only", maxRepairRounds: budget.headline, action: "Generate five actor-action-consequence headline candidates from canonical identity and completed body; replace headline only." };
   if (values.some(issue => /attribution|evidence|missing-reporting-context|body-too-short|thin/i.test(issue))) return { owner: "Evidence Engine / Story Dossier Builder", scope: "evidence-expansion", maxRepairRounds: budget.body, action: "Expand dossier with verified facts and attribution; regenerate only unsupported or thin sections." };
@@ -45541,7 +45682,7 @@ function newsLabDraftCoordinator(story = {}, context = {}) {
   const issueSet = newsLabPublicationIdentityIssueSet({ ...story, canonicalStoryIdentity, writerReasoning });
   const publicIssues = newsLabBuildUsefulnessPreEditorIssues({ ...story, canonicalStoryIdentity, writerReasoning });
   const allIssues = [...new Set([...issueSet.allIssues, ...publicIssues])];
-  const targetedRepair = newsLabTargetedRepairRouteFromIssues(allIssues);
+  const targetedRepair = newsLabTargetedRepairRouteFromIssues(allIssues, { ...story, canonicalStoryIdentity, writerReasoning });
   const readyForEditor = canonicalStoryIdentity.ready
     && writerReasoning.readyForDraft
     && !issueSet.identityIssues.length
@@ -48418,7 +48559,7 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     writerReasoningVerification,
     storyDossier
   }, index, body[0] || storyDossier.whatHappened || "");
-  if (strictReasoningBody && !canonicalHeadline.validationPassed) {
+  if (!canonicalHeadline.validationPassed || !canonicalHeadline.publicationHeadline) {
     newsLabRecordWriterReasoningRecovery({
       representative,
       storyDossier,
@@ -48428,12 +48569,12 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
       readiness: dossierReadiness,
       sources,
       facts,
-      reason: "canonical-headline-failed-locked-dossier-reasoning-validation",
+      reason: "canonical-headline-failed-publication-hard-gate",
       body
     });
     return null;
   }
-  const titleCandidate = canonicalHeadline.title;
+  const titleCandidate = canonicalHeadline.publicationHeadline;
   const preEditorHeadline = titleCandidate;
   let title = titleCandidate;
   const writingWorkflow = newsLabStoryWritingWorkflow({
@@ -48467,12 +48608,20 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     headlineAudit: {
       sourceHeadline: originalHeadline,
       candidateHeadline: titleCandidate,
+      selectedCandidate: canonicalHeadline.selectedCandidate || "",
+      publicationHeadline: canonicalHeadline.publicationHeadline || "",
       preEditorHeadline,
       finalHeadline: title,
       canonicalHeadline,
       copiedVerbatim: cleanArticleText(title, 180).toLowerCase() === cleanArticleText(originalHeadline, 180).toLowerCase(),
       similarity: Number(newsLabTextOverlap(title, originalHeadline).toFixed(2)),
       action: newsLabHeadlineOriginalEnough(title, originalHeadline) ? "canonical-headline-service" : "headline-needs-final-semantic-review",
+      headlineExperimentTelemetry: newsLabHeadlineExperimentTelemetry({
+        story: { id: `news_lab_${cluster.key || reportClusterKey(representative)}_${index}`.replace(/[^a-z0-9_:-]+/gi, "_"), eventId, topicKey, originalHeadline, title, storyDossier, writerReasoningPlan },
+        canonicalHeadline,
+        editorResult: "pending",
+        published: false
+      }),
       rule: "News Lab headlines are generated by the canonical headline service after the CE Media article body is written. The finished article, locked dossier, canonical identity, and Writer Reasoning plan are the headline evidence; RSS/source headlines are provenance, not headline source."
     },
     category,
@@ -49052,7 +49201,7 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     }
   };
   const canonicalHeadline = newsLabCanonicalHeadlineService(baseStory, index, newsLabHardRewriteCeHeadline(baseStory, index));
-  if (workerStrictReasoningBody && !canonicalHeadline.validationPassed) {
+  if (!canonicalHeadline.validationPassed || !canonicalHeadline.publicationHeadline) {
     newsLabRecordWriterReasoningRecovery({
       representative,
       storyDossier: dossier,
@@ -49062,13 +49211,13 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
       readiness: workerSliceDossierReadiness,
       sources: sourceCandidates,
       facts,
-      reason: "worker-slice-canonical-headline-failed-locked-dossier-reasoning-validation",
+      reason: "worker-slice-canonical-headline-failed-publication-hard-gate",
       body
     });
     return null;
   }
-  const titleSeed = canonicalHeadline.title;
-  const title = newsLabEnsureOwnedHeadline(titleSeed || newsLabHardRewriteCeHeadline(baseStory, index), baseStory, index);
+  const titleSeed = canonicalHeadline.publicationHeadline;
+  const title = canonicalHeadline.publicationHeadline;
   const imageDossier = newsLabBuildImageDossier({ ...baseStory, title, category: finalWorkerCategory });
   const image = newsLabNormalizeStoryImage({ ...baseStory, title, category: finalWorkerCategory, imageDossier }, representative.image);
   return enforceNewsLabEditorCategory({
@@ -49099,10 +49248,18 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     headlineAudit: {
       sourceHeadline: representative.title || "",
       candidateHeadline: titleSeed || "",
+      selectedCandidate: canonicalHeadline.selectedCandidate || "",
+      publicationHeadline: canonicalHeadline.publicationHeadline || "",
       finalHeadline: title,
       canonicalHeadline,
       similarity: Number(newsLabTextOverlap(title, representative.title || "").toFixed(2)),
       action: "worker-slice-canonical-headline-service",
+      headlineExperimentTelemetry: newsLabHeadlineExperimentTelemetry({
+        story: { ...baseStory, eventId: cluster.eventId || cluster.key || reportClusterKey(representative), topicKey: cluster.eventId || cluster.key || representative.url || title, title },
+        canonicalHeadline,
+        editorResult: "pending",
+        published: false
+      }),
       rule: "Timed worker headlines route through the canonical headline service after the compact body and Writer Reasoning plan, using actor/action/consequence from the locked dossier rather than source titles."
     },
     sourceAgreement: {
