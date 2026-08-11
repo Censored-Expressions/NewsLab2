@@ -4165,6 +4165,8 @@ function productionIntelligenceWriterReasoningTemplate() {
 }
 
 function productionIntelligenceStageEfficiency({ hour = {}, currentCycle = {}, lastMetrics = {}, reviewed = 0, finalApproved = 0, visiblePublished = 0 } = {}) {
+  const cycleId = currentCycle.cycleId || lastMetrics.cycleId || hour.cycleId || `cycle_${newsLabTodayDateKey() || "current"}`;
+  const workflowVersion = currentCycle.workflowVersion || lastMetrics.workflowVersion || newsLabCanonicalWorkflowVersion || "news-lab-current";
   const collected = Number(lastMetrics.sourceStoryCount || hour.sourceStoriesCollected || 0);
   const clusters = Number(lastMetrics.storyClusterCount || hour.storyClusters || currentCycle.generatedCandidates || reviewed || 0);
   const dossiers = Number(lastMetrics.dossierCount || hour.dossiersCompleted || clusters || 0);
@@ -4172,15 +4174,44 @@ function productionIntelligenceStageEfficiency({ hour = {}, currentCycle = {}, l
   const firstPass = Number(currentCycle.firstPassApproved || hour.approvedArticles || 0);
   const repaired = Number(hour.preEditorRepairedDrafts || currentCycle.approvalRecoveryAttempted || 0);
   const published = Math.max(0, Number(visiblePublished || currentCycle.publishedShelfCount || hour.publishedArticles || 0));
-  const ratio = (from, to) => productionIntelligenceRate(to, Math.max(1, from));
+  const newVisiblePublished = Number(currentCycle.newlyVerifiedVisible || currentCycle.newlyPublishedCount || hour.publishedArticles || 0);
+  const carriedForwardVisible = Math.max(0, published - newVisiblePublished);
+  const ratio = (from, to) => productionIntelligenceRate(Math.min(Math.max(0, to), Math.max(0, from)), Math.max(1, from));
+  const row = (stage, input, output, target, extra = {}) => {
+    const inputCount = Math.max(0, Number(input || 0));
+    const outputCount = Math.max(0, Number(output || 0));
+    const newlyCreatedCount = Math.min(outputCount, inputCount);
+    const carriedForwardCount = Math.max(0, outputCount - inputCount);
+    return {
+      stage,
+      cycleId,
+      workflowVersion,
+      input: inputCount,
+      output: outputCount,
+      inputCount,
+      outputCount,
+      newlyCreatedCount,
+      carriedForwardCount,
+      failedCount: Math.max(0, inputCount - newlyCreatedCount),
+      efficiency: ratio(inputCount, newlyCreatedCount),
+      inventoryInflated: outputCount > inputCount,
+      timestamp: new Date().toISOString(),
+      target,
+      ...extra
+    };
+  };
   const rows = [
-    { stage: "Collection", input: collected, output: clusters, efficiency: ratio(collected, clusters), target: "Collect unique same-event inputs, not raw volume." },
-    { stage: "Clustering", input: clusters, output: dossiers, efficiency: ratio(clusters, dossiers), target: "Merge by canonical event before category assignment." },
-    { stage: "Dossier", input: dossiers, output: drafts, efficiency: ratio(dossiers, drafts), target: "Only complete or clearly developing dossiers reach Writer." },
-    { stage: "Writer Reasoning", input: drafts, output: reviewed, efficiency: ratio(drafts, reviewed), target: "Every draft proves actor, action, facts, unknowns, attribution, and paragraph plan." },
-    { stage: "First-Pass Editor", input: reviewed, output: firstPass, efficiency: ratio(reviewed, firstPass), target: "Raise first-pass approvals by preventing known failure classes upstream." },
-    { stage: "Repair Recovery", input: Math.max(1, repaired), output: Math.max(0, finalApproved - firstPass), efficiency: productionIntelligenceRate(Math.max(0, finalApproved - firstPass), Math.max(1, repaired)), target: "Repair only failed component, resubmit, and measure recovery." },
-    { stage: "Publication", input: finalApproved, output: published, efficiency: ratio(finalApproved, published), target: "Count only durable visible public articles as published." }
+    row("Collection", collected, clusters, "Collect unique same-event inputs, not raw volume."),
+    row("Clustering", clusters, dossiers, "Merge by canonical event before category assignment."),
+    row("Dossier", dossiers, drafts, "Only complete or clearly developing dossiers reach Writer."),
+    row("Writer Reasoning", drafts, reviewed, "Every draft proves actor, action, facts, unknowns, attribution, and paragraph plan."),
+    row("First-Pass Editor", reviewed, firstPass, "Raise first-pass approvals by preventing known failure classes upstream."),
+    row("Repair Recovery", Math.max(1, repaired), Math.max(0, finalApproved - firstPass), "Repair only failed component, resubmit, and measure recovery."),
+    row("Publication", finalApproved, newVisiblePublished || finalApproved, "Count newly verified-visible articles separately from carried-forward shelf inventory.", {
+      visiblePublicInventory: published,
+      newlyVerifiedVisible: newVisiblePublished,
+      carriedForwardVisible
+    })
   ];
   const weakest = rows
     .filter(row => row.input > 0)
@@ -4188,7 +4219,16 @@ function productionIntelligenceStageEfficiency({ hour = {}, currentCycle = {}, l
   return {
     rows,
     weakestStage: weakest,
-    rule: "Production Intelligence optimizes the whole article lifecycle by finding the earliest stage where useful work stops becoming visible public articles."
+    cohortIntegrity: {
+      cycleId,
+      workflowVersion,
+      newVisiblePublished,
+      carriedForwardVisible,
+      visiblePublicInventory: published,
+      inventoryRows: rows.filter(item => item.inventoryInflated).map(item => item.stage),
+      rule: "Stage efficiency is calculated from current-cycle input and newly created output. Existing public shelf inventory is carriedForwardCount and must not inflate first-pass or final approval rates."
+    },
+    rule: "Production Intelligence optimizes the whole article lifecycle by finding the earliest stage where useful work stops becoming visible articles, while separating current-cycle conversion from carried-forward public inventory."
   };
 }
 
@@ -4424,6 +4464,9 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const slowEndpoints = (Array.isArray(apiPerformance.slowestEndpoints) ? apiPerformance.slowestEndpoints : [])
     .slice(0, 8)
     .map(item => ({ endpoint: item.endpoint, avgMs: item.avgMs, maxMs: item.maxMs, requests: item.requests, avgFileReadMs: item.avgFileReadMs, avgJsonParseMs: item.avgJsonParseMs, avgResponseBytes: item.avgResponseBytes }));
+  const currentReviewedDenominator = Math.max(1, reviewed);
+  const firstPassApprovedNew = Math.min(firstPassApproved, reviewed);
+  const finalApprovedNew = Math.min(finalApproved, reviewed);
 
   const candidates = [
     { cause: "headline rewrites after drafting", score: headlineRewritePressure, subsystem: "Headline Generator", action: "Generate headline candidates from the completed Story Dossier after the article body exists, then pre-score Actor + Action + Consequence and body overlap before editorial review.", expectedOutcome: "Reduce headline rewrite pressure by 15% and raise first-pass publication rate by 8-12% over the next production window." },
@@ -4455,11 +4498,13 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       decisionRule: "Optimize the earliest shared workflow bottleneck before patching individual tabs or downstream symptoms."
     },
     current: {
-      firstPassPublicationRate: productionIntelligenceRate(firstPassApproved, reviewed),
-      finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
+      firstPassPublicationRate: productionIntelligenceRate(firstPassApprovedNew, currentReviewedDenominator),
+      finalApprovalRate: productionIntelligenceRate(finalApprovedNew, currentReviewedDenominator),
       reviewedCandidates: reviewed,
       firstPassApproved,
+      firstPassApprovedNew,
       finalApproved,
+      finalApprovedNew,
       finalBlocked,
       highQualityPublishedArticlesPerHour: Number(hour.highQualityPublishedArticlesPerHour || hour.publishedArticles || 0),
       averagePublicationLatencyMs: Number(hour.averagePublicationLatencyMs || 0),
@@ -30739,7 +30784,19 @@ function newsLabCompletionBlockerIssues(story = {}) {
   return [...new Set(issues)];
 }
 
+function newsLabImageOnlyIssueSet() {
+  return new Set([
+    "image-missing-credit",
+    "image-topic-mismatch",
+    "image-low-relevance",
+    "image-placeholder",
+    "image-needs-generation",
+    "image-missing-provenance"
+  ]);
+}
+
 function newsLabBlockingFinalIssues(story = {}) {
+  const imageOnlyIssues = newsLabImageOnlyIssueSet();
   return [...new Set([
     ...(story.qualityGate?.issues || []),
     ...(story.qualityGate?.remainingIssues || []),
@@ -30747,15 +30804,11 @@ function newsLabBlockingFinalIssues(story = {}) {
     ...(story.contentLaneQuality?.issues || []),
     ...newsLabPublicArticleIssues(story),
     ...newsLabCompletionBlockerIssues(story)
-  ])];
+  ])].filter(issue => !imageOnlyIssues.has(issue));
 }
 
 function newsLabBlockingEditorFinalIssues(story = {}) {
-  const imageOnlyIssues = new Set([
-    "image-missing-credit",
-    "image-topic-mismatch",
-    "image-low-relevance"
-  ]);
+  const imageOnlyIssues = newsLabImageOnlyIssueSet();
   return [...new Set(story.editorEnforcement?.finalIssues || [])]
     .filter(issue => !imageOnlyIssues.has(issue));
 }
@@ -37952,6 +38005,16 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     articleSummary: bodyText || story.articleSummary || "",
     originalHeadline: story.originalHeadline || ""
   };
+  const fallbackSubject = cleanArticleText(lockedActor || identity.primaryActor || newsLabCleanHeadlineSubject(bodyText || seed || "CE Media", "Story"), 90);
+  const fallbackAction = cleanArticleText(lockedAction || newsLabActionPhraseFromText(bodyText || dossier.whatHappened || "", newsLabCategory(story)), 110);
+  const fallbackConsequence = cleanArticleText(lockedConsequence || identity.consequence || dossier.whatHappened || "", 90);
+  const structuralCandidates = [
+    fallbackSubject && fallbackAction ? `${fallbackSubject} ${fallbackAction}` : "",
+    fallbackSubject && fallbackAction && fallbackConsequence ? `${fallbackSubject} ${fallbackAction} After ${fallbackConsequence}` : "",
+    fallbackSubject && fallbackConsequence ? `${fallbackSubject} Faces ${fallbackConsequence}` : "",
+    fallbackAction && fallbackConsequence ? `${fallbackAction} ${fallbackConsequence}` : "",
+    fallbackSubject && fallbackAction ? `${fallbackSubject} ${fallbackAction} as Details Emerge` : ""
+  ];
   const candidates = [
     lockedHeadlineCandidate,
     newsLabHeadlineFromCompletedArticle(serviceStory, index),
@@ -37959,6 +38022,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     newsLabOwnedHeadlineFromFacts(serviceStory, index),
     newsLabImpactHeadlineFromDossier(serviceStory, index),
     newsLabSpecificHeadlineFromFacts(serviceStory, index),
+    ...structuralCandidates,
     seed
   ]
     .map(candidate => newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(candidate || "", 140)).replace(/[,.!?;:]+$/g, "").trim()))
@@ -37973,6 +38037,21 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
       storyDossier: dossier,
       canonicalStoryIdentity: identity
     });
+    const bodyOverlap = Number(newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "").toFixed(2));
+    const issues = [...new Set([
+      ...(editor.issues || []),
+      ...(distinctness.issues || []),
+      candidates.length < 5 ? "headline-candidate-pool-too-small" : ""
+    ].filter(Boolean))];
+    const score = clampScore(
+      100
+      - issues.length * 18
+      + Math.min(18, bodyOverlap * 80)
+      + (dossierAgreement.ready ? 14 : -18)
+      + (distinctness.passed ? 10 : -12)
+      + (!newsLabHeadlineTooClose(candidate, serviceStory.originalHeadline || "") ? 8 : -16)
+      + (!newsLabHeadlineTruncated(candidate) ? 6 : -18)
+    );
     return {
       candidate,
       passed: editor.passed
@@ -37981,9 +38060,12 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
         && !newsLabHeadlineTruncated(candidate)
         && newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "") >= 0.03
         && dossierAgreement.ready
-        && distinctness.passed,
-      issues: [...new Set([...(editor.issues || []), ...(distinctness.issues || [])])],
-      bodyOverlap: Number(newsLabTextOverlap(candidate, bodyText || dossier.whatHappened || "").toFixed(2)),
+        && distinctness.passed
+        && candidates.length >= 5
+        && score >= 78,
+      issues,
+      score,
+      bodyOverlap,
       dossierAgreement,
       distinctness
     };
@@ -37998,12 +38080,12 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
   const validationPassed = Boolean(selectedValidation?.passed);
   return {
     active: true,
-    version: "20260806-canonical-headline-service-v1",
+    version: "20260810-canonical-headline-service-v2-five-candidate-hard-gate",
     title,
     candidates,
     validation,
     validationPassed,
-    finalIssues: validationPassed ? [] : ["headline-generated-without-locked-dossier-and-reasoning-inputs"],
+    finalIssues: validationPassed ? [] : ["headline-generated-without-locked-dossier-and-reasoning-inputs", ...(candidates.length < 5 ? ["headline-candidate-pool-too-small"] : [])],
     selectedBy: validationPassed ? "canonical-validation" : "owned-headline-fallback",
     inputs: {
       hasLockedDossier: Boolean(dossier.dossierLock?.active),
@@ -38022,7 +38104,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
       storyDossier: dossier,
       canonicalStoryIdentity: identity
     }),
-    rule: "All headline creation and repair should route through the canonical headline service: locked dossier plus canonical identity plus completed plan-aligned body produces constrained candidates, validation, and one selected headline."
+    rule: "All headline creation and repair should route through the canonical headline service: locked dossier plus canonical identity plus completed plan-aligned body produce at least five candidates. Candidate failures stay internal; publish the first candidate that passes evidence, grammar, distinctness, and dossier-agreement scoring."
   };
 }
 
@@ -40431,6 +40513,74 @@ function newsLabDossierArticleCapacity(storyDossier = {}, context = {}) {
   };
 }
 
+function newsLabDossierBinaryWriterGate(storyDossier = {}, capacity = {}, context = {}) {
+  const signature = storyDossier.canonicalEventSignature || storyDossier.eventSignature?.canonical || {};
+  const category = String(
+    storyDossier.category
+      || storyDossier.semanticCategory
+      || storyDossier.categoryClassification?.semanticCategory
+      || context.category
+      || ""
+  ).trim();
+  const unknowns = [
+    ...(Array.isArray(storyDossier.unknownFacts) ? storyDossier.unknownFacts : []),
+    ...(Array.isArray(storyDossier.stillUnknown) ? storyDossier.stillUnknown : []),
+    ...(Array.isArray(storyDossier.writerInput?.unknownFacts) ? storyDossier.writerInput.unknownFacts : [])
+  ].filter(Boolean);
+  const contextFacts = [
+    storyDossier.historicalContext,
+    storyDossier.whyItMatters,
+    storyDossier.consequence,
+    ...(Array.isArray(storyDossier.contextFacts) ? storyDossier.contextFacts : []),
+    ...(Array.isArray(storyDossier.backgroundFacts) ? storyDossier.backgroundFacts : [])
+  ].filter(Boolean);
+  const knownFacts = storyDossier.knownFacts || [];
+  const timeline = newsLabDossierMeaningfulTimeline(storyDossier.timeline || []);
+  const writerFactCount = Number(storyDossier.writerInput?.readiness?.writingFactCount || storyDossier.writerInput?.directWritingFacts?.length || 0);
+  const sourceCount = Number(capacity.metrics?.sourceCount || storyDossier.evidence?.sourceCount || storyDossier.sourcePool?.length || context.sources?.length || 0);
+  const contamination = storyDossier.contaminationCheck || storyDossier.eventCoherence || {};
+  const primaryActor = signature.primaryActor || storyDossier.canonicalStoryIdentity?.primaryActor || "";
+  const primaryAction = signature.primaryAction || signature.primaryActionLabel || storyDossier.canonicalStoryIdentity?.action || "";
+  const eventObject = signature.eventObject || signature.consequence || storyDossier.whatHappened || "";
+  const baseMissing = [
+    primaryActor ? "" : "needs-canonical-actor",
+    primaryAction ? "" : "needs-canonical-action",
+    eventObject ? "" : "needs-event-object",
+    knownFacts.length >= 2 || writerFactCount >= 2 ? "" : "needs-verified-facts",
+    sourceCount >= 1 ? "" : "needs-attribution",
+    category ? "" : "needs-semantic-category",
+    Number(contamination.contaminationScore || 0) < 0.4 && contamination.routing !== "do-not-draft" ? "" : "needs-event-contamination-clearance"
+  ].filter(Boolean);
+  const standardMissing = [
+    timeline.length ? "" : "needs-timeline",
+    contextFacts.length ? "" : "needs-necessary-context",
+    unknowns.length || storyDossier.unknownsReviewed === true || storyDossier.knownUnknownsReviewed === true ? "" : "needs-known-unknowns",
+    capacity.metrics?.contextFactCount >= 1 ? "" : "needs-context-fact"
+  ].filter(Boolean);
+  const requiresStandardCompleteness = Boolean(capacity.readyForStandardArticle || capacity.readyForDeepArticle || /standard|deep/i.test(capacity.articleFormat || ""));
+  const missing = [...new Set([...baseMissing, ...(requiresStandardCompleteness ? standardMissing : [])])];
+  return {
+    version: "20260810-binary-dossier-writer-gate-v1",
+    readyForWriter: missing.length === 0,
+    missing,
+    articleFormat: capacity.articleFormat || "hold",
+    requiresStandardCompleteness,
+    fields: {
+      primaryActor,
+      primaryAction,
+      eventObject: cleanArticleText(eventObject, 160),
+      category,
+      verifiedFactCount: Math.max(knownFacts.length, writerFactCount),
+      sourceCount,
+      timelineCount: timeline.length,
+      contextFactCount: contextFacts.length,
+      knownUnknownCount: unknowns.length,
+      contaminationScore: Number(contamination.contaminationScore || 0)
+    },
+    rule: "Dossier existence is not dossier readiness. A brief may write from a coherent minimal dossier, but standard/deep articles require actor, action, object, facts, attribution, timeline, context, category, known unknowns, and no event contamination."
+  };
+}
+
 function newsLabConstrainBodyToDossierCapacity(body = [], capacity = {}, storyDossier = {}) {
   const paragraphs = Array.isArray(body) ? body.filter(Boolean) : [];
   if (capacity.articleFormat !== "breaking-brief") return paragraphs;
@@ -40459,11 +40609,13 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   const writerEvidencePackReady = Boolean(writerPackReady && directWritingFactCount >= 2 && (sourceCount >= 1 || directWritingSourceCount >= 1));
   const mixedOrGeneric = Boolean(handoff.genericRepresentative || handoff.mixedEvent || handoff.topicContamination || handoff.minimumDossierFallback);
   const capacity = newsLabDossierArticleCapacity(storyDossier, context);
+  const binaryWriterGate = newsLabDossierBinaryWriterGate(storyDossier, capacity, context);
   const missing = [
     whatHappened ? "" : "needs-primary-event",
     mixedOrGeneric ? "needs-clean-single-event-identity" : "",
     writerEvidencePackReady ? "" : "needs-writer-evidence-pack",
-    ...capacity.holdReasons
+    ...capacity.holdReasons,
+    ...binaryWriterGate.missing
   ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
   const warning = [
     confidenceScore && confidenceScore < 45 ? "low-confidence-dossier" : "",
@@ -40472,7 +40624,7 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
     capacity.tier === "READY_FOR_BREAKING_BRIEF" ? "brief-capacity-only" : "",
     ...(capacity.standardBlockers || [])
   ].filter(Boolean).filter((item, index, all) => all.indexOf(item) === index);
-  const readyForWriter = missing.length === 0 && capacity.readyForWriter && writerEvidencePackReady;
+  const readyForWriter = missing.length === 0 && capacity.readyForWriter && writerEvidencePackReady && binaryWriterGate.readyForWriter;
   const score = clampScore(35
     + Math.min(22, Number(capacity.metrics?.uniqueFactCount || Math.max(knownFacts.length, directWritingFactCount)) * 6)
     + Math.min(18, Number(capacity.metrics?.independentSourceCount || sourceCount) * 8)
@@ -40529,10 +40681,12 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
       directWritingSourceCount,
       verificationFactCount,
       mixedOrGeneric,
-      articleCapacity: capacity.metrics
+      articleCapacity: capacity.metrics,
+      binaryWriterGate: binaryWriterGate.fields
     },
+    binaryWriterGate,
     decision: readyForWriter ? (capacity.readyForStandardArticle ? "lock-dossier-and-write-standard" : "lock-dossier-and-write-brief") : "hold-for-dossier-evidence",
-    rule: "The Writer may not draft from raw RSS, mixed fragments, or a changing investigation. Dossier Builder must identify one primary event and evidence-supported article capacity before prose generation; thin dossiers become briefs or return to evidence collection."
+    rule: "The Writer may not draft from raw RSS, mixed fragments, a changing investigation, or a merely existing dossier. Dossier Builder must pass the binary writer gate and identify one primary event plus evidence-supported article capacity before prose generation; thin coherent dossiers become briefs, while incomplete standard/deep dossiers return to evidence collection."
   };
 }
 
@@ -43310,6 +43464,31 @@ function newsLabPlaceholderLeakIssues(story = {}) {
 }
 
 
+function newsLabRepairBudgetExceeded(story = {}) {
+  const issueList = [
+    ...(story.qualityGate?.issues || []),
+    ...(story.qualityGate?.remainingIssues || []),
+    ...(story.editorEnforcement?.finalIssues || [])
+  ];
+  const route = newsLabTargetedRepairRouteFromIssues(issueList);
+  const attempts = [
+    ...(story.editorRepairReview?.attempts || []),
+    ...(story.qualityGate?.repairReview?.attempts || []),
+    ...(story.approvalRecoveryReview?.attempts || []),
+    ...(story.lifecycleRepair?.attempts || [])
+  ].filter(Boolean);
+  const explicitAttempts = Number(story.repairBudget?.attempts || story.qualityGate?.repairAttempts || story.repairAttempts || 0);
+  const repairAttempts = Math.max(attempts.length, explicitAttempts);
+  const maxRepairRounds = Number(route.maxRepairRounds ?? 1);
+  return {
+    exceeded: repairAttempts > maxRepairRounds && maxRepairRounds >= 0,
+    repairAttempts,
+    maxRepairRounds,
+    route,
+    rule: "Headline and body repairs are limited to two rounds, dossier enrichment to one, and image repair is handled outside the article repair loop."
+  };
+}
+
 function newsLabPublicArticleIssues(story = {}) {
   const issues = [];
   const body = Array.isArray(story.body) ? story.body.map(paragraph => String(paragraph || "").trim()).filter(Boolean) : [];
@@ -43319,6 +43498,14 @@ function newsLabPublicArticleIssues(story = {}) {
   const paragraphTopicAudit = newsLabParagraphTopicAudit(story, body);
   const storyIdentityAudit = newsLabStoryIdentityAudit(story);
   storyIdentityAudit.issues.forEach(issue => issues.push(issue));
+  if (story.writerReasoningVerification?.passed === false) {
+    issues.push("writer-reasoning-plan-alignment-failed");
+  }
+  if (Array.isArray(story.writerReasoningVerification?.paragraphFactContractViolations)
+    && story.writerReasoningVerification.paragraphFactContractViolations.length) {
+    issues.push("paragraph-fact-contract-failed");
+  }
+  if (newsLabRepairBudgetExceeded(story).exceeded) issues.push("repair-budget-exhausted");
   newsLabPlaceholderLeakIssues(story).forEach(issue => issues.push(issue));
   if (!title || title.length < 24) issues.push("title-too-short");
   if (newsLabWeakGenericHeadline(title)) issues.push("generic-weak-headline");
@@ -45203,11 +45390,22 @@ function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) 
   const paragraphAlignment = (reasoningPlan.paragraphPlan || []).map((plan, index) => {
     const paragraph = body[index] || "";
     const allowedFacts = (plan.factsAllowed || []).map(id => (reasoningPlan.verifiedFacts || []).find(fact => fact.factId === id)?.statement).filter(Boolean);
+    const allowedFactIds = plan.factsAllowed || [];
+    const matchedFactIds = allowedFactIds.filter(id => {
+      const fact = (reasoningPlan.verifiedFacts || []).find(record => record.factId === id)?.statement || "";
+      return fact && newsLabTextOverlap(paragraph, fact) >= 0.12;
+    });
+    const contextAllowed = plan.role === "context"
+      && reasoningPlan.claimEvidenceReasoning?.reasoning
+      && newsLabTextOverlap(paragraph, reasoningPlan.claimEvidenceReasoning.reasoning) >= 0.14;
     return {
       role: plan.role,
       paragraphIndex: index,
+      allowedFactIds,
+      matchedFactIds,
       present: Boolean(paragraph),
-      aligned: Boolean(paragraph && (!allowedFacts.length || allowedFacts.some(fact => newsLabTextOverlap(paragraph, fact) >= 0.12))),
+      aligned: Boolean(paragraph && (!allowedFacts.length || matchedFactIds.length || contextAllowed)),
+      contextAllowed,
       purpose: plan.purpose
     };
   });
@@ -45216,10 +45414,18 @@ function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) 
   const attributionPresent = !attributionRequired || /\breported|according|said|stated|filing|records|official|source|agency|court|police\b/i.test(bodyText);
   const planCoverage = Number((usedFacts.length / Math.max(1, factStatements.length)).toFixed(2));
   const alignmentRate = Number((paragraphAlignment.filter(row => row.aligned).length / Math.max(1, paragraphAlignment.length)).toFixed(2));
+  const paragraphFactContractViolations = paragraphAlignment
+    .filter(row => row.present && row.allowedFactIds?.length && !row.aligned)
+    .map(row => ({
+      paragraphIndex: row.paragraphIndex,
+      role: row.role,
+      allowedFactIds: row.allowedFactIds,
+      rule: "Paragraph must use its assigned fact IDs or approved reasoning/context bridge before the full draft is assembled."
+    }));
   const sentenceMappingRate = Number((sentenceToFactMapping.filter(row => row.mapped).length / Math.max(1, sentenceToFactMapping.length)).toFixed(2));
   const understandingAlignmentRate = Number((understandingAnchors.filter(anchor => newsLabTextOverlap(bodyText, anchor) >= 0.08).length / Math.max(1, understandingAnchors.length)).toFixed(2));
   const understandingAligned = !reasoningPlan.storyUnderstandingConsumed || understandingAlignmentRate >= 0.15;
-  const passed = leadMatchesEvent && attributionPresent && planCoverage >= (reasoningPlan.articleFormat === "breaking-brief" ? 0.5 : 0.6) && alignmentRate >= 0.6 && sentenceMappingRate >= 0.65 && understandingAligned && !prohibitedInferenceHits.length;
+  const passed = leadMatchesEvent && attributionPresent && planCoverage >= (reasoningPlan.articleFormat === "breaking-brief" ? 0.5 : 0.6) && alignmentRate >= 0.6 && sentenceMappingRate >= 0.65 && understandingAligned && !prohibitedInferenceHits.length && !paragraphFactContractViolations.length;
   return {
     active: true,
     verifiedAt: new Date().toISOString(),
@@ -45236,11 +45442,13 @@ function newsLabVerifyDraftAgainstReasoningPlan(story = {}, reasoningPlan = {}) 
     prohibitedInferenceHits,
     sentenceToFactMapping: sentenceToFactMapping.slice(0, 24),
     paragraphAlignment,
+    paragraphFactContractViolations,
     targetedRepair: !passed ? newsLabTargetedRepairRouteFromIssues([
       !leadMatchesEvent ? "weak-lead-plan-mismatch" : "",
       !attributionPresent ? "missing-attribution-plan" : "",
       planCoverage < 0.6 ? "plan-facts-not-used" : "",
       sentenceMappingRate < 0.65 ? "sentence-fact-mapping-incomplete" : "",
+      paragraphFactContractViolations.length ? "paragraph-fact-contract-failed" : "",
       !understandingAligned ? "story-understanding-alignment-failed" : "",
       prohibitedInferenceHits.length ? "prohibited-inference-detected" : ""
     ].filter(Boolean)) : null,
@@ -45318,12 +45526,13 @@ function newsLabRecordWriterReasoningRecovery({
 
 function newsLabTargetedRepairRouteFromIssues(issues = []) {
   const values = (Array.isArray(issues) ? issues : []).map(issue => String(issue || ""));
-  if (values.some(issue => /story-identity|semantic-title-source|lead-topic|paragraph-topic|topic-drift|dossier-body/i.test(issue))) return { owner: "Story Dossier Builder", scope: "dossier-identity", action: "Rebuild one canonical event dossier, remove off-event fragments, then regenerate affected lead/body/headline sections." };
-  if (values.some(issue => /headline|title|word-salad|generic-weak|source-no-overlap/i.test(issue))) return { owner: "Headline Editor", scope: "headline-only", action: "Generate five actor-action-consequence headline candidates from canonical identity and completed body; replace headline only." };
-  if (values.some(issue => /attribution|evidence|missing-reporting-context|body-too-short|thin/i.test(issue))) return { owner: "Evidence Engine / Story Dossier Builder", scope: "evidence-expansion", action: "Expand dossier with verified facts and attribution; regenerate only unsupported or thin sections." };
-  if (values.some(issue => /image|photo|placeholder|visual/i.test(issue))) return { owner: "Image Intelligence Worker", scope: "image-only", action: "Find or generate a story-specific image tied to the same canonical identity; keep article public if text is approved." };
-  if (values.some(issue => /incomplete|mojibake|grammar|process-language|summary-repeats|copied-or-noisy/i.test(issue))) return { owner: "Publishing Editor", scope: "language-only", action: "Clean language, complete sentences, remove internal process terms, and preserve the approved story." };
-  return { owner: "Publishing Editor", scope: "targeted-editorial", action: "Apply the smallest component repair, then rerun only failed validation checks before full review." };
+  const budget = { headline: 2, body: 2, dossier: 1, image: 0, general: 1 };
+  if (values.some(issue => /story-identity|semantic-title-source|lead-topic|paragraph-topic|paragraph-fact-contract|topic-drift|dossier-body/i.test(issue))) return { owner: "Story Dossier Builder", scope: "dossier-identity", maxRepairRounds: budget.dossier, action: "Rebuild one canonical event dossier, remove off-event fragments, then regenerate affected lead/body/headline sections." };
+  if (values.some(issue => /headline|title|word-salad|generic-weak|source-no-overlap/i.test(issue))) return { owner: "Headline Editor", scope: "headline-only", maxRepairRounds: budget.headline, action: "Generate five actor-action-consequence headline candidates from canonical identity and completed body; replace headline only." };
+  if (values.some(issue => /attribution|evidence|missing-reporting-context|body-too-short|thin/i.test(issue))) return { owner: "Evidence Engine / Story Dossier Builder", scope: "evidence-expansion", maxRepairRounds: budget.body, action: "Expand dossier with verified facts and attribution; regenerate only unsupported or thin sections." };
+  if (values.some(issue => /image|photo|placeholder|visual/i.test(issue))) return { owner: "Image Intelligence Worker", scope: "image-only", maxRepairRounds: budget.image, action: "Find or generate a story-specific image tied to the same canonical identity; keep article public if text is approved." };
+  if (values.some(issue => /incomplete|mojibake|grammar|process-language|summary-repeats|copied-or-noisy/i.test(issue))) return { owner: "Publishing Editor", scope: "language-only", maxRepairRounds: budget.body, action: "Clean language, complete sentences, remove internal process terms, and preserve the approved story." };
+  return { owner: "Publishing Editor", scope: "targeted-editorial", maxRepairRounds: budget.general, action: "Apply the smallest component repair, then rerun only failed validation checks before full review." };
 }
 
 function newsLabDraftCoordinator(story = {}, context = {}) {
@@ -52412,11 +52621,9 @@ const server = http.createServer(async (request, response) => {
       }      if (!forceDeep && !forceManualRebuild) {
         const preparedCacheFresh = false;
         const preparedPayload = readPreparedNewsLabApiPayload(category);
-        const durablePayloadForPreparedCheck = readJsonFile(newsLabPublishedPayloadFile, null);
-        const durablePayloadForPreparedApi = durablePayloadForPreparedCheck && Array.isArray(durablePayloadForPreparedCheck.ownedStories) ? newsLabFastPublishedApiPayload(durablePayloadForPreparedCheck, category) : null;
-        const durablePreparedFloor = Number(durablePayloadForPreparedApi?.ownedStories?.length || 0);
         const preparedMinimum = String(category || "").toLowerCase() === "top" ? Math.min(7, newsLabTopNewsLimit) : 1;
-        if (preparedPayload && Number(preparedPayload.ownedStories?.length || 0) >= Math.max(preparedMinimum, durablePreparedFloor)) {
+        const preparedPayloadCount = Number(preparedPayload?.ownedStories?.length || 0);
+        if (preparedPayload && preparedPayloadCount >= preparedMinimum) {
           setTimeout(() => {
             try {
               if (!preparedCacheFresh) startNewsLabApiResponseWorkerProcess("public-news-lab-request-stale-prepared-cache-refresh");
@@ -52435,7 +52642,9 @@ const server = http.createServer(async (request, response) => {
               cacheFresh: preparedCacheFresh,
               servedStaleWhileRefreshing: !preparedCacheFresh,
               skippedLargePublishedPayloadRead: true,
-              rule: "Public News Lab API serves the prepared API cache first, even when stale, so requests do not parse the giant published payload while workers refresh in the background."
+              preparedPayloadCount,
+              preparedMinimum,
+              rule: "Public News Lab API serves the compact prepared API cache first, even when stale, so tab clicks do not parse the giant published payload while workers refresh and reconcile the durable shelf in the background."
             }
           });
           return;

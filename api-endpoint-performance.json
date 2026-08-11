@@ -1,10 +1,10 @@
 {
   "version": "20260727-api-endpoint-profiler-v1",
-  "updatedAt": "2026-08-09T03:00:51.766Z",
+  "updatedAt": "2026-08-10T01:48:29.840Z",
   "purpose": "Measure endpoint duration, file read time, JSON parse time, response size, and total elapsed time so sync timeouts and 502s can be traced to exact API paths.",
   "totals": {
-    "requests": 4,
-    "slowRequests": 3
+    "requests": 6,
+    "slowRequests": 5
   },
   "endpoints": {
     "GET /api/learning": {
@@ -51,9 +51,176 @@
       "avgFileReadMs": 685,
       "avgJsonParseMs": 50,
       "avgResponseBytes": 284151
+    },
+    "GET /api/news-lab-observability": {
+      "requests": 2,
+      "slowRequests": 2,
+      "totalMs": 8799,
+      "maxMs": 4808,
+      "totalFileReadMs": 4169,
+      "totalJsonParseMs": 1433,
+      "totalResponseBytes": 197339,
+      "lastStatusCode": 200,
+      "lastSeenAt": "2026-08-10T01:48:29.840Z",
+      "avgMs": 4399.5,
+      "avgFileReadMs": 2084.5,
+      "avgJsonParseMs": 716.5,
+      "avgResponseBytes": 98670
     }
   },
   "recent": [
+    {
+      "id": "3938cdcc1127",
+      "endpoint": "GET /api/news-lab-observability",
+      "method": "GET",
+      "path": "/api/news-lab-observability",
+      "startedAt": "2026-08-10T01:48:25.850Z",
+      "finishedAt": "2026-08-10T01:48:29.840Z",
+      "statusCode": 200,
+      "requestStart": "2026-08-10T01:48:25.850Z",
+      "processingDurationMs": 3991,
+      "fileReadMs": 2102,
+      "jsonParseMs": 536,
+      "jsonSerializeMs": 0,
+      "fileReadCount": 61,
+      "jsonParseCount": 61,
+      "responseSizeBytes": 99072,
+      "totalElapsedMs": 3991,
+      "slowFiles": [
+        {
+          "file": "approval-recovery-queue.json",
+          "readMs": 695,
+          "parseMs": 287,
+          "bytes": 87738389,
+          "ok": true
+        },
+        {
+          "file": "headline-repair-queue.json",
+          "readMs": 471,
+          "parseMs": 197,
+          "bytes": 64170907,
+          "ok": true
+        },
+        {
+          "file": "editorial-learning.json",
+          "readMs": 105,
+          "parseMs": 22,
+          "bytes": 10413259,
+          "ok": true
+        },
+        {
+          "file": "news-lab-article-lifecycle-trace.json",
+          "readMs": 61,
+          "parseMs": 11,
+          "bytes": 5557486,
+          "ok": true
+        },
+        {
+          "file": "article-approval-intelligence.json",
+          "readMs": 45,
+          "parseMs": 6,
+          "bytes": 3025764,
+          "ok": true
+        },
+        {
+          "file": "top.status.json",
+          "readMs": 49,
+          "parseMs": 0,
+          "bytes": 2215,
+          "ok": true
+        },
+        {
+          "file": "news-lab-rescued-approved-shelf.json",
+          "readMs": 39,
+          "parseMs": 3,
+          "bytes": 1627295,
+          "ok": true
+        },
+        {
+          "file": "news-lab-productivity.json",
+          "readMs": 38,
+          "parseMs": 1,
+          "bytes": 197630,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "cba2aa597806",
+      "endpoint": "GET /api/news-lab-observability",
+      "method": "GET",
+      "path": "/api/news-lab-observability",
+      "startedAt": "2026-08-09T04:11:09.415Z",
+      "finishedAt": "2026-08-09T04:11:14.223Z",
+      "statusCode": 200,
+      "requestStart": "2026-08-09T04:11:09.415Z",
+      "processingDurationMs": 4808,
+      "fileReadMs": 2067,
+      "jsonParseMs": 897,
+      "jsonSerializeMs": 2,
+      "fileReadCount": 37,
+      "jsonParseCount": 37,
+      "responseSizeBytes": 98267,
+      "totalElapsedMs": 4808,
+      "slowFiles": [
+        {
+          "file": "approval-recovery-queue.json",
+          "readMs": 885,
+          "parseMs": 524,
+          "bytes": 87738389,
+          "ok": true
+        },
+        {
+          "file": "headline-repair-queue.json",
+          "readMs": 537,
+          "parseMs": 298,
+          "bytes": 64170907,
+          "ok": true
+        },
+        {
+          "file": "editorial-learning.json",
+          "readMs": 142,
+          "parseMs": 32,
+          "bytes": 10413259,
+          "ok": true
+        },
+        {
+          "file": "news-lab-article-lifecycle-trace.json",
+          "readMs": 95,
+          "parseMs": 20,
+          "bytes": 5557486,
+          "ok": true
+        },
+        {
+          "file": "article-approval-intelligence.json",
+          "readMs": 53,
+          "parseMs": 9,
+          "bytes": 3025764,
+          "ok": true
+        },
+        {
+          "file": "news-lab-productivity.json",
+          "readMs": 52,
+          "parseMs": 1,
+          "bytes": 197630,
+          "ok": true
+        },
+        {
+          "file": "news-lab-rescued-approved-shelf.json",
+          "readMs": 39,
+          "parseMs": 5,
+          "bytes": 1627295,
+          "ok": true
+        },
+        {
+          "file": "news-lab-worker-status.json",
+          "readMs": 33,
+          "parseMs": 1,
+          "bytes": 25590,
+          "ok": true
+        }
+      ]
+    },
     {
       "id": "1fb0cfc45d2e",
       "endpoint": "GET /api/news-lab",
@@ -324,6 +491,17 @@
       "avgJsonParseMs": 50,
       "avgResponseBytes": 284151,
       "lastSeenAt": "2026-08-09T03:00:51.766Z"
+    },
+    {
+      "endpoint": "GET /api/news-lab-observability",
+      "avgMs": 4399.5,
+      "maxMs": 4808,
+      "requests": 2,
+      "slowRequests": 2,
+      "avgFileReadMs": 2084.5,
+      "avgJsonParseMs": 716.5,
+      "avgResponseBytes": 98670,
+      "lastSeenAt": "2026-08-10T01:48:29.840Z"
     },
     {
       "endpoint": "GET /api/learning",
