@@ -1,4 +1,4 @@
-const childProcess = require("node:child_process");
+﻿const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -17,6 +17,26 @@ const criticalContracts = [
   "startNewsLabCollectorLoop",
   "runNewsLabCollectorCycle",
   "writeNewsLabCollectorStatus",
+  "mergeNewsLabCollectorStories",
+  "enrichMissingImages",
+  "buildNewsLabDossierSourcePayload",
+  "absorbDailyArticleMemory",
+  "queueArticleMemoryAbsorption",
+  "connectivityDiagnostics",
+  "functionalityDiagnostics",
+  "revenueGrowthDiagnostics",
+  "publicRuntimeState",
+  "categoryCounts",
+  "imageCounts",
+  "storyIntegrityFindings",
+  "verifyFeedAdaptiveActionResults",
+  "scheduledContentDurableCounts",
+  "normalizeScheduledContentWorkerStatus",
+  "scheduledContentHeartbeatFreshness",
+  "backupDurableContentLane",
+  "guardDurableContentLaneWrite",
+  "restoreDurableContentLaneFromBackup",
+  "durableContentLaneInfo",
   "loadFeed",
   "loadFeeds",
   "feedFailureAttribution",
@@ -27,12 +47,18 @@ const criticalContracts = [
   "rankedFeedSourcesForReliability",
   "runFeedSourcesWithAdaptiveConcurrency",
   "learningSummary",
+  "searchLearningSummary",
+  "searchInterestScoreForStory",
+  "searchLearningBoost",
   "newsLabDossierReadinessContract",
   "newsLabDossierReadinessClassFromEvidence",
   "newsLabTodayDateKey",
   "newsLabDossierToWriterHandoff",
   "newsLabBuildWriterReasoningPlan",
   "newsLabCanonicalHeadlineService",
+  "newsLabHeadlineSemanticFrame",
+  "newsLabHeadlineBuildFromSemanticFrame",
+  "newsLabHeadlineCandidateFailureClass",
   "newsLabFastPublishedApiPayload",
   "readPreparedNewsLabApiPayload",
   "readNewsLabLastKnownGoodApiPayload",
@@ -42,6 +68,9 @@ const criticalContracts = [
   "runNewsLabApiResponseCycle",
   "startNewsLabApiResponseLoop",
   "runNewsLabImageImprovementPass",
+  "newsLabImageDeliveryStage",
+  "newsLabPreferResolvedImageStory",
+  "newsLabPublicGeneratedImageVisible",
   "runNewsLabStuckRescueCycle",
   "startNewsLabStuckRescueLoop"
 ];
@@ -145,3 +174,18 @@ const report = {
 
 console.log(JSON.stringify(report, null, 2));
 process.exit(ok ? 0 : 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

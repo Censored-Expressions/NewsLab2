@@ -6,8 +6,6 @@
 *.ps1
 *.bat
 data/subscribers.json
-data/newsletters.json
-data/creator-posts.json
 data/creator-comments.json
 data/creator-desk-pending.json
 data/creator-desk.log

@@ -1,22 +1,22 @@
 [
   {
-    "id": "framework_action_1786521026985_4iaka7",
-    "at": "2026-08-12T07:50:26.985Z",
+    "id": "framework_action_1786569855109_fhqpes",
+    "at": "2026-08-12T21:24:15.109Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-12T07:50:26.984Z",
+    "timestamp": "2026-08-12T21:24:15.108Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
-    "reason": "runtime-smoke-test:deploy-ready-public-state-authority",
+    "reason": "runtime-smoke-test:web",
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-12T07:50:26.984Z",
-      "reason": "runtime-smoke-test:deploy-ready-public-state-authority",
+      "generatedAt": "2026-08-12T21:24:15.108Z",
+      "reason": "runtime-smoke-test:web",
       "ok": true,
       "checked": [
         {
@@ -120,6 +120,66 @@
           "ok": true
         },
         {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
           "label": "Public Shelf Hard Merge",
           "functionName": "newsLabHardMergePublicStories",
           "ok": true
@@ -220,7 +280,7 @@
         {
           "step": "issue-detected",
           "label": "Issue detected",
-          "value": "runtime-smoke-test:deploy-ready-public-state-authority"
+          "value": "runtime-smoke-test:web"
         },
         {
           "step": "solution-chosen",
@@ -248,7 +308,4063 @@
           "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
         }
       ],
-      "summary": "runtime-smoke-test:deploy-ready-public-state-authority -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+      "summary": "runtime-smoke-test:web -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569856286_7y7geq",
+    "at": "2026-08-12T21:24:16.286Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:16.285Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:api-worker",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:16.285Z",
+      "reason": "runtime-smoke-test:api-worker",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:api-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:api-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569857370_k7lta0",
+    "at": "2026-08-12T21:24:17.370Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:17.369Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:production-worker",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:17.369Z",
+      "reason": "runtime-smoke-test:production-worker",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:production-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:production-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569858451_pc9ig9",
+    "at": "2026-08-12T21:24:18.451Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:18.450Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:stuck-rescue-worker",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:18.450Z",
+      "reason": "runtime-smoke-test:stuck-rescue-worker",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:stuck-rescue-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:stuck-rescue-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569859530_7vocsw",
+    "at": "2026-08-12T21:24:19.530Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:19.529Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:image-worker",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:19.529Z",
+      "reason": "runtime-smoke-test:image-worker",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:image-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:image-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569860626_lo926j",
+    "at": "2026-08-12T21:24:20.626Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:20.625Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:scheduled-content-worker",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:20.625Z",
+      "reason": "runtime-smoke-test:scheduled-content-worker",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:scheduled-content-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:scheduled-content-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569861733_ebw7rg",
+    "at": "2026-08-12T21:24:21.733Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:21.732Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-top",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:21.732Z",
+      "reason": "runtime-smoke-test:collector-top",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-top"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-top -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569865093_kznl0f",
+    "at": "2026-08-12T21:24:25.093Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:25.091Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-world",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:25.091Z",
+      "reason": "runtime-smoke-test:collector-world",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-world"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-world -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569867221_biibgn",
+    "at": "2026-08-12T21:24:27.221Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:27.220Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-politics",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:27.220Z",
+      "reason": "runtime-smoke-test:collector-politics",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-politics"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-politics -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569869880_yeua7a",
+    "at": "2026-08-12T21:24:29.880Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:29.879Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-business",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:29.879Z",
+      "reason": "runtime-smoke-test:collector-business",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-business"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-business -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569871688_z16eki",
+    "at": "2026-08-12T21:24:31.688Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:31.687Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-technology",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:31.687Z",
+      "reason": "runtime-smoke-test:collector-technology",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-technology"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-technology -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569873857_dek089",
+    "at": "2026-08-12T21:24:33.857Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:33.856Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-sports",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:33.856Z",
+      "reason": "runtime-smoke-test:collector-sports",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-sports"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-sports -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569875772_8svqm2",
+    "at": "2026-08-12T21:24:35.772Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:35.771Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-entertainment",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:35.771Z",
+      "reason": "runtime-smoke-test:collector-entertainment",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-entertainment"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-entertainment -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    }
+  },
+  {
+    "id": "framework_action_1786569877825_zhak9u",
+    "at": "2026-08-12T21:24:37.825Z",
+    "actor": "AI Framework",
+    "safeExecution": false,
+    "bounded": true,
+    "reversible": true,
+    "verified": false,
+    "timestamp": "2026-08-12T21:24:37.824Z",
+    "type": "news-lab-framework-dependency-validation",
+    "subsystem": "Framework OS",
+    "status": "healthy",
+    "reason": "runtime-smoke-test:collector-local",
+    "summary": "News Lab Framework startup dependency validation passed.",
+    "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
+    "details": {
+      "generatedAt": "2026-08-12T21:24:37.824Z",
+      "reason": "runtime-smoke-test:collector-local",
+      "ok": true,
+      "checked": [
+        {
+          "label": "Article Memory Default",
+          "functionName": "defaultDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Reader",
+          "functionName": "readDailyArticleMemory",
+          "ok": true
+        },
+        {
+          "label": "News Lab Story Objects Default",
+          "functionName": "defaultNewsLabStoryObjects",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Queue Default",
+          "functionName": "defaultNewsLabHeadlineRepairQueue",
+          "ok": true
+        },
+        {
+          "label": "Approval Recovery Queue Default",
+          "functionName": "defaultNewsLabApprovalRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Recovery Queue Default",
+          "functionName": "defaultNewsLabDossierRecoveryQueue",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness",
+          "functionName": "newsLabDossierReadinessContract",
+          "ok": true
+        },
+        {
+          "label": "Dossier Readiness Classifier",
+          "functionName": "newsLabDossierReadinessClassFromEvidence",
+          "ok": true
+        },
+        {
+          "label": "Board Date Key",
+          "functionName": "newsLabTodayDateKey",
+          "ok": true
+        },
+        {
+          "label": "Story Original Publish Date",
+          "functionName": "newsLabStoryOriginalPublishedAt",
+          "ok": true
+        },
+        {
+          "label": "Board Visibility",
+          "functionName": "newsLabAnnotateBoardVisibility",
+          "ok": true
+        },
+        {
+          "label": "Current Board Policy",
+          "functionName": "newsLabApplyCurrentBoardPolicy",
+          "ok": true
+        },
+        {
+          "label": "Shelf Display Ready Story",
+          "functionName": "newsLabShelfDisplayReadyStory",
+          "ok": true
+        },
+        {
+          "label": "Fast Published API Payload",
+          "functionName": "newsLabFastPublishedApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Prepared API Payload Reader",
+          "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
+          "ok": true
+        },
+        {
+          "label": "Collector Cache Reader",
+          "functionName": "readNewsLabCollectorCache",
+          "ok": true
+        },
+        {
+          "label": "Collector Status Writer",
+          "functionName": "writeNewsLabCollectorStatus",
+          "ok": true
+        },
+        {
+          "label": "Collector Cycle",
+          "functionName": "runNewsLabCollectorCycle",
+          "ok": true
+        },
+        {
+          "label": "Collector Loop",
+          "functionName": "startNewsLabCollectorLoop",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader",
+          "functionName": "loadFeed",
+          "ok": true
+        },
+        {
+          "label": "Feed Loader Batch",
+          "functionName": "loadFeeds",
+          "ok": true
+        },
+        {
+          "label": "Feed Failure Attribution",
+          "functionName": "feedFailureAttribution",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Error Key",
+          "functionName": "sourceErrorKey",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Domain",
+          "functionName": "feedSourceDomain",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Provider",
+          "functionName": "feedSourceProvider",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Runtime Status",
+          "functionName": "feedSourceRuntimeStatus",
+          "ok": true
+        },
+        {
+          "label": "Feed Source Ranking",
+          "functionName": "rankedFeedSourcesForReliability",
+          "ok": true
+        },
+        {
+          "label": "Adaptive Feed Concurrency",
+          "functionName": "runFeedSourcesWithAdaptiveConcurrency",
+          "ok": true
+        },
+        {
+          "label": "Public Shelf Hard Merge",
+          "functionName": "newsLabHardMergePublicStories",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff",
+          "functionName": "newsLabDossierToWriterHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Handoff Implementation",
+          "functionName": "newsLabEnsureWriterDossierHandoff",
+          "ok": true
+        },
+        {
+          "label": "Writer Reasoning Plan",
+          "functionName": "newsLabBuildWriterReasoningPlan",
+          "ok": true
+        },
+        {
+          "label": "Canonical Headline Service",
+          "functionName": "newsLabCanonicalHeadlineService",
+          "ok": true
+        },
+        {
+          "label": "Event Headline From Dossier",
+          "functionName": "newsLabEventHeadlineFromDossier",
+          "ok": true
+        },
+        {
+          "label": "Headline Risk Profile",
+          "functionName": "newsLabHeadlineRiskProfile",
+          "ok": true
+        },
+        {
+          "label": "Headline Repair Candidate Cleaner",
+          "functionName": "newsLabCleanRepairHeadlineCandidate",
+          "ok": true
+        },
+        {
+          "label": "Second Pass Headline Fatal Detector",
+          "functionName": "newsLabSecondPassHeadlineFatal",
+          "ok": true
+        }
+      ],
+      "optionalChecked": [
+        {
+          "label": "Article Intelligence Reader",
+          "functionName": "readArticleIntelligence",
+          "ok": true
+        },
+        {
+          "label": "Article Memory Search",
+          "functionName": "dailyArticleMemorySearchStories",
+          "ok": true
+        },
+        {
+          "label": "Date Value Validator",
+          "functionName": "newsLabValidStoryDateValue",
+          "ok": true
+        },
+        {
+          "label": "Earliest Date Utility",
+          "functionName": "newsLabEarliestValidDate",
+          "ok": true
+        }
+      ],
+      "missing": [],
+      "optionalMissing": [],
+      "fatal": false,
+      "build": {
+        "commit": "",
+        "serverBuild": "",
+        "workflowVersion": "news-lab-quality-publication-sprint-v1"
+      },
+      "fallbackPolicy": "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
+    },
+    "improvementAssessment": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "checks": [],
+      "summary": "No measurable improvement has been confirmed yet."
+    },
+    "whyImprovement": "The action did not yet prove a metric improvement, so future cycles should verify again before treating it as resolved.",
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-local"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-local -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
     }
   }
 ]

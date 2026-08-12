@@ -1,11 +1,9 @@
-node_modules/
+﻿node_modules/
 .env
 .env.*
 !.env.example
 *.log
 data/subscribers.json
-data/newsletters.json
-data/creator-posts.json
 data/creator-comments.json
 data/creator-desk-pending.json
 data/creator-desk.log

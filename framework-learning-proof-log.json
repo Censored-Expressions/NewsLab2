@@ -1,6 +1,6 @@
 [
   {
-    "at": "2026-08-12T07:50:26.991Z",
+    "at": "2026-08-12T21:24:15.113Z",
     "category": "governed-action",
     "event": "Autonomous action: news-lab-framework-dependency-validation",
     "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
@@ -69,7 +69,7 @@
         {
           "step": "issue-detected",
           "label": "Issue detected",
-          "value": "runtime-smoke-test:deploy-ready-public-state-authority"
+          "value": "runtime-smoke-test:web"
         },
         {
           "step": "solution-chosen",
@@ -97,7 +97,1463 @@
           "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
         }
       ],
-      "summary": "runtime-smoke-test:deploy-ready-public-state-authority -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+      "summary": "runtime-smoke-test:web -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:16.292Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:api-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:api-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:17.374Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:production-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:production-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:18.455Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:stuck-rescue-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:stuck-rescue-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:19.535Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:image-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:image-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:20.631Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:scheduled-content-worker"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:scheduled-content-worker -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:21.738Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-top"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-top -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:25.098Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-world"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-world -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:27.227Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-politics"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-politics -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:29.885Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-business"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-business -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:31.694Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-technology"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-technology -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:33.862Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-sports"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-sports -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:35.779Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-entertainment"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-entertainment -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+    },
+    "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+    "evidence": [
+      "status=healthy",
+      "metricImproved=false",
+      "actionKey="
+    ],
+    "tags": [
+      "autonomous-action",
+      "site-optimization",
+      "proof-chain"
+    ]
+  },
+  {
+    "at": "2026-08-12T21:24:37.831Z",
+    "category": "governed-action",
+    "event": "Autonomous action: news-lab-framework-dependency-validation",
+    "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
+    "realWorldData": {
+      "trigger": {},
+      "beforeMetric": {},
+      "afterMetric": {}
+    },
+    "decisionMeasurement": {
+      "actionKey": "",
+      "status": "healthy",
+      "safeExecution": false,
+      "bounded": true,
+      "reversible": true,
+      "verified": false,
+      "metricImproved": false
+    },
+    "teachThenExecute": {},
+    "proceduralMemory": {
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "reuseRule": "Reuse only when the same trigger appears and verify the before/after metric."
+    },
+    "codexInterventionLevel": 2,
+    "resultMetric": {
+      "metricImproved": false,
+      "improvedCheckCount": 0,
+      "checkedMetricCount": 0,
+      "durationMs": 0
+    },
+    "causalChain": {
+      "chain": [
+        {
+          "step": "weight-change",
+          "label": "Weight adjustment",
+          "value": "Autonomous action selection used current diagnostic priority and stored optimization lessons."
+        },
+        {
+          "step": "path-selection",
+          "label": "Optimization path selected",
+          "value": "news-lab-framework-dependency-validation selected from safe bounded action whitelist."
+        },
+        {
+          "step": "measured-result",
+          "label": "Measured result",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Verification",
+          "value": "Verification pending or blocked."
+        }
+      ],
+      "summary": "Autonomous action selection used current diagnostic priority and stored optimization lessons. -> news-lab-framework-dependency-validation selected from safe bounded action whitelist. -> No measurable improvement has been confirmed yet. -> Verification pending or blocked."
+    },
+    "autonomousProofChain": {
+      "metricImproved": false,
+      "improvement": {
+        "metricImproved": false,
+        "improvedCheckCount": 0,
+        "checkedMetricCount": 0,
+        "checks": [],
+        "summary": "No measurable improvement has been confirmed yet."
+      },
+      "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
+      "chain": [
+        {
+          "step": "issue-detected",
+          "label": "Issue detected",
+          "value": "runtime-smoke-test:collector-local"
+        },
+        {
+          "step": "solution-chosen",
+          "label": "Framework chooses solution",
+          "value": "news-lab-framework-dependency-validation selected from the autonomous action whitelist."
+        },
+        {
+          "step": "change-made",
+          "label": "Framework makes change",
+          "value": "Action completed with status healthy."
+        },
+        {
+          "step": "metric-improves",
+          "label": "Metric improves",
+          "value": "No measurable improvement has been confirmed yet."
+        },
+        {
+          "step": "verification",
+          "label": "Framework verifies improvement",
+          "value": "Verification is pending or the action was blocked/failed."
+        },
+        {
+          "step": "prevention-memory",
+          "label": "Prevention memory",
+          "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+        }
+      ],
+      "summary": "runtime-smoke-test:collector-local -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
     },
     "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
     "evidence": [

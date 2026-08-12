@@ -1061,16 +1061,29 @@ async function loadPatchRequests() {
   return payload;
 }
 
+async function ownerPanel(path, fallback, label = path) {
+  try {
+    return await ownerApi(path);
+  } catch (error) {
+    return {
+      ...fallback,
+      unavailable: true,
+      error: error.message || `${label} unavailable`,
+      rule: "Owner Desk panels load independently; one broken subsystem must not relock or blank the owner console."
+    };
+  }
+}
+
 async function loadOwnerDashboard() {
   const [learning, health, revenue, metrics, brainState, productionIntelligence, observability, patches] = await Promise.all([
-    ownerApi("/api/learning"),
-    ownerApi("/api/health"),
-    ownerApi("/api/revenue-growth"),
-    ownerApi(`/api/owner-metrics?metric=${encodeURIComponent(selectedOwnerMetric)}&timeframe=${encodeURIComponent(selectedOwnerTimeframe)}`),
-    ownerApi("/api/owner-brain-state"),
-    ownerApi("/api/production-intelligence").catch(() => ({})),
-    ownerApi("/api/news-lab-observability").catch(() => ({})),
-    ownerApi("/api/code-patch-proposals?limit=250").catch(() => null)
+    ownerPanel("/api/learning", { learning: { unavailable: true } }, "Learning"),
+    ownerPanel("/api/health", { health: "unavailable", functionality: {}, activeFindings: 0 }, "Health"),
+    ownerPanel("/api/revenue-growth", { revenueGrowth: { unavailable: true, ok: false, findingCount: 0 } }, "Revenue Growth"),
+    ownerPanel(`/api/owner-metrics?metric=${encodeURIComponent(selectedOwnerMetric)}&timeframe=${encodeURIComponent(selectedOwnerTimeframe)}`, { selected: selectedOwnerMetric, currentDay: { values: {} }, series: [] }, "Owner Metrics"),
+    ownerPanel("/api/owner-brain-state", { unavailable: true }, "Brain State"),
+    ownerPanel("/api/production-intelligence", {}, "Production Intelligence"),
+    ownerPanel("/api/news-lab-observability", {}, "News Lab Observability"),
+    ownerPanel("/api/code-patch-proposals?limit=250", null, "Patch Requests")
   ]);
   renderSummary({ learning, health, revenue, metrics });
   renderOwnerMetricOptions(metrics);
@@ -1080,14 +1093,14 @@ async function loadOwnerDashboard() {
   renderProductionIntelligence({ ...(productionIntelligence || {}), observability });
   if (patches) renderPatchRequests(patches.proposals || {});
   const dashboard = {
-    learning: learning.learning,
+    learning: learning.learning || { unavailable: true },
     health,
-    revenueGrowth: revenue.revenueGrowth,
-    ownerMetrics: metrics.selected,
+    revenueGrowth: revenue.revenueGrowth || revenue,
+    ownerMetrics: metrics.selected || selectedOwnerMetric,
     brainState,
     productionIntelligence,
     observability,
-    patchRequests: patches?.proposals
+    patchRequests: patches?.proposals || null
   };
   showJson(dashboard);
   return dashboard;
@@ -1226,7 +1239,7 @@ async function unlockOwnerDesk(token = ownerToken) {
   ownerToken = String(token || "").trim();
   setStatus(ownerLoginStatus, "Checking access...");
   try {
-    await ownerApi("/api/learning");
+    await ownerApi("/api/owner-auth-status");
     localStorage.setItem(tokenKey, ownerToken);
     ownerLogin.hidden = true;
     ownerConsole.hidden = false;
@@ -1651,6 +1664,7 @@ ownerPerformanceTimeframe?.addEventListener("change", () => {
   loadOwnerMetric(selectedOwnerMetric, selectedOwnerTimeframe).catch(error => showJson({ error: error.message || "Metric load failed." }));
 });
 if (ownerToken) unlockOwnerDesk(ownerToken).catch(() => {});
+
 
 
 

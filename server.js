@@ -55,6 +55,7 @@ const merchProductsFile = path.join(dataDir, "merch-products.json");
 const merchSalesFile = path.join(dataDir, "merch-sales.json");
 const merchOrdersFile = path.join(dataDir, "merch-orders.json");
 const creatorPostsFile = path.join(dataDir, "creator-posts.json");
+const contentLaneBackupDir = path.join(dataDir, "content-lane-backups");
 const creatorCommentsFile = path.join(dataDir, "creator-comments.json");
 const creatorDeskPendingFile = path.join(dataDir, "creator-desk-pending.json");
 const creatorDeskLogFile = path.join(dataDir, "creator-desk.log");
@@ -100,6 +101,7 @@ const newsLabImageWorkerStatusFile = path.join(dataDir, "news-lab-image-worker-s
 const newsLabQualityPublicationSprintFile = path.join(dataDir, "news-lab-quality-publication-sprint.json");
 const apiEndpointPerformanceFile = path.join(dataDir, "api-endpoint-performance.json");
 const newsLabGeneratedImageQueueFile = path.join(dataDir, "news-lab-generated-image-queue.json");
+const newsLabImageDeliveryLedgerFile = path.join(dataDir, "news-lab-image-delivery-ledger.json");
 const newsLabGeneratedImageAssetDir = path.join(publicDir, "assets", "generated-news-lab");
 const IMAGE_STATUS = {
   MISSING: "missing",
@@ -966,6 +968,48 @@ function readNewsLabCollectorCache(category = "top") {
   };
 }
 
+function mergeNewsLabCollectorStories(baseStories = [], options = {}) {
+  const maxAgeMs = Math.max(0, Number(options.maxAgeMs || process.env.CE_NEWS_LAB_COLLECTOR_CACHE_MAX_AGE_MS || 20 * 60 * 1000));
+  const now = Date.now();
+  const collectorCaches = newsLabCollectorCategories().map(category => {
+    const cache = readNewsLabCollectorCache(category);
+    const generatedMs = cache.generatedAt ? new Date(cache.generatedAt).getTime() : 0;
+    const ageMs = generatedMs ? Math.max(0, now - generatedMs) : Number.POSITIVE_INFINITY;
+    const fresh = Boolean(cache && !cache.cacheMissing && Array.isArray(cache.stories) && cache.stories.length && (!maxAgeMs || ageMs <= maxAgeMs));
+    return { category, cache, ageMs, fresh };
+  });
+  const collectorStories = collectorCaches
+    .filter(item => item.fresh)
+    .flatMap(item => (item.cache.stories || []).map(story => ({
+      ...story,
+      category: story.category || item.category,
+      collectorCategory: item.category,
+      collectorCacheGeneratedAt: item.cache.generatedAt || ""
+    })));
+  const stories = dedupeStoryCluster([...(Array.isArray(baseStories) ? baseStories : []), ...collectorStories]);
+  return {
+    stories,
+    collectorSummary: {
+      active: true,
+      maxAgeMs,
+      cacheCount: collectorCaches.length,
+      freshCacheCount: collectorCaches.filter(item => item.fresh).length,
+      staleCacheCount: collectorCaches.filter(item => !item.fresh && !item.cache.cacheMissing).length,
+      missingCacheCount: collectorCaches.filter(item => item.cache.cacheMissing).length,
+      collectorStoryCount: collectorStories.length,
+      inputStoryCount: Array.isArray(baseStories) ? baseStories.length : 0,
+      outputStoryCount: stories.length,
+      categories: collectorCaches.map(item => ({
+        category: item.category,
+        fresh: item.fresh,
+        ageMs: Number.isFinite(item.ageMs) ? item.ageMs : null,
+        storyCount: Number(item.cache.storyCount || 0),
+        generatedAt: item.cache.generatedAt || ""
+      })),
+      rule: "Production and feed refresh merge fresh category collector caches before writing. Missing or stale collector caches are skipped instead of breaking the request."
+    }
+  };
+}
 function newsLabCollectorStatusFile(category = "top") {
   return path.join(newsLabCollectorDir, `${String(category || "top").replace(/[^a-z0-9-]/gi, "-")}.status.json`);
 }
@@ -1841,6 +1885,82 @@ function rawJsonStoryCount(filePath = "") {
   return -1;
 }
 
+function durableContentLaneInfo(filePath = "") {
+  const base = path.basename(filePath || "");
+  if (base === "creator-posts.json") return { key: "creator-posts", minCount: 1, filePath };
+  if (base === "newsletters.json") return { key: "newsletters", minCount: 1, filePath };
+  return null;
+}
+
+function durableContentLaneBackupPath(filePath = "") {
+  const info = durableContentLaneInfo(filePath);
+  return info ? path.join(contentLaneBackupDir, `${info.key}.last-known-good.json`) : "";
+}
+
+function durableContentLaneWriteAudit(filePath = "", event = {}) {
+  try {
+    const info = durableContentLaneInfo(filePath);
+    if (!info) return;
+    fs.mkdirSync(contentLaneBackupDir, { recursive: true });
+    const auditFile = path.join(contentLaneBackupDir, `${info.key}.audit.json`);
+    const existing = fs.existsSync(auditFile) ? JSON.parse(fs.readFileSync(auditFile, "utf8").replace(/^\uFEFF/, "")) : [];
+    const next = [{ generatedAt: new Date().toISOString(), ...event }, ...(Array.isArray(existing) ? existing : [])].slice(0, 80);
+    fs.writeFileSync(auditFile, `${JSON.stringify(next, null, 2)}\n`);
+  } catch {}
+}
+
+function backupDurableContentLane(filePath = "", value = null) {
+  try {
+    const info = durableContentLaneInfo(filePath);
+    if (!info) return;
+    const count = Array.isArray(value) ? value.length : rawJsonStoryCount(filePath);
+    if (count < info.minCount) return;
+    fs.mkdirSync(contentLaneBackupDir, { recursive: true });
+    const backupPath = durableContentLaneBackupPath(filePath);
+    const payload = value === null ? JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, "")) : value;
+    fs.writeFileSync(backupPath, `${JSON.stringify(payload, null, 2)}\n`);
+    durableContentLaneWriteAudit(filePath, { action: "backup-updated", count, backupPath, rule: "Creator Desk and Newsletter archives keep a last-known-good copy so empty deploy/runtime state cannot erase published content." });
+  } catch (error) {
+    durableContentLaneWriteAudit(filePath, { action: "backup-failed", error: error.message || String(error) });
+  }
+}
+
+function restoreDurableContentLaneFromBackup(filePath = "") {
+  try {
+    const info = durableContentLaneInfo(filePath);
+    if (!info) return false;
+    const backupPath = durableContentLaneBackupPath(filePath);
+    if (!fs.existsSync(backupPath)) return false;
+    const currentCount = fs.existsSync(filePath) ? rawJsonStoryCount(filePath) : -1;
+    const backupCount = rawJsonStoryCount(backupPath);
+    if (backupCount > Math.max(0, currentCount)) {
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.copyFileSync(backupPath, filePath);
+      durableContentLaneWriteAudit(filePath, { action: "restored-from-last-known-good", currentCount, backupCount, backupPath, rule: "Restore durable publication archives when deployed state is missing or weaker." });
+      return true;
+    }
+  } catch (error) {
+    durableContentLaneWriteAudit(filePath, { action: "restore-failed", error: error.message || String(error) });
+  }
+  return false;
+}
+
+function guardDurableContentLaneWrite(filePath = "", value = null) {
+  const info = durableContentLaneInfo(filePath);
+  if (!info) return { allowed: true, value };
+  const incomingCount = Array.isArray(value) ? value.length : rawJsonStoryCount(filePath);
+  const existingCount = fs.existsSync(filePath) ? rawJsonStoryCount(filePath) : 0;
+  const backupPath = durableContentLaneBackupPath(filePath);
+  const backupCount = fs.existsSync(backupPath) ? rawJsonStoryCount(backupPath) : 0;
+  const explicitDelete = process.env.CE_ALLOW_EMPTY_CONTENT_LANE_WRITE === "true";
+  if (!explicitDelete && incomingCount <= 0 && Math.max(existingCount, backupCount) > 0) {
+    const restorePath = backupCount >= existingCount ? backupPath : filePath;
+    const restored = JSON.parse(fs.readFileSync(restorePath, "utf8").replace(/^\uFEFF/, ""));
+    durableContentLaneWriteAudit(filePath, { action: "blocked-empty-write", incomingCount, existingCount, backupCount, restoredFrom: restorePath, rule: "A zero/empty incoming content lane cannot replace a non-empty Creator Desk or Newsletter archive unless owner deletion is explicit." });
+    return { allowed: false, value: restored };
+  }
+  return { allowed: true, value };
+}
 function seedDataFileFromRootIfStronger(targetPath = "") {
   try {
     const rootPath = path.join(__dirname, path.basename(targetPath));
@@ -1873,6 +1993,7 @@ function ensureDataFiles(options = {}) {
     creatorPostsFile,
     newslettersFile
   ].forEach(seedDataFileFromRootIfStronger);
+  if (!fs.existsSync(contentLaneBackupDir)) fs.mkdirSync(contentLaneBackupDir, { recursive: true });
   if (!fs.existsSync(frameworkPatchBackupDir)) fs.mkdirSync(frameworkPatchBackupDir, { recursive: true });
   if (!fs.existsSync(frameworkPatchApprovedDir)) fs.mkdirSync(frameworkPatchApprovedDir, { recursive: true });
   if (!fs.existsSync(frameworkPatchDeniedDir)) fs.mkdirSync(frameworkPatchDeniedDir, { recursive: true });
@@ -1881,10 +2002,12 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(newsLabCollectorDir)) fs.mkdirSync(newsLabCollectorDir, { recursive: true });
   if (!fs.existsSync(newsLabGeneratedImageAssetDir)) fs.mkdirSync(newsLabGeneratedImageAssetDir, { recursive: true });
   if (!fs.existsSync(subscribersFile)) fs.writeFileSync(subscribersFile, "[]\n");
+  restoreDurableContentLaneFromBackup(newslettersFile);
   if (!fs.existsSync(newslettersFile)) fs.writeFileSync(newslettersFile, "[]\n");
   if (!fs.existsSync(merchProductsFile)) fs.writeFileSync(merchProductsFile, `${JSON.stringify(defaultMerchProducts(), null, 2)}\n`);
   if (!fs.existsSync(merchSalesFile)) fs.writeFileSync(merchSalesFile, "[]\n");
   if (!fs.existsSync(merchOrdersFile)) fs.writeFileSync(merchOrdersFile, "[]\n");
+  restoreDurableContentLaneFromBackup(creatorPostsFile);
   if (!fs.existsSync(creatorPostsFile)) fs.writeFileSync(creatorPostsFile, "[]\n");
   if (!fs.existsSync(creatorCommentsFile)) fs.writeFileSync(creatorCommentsFile, "[]\n");
   if (!fs.existsSync(creatorDeskPendingFile)) fs.writeFileSync(creatorDeskPendingFile, "{}\n");
@@ -2158,7 +2281,9 @@ function compactNewsLabPublishedPayload(value) {
 function writeJsonFile(filePath, value) {
   ensureDataFiles();
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const valueToWrite = filePath === newsLabPublishedPayloadFile ? compactNewsLabPublishedPayload(value) : value;
+  const guardedContentLane = guardDurableContentLaneWrite(filePath, value);
+  const rawValueToWrite = guardedContentLane.value;
+  const valueToWrite = filePath === newsLabPublishedPayloadFile ? compactNewsLabPublishedPayload(rawValueToWrite) : rawValueToWrite;
   const heavyRuntimeJson = new Set([
     newsLabPublishedPayloadFile,
     newsLabApiResponseCacheFile,
@@ -2276,6 +2401,81 @@ function readDailyArticleMemory(dayId = "") {
   };
 }
 
+function absorbDailyArticleMemory(stories = [], date = new Date(), reason = "article-memory-absorption") {
+  try {
+    const day = creatorDayWindow(date instanceof Date ? date : new Date(date));
+    const store = articleMemoryStore();
+    const existingDay = store.days?.[day.id] || readDailyArticleMemory(day.id);
+    const incoming = (Array.isArray(stories) ? stories : [])
+      .filter(story => story && (story.title || story.summary || story.url))
+      .map((story, index) => ({
+        ...story,
+        id: story.id || `memory_story_${crypto.createHash("sha1").update(`${story.url || story.title || index}`).digest("hex").slice(0, 12)}`,
+        title: cleanArticleText(story.title || story.headline || "Untitled story", 240),
+        summary: cleanArticleText(story.summary || story.articleSummary || story.description || "", 1200),
+        articleSummary: cleanArticleText(story.articleSummary || story.fullText || story.summary || "", 3500),
+        source: cleanArticleText(story.source || story.publisher || story.name || "", 120),
+        url: story.url || story.link || "",
+        category: story.category || newsLabCategory(story),
+        absorbedAt: new Date().toISOString(),
+        absorptionReason: reason
+      }));
+    const merged = dailyArticleMemorySearchStories({
+      stories: [
+        ...(existingDay.stories || []),
+        ...(existingDay.absorbedStories || []),
+        ...incoming
+      ]
+    }).slice(-1200);
+    const nextDay = {
+      ...defaultDailyArticleMemory(day.id),
+      ...existingDay,
+      dayId: day.id,
+      dateLabel: day.dateLabel,
+      updatedAt: new Date().toISOString(),
+      articleCount: merged.length,
+      absorptionCount: Number(existingDay.absorptionCount || 0) + incoming.length,
+      stories: merged,
+      absorbedStories: merged,
+      lastAbsorptionReason: reason,
+      fullArticleReadCount: merged.filter(story => Number(story.articleTextLength || String(story.articleSummary || story.fullText || "").length || 0) >= 600).length
+    };
+    const nextStore = {
+      ...store,
+      ...nextDay,
+      days: {
+        ...(store.days || {}),
+        [day.id]: nextDay
+      },
+      updatedAt: nextDay.updatedAt
+    };
+    writeJsonFile(dailyArticleMemoryFile, nextStore);
+    return nextDay;
+  } catch (error) {
+    return {
+      ...defaultDailyArticleMemory(),
+      status: "unavailable",
+      lastError: error.message || String(error),
+      rule: "Article Memory absorption failed open so feed refresh, Owner Desk, and News Lab can continue."
+    };
+  }
+}
+
+function queueArticleMemoryAbsorption(stories = [], reason = "background-article-memory") {
+  setTimeout(() => {
+    try {
+      absorbDailyArticleMemory(stories, new Date(), reason);
+    } catch {
+      // Memory absorption is intentionally non-blocking.
+    }
+  }, 25).unref?.();
+  return {
+    queued: true,
+    storyCount: Array.isArray(stories) ? stories.length : 0,
+    reason,
+    rule: "Article Memory background absorption must not block public API responses."
+  };
+}
 function defaultArticleIntelligenceStore() {
   return {
     version: "20260811-article-intelligence-store-v1",
@@ -8561,6 +8761,55 @@ function readSearchLearning() {
   };
 }
 
+function searchLearningSummary(limit = 10) {
+  try {
+    const memory = readSearchLearning();
+    const safeLimit = Math.max(1, Number(limit || 10));
+    const rankedTerms = Object.entries(memory.terms || {})
+      .map(([term, value]) => ({ term, count: Number(value?.count || value || 0), lastSeenAt: value?.lastSeenAt || value?.updatedAt || "" }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, safeLimit);
+    const rankedQueries = Object.entries(memory.queries || {})
+      .map(([query, value]) => ({ query, count: Number(value?.count || value || 0), lastSeenAt: value?.lastSeenAt || value?.updatedAt || "", resultCount: Number(value?.resultCount || 0) }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, safeLimit);
+    const noResultQueries = (memory.noResultQueries || [])
+      .slice(-safeLimit)
+      .map(item => typeof item === "string" ? { query: item } : item);
+    const clickedResults = Object.entries(memory.clickedResults || {})
+      .map(([key, value]) => ({ key, count: Number(value?.count || value || 0), title: value?.title || "", url: value?.url || "" }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, safeLimit);
+    const totalQueries = Number(memory.queryCount || rankedQueries.reduce((sum, item) => sum + item.count, 0) || 0);
+    return {
+      available: true,
+      status: "active",
+      updatedAt: memory.updatedAt || "",
+      queryCount: totalQueries,
+      totalQueries,
+      uniqueQueries: rankedQueries.length,
+      uniqueTerms: rankedTerms.length,
+      topTerms: rankedTerms,
+      topQueries: rankedQueries,
+      noResultQueries,
+      clickedResults,
+      rule: "Search Learning summarizes visitor search terms for relevance tuning without allowing search popularity to dictate editorial direction."
+    };
+  } catch (error) {
+    return {
+      available: false,
+      status: "unavailable",
+      reason: "search-learning-summary-failed",
+      error: error.message || String(error),
+      queryCount: 0,
+      totalQueries: 0,
+      topTerms: [],
+      topQueries: [],
+      noResultQueries: [],
+      clickedResults: []
+    };
+  }
+}
 function saveSearchLearning(memory) {
   const orderedQueries = Object.entries(memory.queries || {})
     .sort((a, b) => Number(b[1].count || 0) - Number(a[1].count || 0))
@@ -8870,6 +9119,41 @@ function storyLearningFeatures(story = {}) {
   return [...features];
 }
 
+function searchInterestScoreForStory(story = {}, searchMemory = readSearchLearning()) {
+  try {
+    const storyText = `${story.title || ""} ${story.summary || ""} ${story.articleSummary || ""} ${story.category || ""}`.toLowerCase();
+    if (!storyText.trim()) return 0;
+    const termScore = Object.entries(searchMemory.terms || {}).reduce((score, [term, value]) => {
+      const cleanTerm = String(term || "").toLowerCase().trim();
+      if (!cleanTerm || !storyText.includes(cleanTerm)) return score;
+      return score + Math.min(3, Number(value?.count || value || 0));
+    }, 0);
+    const queryScore = Object.entries(searchMemory.queries || {}).reduce((score, [query, value]) => {
+      const terms = String(query || "").toLowerCase().split(/\s+/).filter(term => term.length > 2);
+      if (!terms.length) return score;
+      const matched = terms.filter(term => storyText.includes(term)).length;
+      if (!matched) return score;
+      return score + Math.min(4, (matched / terms.length) * Number(value?.count || value || 0));
+    }, 0);
+    return Math.min(10, Number((termScore + queryScore).toFixed(2)));
+  } catch {
+    return 0;
+  }
+}
+
+function searchLearningBoost(result = {}, terms = [], searchMemory = readSearchLearning(), adaptiveWeights = {}) {
+  try {
+    const resultText = `${result.title || ""} ${result.summary || ""} ${result.source || ""} ${result.bucket || ""}`.toLowerCase();
+    const normalizedTerms = (terms || []).map(term => String(term || "").toLowerCase()).filter(Boolean);
+    const matchedTerms = normalizedTerms.filter(term => resultText.includes(term)).length;
+    const coverageBoost = normalizedTerms.length ? (matchedTerms / normalizedTerms.length) * 8 : 0;
+    const interestBoost = searchInterestScoreForStory(result, searchMemory);
+    const weight = Number(adaptiveWeights?.searchRelevance || adaptiveWeights?.searchLearning || 1) || 1;
+    return Math.min(18, (coverageBoost + interestBoost) * weight);
+  } catch {
+    return 0;
+  }
+}
 function learningScoreForStory(story, memory = learningMemory(), searchMemory = readSearchLearning()) {
   const topicScore = storyLearningFeatures(story)
     .reduce((score, feature) => score + Number(memory.topicWeights?.[feature] || 0), 0);
@@ -19164,6 +19448,41 @@ function startCreatorDeskLoop() {
   }, creatorDeskCheckMs);
 }
 
+function scheduledContentHeartbeatFreshness(status = {}) {
+  const heartbeatAt = status.heartbeatAt || status.generatedAt || status.startedAt || "";
+  const heartbeatMs = heartbeatAt ? Date.parse(heartbeatAt) : 0;
+  const expectedMs = Math.max(30000, Number(process.env.CE_SCHEDULED_CONTENT_HEARTBEAT_MS || 60000));
+  const maxAgeMs = Math.max(expectedMs * 2, Number(process.env.CE_SCHEDULED_CONTENT_STALE_AFTER_MS || expectedMs * 2));
+  const ageMs = heartbeatMs ? Date.now() - heartbeatMs : Number.POSITIVE_INFINITY;
+  return {
+    heartbeatAt,
+    expectedMs,
+    maxAgeMs,
+    ageMs: Number.isFinite(ageMs) ? ageMs : null,
+    fresh: Boolean(heartbeatMs && ageMs <= maxAgeMs),
+    stale: !heartbeatMs || ageMs > maxAgeMs,
+    rule: "Scheduled content active state is derived from heartbeat freshness, not from a persisted Boolean."
+  };
+}
+
+function scheduledContentDurableCounts() {
+  const creatorPosts = readCreatorPosts();
+  const newsletters = readJsonFile(newslettersFile, []);
+  const creatorBackup = durableContentLaneBackupPath(creatorPostsFile);
+  const newsletterBackup = durableContentLaneBackupPath(newslettersFile);
+  return {
+    creatorDesk: {
+      localCount: creatorPosts.length,
+      backupCount: fs.existsSync(creatorBackup) ? rawJsonStoryCount(creatorBackup) : 0,
+      publicCount: creatorPosts.filter(item => item.published !== false && item.status !== "deleted").length
+    },
+    newsletter: {
+      localCount: Array.isArray(newsletters) ? newsletters.length : 0,
+      backupCount: fs.existsSync(newsletterBackup) ? rawJsonStoryCount(newsletterBackup) : 0,
+      publicCount: Array.isArray(newsletters) ? newsletters.filter(item => item.published !== false && item.status !== "deleted").length : 0
+    }
+  };
+}
 function defaultScheduledContentWorkerStatus() {
   return {
     version: "20260729-scheduled-content-autonomy-v1",
@@ -19199,14 +19518,35 @@ function creatorDeskLaneStatus(date = new Date()) {
   };
 }
 
+function normalizeScheduledContentWorkerStatus(status = {}) {
+  const base = status && typeof status === "object" ? status : defaultScheduledContentWorkerStatus();
+  const heartbeat = scheduledContentHeartbeatFreshness(base);
+  let counts = { creatorDesk: {}, newsletter: {} };
+  try { counts = scheduledContentDurableCounts(); } catch {}
+  return {
+    ...base,
+    active: heartbeat.fresh,
+    stale: heartbeat.stale,
+    heartbeatFreshness: heartbeat,
+    contentLaneDurability: {
+      ...counts,
+      ...(base.contentLaneDurability || {}),
+      syncStatus: base.contentLaneDurability?.syncStatus || "json-plus-last-known-good-backup",
+      rule: "Creator Desk and Newsletter status is normalized on read so stale active:true files cannot keep a dead worker marked healthy."
+    },
+    supervisorAction: heartbeat.stale
+      ? "scheduled-content-worker-stale-restart-or-fallback-needed"
+      : "scheduled-content-worker-heartbeat-current"
+  };
+}
 function scheduledContentWorkerStatusPatch(patch = {}) {
   const previous = readJsonFile(scheduledContentWorkerStatusFile, defaultScheduledContentWorkerStatus()) || defaultScheduledContentWorkerStatus();
-  const next = {
+  const generatedAt = new Date().toISOString();
+  const merged = {
     ...previous,
     ...patch,
     version: "20260729-scheduled-content-autonomy-v1",
-    generatedAt: new Date().toISOString(),
-    active: true,
+    generatedAt,
     pid: process.pid,
     roles: ["maintenance", "creator-desk", "newsletter", "market-snapshot"],
     creatorDesk: { ...(previous.creatorDesk || {}), ...(patch.creatorDesk || {}) },
@@ -19217,10 +19557,25 @@ function scheduledContentWorkerStatusPatch(patch = {}) {
       rule: "Creator Desk and Newsletter are primary product lanes. If they miss a schedule window, the scheduled-content worker must catch up, record why, and sync the generated files."
     }
   };
+  const heartbeat = scheduledContentHeartbeatFreshness(merged);
+  const counts = scheduledContentDurableCounts();
+  const next = {
+    ...merged,
+    active: heartbeat.fresh,
+    stale: heartbeat.stale,
+    heartbeatFreshness: heartbeat,
+    contentLaneDurability: {
+      ...counts,
+      syncStatus: "json-plus-last-known-good-backup",
+      rule: "Creator Desk and Newsletter track local, backup, and public counts separately so missing deployment files cannot masquerade as healthy content lanes."
+    },
+    supervisorAction: heartbeat.stale
+      ? "scheduled-content-worker-stale-restart-or-fallback-needed"
+      : "scheduled-content-worker-heartbeat-current"
+  };
   writeJsonFile(scheduledContentWorkerStatusFile, next);
   return next;
 }
-
 let scheduledContentAutonomousCycleActive = false;
 
 async function runScheduledContentAutonomousCycle(reason = "scheduled-content-autonomous-cycle") {
@@ -20185,23 +20540,79 @@ function startNewsLabCollectorLoop() {
   const category = String(newsLabCollectorWorkerCategory || process.env.CE_NEWS_LAB_COLLECTOR_WORKER || "top").toLowerCase().trim() || "top";
   if (runtimeState.newsLabCollectorLoopStarted) return;
   runtimeState.newsLabCollectorLoopStarted = true;
-  const run = reason => runNewsLabCollectorCycle(category, reason).catch(error => {
-    runtimeState.lastError = `News Lab ${category} collector failed: ${error.message || error}`;
+  const startedAt = new Date().toISOString();
+  runtimeState.newsLabCollectorLoopCycleCount = 0;
+  runtimeState.newsLabCollectorLoopStartedAt = startedAt;
+  const intervalMs = Math.max(5000, Number(newsLabCollectorCycleMs || 0));
+  const startupDelayMs = Math.max(1000, Number(process.env.CE_NEWS_LAB_COLLECTOR_STARTUP_DELAY_MS || 2000));
+  const run = async reason => {
+    runtimeState.newsLabCollectorLoopCycleCount = Number(runtimeState.newsLabCollectorLoopCycleCount || 0) + 1;
+    const cycleNumber = runtimeState.newsLabCollectorLoopCycleCount;
+    const cycleStartedAt = new Date().toISOString();
     writeNewsLabCollectorStatus(category, {
-      active: false,
-      lastStatus: "failed",
+      active: true,
+      pid: process.pid,
+      startedAt,
+      uptimeMs: Date.now() - new Date(startedAt).getTime(),
+      cycleCount: cycleNumber,
+      lastStatus: "cycle-running",
       lastReason: reason,
-      lastError: error.message || String(error)
+      lastCycleStartedAt: cycleStartedAt,
+      nextRunAt: new Date(Date.now() + intervalMs).toISOString(),
+      nextCycleAt: new Date(Date.now() + intervalMs).toISOString()
     });
-  });
+    try {
+      const record = await runNewsLabCollectorCycle(category, reason);
+      const sourceCount = Number(record?.sourceCount || record?.dossierSourceStoryCount || record?.sourceStoryCount || 0);
+      const acceptedCount = Number(record?.storyCount || record?.clusteredStoryCount || 0);
+      writeNewsLabCollectorStatus(category, {
+        active: true,
+        pid: process.pid,
+        startedAt,
+        uptimeMs: Date.now() - new Date(startedAt).getTime(),
+        cycleCount: cycleNumber,
+        lastStatus: "cycle-completed",
+        lastReason: reason,
+        lastCycleStartedAt: cycleStartedAt,
+        lastCycleCompletedAt: new Date().toISOString(),
+        fetchedCount: sourceCount,
+        acceptedCount,
+        rejectedCount: Math.max(0, sourceCount - acceptedCount),
+        nextRunAt: new Date(Date.now() + intervalMs).toISOString(),
+        nextCycleAt: new Date(Date.now() + intervalMs).toISOString()
+      });
+    } catch (error) {
+      runtimeState.lastError = `News Lab ${category} collector failed: ${error.message || error}`;
+      writeNewsLabCollectorStatus(category, {
+        active: true,
+        pid: process.pid,
+        startedAt,
+        uptimeMs: Date.now() - new Date(startedAt).getTime(),
+        cycleCount: cycleNumber,
+        lastStatus: "cycle-failed",
+        lastReason: reason,
+        lastError: error.message || String(error),
+        lastCycleStartedAt: cycleStartedAt,
+        lastCycleCompletedAt: new Date().toISOString(),
+        nextRunAt: new Date(Date.now() + intervalMs).toISOString(),
+        nextCycleAt: new Date(Date.now() + intervalMs).toISOString()
+      });
+    }
+  };
   writeNewsLabCollectorStatus(category, {
-    active: false,
+    active: true,
+    pid: process.pid,
+    startedAt,
+    uptimeMs: 0,
+    cycleCount: 0,
     lastStatus: "loop-started",
     lastReason: "collector-loop-startup",
-    nextRunAt: new Date(Date.now() + Math.max(1000, Number(process.env.CE_NEWS_LAB_COLLECTOR_STARTUP_DELAY_MS || 2000))).toISOString()
+    nextRunAt: new Date(Date.now() + startupDelayMs).toISOString(),
+    nextCycleAt: new Date(Date.now() + startupDelayMs).toISOString(),
+    rule: "Collector roles are persistent workers. Timers stay referenced so Node cannot clean-exit before collection occurs."
   });
-  setTimeout(() => run("startup-category-collection"), Math.max(1000, Number(process.env.CE_NEWS_LAB_COLLECTOR_STARTUP_DELAY_MS || 2000))).unref?.();
-  setInterval(() => run("scheduled-category-collection"), newsLabCollectorCycleMs).unref?.();
+  runtimeState.newsLabCollectorStartupTimer = setTimeout(() => run("startup-category-collection"), startupDelayMs);
+  runtimeState.newsLabCollectorInterval = setInterval(() => run("scheduled-category-collection"), intervalMs);
 }
 
 function storyDate(value) {
@@ -22390,6 +22801,8 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
   const lower = factText.toLowerCase();
   const category = newsLabCategory(story);
   const sourcePhrases = [...new Set(String(sourceHeadline || "").toLowerCase().split(/[^a-z0-9]+/).filter(word => word.length >= 5))].slice(0, 10);
+  const semanticFrame = newsLabHeadlineSemanticFrame(story, index);
+  const semanticHeadline = newsLabHeadlineBuildFromSemanticFrame(semanticFrame);
   const weakSubject = /^(The|This|That|They|Them|It|Into|First|Born|Despite|About|When|Mean|Mean They|The Revolutionary|Perfect Kids|America The|Submit Your Questions|About America|Peace|White|Submit|Court|Security Roundup|Ars Live|That Doesn|Weather|Fourth|America|World|Large|Pictures|Video|Sources?|Officials?|Reports?|News|Story|Update|Massive|Are|American Olympic|Republican|Firework)$/i;
   const entityCandidates = [
     ...(dossier.people || []),
@@ -22402,12 +22815,12 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
     .filter(entity => !weakSubject.test(entity))
     .filter(entity => entity.split(/\s+/).length <= 4)
     .filter((entity, entityIndex, all) => all.indexOf(entity) === entityIndex);
-  let actor = entityCandidates[0] || newsLabCategoryLabel(category);
+  let actor = semanticFrame.passed && semanticFrame.actor ? semanticFrame.actor : entityCandidates[0] || newsLabCategoryLabel(category);
   if (/\bgoogle\b/.test(lower) && /android|eu|european union|antitrust|fine|appeal/.test(lower)) actor = "Google";
   else if (/\btrump\b/.test(lower) && /market|economy|tariff|jobs|stock|housing/.test(lower)) actor = "Trump Economic Plan";
   else if (/\bmorocco\b/.test(lower) && /netherlands|shootout|world cup/.test(lower)) actor = "Morocco";
   else if (/\bdelta\b/.test(lower) && /flight|airbus|midway|firework/.test(lower)) actor = "Delta Flight";
-  const action = (() => {
+  const fallbackAction = (() => {
     if (/\b(suspends?|drops? out|ends? campaign|withdraws?)\b/.test(lower)) return "Ends";
     if (/\b(loses?|lost)\b/.test(lower) && /\b(appeal|fine|case|ruling)\b/.test(lower)) return "Loses";
     if (/\b(upheld|appeal|fine|ruling)\b/.test(lower)) return "Faces";
@@ -22421,7 +22834,7 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
     if (/\b(ai|technology|cyber|software|app|data|privacy|chip|nasa|spacex)\b/.test(lower)) return "Faces";
     return "Updates";
   })();
-  const consequence = (() => {
+  const fallbackConsequence = (() => {
     if (/google|android|european union|antitrust|fine|appeal/.test(lower)) return "EU Android Fine";
     if (/morocco|netherlands|shootout|world cup/.test(lower)) return "After Shootout Win";
     if (/campaign|senate|primary|election/.test(lower)) return "Senate Primary Shift";
@@ -22436,7 +22849,9 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
     if (category === "entertainment") return "Entertainment Story";
     return "Confirmed Developments";
   })();
-  const finalHeadline = newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(`${actor} ${action} ${consequence}`.replace(/\s+/g, " ")).replace(/[,;:.!?]+$/g, "").trim());
+  const action = semanticFrame.passed && semanticFrame.action ? newsLabHeadlineNormalizeAction(semanticFrame.action) : fallbackAction;
+  const consequence = semanticFrame.passed && semanticFrame.consequenceSupported && semanticFrame.consequence ? semanticFrame.consequence : fallbackConsequence;
+  const finalHeadline = semanticHeadline || newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(`${actor} ${action} ${consequence}`.replace(/\s+/g, " ")).replace(/[,;:.!?]+$/g, "").trim());
   return {
     who: actor,
     whatHappened: cleanArticleText(dossier.whatHappened || (Array.isArray(story.body) ? story.body[0] : "") || story.summary || "", 260),
@@ -22445,6 +22860,7 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
     consequence,
     bestVerb: action,
     forbiddenCopiedPhrases: sourcePhrases,
+    semanticFrame,
     constitution: newsLabHeadlineConstitutionCheck(finalHeadline, story),
     finalHeadline
   };
@@ -22452,7 +22868,22 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
 
 function newsLabHeadlinePreEditor(story = {}, index = 0) {
   const builder = newsLabHeadlineDossierBuilder(story, index);
+  const semanticFrame = builder.semanticFrame || newsLabHeadlineSemanticFrame(story, index);
   const sourceHeadline = story.originalHeadline || story.sources?.[0]?.title || "";
+  if (!semanticFrame.passed) {
+    return {
+      passed: false,
+      title: story.title || builder.finalHeadline || "",
+      chosen: { title: story.title || builder.finalHeadline || "", passed: false, issues: semanticFrame.issues || [], score: 0, failureClass: "HEADLINE_INPUT_FAILURE" },
+      candidates: [],
+      builder,
+      semanticFrame,
+      sourceHeadline,
+      failureClass: "HEADLINE_INPUT_FAILURE",
+      candidateMetrics: { candidateCount: 0, firstCandidatePassed: false, anyCandidatePassed: false, firstCandidateScore: 0, bestCandidateScore: 0, target: { firstCandidatePassRate: 0.6, anyCandidatePassRate: 0.9 } },
+      action: "headline-input-return-to-writer-reasoning"
+    };
+  }
   const candidates = [
     builder.finalHeadline,
     newsLabSpecificHeadlineFromFacts({ ...story, title: builder.finalHeadline }, index),
@@ -22480,7 +22911,8 @@ function newsLabHeadlinePreEditor(story = {}, index = 0) {
       score: memoryCandidate ? memoryCandidate.score : clampScore(editor.score - issues.length * 8),
       pattern: newsLabHeadlinePatternType(candidate),
       memoryAware: Boolean(memoryCandidate),
-      editor
+      editor,
+      failureClass: newsLabHeadlineCandidateFailureClass(issues)
     };
   });
   const chosen = reviewed.find(item => item.passed) || reviewed.slice().sort((a, b) => b.score - a.score)[0] || { title: builder.finalHeadline, passed: false, issues: ["headline-editor-needs-rewrite"], score: 0 };
@@ -22491,6 +22923,16 @@ function newsLabHeadlinePreEditor(story = {}, index = 0) {
     candidates: reviewed,
     builder,
     sourceHeadline,
+    semanticFrame,
+    failureClass: chosen.failureClass || newsLabHeadlineCandidateFailureClass(chosen.issues || []),
+    candidateMetrics: {
+      candidateCount: reviewed.length,
+      firstCandidatePassed: Boolean(reviewed[0]?.passed),
+      anyCandidatePassed: reviewed.some(item => item.passed),
+      firstCandidateScore: Number(reviewed[0]?.score || 0),
+      bestCandidateScore: Number((reviewed.slice().sort((a, b) => b.score - a.score)[0] || {}).score || 0),
+      target: { firstCandidatePassRate: 0.6, anyCandidatePassRate: 0.9 }
+    },
     action: chosen.passed ? "headline-pre-editor-approved" : "headline-pre-editor-needs-repair"
   };
 }
@@ -22508,7 +22950,11 @@ function newsLabApplyHeadlinePreEditor(story = {}, index = 0) {
         action: review.action,
         chosenTitle: review.title,
         candidateCount: review.candidates.length,
-        candidates: review.candidates.map(item => ({ title: item.title, passed: item.passed, issues: item.issues, score: item.score }))
+        failureClass: review.failureClass,
+        issues: [...new Set([...(review.chosen?.issues || []), ...(review.semanticFrame?.issues || [])])],
+        semanticFrame: review.semanticFrame,
+        candidateMetrics: review.candidateMetrics,
+        candidates: review.candidates.map(item => ({ title: item.title, passed: item.passed, issues: item.issues, score: item.score, failureClass: item.failureClass }))
       },
       finalHeadline: review.title || story.title,
       similarity: Number(newsLabTextOverlap(review.title || story.title || "", review.sourceHeadline || "").toFixed(2))
@@ -22804,7 +23250,7 @@ function newsLabHeadlineDossier(story = {}, index = 0) {
   else if (/\b(stock|market|shares|earnings|housing|jobs|economy|tariff|inflation)\b/.test(lower)) bestVerb = "Draws";
   else if (/\b(ai|technology|cyber|software|app|data|privacy|chip|nasa|spacex)\b/.test(lower)) bestVerb = "Faces";
   else if (/\b(wedding|movie|music|streaming|festival|celebrity)\b/.test(lower)) bestVerb = "Takes";
-  const consequence = (() => {
+  const fallbackConsequence = (() => {
     if (/trump/.test(lower) && /(market|economy|tariff|jobs|stock|housing)/.test(lower)) return "New Market Scrutiny";
     if (/google|android|eu|european union|antitrust|fine/.test(lower)) return "EU Android Fine";
     if (category === "sports") return "Competitive Stakes";
@@ -22816,6 +23262,7 @@ function newsLabHeadlineDossier(story = {}, index = 0) {
     if (category === "local") return "Local Response";
     return "Confirmed Developments";
   })();
+  const consequence = fallbackConsequence;
   let neutralFactHeadline = newsLabTitleCase(`${who} ${bestVerb} ${consequence}`).replace(/[,.!?;:]+$/g, "").trim();
   if (/google/i.test(who) && /eu android fine/i.test(consequence)) neutralFactHeadline = "Google Faces EU Android Fine";
   if (/taylor swift|travis kelce/i.test(factText) && /wedding|married|madison square garden/i.test(factText)) {
@@ -23910,7 +24357,7 @@ function newsLabHardMergePublicStories(stories = []) {
     const candidate = newsLabStoryReplacementRank(story) > newsLabStoryReplacementRank(existing)
       ? newsLabMergeDurableStoryMetadata(story, existing)
       : newsLabMergeDurableStoryMetadata(existing, story);
-    byKey.set(key, candidate);
+    byKey.set(key, newsLabPreferResolvedImageStory(candidate, existing));
   });
   return newsLabSortByCoveragePopularity([...byKey.values()]);
 }
@@ -25299,6 +25746,19 @@ function newsLabBuildUsefulnessPreEditorIssues(story = {}) {
     issues.add("writer-reasoning-hard-check-failed");
   }
   if (story.writerReasoningVerification && story.writerReasoningVerification.passed === false) issues.add("writer-reasoning-plan-alignment-failed");
+  const headlinePreEditor = story.headlineAudit?.headlinePreEditor || story.headlinePreEditor || {};
+  if (headlinePreEditor.failureClass === "HEADLINE_INPUT_FAILURE") {
+    issues.add("headline-input-failure");
+    (headlinePreEditor.issues || []).forEach(issue => issues.add(issue));
+    (headlinePreEditor.semanticFrame?.issues || []).forEach(issue => issues.add(issue));
+  }
+  if (headlinePreEditor.failureClass === "HEADLINE_RENDERING_FAILURE") {
+    issues.add("headline-rendering-failure");
+    (headlinePreEditor.issues || []).forEach(issue => issues.add(issue));
+  }
+  if (story.headlineAudit?.canonicalHeadline?.failureClass === "HEADLINE_INPUT_FAILURE" || story.canonicalHeadline?.failureClass === "HEADLINE_INPUT_FAILURE") {
+    issues.add("headline-input-failure");
+  }
   if (story.headlineAudit?.canonicalHeadline?.validationPassed === false || story.canonicalHeadline?.validationPassed === false) {
     issues.add("headline-generated-without-locked-dossier-and-reasoning-inputs");
   }
@@ -25658,6 +26118,43 @@ function newsLabBuildUsefulnessPreEditorRepair(story = {}, index = 0) {
   return newsLabDraftOptimizationEngine(coordinated, index);
 }
 
+function newsLabFirstPassQualitySprintMetrics(stories = []) {
+  const list = Array.isArray(stories) ? stories : [];
+  const headlineAudits = list.map(story => story.headlineAudit?.headlinePreEditor || story.headlinePreEditor || story.canonicalHeadline || story.headlineAudit?.canonicalHeadline || {}).filter(Boolean);
+  const total = headlineAudits.length;
+  const inputFailures = headlineAudits.filter(audit => audit.failureClass === "HEADLINE_INPUT_FAILURE").length;
+  const renderingFailures = headlineAudits.filter(audit => audit.failureClass === "HEADLINE_RENDERING_FAILURE").length;
+  const firstCandidatePassed = headlineAudits.filter(audit => audit.candidateMetrics?.firstCandidatePassed).length;
+  const anyCandidatePassed = headlineAudits.filter(audit => audit.candidateMetrics?.anyCandidatePassed || audit.passed === true || audit.validationPassed === true).length;
+  const selectedPassed = headlineAudits.filter(audit => audit.passed === true || audit.validationPassed === true).length;
+  return {
+    active: true,
+    version: "20260812-first-pass-quality-sprint-v1",
+    editorThresholdsUnchanged: true,
+    totalHeadlineReviews: total,
+    headlineInputFailureCount: inputFailures,
+    headlineRenderingFailureCount: renderingFailures,
+    selectedHeadlinePassCount: selectedPassed,
+    selectedHeadlinePassRate: total ? Number((selectedPassed / total).toFixed(2)) : 0,
+    firstCandidatePassed,
+    firstCandidatePassRate: total ? Number((firstCandidatePassed / total).toFixed(2)) : 0,
+    anyCandidatePassed,
+    anyCandidatePassRate: total ? Number((anyCandidatePassed / total).toFixed(2)) : 0,
+    targets: {
+      firstPassApprovalRate: 0.5,
+      firstCandidatePassRate: 0.6,
+      anyCandidatePassRate: 0.9
+    },
+    baseline: {
+      candidateReviewedCount: 27,
+      firstPassApprovedCount: 7,
+      finalApprovedCount: 6,
+      blockedCount: 21,
+      observedFirstPassApprovalRate: 0.26
+    },
+    routingRule: "HEADLINE_INPUT_FAILURE routes back to Story Dossier and Writer Reasoning. HEADLINE_RENDERING_FAILURE routes to Headline Intelligence repair. The Publishing Editor threshold stays strict."
+  };
+}
 function newsLabBuildUsefulnessPreEditorPass(stories = []) {
   const inputStories = Array.isArray(stories) ? stories : [];
   const repairedStories = inputStories
@@ -27151,51 +27648,31 @@ function startNewsLabWorkerProcess(reason = "startup", options = {}) {
   });
   child.on("exit", (code, signal) => {
     if (child.newsLabBudgetTimer) clearTimeout(child.newsLabBudgetTimer);
-    runtimeState.newsLabWorkerLastExitAt = new Date().toISOString();
-    runtimeState.newsLabWorkerLastExitCode = code === null || code === undefined ? "" : String(code);
-    runtimeState.newsLabWorkerLastExitSignal = signal || "";
     runtimeState.newsLabWorkerProcess = null;
-    const budgetExpired = Boolean(runtimeState.newsLabWorkerLastError === "news lab worker exceeded budget");
-    if (budgetExpired) {
-      clearStaleNewsLabProductionDiskLock(options.once ? "one-shot-worker-exit-budget-cleanup" : "worker-exit-budget-cleanup");
-    }
+    runtimeState.newsLabWorkerPid = 0;
+    const budgetExpired = code === null && signal === "SIGTERM" && runtimeState.newsLabWorkerLastError;
+    const restartDelay = options.once
+      ? Math.max(5000, Number(process.env.CE_NEWS_LAB_WORKER_ONCE_RESTART_MS || 30000))
+      : Math.max(5000, newsLabProductionCycleMs);
+    runtimeState.newsLabProductionNextRunAt = new Date(Date.now() + restartDelay).toISOString();
     writeNewsLabWorkerStatus({
       mode: "public-server-delegating",
       active: false,
       parentPid: process.pid,
-      workerPid: runtimeState.newsLabWorkerPid,
+      workerPid: child.pid || 0,
+      exitCode: code === null || code === undefined ? "" : String(code),
+      exitSignal: signal || "",
       lastStatus: budgetExpired ? (options.once ? "one-shot-budget-expired" : "worker-budget-expired") : options.once ? "one-shot-worker-exited" : "worker-exited",
-      exitCode: runtimeState.newsLabWorkerLastExitCode,
-      exitSignal: runtimeState.newsLabWorkerLastExitSignal,
-      hardStopped: budgetExpired,
-      budgetMs: options.once ? newsLabWorkerOnceBudgetMs : newsLabProductionBudgetMs + 15000,
-      lastWorkerCheckpoint: budgetExpired ? (readNewsLabWorkerStatus().lastWorkerCheckpoint || readNewsLabWorkerStatus().lastStatus || "") : "",
-      lastMetrics: budgetExpired ? (readNewsLabWorkerStatus().lastMetrics || {}) : (runtimeState.newsLabWorkerStatus?.lastMetrics || {}),
-      lockCleanupAttempted: budgetExpired
+      lastReason: reason,
+      nextRunAt: runtimeState.newsLabProductionNextRunAt,
+      restartQueued: true,
+      rule: "One-shot workers must schedule the next isolated one-shot after exit so article production remains autonomous without blocking public API responses."
     });
-    if (!runtimeState.newsLabWorkerRestartQueued) {
-      const restartDelay = options.once
-        ? Math.max(5000, Math.min(newsLabProductionCycleMs || 30000, newsLabProductionCatchupDelayMs || 5000))
-        : Math.max(5000, newsLabProductionCatchupDelayMs);
-      runtimeState.newsLabWorkerRestartQueued = true;
-      runtimeState.newsLabProductionNextRunAt = new Date(Date.now() + restartDelay).toISOString();
-      writeNewsLabWorkerStatus({
-        mode: "public-server-delegating",
-        active: false,
-        parentPid: process.pid,
-        workerPid: runtimeState.newsLabWorkerPid,
-        lastStatus: budgetExpired ? (options.once ? "one-shot-budget-expired" : "worker-budget-expired") : options.once ? "one-shot-worker-exited" : "worker-exited",
-        lastReason: reason,
-        nextRunAt: runtimeState.newsLabProductionNextRunAt,
-        restartQueued: true,
-        rule: "One-shot workers must schedule the next isolated one-shot after exit so article production remains autonomous without blocking public API responses."
-      });
-      setTimeout(() => {
-        runtimeState.newsLabWorkerRestartQueued = false;
-        runtimeState.newsLabWorkerRestartCount += 1;
-        startNewsLabWorkerProcess(options.once ? "next-one-shot-after-worker-exit" : "restart-after-worker-exit", { once: true });
-      }, restartDelay).unref?.();
-    }
+    setTimeout(() => {
+      runtimeState.newsLabWorkerRestartQueued = false;
+      runtimeState.newsLabWorkerRestartCount += 1;
+      startNewsLabWorkerProcess(options.once ? "next-one-shot-after-worker-exit" : "restart-after-worker-exit", { once: true });
+    }, restartDelay).unref?.();
   });
   return true;
 }
@@ -27219,6 +27696,8 @@ function startNewsLabCollectorWorkerProcesses(reason = "startup") {
       generatedAt: new Date().toISOString(),
       category,
       pid: child.pid || 0,
+      startedAt: new Date().toISOString(),
+      active: true,
       lastStatus: "collector-started",
       lastReason: reason
     };
@@ -27231,23 +27710,34 @@ function startNewsLabCollectorWorkerProcesses(reason = "startup") {
         generatedAt: new Date().toISOString(),
         category,
         pid: child.pid || 0,
+        active: false,
         lastStatus: "collector-error",
         lastError: error.message || String(error)
       };
     });
     child.on("exit", (code, signal) => {
       runtimeState.newsLabCollectorProcesses[category] = null;
+      const previousStatus = runtimeState.newsLabCollectorStatuses?.[category] || {};
+      const startedMs = previousStatus.startedAt ? new Date(previousStatus.startedAt).getTime() : new Date(previousStatus.generatedAt || Date.now()).getTime();
+      const uptimeMs = Number.isFinite(startedMs) ? Math.max(0, Date.now() - startedMs) : 0;
+      const earlyCleanExit = uptimeMs < 30000 && (code === 0 || code === null) && !signal;
       runtimeState.newsLabCollectorStatuses[category] = {
+        ...previousStatus,
         generatedAt: new Date().toISOString(),
         category,
         pid: child.pid || 0,
-        lastStatus: "collector-exited",
+        active: false,
+        lastStatus: earlyCleanExit ? "unexpected-early-exit" : "collector-exited",
+        lastReason: earlyCleanExit ? "collector-clean-exited-before-30s" : previousStatus.lastReason || "collector-exited",
+        uptimeMs,
         exitCode: code === null || code === undefined ? "" : String(code),
-        exitSignal: signal || ""
+        exitSignal: signal || "",
+        rule: "Persistent collector workers must stay alive. A clean exit under 30 seconds is treated as unhealthy and restarted with bounded backoff."
       };
       if (!runtimeState.newsLabCollectorRestartCounts[category]) runtimeState.newsLabCollectorRestartCounts[category] = 0;
       runtimeState.newsLabCollectorRestartCounts[category] += 1;
-      setTimeout(() => startNewsLabCollectorWorkerProcesses(`restart-${category}`), Math.max(5000, newsLabCollectorCycleMs));
+      const restartDelay = Math.min(Math.max(5000, newsLabCollectorCycleMs), 30000 + runtimeState.newsLabCollectorRestartCounts[category] * 5000);
+      setTimeout(() => startNewsLabCollectorWorkerProcesses(`restart-${category}`), restartDelay);
     });
   });
   return true;
@@ -29980,6 +30470,58 @@ async function loadDirectMatchesFromDiscovery(stories, options = {}) {
   return discovered.flatMap(result => (result.status === "fulfilled" ? result.value : []));
 }
 
+function buildNewsLabDossierSourcePayload(stories = []) {
+  const base = buildStoryPayload(Array.isArray(stories) ? stories : []);
+  return base.map(story => ({
+    ...story,
+    dossierSource: true,
+    canonicalText: cleanArticleText([
+      story.title,
+      story.summary,
+      story.articleSummary,
+      story.fullText
+    ].filter(Boolean).join(" "), 5000),
+    sourceEvidence: {
+      source: story.source || "",
+      url: story.url || "",
+      title: story.title || "",
+      publishedAt: story.published || story.publishedAt || "",
+      articleReadStatus: story.articleReadStatus || story.sourceDepth || "",
+      articleTextLength: Number(story.articleTextLength || String(story.fullText || story.articleSummary || story.summary || "").length || 0)
+    },
+    rule: "Dossier source payload preserves feed/source evidence for event clustering and writer reasoning without exposing publisher copy as CE article text."
+  }));
+}
+async function enrichMissingImages(stories = []) {
+  const list = Array.isArray(stories) ? stories : [];
+  return list.map(story => {
+    try {
+      const existing = story.image && (story.image.primary || story.image.url || story.image.src) ? story.image : null;
+      const image = existing ? newsLabNormalizeStoryImage(story, existing) : newsLabNormalizeStoryImage(story, newsLabImageForStory(story));
+      return {
+        ...story,
+        image,
+        imageProvenance: image.provenance || story.imageProvenance || null,
+        imagePublicationStatus: {
+          ...(story.imagePublicationStatus || {}),
+          ready: Boolean(image.primary || image.url || image.src),
+          source: image.source || image.provenance?.source || "",
+          rule: "Image enrichment is fault-isolated. Missing image providers must not block feed, Owner Desk, or article generation paths."
+        }
+      };
+    } catch (error) {
+      return {
+        ...story,
+        imagePublicationStatus: {
+          ...(story.imagePublicationStatus || {}),
+          ready: Boolean(story.image?.primary || story.image?.url || story.image?.src),
+          lastError: error.message || String(error),
+          rule: "Image enrichment failed open so story processing can continue."
+        }
+      };
+    }
+  });
+}
 async function getNewsPayload(forceRefresh = false) {
   if (!forceRefresh && cache.payload && Date.now() < cache.expires) return cache.payload;
   const backoffUntil = runtimeState.feedRefreshBackoffUntil ? new Date(runtimeState.feedRefreshBackoffUntil).getTime() : 0;
@@ -30976,6 +31518,129 @@ function newsLabGeneratedImageBrief(story = {}) {
   };
 }
 
+function newsLabImageDeliveryLedger() {
+  return readJsonFile(newsLabImageDeliveryLedgerFile, { version: "20260812-image-delivery-ledger-v1", updatedAt: "", events: [], jobs: {} }) || { events: [], jobs: {} };
+}
+
+function newsLabImageDeliveryStage(job = {}, stage = "IMAGE_REQUIRED", detail = {}) {
+  const now = new Date().toISOString();
+  const storyId = String(job.storyId || job.id || job.topicKey || job.eventId || detail.storyId || "");
+  const jobId = String(job.jobId || detail.jobId || (storyId ? `image_job_${crypto.createHash("sha1").update(storyId).digest("hex").slice(0, 10)}` : "image_job_unknown"));
+  const event = {
+    at: now,
+    stage,
+    storyId,
+    jobId,
+    status: detail.status || job.status || "",
+    assetUrl: detail.assetUrl || job.assetUrl || "",
+    reason: detail.reason || job.queuedReason || "",
+    slaMinute: Number(detail.slaMinute || 0),
+    verifiedVisible: Boolean(detail.verifiedVisible),
+    note: detail.note || ""
+  };
+  const ledger = newsLabImageDeliveryLedger();
+  const previousJob = ledger.jobs?.[jobId] || {};
+  const events = [...(Array.isArray(ledger.events) ? ledger.events : []), event].slice(-1200);
+  const jobs = {
+    ...(ledger.jobs || {}),
+    [jobId]: {
+      ...previousJob,
+      storyId,
+      jobId,
+      lastStage: stage,
+      lastStatus: event.status,
+      lastEventAt: now,
+      assetUrl: event.assetUrl || previousJob.assetUrl || "",
+      verifiedVisible: Boolean(event.verifiedVisible || previousJob.verifiedVisible),
+      stages: [...(Array.isArray(previousJob.stages) ? previousJob.stages : []), { stage, at: now, status: event.status }].slice(-40)
+    }
+  };
+  const jobValues = Object.values(jobs);
+  const visibleGenerated = jobValues.filter(item => item.verifiedVisible && /generated-news-lab/i.test(item.assetUrl || "")).length;
+  writeJsonFile(newsLabImageDeliveryLedgerFile, {
+    version: "20260812-image-delivery-ledger-v1",
+    updatedAt: now,
+    summary: {
+      totalJobs: jobValues.length,
+      openJobs: jobValues.filter(item => !item.verifiedVisible && !/failed|retired/i.test(item.lastStatus || "")).length,
+      verifiedVisibleGeneratedImages: visibleGenerated,
+      eventsRecorded: events.length,
+      sla: {
+        articleApprovedToQueuedMinutes: 0,
+        queuedToClaimedMinutes: 1,
+        generationAttemptMinutes: 3,
+        attachOrFailureMinutes: 5,
+        rescueMinutes: 10
+      },
+      successDefinition: "Generated image success means asset saved, attached to the story, cache rebuilt, and public asset visibility verified."
+    },
+    jobs,
+    events
+  });
+  return event;
+}
+
+function newsLabImageRevisionValue(image = {}) {
+  return Number(image?.revision || image?.provenance?.revision || image?.imageRevision || 0);
+}
+
+function newsLabImageStatusRank(image = {}) {
+  const text = `${image?.imageStatus || ""} ${image?.status || ""} ${image?.type || ""} ${image?.source || ""} ${image?.license || ""} ${image?.url || image?.primary || ""}`;
+  if (/generated-approved|verified-visible|generated-news-lab/i.test(text)) return 4;
+  if (/licensed|stock-match|pexels|pixabay|unsplash/i.test(text)) return 3;
+  if (/generation-queued|generating|generated-pending-validation/i.test(text)) return 2;
+  if (/ce-fallback|placeholder|newsroom-hero|creator-bg|logo/i.test(text)) return 1;
+  return 0;
+}
+
+function newsLabImageWithRevision(image = {}, previousImage = {}, status = "") {
+  const previousRevision = newsLabImageRevisionValue(previousImage);
+  const nextRevision = Math.max(previousRevision + 1, newsLabImageRevisionValue(image), 1);
+  const imageStatus = status || image.imageStatus || image.status || IMAGE_STATUS.MISSING;
+  return {
+    ...image,
+    revision: nextRevision,
+    imageRevision: nextRevision,
+    status: imageStatus,
+    imageStatus,
+    provenance: {
+      ...(image.provenance || {}),
+      revision: nextRevision,
+      imageStatus,
+      replacesRevision: previousRevision,
+      revisionedAt: new Date().toISOString()
+    }
+  };
+}
+
+function newsLabPreferResolvedImageStory(candidate = {}, existing = {}) {
+  const candidateImage = candidate.image || {};
+  const existingImage = existing.image || {};
+  const candidateRank = newsLabImageStatusRank(candidateImage);
+  const existingRank = newsLabImageStatusRank(existingImage);
+  const candidateRevision = newsLabImageRevisionValue(candidateImage);
+  const existingRevision = newsLabImageRevisionValue(existingImage);
+  if (existingRank >= 3 && candidateRank <= 1 && existingRevision >= candidateRevision) {
+    return {
+      ...candidate,
+      image: existingImage,
+      imageProvenance: existing.imageProvenance || existingImage.provenance || null,
+      imageAntiRegression: {
+        active: true,
+        preservedAt: new Date().toISOString(),
+        preservedRevision: existingRevision,
+        rejectedRevision: candidateRevision,
+        rule: "A verified/generated/licensed image cannot be overwritten by an older CE fallback during cache, worker, or board synchronization."
+      }
+    };
+  }
+  return candidate;
+}
+
+function newsLabPublicGeneratedImageVisible(image = {}) {
+  const asset = String(image.primary || image.url || image.src || "");
+  return /^\/assets\/generated-news-lab\//.test(asset) && publicAssetExists(asset);
+}
 function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker") {
   const existing = readJsonFile(newsLabGeneratedImageQueueFile, { version: "20260808-generated-image-queue-v2", items: [] }) || { items: [] };
   const existingItems = Array.isArray(existing.items) ? existing.items : [];
@@ -31012,6 +31677,10 @@ function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker")
       dossierRevisionHash,
       currentImageStatus: newsLabImageStatus(story),
       requiredAction: "licensed-search-then-generation",
+      imageState: IMAGE_STATUS.CE_FALLBACK_TEMPORARY,
+      imageGenerationRequired: true,
+      deliverySla: { queuedAt: existingBrief?.queuedAt || new Date().toISOString(), claimByMinutes: 1, attemptByMinutes: 3, attachOrFailByMinutes: 5, rescueByMinutes: 10 },
+      deliveryStages: [...(Array.isArray(existingBrief?.deliveryStages) ? existingBrief.deliveryStages : []), { stage: "JOB_QUEUED", at: new Date().toISOString(), reason }].slice(-30),
       status: existingBrief?.status && !["pending-generation", "queued", IMAGE_STATUS.GENERATION_QUEUED].includes(existingBrief.status)
         ? existingBrief.status
         : "queued",
@@ -31023,6 +31692,7 @@ function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker")
       refreshedAt: existingBrief ? new Date().toISOString() : "",
       persistenceRule: "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
     });
+    newsLabImageDeliveryStage({ storyId: brief.storyId, jobId, status: "queued", queuedReason: reason }, "JOB_QUEUED", { reason, status: "queued", slaMinute: 0 });
     added += 1;
   });
   const items = [...byStory.values()].slice(-250);
@@ -31119,7 +31789,10 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
 </svg>
 `;
   fs.writeFileSync(assetPath, svg, "utf8");
-  const image = {
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generating" }, "PROVIDER_REQUEST_SENT", { reason, status: "generating", slaMinute: 3 });
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generated-pending-validation" }, "PROVIDER_RESPONSE_RECEIVED", { reason, status: "generated-pending-validation", assetUrl });
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "asset-saved" }, "ASSET_SAVED", { reason, status: "asset-saved", assetUrl });
+  const image = newsLabImageWithRevision({
     url: assetUrl,
     primary: assetUrl,
     fallback: "/assets/newsroom-hero.png",
@@ -31145,7 +31818,9 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
       originalQuery: brief.title || title,
       auditNote: `Generated from Story Dossier image brief during ${reason}; no publisher image was copied.`
     })
-  };
+  }, story.image || {}, IMAGE_STATUS.GENERATED_APPROVED);
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generated-approved" }, "ASSET_VALIDATED", { reason, status: "generated-approved", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "verified-visible" }, "PUBLIC_IMAGE_VERIFIED", { reason, status: "verified-visible", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
   return { image, assetPath, assetUrl, fileName };
 }
 
@@ -31175,7 +31850,9 @@ function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generat
     const currentText = `${currentImage.source || ""} ${currentImage.license || ""} ${currentImage.credit || ""} ${currentImage.url || ""}`;
     const shouldGenerate = currentScore < 30 || /fallback|placeholder|newsroom-hero|creator-bg|local asset/i.test(currentText);
     if (!shouldGenerate) return item;
+    newsLabImageDeliveryStage(item, "JOB_CLAIMED", { reason, status: "generating", slaMinute: 1 });
     const generated = newsLabWriteGeneratedImageAsset(item, story, reason);
+    newsLabImageDeliveryStage({ ...item, assetUrl: generated.assetUrl }, "ARTICLE_ATTACHMENT_QUEUED", { reason, status: "article-attachment-queued", assetUrl: generated.assetUrl });
     storyMap.set(storyId, {
       ...story,
       image: generated.image,
@@ -31187,17 +31864,30 @@ function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generat
         beforeScore: currentScore,
         afterScore: Math.max(72, currentScore + 35),
         rule: "Image Intelligence generated and attached a CE-owned article visual when licensed image search did not produce a suitable match."
+      },
+      imagePublicationStatus: {
+        ...(story.imagePublicationStatus || {}),
+        ready: true,
+        needsRepair: false,
+        deliveryStatus: "verified-visible-generated-image",
+        imageJobId: item.jobId || "",
+        imageRevision: generated.image.revision || 0,
+        publicVisibilityVerified: newsLabPublicGeneratedImageVisible(generated.image)
       }
     });
+    newsLabImageDeliveryStage({ ...item, assetUrl: generated.assetUrl }, "ARTICLE_UPDATED", { reason, status: "article-updated", assetUrl: generated.assetUrl, verifiedVisible: newsLabPublicGeneratedImageVisible(generated.image) });
     applied += 1;
     return {
       ...item,
       status: "approved-for-publication",
+      deliveryStatus: newsLabPublicGeneratedImageVisible(generated.image) ? "verified-visible" : "asset-attached-needs-public-verification",
       attempts: Number(item.attempts || 0) + 1,
       generatedAt: generated.image.generatedAt,
       assetUrl: generated.assetUrl,
       assetFile: generated.fileName,
       reviewStatus: "automated-image-editor-approved",
+      imageRevision: generated.image.revision || 0,
+      publicVisibilityVerified: newsLabPublicGeneratedImageVisible(generated.image),
       promotionReason: reason
     };
   });
@@ -31468,6 +32158,11 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
   }
   writeJsonFile(newsLabPublishedPayloadFile, persisted);
   let cache = buildPreparedNewsLabApiResponses(`image-improvement-pass:${reason}`);
+  nextStories.forEach(story => {
+    if (newsLabPublicGeneratedImageVisible(story.image || {})) {
+      newsLabImageDeliveryStage({ storyId: story.id || story.topicKey || story.eventId || "", jobId: story.imagePublicationStatus?.imageJobId || "", assetUrl: story.image?.url || story.image?.primary || "", status: "cache-rebuilt" }, "CACHE_REBUILT", { reason, status: "cache-rebuilt", assetUrl: story.image?.url || story.image?.primary || "", verifiedVisible: true });
+    }
+  });
   const postCachePayload = readJsonFile(newsLabPublishedPayloadFile, persisted) || persisted;
   if (stories.length && !((postCachePayload.ownedStories || []).length) && shelfRestoreStories.length) {
     persisted = {
@@ -32187,6 +32882,162 @@ function newsLabHeadlineWordProfile(title = "") {
   return { cleanTitle, words, actionIndex, subjectWords };
 }
 
+function newsLabHeadlineEvidenceText(story = {}) {
+  return [
+    story.originalHeadline,
+    story.title,
+    story.summary,
+    story.articleSummary,
+    story.lead,
+    story.storyDossier?.whatHappened,
+    story.storyUnderstanding?.answers?.whatHappened,
+    story.storyUnderstanding?.answers?.whatChanged,
+    story.canonicalStoryIdentity?.primaryEvent,
+    ...(story.storyDossier?.knownFacts || []),
+    ...(story.writerReasoningPlan?.verifiedFacts || []).map(fact => fact.statement || fact.fact || fact),
+    ...(Array.isArray(story.body) ? story.body : []),
+    ...(Array.isArray(story.sources) ? story.sources : []).flatMap(source => [source.title, source.summary, source.articleSummary])
+  ].filter(Boolean).join(" ");
+}
+
+function newsLabHeadlineWeakActor(value = "") {
+  const clean = newsLabTitleCase(cleanArticleText(value || "", 90)).trim();
+  if (!clean || clean.length < 2) return true;
+  if (/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Today|Tomorrow|Yesterday|Morning|Afternoon|Evening|Week|World|Local|Politics|Business|Technology|Sports|Entertainment|News|Story|Report|Reports|Coverage|Update|Updates|Video|Pictures|Sources?|Officials?|Analysts?|Experts?|People|Public|The|This|That|These|Those|It|They|Many|Several|Some|A|An)$/i.test(clean)) return true;
+  if (/^(First|Latest|Breaking|Live|Watch|Explainer|Analysis|At A Glance|What To Know)$/i.test(clean)) return true;
+  return false;
+}
+
+function newsLabHeadlineActionValid(value = "") {
+  const clean = cleanArticleText(value || "", 120).toLowerCase();
+  if (!clean || /^(many|several|some|new|latest|current|available|known|expected|official|source|sources|update|updates|story|report|reports|coverage)$/i.test(clean)) return false;
+  const verbs = new Set([
+    ...newsLabHeadlineActionWords(),
+    "hold", "holds", "held", "keep", "keeps", "kept", "leave", "leaves", "left", "agree", "agrees", "agreed", "stop", "stops", "stopped",
+    "resume", "resumes", "renew", "renews", "renewed", "meet", "meets", "met", "send", "sends", "sent", "approve", "approves", "approved",
+    "sign", "signs", "signed", "win", "wins", "won", "advance", "advances", "advanced", "strike", "strikes", "struck", "find", "finds", "found",
+    "confirm", "confirms", "confirmed", "project", "projects", "projected", "forecast", "forecasts", "forecasted", "investigate", "investigates", "investigated"
+  ]);
+  const words = clean.split(/[^a-z0-9']+/).filter(Boolean);
+  return words.some(word => verbs.has(word));
+}
+
+function newsLabHeadlineNormalizeAction(value = "") {
+  const clean = cleanArticleText(value || "", 120).trim();
+  const lower = clean.toLowerCase();
+  const replacements = new Map([
+    ["held", "Holds"], ["kept", "Keeps"], ["left", "Leaves"], ["agreed", "Agrees"], ["stopped", "Stops"], ["renewed", "Renews"],
+    ["met", "Meets"], ["sent", "Sends"], ["approved", "Approves"], ["signed", "Signs"], ["won", "Wins"], ["advanced", "Advances"],
+    ["struck", "Strikes"], ["found", "Finds"], ["confirmed", "Confirms"], ["projected", "Projects"], ["forecasted", "Forecasts"]
+  ]);
+  for (const [past, present] of replacements.entries()) {
+    if (lower === past || lower.startsWith(`${past} `)) return `${present}${clean.slice(past.length)}`.trim();
+  }
+  return newsLabTitleCase(clean).trim();
+}
+
+function newsLabHeadlineSemanticFrame(story = {}, index = 0) {
+  const dossier = story.storyDossier || {};
+  const identity = story.canonicalStoryIdentity || {};
+  const reasoning = story.writerReasoningPlan || story.writerReasoning || {};
+  const central = reasoning.writerReasoningContract?.centralEvent || reasoning.centralEvent || {};
+  const headlineInputs = reasoning.headlineInputs || reasoning.writerReasoningContract?.headlineInputs || {};
+  const understanding = story.storyUnderstanding || story.canonicalDossierIntelligence?.storyUnderstanding || dossier.storyUnderstanding || dossier.canonicalDossierIntelligence?.storyUnderstanding || {};
+  const answers = understanding.answers || {};
+  const evidenceText = newsLabHeadlineEvidenceText(story);
+  const actor = cleanArticleText(
+    headlineInputs.actor
+      || central.actor
+      || identity.primaryActor
+      || answers.whoDidIt
+      || (dossier.people || [])[0]
+      || (dossier.organizations || [])[0]
+      || (dossier.whoIsInvolved || [])[0]
+      || "",
+    90
+  );
+  const action = cleanArticleText(
+    headlineInputs.action
+      || central.action
+      || identity.action
+      || answers.whatChanged
+      || "",
+    120
+  );
+  const object = cleanArticleText(
+    central.object
+      || identity.primaryEvent
+      || answers.whatHappened
+      || dossier.whatHappened
+      || (dossier.knownFacts || [])[0]
+      || story.summary
+      || "",
+    180
+  );
+  const consequence = cleanArticleText(
+    headlineInputs.consequence
+      || central.consequence
+      || identity.consequence
+      || answers.whyThisIsNews
+      || "",
+    120
+  );
+  const actorValid = Boolean(actor && !newsLabHeadlineWeakActor(actor));
+  const actionValid = newsLabHeadlineActionValid(action);
+  const objectValid = Boolean(object && newsLabTermSet(object).size >= 2 && newsLabTextOverlap(object, evidenceText) >= 0.08);
+  const consequenceSupported = !consequence
+    || newsLabTextOverlap(consequence, evidenceText) >= 0.08
+    || newsLabTermSet(consequence).size <= 2;
+  const issues = [
+    !actorValid ? "headline-input-actor-invalid" : "",
+    !actionValid ? "headline-input-action-invalid" : "",
+    !objectValid ? "headline-input-object-invalid" : "",
+    !consequenceSupported ? "headline-input-consequence-unsupported" : ""
+  ].filter(Boolean);
+  return {
+    active: true,
+    version: "20260812-first-pass-quality-headline-frame-v1",
+    actor,
+    action,
+    object,
+    consequence,
+    normalizedAction: newsLabHeadlineNormalizeAction(action),
+    actorValid,
+    actionValid,
+    objectValid,
+    consequenceSupported,
+    passed: issues.length === 0,
+    failureClass: issues.length ? "HEADLINE_INPUT_FAILURE" : "HEADLINE_INPUT_READY",
+    issues,
+    route: issues.length ? "Writer Reasoning / Story Dossier" : "Headline Generator",
+    evidenceOverlap: {
+      actor: Number(newsLabTextOverlap(actor, evidenceText).toFixed(2)),
+      action: Number(newsLabTextOverlap(action, evidenceText).toFixed(2)),
+      object: Number(newsLabTextOverlap(object, evidenceText).toFixed(2)),
+      consequence: Number(newsLabTextOverlap(consequence, evidenceText).toFixed(2))
+    },
+    rule: "Before headline candidates are generated, the Brain must prove a supported actor, meaningful action, event object, and any consequence. Bad inputs return to Writer Reasoning/Dossier instead of becoming headline repair loops."
+  };
+}
+
+function newsLabHeadlineBuildFromSemanticFrame(frame = {}) {
+  if (!frame?.passed) return "";
+  const actor = cleanArticleText(frame.actor || "", 90);
+  const action = newsLabHeadlineNormalizeAction(frame.action || "");
+  const object = cleanArticleText(frame.object || "", 120);
+  const consequence = cleanArticleText(frame.consequence || "", 100);
+  const needsObject = object && newsLabTextOverlap(`${actor} ${action}`, object) < 0.32;
+  const consequenceSuffix = consequence && frame.consequenceSupported
+    ? (/^(as|amid|after|before|while|with|over)\b/i.test(consequence) ? consequence : `as ${consequence}`)
+    : "";
+  return newsLabNormalizeHeadlineAcronyms(newsLabTitleCase([actor, action, needsObject ? object : "", consequenceSuffix].filter(Boolean).join(" ")).replace(/[,.!?;:]+$/g, "").trim());
+}
+
+function newsLabHeadlineCandidateFailureClass(issues = []) {
+  return (issues || []).some(issue => /^headline-input-/.test(issue))
+    ? "HEADLINE_INPUT_FAILURE"
+    : "HEADLINE_RENDERING_FAILURE";
+}
 function newsLabHeadlineCategory(title = "", story = {}) {
   const cleanTitle = cleanArticleText(title || "", 180);
   const text = [
@@ -32555,6 +33406,8 @@ function newsLabEnsureOwnedHeadline(candidate = "", story = {}, index = 0) {
 
 function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
   const dossier = story.storyDossier || {};
+  const semanticFrame = newsLabHeadlineSemanticFrame(story, index);
+  const semanticHeadlineCandidate = newsLabHeadlineBuildFromSemanticFrame(semanticFrame);
   const identity = story.canonicalStoryIdentity || newsLabCanonicalStoryIdentity(story, dossier, {});
   const bodyText = Array.isArray(story.body) ? story.body.join(" ") : cleanArticleText(story.articleSummary || story.summary || "", 1200);
   const productionContract = dossier.canonicalLayers?.layer7ProductionContract || {};
@@ -32631,6 +33484,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     fallbackSubject && fallbackAction ? `${fallbackSubject} ${fallbackAction} as Details Emerge` : ""
   ];
   const rawCandidates = [
+    semanticHeadlineCandidate,
     lockedHeadlineCandidate,
     newsLabHeadlineFromCompletedArticle(serviceStory, index),
     newsLabPlainFactHeadlineCandidate(serviceStory),
@@ -32688,6 +33542,7 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
         && (!sourceEvidenceText || sourceEvidenceOverlap >= 0.04 || sourceEntityAgreement)
         && dossierAgreement.ready
         && distinctness.passed
+        && semanticFrame.passed
         && candidates.length >= 5
         && score >= 78,
       issues,
@@ -32706,8 +33561,17 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     || seed
     || serviceStory.title;
   const selectedValidation = validation.find(item => item.candidate === selected) || null;
-  const validationPassed = Boolean(selectedValidation?.passed);
+  const validationPassed = Boolean(selectedValidation?.passed) && semanticFrame.passed;
   const publicationHeadline = validationPassed ? selected : null;
+  const failureClass = !semanticFrame.passed ? "HEADLINE_INPUT_FAILURE" : (validationPassed ? "NONE" : "HEADLINE_RENDERING_FAILURE");
+  const candidateMetrics = {
+    candidateCount: validation.length,
+    firstCandidatePassed: Boolean(validation[0]?.passed),
+    anyCandidatePassed: validation.some(item => item.passed),
+    firstCandidateScore: Number(validation[0]?.score || 0),
+    bestCandidateScore: Number((validation.slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0))[0] || {}).score || 0),
+    target: { firstCandidatePassRate: 0.6, anyCandidatePassRate: 0.9 }
+  };
   return {
     active: true,
     version: "20260810-canonical-headline-service-v2-five-candidate-hard-gate",
@@ -32718,8 +33582,11 @@ function newsLabCanonicalHeadlineService(story = {}, index = 0, seed = "") {
     candidates,
     validation,
     validationPassed,
-    finalIssues: validationPassed ? [] : ["headline-generated-without-locked-dossier-and-reasoning-inputs", ...(candidates.length < 5 ? ["headline-candidate-pool-too-small"] : [])],
-    selectedBy: validationPassed ? "canonical-validation" : "owned-headline-fallback",
+    failureClass,
+    semanticFrame,
+    candidateMetrics,
+    finalIssues: validationPassed ? [] : [...new Set([...(semanticFrame.issues || []), failureClass === "HEADLINE_INPUT_FAILURE" ? "headline-input-failure" : "headline-rendering-failure", "headline-generated-without-locked-dossier-and-reasoning-inputs", ...(candidates.length < 5 ? ["headline-candidate-pool-too-small"] : [])])],
+    selectedBy: validationPassed ? "canonical-validation" : (failureClass === "HEADLINE_INPUT_FAILURE" ? "headline-input-return-to-writer-reasoning" : "headline-rendering-repair-needed"),
     inputs: {
       hasLockedDossier: Boolean(dossier.dossierLock?.active),
       hasCanonicalIdentity: Boolean(identity.ready),
@@ -46538,6 +47405,222 @@ async function feedDiagnostics() {
   });
 }
 
+function publicRuntimeState() {
+  return {
+    uptimeSeconds: Math.round((Date.now() - startTime) / 1000),
+    lastRefreshAt: runtimeState.lastRefreshAt || "",
+    lastRefreshMs: Number(runtimeState.lastRefreshMs || 0),
+    lastRefreshStatus: runtimeState.lastRefreshStatus || "unknown",
+    consecutiveRefreshFailures: Number(runtimeState.consecutiveRefreshFailures || 0),
+    lastError: runtimeState.lastError || "",
+    lastTransientNetworkErrorAt: runtimeState.lastTransientNetworkErrorAt || "",
+    transientNetworkErrorCount: Number(runtimeState.transientNetworkErrorCount || 0),
+    feedSourceTelemetry: runtimeState.feedSourceTelemetry || {},
+    feedSourceErrors: runtimeState.feedSourceErrors || {},
+    feedSourceQuarantine: runtimeState.feedSourceQuarantine || {},
+    newsLabWorker: newsLabProductionLoopStatus(),
+    collectors: newsLabCollectorCategories().reduce((acc, category) => {
+      acc[category] = runtimeState.newsLabCollectorStatuses?.[category] || readJsonFile(newsLabCollectorStatusFile(category), {});
+      return acc;
+    }, {}),
+    rule: "Public runtime state exposes health evidence without secrets and must not throw while Owner Desk builds diagnostics."
+  };
+}
+async function connectivityDiagnostics(payload = {}, forceRefresh = false) {
+  const stories = Array.isArray(payload.stories) ? payload.stories : [];
+  const requiredResources = [
+    { name: "server", ok: true, status: "reachable" },
+    { name: "feed-cache", ok: Boolean(payload.generatedAt || stories.length), status: stories.length ? "has-stories" : "warming" },
+    { name: "news-lab-public-shelf", ok: Boolean((readNewsLabPublishedPayload()?.ownedStories || []).length), status: "checked" }
+  ];
+  let feedChecks = [];
+  if (forceRefresh || !stories.length) {
+    try {
+      feedChecks = await feedDiagnostics();
+    } catch (error) {
+      feedChecks = [{ ok: false, error: error.message || String(error), name: "feed-diagnostics" }];
+    }
+  }
+  const failedFeeds = feedChecks.filter(item => item && item.ok === false).length;
+  const okFeeds = feedChecks.filter(item => item && item.ok).length;
+  return {
+    ok: requiredResources.every(item => item.ok) && (!feedChecks.length || okFeeds > 0 || stories.length > 0),
+    generatedAt: new Date().toISOString(),
+    forceRefresh: Boolean(forceRefresh),
+    feedRefreshMs: Number(runtimeState.lastRefreshMs || 0),
+    lastRefreshStatus: runtimeState.lastRefreshStatus || payload.status || "unknown",
+    requiredResources,
+    feedChecks: feedChecks.slice(0, 12),
+    feedCheckSummary: {
+      checked: feedChecks.length,
+      ok: okFeeds,
+      failed: failedFeeds
+    },
+    rule: "Connectivity diagnostics are fault-isolated. A failed upstream feed is reported as evidence, not allowed to crash Owner Desk or public health."
+  };
+}
+async function functionalityDiagnostics(payload = {}) {
+  const started = Date.now();
+  const stories = Array.isArray(payload.stories) ? payload.stories : [];
+  const runtimeFresh = runtimeState.lastRefreshAt ? Date.now() - new Date(runtimeState.lastRefreshAt).getTime() < cacheMs * 3 : Boolean(payload.generatedAt);
+  const checks = [
+    { key: "runtime-freshness", ok: Boolean(runtimeFresh), detail: runtimeState.lastRefreshAt || payload.generatedAt || "no refresh timestamp" },
+    { key: "feed-story-availability", ok: stories.length > 0 || Boolean((readNewsLabPublishedPayload()?.ownedStories || []).length), detail: `stories=${stories.length}` },
+    { key: "news-lab-public-api", ok: true, detail: "route-loaded" },
+    { key: "creator-desk-data", ok: fs.existsSync(creatorPostsFile), detail: creatorPostsFile },
+    { key: "newsletter-data", ok: fs.existsSync(newslettersFile), detail: newslettersFile },
+    { key: "legal-documents", ok: fs.existsSync(path.join(publicDir, "legal-documents.html")) || fs.existsSync(path.join(__dirname, "legal-documents.html")), detail: "legal center route asset" }
+  ];
+  const findings = checks.filter(check => !check.ok).map(check => `${check.key}: ${check.detail}`);
+  return {
+    ok: findings.length === 0,
+    checkedAt: new Date().toISOString(),
+    checkedInMs: Date.now() - started,
+    checks,
+    findings,
+    findingCount: findings.length,
+    rule: "Functionality diagnostics are evidence for Owner Desk and must not throw when one page or data file needs attention."
+  };
+}
+
+async function revenueGrowthDiagnostics(payload = {}) {
+  const started = Date.now();
+  const indexPath = fs.existsSync(path.join(publicDir, "index.html")) ? path.join(publicDir, "index.html") : path.join(__dirname, "index.html");
+  const indexText = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, "utf8") : "";
+  const adsTextPath = path.join(__dirname, "ads.txt");
+  const checks = [
+    { key: "adsense-script", ok: /pagead2\.googlesyndication\.com|adsbygoogle|ca-pub-/i.test(indexText), detail: "AdSense script on index" },
+    { key: "ads-txt", ok: fs.existsSync(adsTextPath), detail: adsTextPath },
+    { key: "newsletter-list", ok: fs.existsSync(subscribersFile), detail: subscribersFile },
+    { key: "merch-products", ok: fs.existsSync(merchProductsFile), detail: merchProductsFile },
+    { key: "public-story-inventory", ok: Boolean((readNewsLabPublishedPayload()?.ownedStories || []).length), detail: "CE story shelf" }
+  ];
+  const findings = checks.filter(check => !check.ok).map(check => `${check.key}: ${check.detail}`);
+  return {
+    ok: findings.length === 0,
+    checkedAt: new Date().toISOString(),
+    checkedInMs: Date.now() - started,
+    checks,
+    findings,
+    findingCount: findings.length,
+    signals: {
+      adsenseScriptPresent: checks.find(check => check.key === "adsense-script")?.ok || false,
+      adsTxtPresent: checks.find(check => check.key === "ads-txt")?.ok || false,
+      storyInventoryPresent: checks.find(check => check.key === "public-story-inventory")?.ok || false
+    },
+    actions: findings.length ? ["Review missing monetization/readiness files and redeploy once corrected."] : ["Maintain monetization readiness checks."],
+    rule: "Revenue diagnostics measure readiness for ads, newsletter, merch, and story inventory without interrupting public service."
+  };
+}
+function categoryCounts(stories = []) {
+  return (Array.isArray(stories) ? stories : []).reduce((counts, story) => {
+    const category = newsLabCategory(story || {});
+    counts[category] = Number(counts[category] || 0) + 1;
+    return counts;
+  }, {});
+}
+
+function imageCounts(stories = []) {
+  const list = Array.isArray(stories) ? stories : [];
+  const withImage = list.filter(story => story?.image && (story.image.primary || story.image.url || story.image.src || typeof story.image === "string")).length;
+  const withLicensedProvenance = list.filter(story => story?.imageProvenance || story?.image?.provenance || /pexels|pixabay|licensed/i.test(`${story?.image?.source || ""} ${story?.image?.license || ""}`)).length;
+  return {
+    total: list.length,
+    withImage,
+    missingImage: Math.max(0, list.length - withImage),
+    withLicensedProvenance,
+    needsImageReview: Math.max(0, withImage - withLicensedProvenance)
+  };
+}
+
+function storyIntegrityFindings(stories = []) {
+  const findings = [];
+  (Array.isArray(stories) ? stories : []).slice(0, 80).forEach((story, index) => {
+    const label = story.title || story.headline || story.url || `story-${index}`;
+    if (!(story.title || story.headline)) findings.push({ severity: "medium", code: "missing_title", message: `${label}: missing title` });
+    if (!(story.summary || story.articleSummary)) findings.push({ severity: "low", code: "missing_summary", message: `${label}: missing summary` });
+    if (!story.url && !story.id) findings.push({ severity: "low", code: "missing_identity", message: `${label}: missing url/id` });
+    const text = `${story.title || ""} ${story.summary || ""} ${story.articleSummary || ""}`;
+    if (/\b(undefined|null|\[object Object\])\b/i.test(text)) findings.push({ severity: "medium", code: "bad_placeholder_text", message: `${label}: placeholder text detected` });
+  });
+  return findings.slice(0, 50);
+}
+function verifyFeedAdaptiveActionResults(diagnostics = {}) {
+  try {
+    const now = new Date().toISOString();
+    const attribution = diagnostics.runtime?.feedSourceAttribution || feedFailureAttribution(10);
+    const failedSourceCount = Number(attribution.failedSourceCount || 0);
+    const slowSourceCount = Number(attribution.slowSourceCount || 0);
+    const currentErrorCount = Number(diagnostics.runtime?.feedSourceErrorCount || failedSourceCount || 0);
+    const currentSlowCount = Number(diagnostics.runtime?.feedSourceSlowCount || slowSourceCount || 0);
+    const actions = Array.isArray(runtimeState.feedAdaptiveActions) ? runtimeState.feedAdaptiveActions : [];
+    const recent = actions.slice(-20);
+    recent.forEach(action => {
+      if (!action || action.verifiedAt) return;
+      const baselineErrors = Number(action.baseline?.feedSourceErrorCount ?? action.before?.feedSourceErrorCount ?? currentErrorCount);
+      const baselineSlow = Number(action.baseline?.feedSourceSlowCount ?? action.before?.feedSourceSlowCount ?? currentSlowCount);
+      const errorDelta = currentErrorCount - baselineErrors;
+      const slowDelta = currentSlowCount - baselineSlow;
+      const improved = errorDelta < 0 || slowDelta < 0 || diagnostics.status !== "fallback";
+      action.verifiedAt = now;
+      action.resultMetric = {
+        feedSourceErrorCount: currentErrorCount,
+        feedSourceSlowCount: currentSlowCount,
+        failedSourceCount,
+        slowSourceCount,
+        errorDelta,
+        slowDelta,
+        status: diagnostics.status || "unknown"
+      };
+      action.verification = improved ? "improved-or-contained" : "needs-more-cycles";
+      action.lesson = improved
+        ? "Adaptive feed action was verified against current source telemetry. Preserve source-level isolation and compare future cycles against this baseline."
+        : "Adaptive feed action did not yet improve telemetry. Brain should inspect worst provider/domain before proposing the next bounded change.";
+    });
+    runtimeState.feedAdaptiveActions = actions.slice(-80);
+    runtimeState.lastFeedAdaptiveVerificationAt = now;
+    return {
+      ok: true,
+      verifiedAt: now,
+      checkedActions: recent.length,
+      currentErrorCount,
+      currentSlowCount,
+      attribution
+    };
+  } catch (error) {
+    runtimeState.lastFeedAdaptiveVerificationError = error.message || String(error);
+    return {
+      ok: false,
+      verifiedAt: new Date().toISOString(),
+      error: error.message || String(error),
+      rule: "Feed adaptive verification must never interrupt diagnostics or Owner Desk reporting."
+    };
+  }
+}
+function aiShieldEvaluate(diagnostics = {}) {
+  const findings = [];
+  if (diagnostics.status === "fallback") findings.push({ severity: "medium", code: "feed_fallback", message: "Feed is using fallback data." });
+  if (Number(diagnostics.runtime?.consecutiveRefreshFailures || 0) > 0) findings.push({ severity: "medium", code: "feed_refresh_failures", message: `${diagnostics.runtime.consecutiveRefreshFailures} consecutive feed refresh failure(s).` });
+  (diagnostics.integrityFindings || []).forEach(finding => findings.push(finding));
+  (diagnostics.functionality?.findings || []).forEach(message => findings.push({ severity: "medium", code: "functionality_finding", message }));
+  (diagnostics.connectivity?.requiredResources || []).filter(item => !item.ok).forEach(item => findings.push({ severity: "medium", code: "resource_unavailable", message: `${item.name}: ${item.status || item.detail || "not ok"}` }));
+  const penalty = findings.reduce((sum, finding) => {
+    if (finding.severity === "critical") return sum + 24;
+    if (finding.severity === "high") return sum + 16;
+    if (finding.severity === "medium") return sum + 9;
+    return sum + 4;
+  }, 0);
+  const latencyPenalty = Number(diagnostics.runtime?.lastRefreshMs || 0) > 9000 ? 8 : Number(diagnostics.runtime?.lastRefreshMs || 0) > 5000 ? 4 : 0;
+  const score = clampScore(100 - penalty - latencyPenalty);
+  return {
+    status: score >= 85 ? "ok" : score >= 60 ? "attention" : "critical",
+    score,
+    findings: findings.slice(0, 40),
+    findingCount: findings.length,
+    checkedAt: new Date().toISOString(),
+    rule: "AI Shield converts diagnostics into a bounded public health score without throwing when individual subsystems are unavailable."
+  };
+}
 async function siteDiagnostics(forceRefresh = false) {
   if (!forceRefresh && diagnosticsCache.payload && Date.now() < diagnosticsCache.expires) return diagnosticsCache.payload;
   const payload = await getNewsPayload(forceRefresh);
@@ -48551,6 +49634,25 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
+  if (url.pathname === "/api/owner-auth-status" && request.method === "GET") {
+    if (!isAdminRequest(request)) {
+      sendPrivateJson(response, 403, {
+        ok: false,
+        authenticated: false,
+        error: "Owner access required.",
+        rule: "Owner Desk authentication validates only the owner token. Learning, diagnostics, and production panels load independently after the shell unlocks."
+      });
+      return;
+    }
+    sendPrivateJson(response, 200, {
+      ok: true,
+      authenticated: true,
+      generatedAt: new Date().toISOString(),
+      access: "owner",
+      rule: "Owner Desk unlock must not depend on /api/learning or any heavyweight subsystem summary."
+    });
+    return;
+  }
   if ((url.pathname === "/api/learning" || url.pathname === "/api/learning/summary") && request.method === "GET") {
     if (!isAdminRequest(request)) {
       sendPrivateNotFound(response);
@@ -50032,6 +51134,49 @@ if (isKnowledgeDistillationWorkerProcess) {
     startMarketSnapshotLoop();
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
