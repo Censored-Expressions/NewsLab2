@@ -1,6 +1,6 @@
 [
   {
-    "at": "2026-08-12T07:02:49.897Z",
+    "at": "2026-08-12T07:50:26.991Z",
     "category": "governed-action",
     "event": "Autonomous action: news-lab-framework-dependency-validation",
     "plainEnglish": "The Framework detected an issue but did not self-execute because governance required owner/Codex review.",
@@ -69,7 +69,7 @@
         {
           "step": "issue-detected",
           "label": "Issue detected",
-          "value": "runtime-smoke-test:deploy-ready-web"
+          "value": "runtime-smoke-test:deploy-ready-public-state-authority"
         },
         {
           "step": "solution-chosen",
@@ -97,7 +97,7 @@
           "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
         }
       ],
-      "summary": "runtime-smoke-test:deploy-ready-web -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+      "summary": "runtime-smoke-test:deploy-ready-public-state-authority -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
     },
     "preventionMemory": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful.",
     "evidence": [

@@ -78,6 +78,7 @@ const marketSnapshotFile = path.join(dataDir, "market-snapshot.json");
 const marketSymbolHistoryFile = path.join(dataDir, "market-symbol-history-cache.json");
 const sportsIntelligenceFile = path.join(dataDir, "sports-intelligence-predictions.json");
 const newsLabApiResponseCacheFile = path.join(dataDir, "news-lab-api-response-cache.json");
+const newsLabApiResponseLastKnownGoodFile = path.join(dataDir, "news-lab-api-response-last-known-good.json");
 const newsLabApiWorkerStatusFile = path.join(dataDir, "news-lab-api-worker-status.json");
 const newsLabCollectorDir = path.join(dataDir, "news-lab-collectors");
 const newsLabKnowledgeGraphFile = path.join(dataDir, "news-lab-knowledge-graph.json");
@@ -1744,6 +1745,7 @@ function ensureDataFiles(options = {}) {
   [
     newsLabPublishedPayloadFile,
     newsLabApiResponseCacheFile,
+    newsLabApiResponseLastKnownGoodFile,
     creatorPostsFile,
     newslettersFile
   ].forEach(seedDataFileFromRootIfStronger);
@@ -27082,6 +27084,84 @@ function readPreparedNewsLabApiPayload(category = "") {
   };
 }
 
+function newsLabPreparedPayloadHasStories(payload = {}, category = "") {
+  const requested = String(category || "all").toLowerCase().trim() || "all";
+  const minimum = requested === "top" ? Math.min(7, newsLabTopNewsLimit) : 1;
+  return Number(payload?.ownedStories?.length || 0) >= minimum;
+}
+
+function readNewsLabLastKnownGoodApiPayload(category = "") {
+  const cache = readJsonFile(newsLabApiResponseLastKnownGoodFile, null);
+  const bucket = cache?.responses || cache?.categories || null;
+  if (!bucket) return null;
+  const requested = String(category || "all").toLowerCase().trim() || "all";
+  const payload = bucket[requested] || bucket.all || null;
+  if (!payload || !newsLabPreparedPayloadHasStories(payload, requested)) return null;
+  const stories = Array.isArray(payload.ownedStories) ? payload.ownedStories : [];
+  return {
+    ...payload,
+    ownedStories: requested === "top" ? newsLabSortTopNews(stories).slice(0, newsLabTopNewsLimit) : stories,
+    publicStateAuthority: {
+      active: true,
+      source: "last-known-good-prepared-cache",
+      publicRevision: cache.publicRevision || 0,
+      snapshotHash: cache.publicSnapshotHash || "",
+      rule: "Public reads may fall back to the last known good prepared response, but they must not rebuild or replace publication state."
+    }
+  };
+}
+
+function newsLabPublicSnapshotHashFromResponses(responses = {}) {
+  try {
+    const stories = Array.isArray(responses?.all?.ownedStories) ? responses.all.ownedStories : [];
+    const signature = stories
+      .map(story => [
+        story.id || "",
+        story.slug || "",
+        story.title || story.headline || "",
+        story.updatedAt || story.lastUpdatedAt || story.publishedAt || story.generatedAt || ""
+      ].join(":"))
+      .join("|");
+    return crypto.createHash("sha256").update(signature).digest("hex").slice(0, 16);
+  } catch {
+    return "";
+  }
+}
+
+function writeNewsLabLastKnownGoodApiResponse(record = {}, reason = "prepared-cache-valid") {
+  const allCount = Number(record?.responses?.all?.ownedStories?.length || 0);
+  if (!allCount) return false;
+  const lkgRecord = {
+    ...record,
+    lastKnownGoodSavedAt: new Date().toISOString(),
+    lastKnownGoodReason: reason,
+    publicStateAuthority: {
+      active: true,
+      kind: "last-known-good",
+      rule: "Only a nonempty, validated prepared API response can replace the last known good public shelf."
+    }
+  };
+  writeJsonFile(newsLabApiResponseLastKnownGoodFile, lkgRecord);
+  return true;
+}
+
+function suppressNewsLabPublicReadCacheRefresh(reason = "public-news-lab-read-only", details = {}) {
+  const now = new Date().toISOString();
+  runtimeState.newsLabPublicReadRefreshSuppressed = {
+    timestamp: now,
+    reason,
+    details,
+    rule: "Browser /api/news-lab reads are read-only. They may serve prepared, last-known-good, memory, or durable fallback payloads, but they may not start a rebuild or replace publication state."
+  };
+  newsLabPublicMemoryCacheStats.lastReason = `${reason}:suppressed`;
+  return false;
+}
+
+function newsLabPublicReadRefreshAllowed(reason = "") {
+  if (process.env.CE_NEWS_LAB_PUBLIC_GET_REFRESH === "true") return true;
+  return !String(reason || "").startsWith("public-news-lab");
+}
+
 const newsLabPublicMemoryCache = new Map();
 const newsLabPublicMemoryCacheStats = {
   hits: 0,
@@ -27130,6 +27210,12 @@ function newsLabPublicCacheSignature() {
 }
 
 function queueNewsLabPublicCacheRefresh(reason = "public-news-lab-cache-stale") {
+  if (!newsLabPublicReadRefreshAllowed(reason)) {
+    return suppressNewsLabPublicReadCacheRefresh(reason, {
+      queue: "public-cache-refresh",
+      source: "queueNewsLabPublicCacheRefresh"
+    });
+  }
   if (newsLabPublicCacheRefreshQueued) {
     newsLabPublicMemoryCacheStats.singleFlightSkips += 1;
     return false;
@@ -27643,6 +27729,26 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
     breakingBriefFollowups,
     responses
   };
+  const snapshotHash = newsLabPublicSnapshotHashFromResponses(responses);
+  const previousSnapshotHash = previousPrepared?.publicSnapshotHash || "";
+  const previousRevision = Number(previousPrepared?.publicRevision || 0);
+  record.publicSnapshotHash = snapshotHash;
+  record.publicRevision = snapshotHash && snapshotHash !== previousSnapshotHash
+    ? previousRevision + 1
+    : previousRevision;
+  record.publicStateAuthority = {
+    active: true,
+    source: "prepared-api-cache-worker",
+    publicRevision: record.publicRevision,
+    publicSnapshotHash: snapshotHash,
+    rule: "Prepared API cache revisions are created only by worker/publication paths, never by browser reads."
+  };
+  Object.keys(record.responses || {}).forEach(category => {
+    record.responses[category] = {
+      ...record.responses[category],
+      publicStateAuthority: record.publicStateAuthority
+    };
+  });
   const previousActiveCount = Number(previousPrepared?.responses?.all?.ownedStories?.length || previousPrepared?.categories?.all?.ownedStories?.length || 0);
   const authoritativeActiveCount = Math.max(Number(durableActiveCount || 0), Number(currentActiveCount || 0));
   if (!allCount && previousActiveCount > 0 && authoritativeActiveCount > 0) {
@@ -27677,6 +27783,7 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
     return preserved;
   }
   writeJsonFile(newsLabApiResponseCacheFile, record);
+  writeNewsLabLastKnownGoodApiResponse(record, reason);
   newsLabMarkLatestLifecyclePublicReady(record.responses?.all || {}, {
     cache: record,
     cacheStories: record.responses?.all?.ownedStories || [],
@@ -34772,6 +34879,10 @@ function newsLabFrameworkStartupDependencyValidation(reason = "startup", options
     ["Shelf Display Ready Story", "newsLabShelfDisplayReadyStory", typeof newsLabShelfDisplayReadyStory === "function"],
     ["Fast Published API Payload", "newsLabFastPublishedApiPayload", typeof newsLabFastPublishedApiPayload === "function"],
     ["Prepared API Payload Reader", "readPreparedNewsLabApiPayload", typeof readPreparedNewsLabApiPayload === "function"],
+    ["Last Known Good API Payload Reader", "readNewsLabLastKnownGoodApiPayload", typeof readNewsLabLastKnownGoodApiPayload === "function"],
+    ["Public Read Refresh Suppression", "suppressNewsLabPublicReadCacheRefresh", typeof suppressNewsLabPublicReadCacheRefresh === "function"],
+    ["Public Snapshot Hash", "newsLabPublicSnapshotHashFromResponses", typeof newsLabPublicSnapshotHashFromResponses === "function"],
+    ["Last Known Good API Writer", "writeNewsLabLastKnownGoodApiResponse", typeof writeNewsLabLastKnownGoodApiResponse === "function"],
     ["Collector Cache Reader", "readNewsLabCollectorCache", typeof readNewsLabCollectorCache === "function"],
     ["Public Shelf Hard Merge", "newsLabHardMergePublicStories", typeof newsLabHardMergePublicStories === "function"],
     ["Writer Handoff", "newsLabDossierToWriterHandoff", typeof newsLabDossierToWriterHandoff === "function"],
@@ -47273,16 +47384,14 @@ const server = http.createServer(async (request, response) => {
               preparedPayloadCount,
               inlineBuildAllowed: false,
               skippedLargePublishedPayloadRead: true,
-              rule: "Public News Lab answers from the compact prepared cache before reading the larger durable payload. Workers refresh and reconcile the durable shelf in the background."
+              publicReadOnly: true,
+              rule: "Public News Lab answers from the compact prepared cache before reading the larger durable payload. Browser reads are read-only and do not start cache rebuilds."
             }
           });
-          setTimeout(() => {
-            try {
-              startNewsLabApiResponseWorkerProcess("public-news-lab-prepared-cache-background-refresh");
-            } catch (error) {
-              runtimeState.lastError = "News Lab prepared cache background refresh failed: " + (error.message || error);
-            }
-          }, 0);
+          suppressNewsLabPublicReadCacheRefresh("public-news-lab-prepared-cache-background-refresh", {
+            branch: "prepared-cache-immediate-no-durable-read",
+            preparedPayloadCount
+          });
           return;
         }
       }      if (!forceDeep && !forceManualRebuild) {
@@ -47291,14 +47400,14 @@ const server = http.createServer(async (request, response) => {
         const preparedMinimum = String(category || "").toLowerCase() === "top" ? Math.min(7, newsLabTopNewsLimit) : 1;
         const preparedPayloadCount = Number(preparedPayload?.ownedStories?.length || 0);
         if (preparedPayload && preparedPayloadCount >= preparedMinimum) {
-          setTimeout(() => {
-            try {
-              if (!preparedCacheFresh) startNewsLabApiResponseWorkerProcess("public-news-lab-request-stale-prepared-cache-refresh");
-              else startNewsLabApiResponseWorkerProcess("public-news-lab-request-after-cache-hit");
-            } catch (error) {
-              runtimeState.lastError = `News Lab API worker start after prepared cache response failed: ${error.message || error}`;
+          suppressNewsLabPublicReadCacheRefresh(
+            !preparedCacheFresh ? "public-news-lab-request-stale-prepared-cache-refresh" : "public-news-lab-request-after-cache-hit",
+            {
+              branch: "prepared-api-cache-first",
+              preparedPayloadCount,
+              preparedMinimum
             }
-          }, 0);
+          );
           sendNoStoreJson(response, 200, {
             ...preparedPayload,
             apiResponseWorker: {
@@ -47309,9 +47418,10 @@ const server = http.createServer(async (request, response) => {
               cacheFresh: preparedCacheFresh,
               servedStaleWhileRefreshing: !preparedCacheFresh,
               skippedLargePublishedPayloadRead: true,
+              publicReadOnly: true,
               preparedPayloadCount,
               preparedMinimum,
-              rule: "Public News Lab API serves the compact prepared API cache first, even when stale, so tab clicks do not parse the giant published payload while workers refresh and reconcile the durable shelf in the background."
+              rule: "Public News Lab API serves the compact prepared API cache first, even when stale, so tab clicks do not parse the giant published payload. Browser reads do not rebuild or replace the public shelf."
             }
           });
           return;
@@ -47325,13 +47435,11 @@ const server = http.createServer(async (request, response) => {
         if (preparedStoryCount < minimumPreparedStories) {
           const durableFallbackPayload = readJsonFile(newsLabPublishedPayloadFile, null);
           if (durableFallbackPayload && Array.isArray(durableFallbackPayload.ownedStories) && durableFallbackPayload.ownedStories.length) {
-            setTimeout(() => {
-              try {
-                startNewsLabApiResponseWorkerProcess("public-news-lab-underfilled-prepared-cache-refresh");
-              } catch (error) {
-                runtimeState.lastError = `News Lab API worker start after underfilled prepared cache failed: ${error.message || error}`;
-              }
-            }, 0);
+            suppressNewsLabPublicReadCacheRefresh("public-news-lab-underfilled-prepared-cache-refresh", {
+              branch: "durable-published-fallback-underfilled-prepared-cache",
+              preparedStoryCount,
+              minimumPreparedStories
+            });
             sendNoStoreJson(response, 200, newsLabFastPublishedApiPayload({
               ...durableFallbackPayload,
               apiResponseWorker: {
@@ -47340,9 +47448,31 @@ const server = http.createServer(async (request, response) => {
                 preparedStoryCount,
                 minimumPreparedStories,
                 inlineBuildAllowed: newsLabInlineBuildAllowed,
-                rule: "When prepared API cache is underfilled, serve the durable published shelf immediately and rebuild prepared responses in the background."
+                publicReadOnly: true,
+                rule: "When prepared API cache is underfilled, serve the durable published shelf immediately. Browser reads do not rebuild or replace the public shelf."
               }
             }, category));
+            return;
+          }
+          const lastKnownGoodPayload = readNewsLabLastKnownGoodApiPayload(category);
+          if (lastKnownGoodPayload) {
+            suppressNewsLabPublicReadCacheRefresh("public-news-lab-last-known-good-fallback", {
+              branch: "last-known-good-underfilled-prepared-cache",
+              preparedStoryCount,
+              minimumPreparedStories
+            });
+            sendNoStoreJson(response, 200, {
+              ...lastKnownGoodPayload,
+              apiResponseWorker: {
+                ...(lastKnownGoodPayload.apiResponseWorker || {}),
+                active: true,
+                mode: "last-known-good-prepared-cache",
+                publicReadOnly: true,
+                preparedStoryCount,
+                minimumPreparedStories,
+                rule: "Prepared cache was underfilled, so the public API served the last known good nonempty prepared shelf without mutating publication state."
+              }
+            });
             return;
           }
         }
@@ -47350,13 +47480,9 @@ const server = http.createServer(async (request, response) => {
       if (!forceDeep && !forceManualRebuild && !newsLabInlineBuildAllowed) {
         const fastPublishedPayload = readJsonFile(newsLabPublishedPayloadFile, null);
         if (fastPublishedPayload && Array.isArray(fastPublishedPayload.ownedStories) && fastPublishedPayload.ownedStories.length) {
-          setTimeout(() => {
-            try {
-              startNewsLabApiResponseWorkerProcess("public-news-lab-fast-published-payload-refresh");
-            } catch (error) {
-              runtimeState.lastError = "News Lab fast payload worker start failed: " + (error.message || error);
-            }
-          }, 0);
+          suppressNewsLabPublicReadCacheRefresh("public-news-lab-fast-published-payload-refresh", {
+            branch: "fast-published-payload-file-first"
+          });
           sendNoStoreJson(response, 200, newsLabFastPublishedApiPayload({
             ...fastPublishedPayload,
             apiResponseWorker: {
@@ -47365,7 +47491,8 @@ const server = http.createServer(async (request, response) => {
               cacheFresh: false,
               inlineBuildAllowed: false,
               skippedHeavyPublishedPayloadMigration: true,
-              rule: "Public News Lab API returns the saved visible shelf immediately. Dossier/headline migration and article repair continue in background workers."
+              publicReadOnly: true,
+              rule: "Public News Lab API returns the saved visible shelf immediately. Browser reads do not start dossier/headline migration or article repair."
             }
           }, category));
           return;
@@ -47388,18 +47515,16 @@ const server = http.createServer(async (request, response) => {
       if (!forceDeep && !forceManualRebuild) {
         let preparedCacheFresh = false;
         if (!preparedCacheFresh) {
-          setTimeout(() => startNewsLabApiResponseWorkerProcess("public-news-lab-request-stale-cache-refresh"), 0);
+          suppressNewsLabPublicReadCacheRefresh("public-news-lab-request-stale-cache-refresh", {
+            branch: "late-prepared-cache-read"
+          });
           preparedCacheFresh = false;
         }
         const preparedPayload = readPreparedNewsLabApiPayload(category);
         if (preparedPayload && Number(preparedPayload.ownedStories?.length || 0) >= (String(category || "").toLowerCase() === "top" ? Math.min(7, newsLabTopNewsLimit) : 1)) {
-          setTimeout(() => {
-            try {
-              startNewsLabApiResponseWorkerProcess("public-news-lab-request-after-cache-hit");
-            } catch (error) {
-              runtimeState.lastError = `News Lab API worker start after cache hit failed: ${error.message || error}`;
-            }
-          }, 0);
+          suppressNewsLabPublicReadCacheRefresh("public-news-lab-request-after-cache-hit", {
+            branch: "late-prepared-cache-hit"
+          });
           sendNoStoreJson(response, 200, {
             ...preparedPayload,
             apiResponseWorker: {
@@ -47409,12 +47534,15 @@ const server = http.createServer(async (request, response) => {
               status: runtimeState.newsLabApiWorkerStatus?.lastStatus || readNewsLabApiWorkerStatus().lastStatus || "",
               cacheFresh: preparedCacheFresh,
               fastCacheFirst: true,
-              rule: "The public server reads the latest prepared News Lab API response before touching worker startup, so tab clicks are not blocked by background writing."
+              publicReadOnly: true,
+              rule: "The public server reads the latest prepared News Lab API response without touching worker startup, so tab clicks are not blocked by background writing."
             }
           });
           return;
         }
-        startNewsLabApiResponseWorkerProcess("public-news-lab-request-cache-miss");
+        suppressNewsLabPublicReadCacheRefresh("public-news-lab-request-cache-miss", {
+          branch: "cache-miss-before-route-payload"
+        });
       }
       let newsLabPayload;
       if (forceManualRebuild) {

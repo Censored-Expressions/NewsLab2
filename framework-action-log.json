@@ -1,22 +1,22 @@
 [
   {
-    "id": "framework_action_1786518169885_zed8e5",
-    "at": "2026-08-12T07:02:49.885Z",
+    "id": "framework_action_1786521026985_4iaka7",
+    "at": "2026-08-12T07:50:26.985Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-12T07:02:49.884Z",
+    "timestamp": "2026-08-12T07:50:26.984Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
-    "reason": "runtime-smoke-test:deploy-ready-web",
+    "reason": "runtime-smoke-test:deploy-ready-public-state-authority",
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-12T07:02:49.884Z",
-      "reason": "runtime-smoke-test:deploy-ready-web",
+      "generatedAt": "2026-08-12T07:50:26.984Z",
+      "reason": "runtime-smoke-test:deploy-ready-public-state-authority",
       "ok": true,
       "checked": [
         {
@@ -92,6 +92,26 @@
         {
           "label": "Prepared API Payload Reader",
           "functionName": "readPreparedNewsLabApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Payload Reader",
+          "functionName": "readNewsLabLastKnownGoodApiPayload",
+          "ok": true
+        },
+        {
+          "label": "Public Read Refresh Suppression",
+          "functionName": "suppressNewsLabPublicReadCacheRefresh",
+          "ok": true
+        },
+        {
+          "label": "Public Snapshot Hash",
+          "functionName": "newsLabPublicSnapshotHashFromResponses",
+          "ok": true
+        },
+        {
+          "label": "Last Known Good API Writer",
+          "functionName": "writeNewsLabLastKnownGoodApiResponse",
           "ok": true
         },
         {
@@ -200,7 +220,7 @@
         {
           "step": "issue-detected",
           "label": "Issue detected",
-          "value": "runtime-smoke-test:deploy-ready-web"
+          "value": "runtime-smoke-test:deploy-ready-public-state-authority"
         },
         {
           "step": "solution-chosen",
@@ -228,7 +248,7 @@
           "value": "Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
         }
       ],
-      "summary": "runtime-smoke-test:deploy-ready-web -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
+      "summary": "runtime-smoke-test:deploy-ready-public-state-authority -> news-lab-framework-dependency-validation selected from the autonomous action whitelist. -> Action completed with status healthy. -> No measurable improvement has been confirmed yet. -> Verification is pending or the action was blocked/failed. -> Reuse this action only when the same trigger appears, then verify the before/after metric before considering it successful."
     }
   }
 ]

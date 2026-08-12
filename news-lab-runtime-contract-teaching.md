@@ -48,3 +48,15 @@ If that chain returns zero stories or throws, News Lab is not deploy-safe even i
 ## Prepared Cache Anti-Collapse Rule
 
 Prepared API cache rebuilds must be atomic and validated before promotion. A zero-story candidate must not replace a previously valid prepared cache when the durable shelf still contains eligible active articles. Cache metadata must record active public count, source public count, durable active count, expired board-policy count, latest article publication/update dates, and rejection reasons.
+
+## Public Read Authority Rule
+
+Browser reads of `/api/news-lab` are not publication events. They may serve the memory cache, prepared API cache, durable published shelf, or last-known-good prepared response, but they must not start a rebuild, replace prepared cache, collapse the public shelf, or mutate publication state.
+
+## Last-Known-Good Rule
+
+Only a nonempty, validated prepared API cache produced by a worker/publication path can update `news-lab-api-response-last-known-good.json`. Public reads may use that file as a recovery shelf when the prepared cache is missing or underfilled, but they cannot write it.
+
+## Public Revision Rule
+
+Prepared API cache records must carry a `publicRevision` and `publicSnapshotHash`. Revisions advance only when the worker/publisher produces a different public story snapshot. Viewer refreshes must not advance revisions.
