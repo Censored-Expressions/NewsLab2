@@ -30,6 +30,7 @@ const isNewsLabImageWorkerProcess = process.env.CE_NEWS_LAB_IMAGE_WORKER === "1"
 const isSiteScheduledContentWorkerProcess = process.env.CE_SITE_SCHEDULED_CONTENT_WORKER === "1";
 const isEvolutionEngineWorkerProcess = process.env.CE_EVOLUTION_ENGINE_WORKER === "1";
 const isKnowledgeDistillationWorkerProcess = process.env.CE_KNOWLEDGE_DISTILLATION_WORKER === "1";
+const isRuntimeSmokeTest = process.env.CE_RUNTIME_SMOKE_TEST === "1";
 const newsLabCollectorWorkerCategory = String(process.env.CE_NEWS_LAB_COLLECTOR_WORKER || "").toLowerCase().trim();
 const isNewsLabCollectorWorkerProcess = Boolean(newsLabCollectorWorkerCategory);
 const isNewsLabCollectorWorkerOnce = process.env.CE_NEWS_LAB_COLLECTOR_ONCE === "true";
@@ -2077,6 +2078,203 @@ function defaultSportsIntelligenceStore() {
       nextBuildStep: "Connect normalized odds/stat/injury/weather providers after the local dossier and calibration loop is proven."
     }
   };
+}
+
+function defaultDailyArticleMemory(dayId = creatorDayWindow().id) {
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(String(dayId || "")) ? creatorDayWindow(new Date(`${dayId}T12:00:00-04:00`)) : creatorDayWindow();
+  return {
+    version: "20260811-daily-article-memory-v1",
+    dayId: day.id,
+    dateLabel: day.dateLabel,
+    updatedAt: new Date().toISOString(),
+    articleCount: 0,
+    absorptionCount: 0,
+    clusters: [],
+    stories: [],
+    absorbedStories: [],
+    days: {},
+    rule: "Daily article memory is the raw daily evidence shelf for Creator Desk, Newsletter, and News Lab. Missing memory defaults must never crash startup."
+  };
+}
+
+function articleMemoryStore() {
+  const store = readJsonFile(dailyArticleMemoryFile, defaultDailyArticleMemory());
+  if (!store || typeof store !== "object") return defaultDailyArticleMemory();
+  return {
+    ...defaultDailyArticleMemory(store.dayId || creatorDayWindow().id),
+    ...store,
+    days: store.days && typeof store.days === "object" ? store.days : {}
+  };
+}
+
+function readDailyArticleMemory(dayId = "") {
+  const store = articleMemoryStore();
+  const targetDayId = String(dayId || store.dayId || creatorDayWindow().id).trim();
+  const dayRecord = store.days?.[targetDayId] || (store.dayId === targetDayId ? store : null);
+  if (dayRecord) {
+    return {
+      ...defaultDailyArticleMemory(targetDayId),
+      ...dayRecord,
+      dayId: targetDayId,
+      days: undefined
+    };
+  }
+  return {
+    ...defaultDailyArticleMemory(targetDayId),
+    updatedAt: store.updatedAt || new Date().toISOString()
+  };
+}
+
+function defaultArticleIntelligenceStore() {
+  return {
+    version: "20260811-article-intelligence-store-v1",
+    updatedAt: new Date().toISOString(),
+    days: {},
+    rule: "Article Intelligence stores daily cluster briefing and subsystem tasks. Missing intelligence defaults must not block startup."
+  };
+}
+
+function articleIntelligenceStore() {
+  const store = readJsonFile(articleIntelligenceFile, defaultArticleIntelligenceStore());
+  if (!store || typeof store !== "object") return defaultArticleIntelligenceStore();
+  return {
+    ...defaultArticleIntelligenceStore(),
+    ...store,
+    days: store.days && typeof store.days === "object" ? store.days : {}
+  };
+}
+
+function readArticleIntelligence(dayId = "") {
+  const store = articleIntelligenceStore();
+  const targetDayId = String(dayId || creatorDayWindow().id).trim();
+  return store.days?.[targetDayId] || {
+    dayId: targetDayId,
+    dateLabel: creatorDayWindow(new Date(`${targetDayId}T12:00:00-04:00`)).dateLabel,
+    updatedAt: store.updatedAt || new Date().toISOString(),
+    clusterCount: 0,
+    readyClusterCount: 0,
+    clusters: [],
+    subsystemTasks: [],
+    brainBriefing: ""
+  };
+}
+
+function dailyArticleMemoryStories(memory = {}) {
+  const lists = [
+    memory.stories,
+    memory.absorbedStories,
+    memory.articles,
+    memory.items,
+    ...(Array.isArray(memory.clusters) ? memory.clusters.map(cluster => cluster.stories || cluster.items || cluster.supportingStories || []) : [])
+  ];
+  return lists.flat().filter(story => story && typeof story === "object");
+}
+
+function dailyArticleMemorySearchStories(memory = {}) {
+  return dailyArticleMemoryStories(memory)
+    .filter((story, index, all) => all.findIndex(match => (match.url && match.url === story.url) || (match.title && match.title === story.title)) === index);
+}
+
+function articleIntelligenceForStory(story = {}, articleIntelligence = {}) {
+  const title = normalizeText(story.title || "");
+  const url = normalizeText(story.url || "");
+  const clusters = Array.isArray(articleIntelligence.clusters) ? articleIntelligence.clusters : [];
+  const directMatch = clusters.find(cluster => {
+    const clusterStories = Array.isArray(cluster.stories) ? cluster.stories : [];
+    return clusterStories.some(item => (url && item.url === url) || (title && normalizeText(item.title || "") === title));
+  });
+  if (directMatch) {
+    return {
+      clusterId: directMatch.id || directMatch.clusterId || "",
+      angleTags: directMatch.angleTags || directMatch.valueTags || [],
+      differingFrames: directMatch.differingFrames || directMatch.contradictions || [],
+      ownerValueQuestions: directMatch.ownerValueQuestions || directMatch.responseQuestions || [],
+      brainBriefing: directMatch.brainBriefing || directMatch.summary || "",
+      recommendedAction: directMatch.recommendedAction || directMatch.nextStep || "",
+      readiness: directMatch.readiness || directMatch.status || ""
+    };
+  }
+  return null;
+}
+
+function articleIntelligenceSummary(dayId = creatorDayWindow().id) {
+  const intelligence = readArticleIntelligence(dayId);
+  const clusters = Array.isArray(intelligence.clusters) ? intelligence.clusters : [];
+  const readyClusters = clusters.filter(cluster => {
+    const readiness = String(cluster.readiness || cluster.status || "").toLowerCase();
+    return readiness.includes("ready") || cluster.ready === true || Number(cluster.reportCount || cluster.sourceCount || 0) >= 2;
+  });
+  return {
+    generatedAt: new Date().toISOString(),
+    dayId,
+    clusterCount: Number(intelligence.clusterCount || clusters.length || 0),
+    readyClusterCount: Number(intelligence.readyClusterCount || readyClusters.length || 0),
+    subsystemTaskCount: Array.isArray(intelligence.subsystemTasks) ? intelligence.subsystemTasks.length : 0,
+    briefing: intelligence.brainBriefing || "",
+    rule: "Article Intelligence summary is a read-safe contract for Owner Desk and Creator Desk. Missing or thin data returns zero counts instead of breaking publication."
+  };
+}
+
+function updateArticleIntelligence(dayMemory = {}, reason = "manual") {
+  const store = articleIntelligenceStore();
+  const dayId = dayMemory.dayId || creatorDayWindow().id;
+  const stories = dailyArticleMemoryStories(dayMemory);
+  const byTopic = new Map();
+  stories.forEach(story => {
+    const key = safeFileSlug([
+      story.topic,
+      story.topicKey,
+      story.clusterId,
+      story.title
+    ].filter(Boolean).join(" ") || story.url || "story").slice(0, 96);
+    if (!byTopic.has(key)) byTopic.set(key, []);
+    byTopic.get(key).push(story);
+  });
+  const clusters = Array.from(byTopic.entries()).map(([key, clusterStories]) => {
+    const sources = [...new Set(clusterStories.map(story => story.source).filter(Boolean))];
+    return {
+      id: `article_intelligence_${key}`,
+      title: clusterStories[0]?.title || "Untitled story",
+      sourceCount: sources.length,
+      reportCount: clusterStories.length,
+      sources,
+      stories: clusterStories.slice(0, 12).map(story => ({
+        title: story.title || "",
+        source: story.source || "",
+        url: story.url || "",
+        summary: story.summary || story.articleSummary || ""
+      })),
+      readiness: sources.length >= 2 || clusterStories.length >= 2 ? "ready-for-editorial-context" : "single-source-context",
+      angleTags: [...new Set(clusterStories.flatMap(story => story.valueTags || story.learningSignals || []))].slice(0, 8),
+      differingFrames: [],
+      ownerValueQuestions: [...new Set(clusterStories.flatMap(story => story.responseQuestions || []))].slice(0, 6),
+      recommendedAction: "Use only as private context unless the source evidence is strong enough to support a public claim."
+    };
+  });
+  const record = {
+    dayId,
+    dateLabel: dayMemory.dateLabel || creatorDayWindow(new Date(`${dayId}T12:00:00-04:00`)).dateLabel,
+    updatedAt: new Date().toISOString(),
+    reason,
+    clusterCount: clusters.length,
+    readyClusterCount: clusters.filter(cluster => cluster.readiness === "ready-for-editorial-context").length,
+    clusters,
+    subsystemTasks: [
+      {
+        subsystem: "Article Intelligence",
+        task: "Preserve daily evidence context for Creator Desk, Newsletter, and News Lab without blocking publication when memory is thin.",
+        status: "active"
+      }
+    ],
+    brainBriefing: clusters.length
+      ? `Article Intelligence has ${clusters.length} topic cluster${clusters.length === 1 ? "" : "s"} for ${dayId}. Use source count and story overlap as private context before writing.`
+      : `Article Intelligence has no usable story clusters for ${dayId}; continue collecting before making broad claims.`
+  };
+  store.days = store.days && typeof store.days === "object" ? store.days : {};
+  store.days[dayId] = record;
+  store.updatedAt = record.updatedAt;
+  writeJsonFile(articleIntelligenceFile, store);
+  return record;
 }
 
 function sportsAmericanOddsToProbability(americanOdds) {
@@ -22881,6 +23079,38 @@ function newsLabNormalizeCategoryBeforeEditor(story = {}) {
     categoryIntegrity
   };
 }
+
+function newsLabValidStoryDateValue(value = "") {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(String(value));
+  if (!Number.isFinite(date.getTime())) return "";
+  return date.toISOString();
+}
+
+function newsLabEarliestValidDate(values = []) {
+  const validDates = (Array.isArray(values) ? values : [values])
+    .map(newsLabValidStoryDateValue)
+    .filter(Boolean)
+    .sort();
+  return validDates[0] || "";
+}
+
+function newsLabStoryOriginalPublishedAt(story = {}) {
+  if (!story || typeof story !== "object") return "";
+  const sourceDates = [
+    story.originalPublishedAt,
+    story.originalArticle?.originalPublishedAt,
+    story.publicationContinuity?.originalPublishedAt,
+    story.publishedAt,
+    story.createdAt,
+    story.generatedAt,
+    story.storyEvolution?.firstSeenAt,
+    story.aliveStory?.firstSeenAt,
+    ...(Array.isArray(story.sources) ? story.sources.map(source => source.publishedAt || source.published || source.date || source.isoDate) : [])
+  ];
+  return newsLabEarliestValidDate(sourceDates);
+}
+
 function newsLabMergeDurableStoryMetadata(candidate = {}, existing = {}) {
   if (!existing || typeof existing !== "object") return candidate;
   const existingOriginal = newsLabStoryOriginalPublishedAt(existing) || existing.originalPublishedAt || existing.publishedAt || "";
@@ -34256,17 +34486,31 @@ function newsLabDossierReadinessContract(storyDossier = {}, context = {}) {
   };
 }
 
-function newsLabFrameworkStartupDependencyValidation(reason = "startup") {
+function newsLabFrameworkStartupDependencyValidation(reason = "startup", options = {}) {
   const requiredContracts = [
+    ["Article Memory Default", "defaultDailyArticleMemory", typeof defaultDailyArticleMemory === "function"],
+    ["Article Memory Reader", "readDailyArticleMemory", typeof readDailyArticleMemory === "function"],
     ["Dossier Readiness", "newsLabDossierReadinessContract", typeof newsLabDossierReadinessContract === "function"],
     ["Dossier Readiness Classifier", "newsLabDossierReadinessClassFromEvidence", typeof newsLabDossierReadinessClassFromEvidence === "function"],
     ["Board Date Key", "newsLabTodayDateKey", typeof newsLabTodayDateKey === "function"],
+    ["Story Original Publish Date", "newsLabStoryOriginalPublishedAt", typeof newsLabStoryOriginalPublishedAt === "function"],
     ["Current Board Policy", "newsLabApplyCurrentBoardPolicy", typeof newsLabApplyCurrentBoardPolicy === "function"],
+    ["Public Shelf Hard Merge", "newsLabHardMergePublicStories", typeof newsLabHardMergePublicStories === "function"],
     ["Writer Handoff", "newsLabDossierToWriterHandoff", typeof newsLabDossierToWriterHandoff === "function"],
+    ["Writer Handoff Implementation", "newsLabEnsureWriterDossierHandoff", typeof newsLabEnsureWriterDossierHandoff === "function"],
     ["Writer Reasoning Plan", "newsLabBuildWriterReasoningPlan", typeof newsLabBuildWriterReasoningPlan === "function"],
     ["Canonical Headline Service", "newsLabCanonicalHeadlineService", typeof newsLabCanonicalHeadlineService === "function"]
   ];
+  const optionalContracts = [
+    ["Article Intelligence Reader", "readArticleIntelligence", typeof readArticleIntelligence === "function"],
+    ["Article Memory Search", "dailyArticleMemorySearchStories", typeof dailyArticleMemorySearchStories === "function"],
+    ["Date Value Validator", "newsLabValidStoryDateValue", typeof newsLabValidStoryDateValue === "function"],
+    ["Earliest Date Utility", "newsLabEarliestValidDate", typeof newsLabEarliestValidDate === "function"]
+  ];
   const missing = requiredContracts
+    .filter(([, , ok]) => !ok)
+    .map(([label, functionName]) => ({ label, functionName }));
+  const optionalMissing = optionalContracts
     .filter(([, , ok]) => !ok)
     .map(([label, functionName]) => ({ label, functionName }));
   const record = {
@@ -34274,12 +34518,27 @@ function newsLabFrameworkStartupDependencyValidation(reason = "startup") {
     reason,
     ok: missing.length === 0,
     checked: requiredContracts.map(([label, functionName, ok]) => ({ label, functionName, ok })),
+    optionalChecked: optionalContracts.map(([label, functionName, ok]) => ({ label, functionName, ok })),
     missing,
-    fallbackPolicy: "Missing Framework helper contracts must degrade gracefully and be reported at boot; publication should continue whenever a safe default exists."
+    optionalMissing,
+    fatal: Boolean(options.fatal && missing.length),
+    build: {
+      commit: process.env.RENDER_GIT_COMMIT || process.env.CE_BUILD_COMMIT || process.env.GIT_COMMIT || "",
+      serverBuild: process.env.CE_SERVER_BUILD || "",
+      workflowVersion: process.env.CE_WORKFLOW_VERSION || NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION || ""
+    },
+    fallbackPolicy: "Missing optional helper contracts may warn. Missing required production contracts must fail News Lab startup before Render marks the instance healthy."
   };
   runtimeState.newsLabFrameworkDependencyValidation = record;
   if (missing.length) {
-    console.warn(`News Lab startup dependency validation found ${missing.length} missing contract(s): ${missing.map(item => item.functionName).join(", ")}`);
+    const message = `NEWS LAB STARTUP FAILED: missing required contract(s): ${missing.map(item => item.functionName).join(", ")}`;
+    console.error(message);
+    if (options.fatal) {
+      throw new Error(message);
+    }
+  }
+  if (optionalMissing.length) {
+    console.warn(`News Lab startup dependency validation found ${optionalMissing.length} optional missing contract(s): ${optionalMissing.map(item => item.functionName).join(", ")}`);
   }
   try {
     saveFrameworkActionLogEntry({
@@ -34819,6 +35078,13 @@ function newsLabEnsureWriterDossierHandoff(story = {}) {
     rule: "Collector -> Cluster -> Evidence Engine -> Context Engine -> Story Dossier -> Story Understanding -> Dossier To Writer Handoff -> Writer Reasoning -> Headline Generator -> Headline Editor -> Article Writer -> Draft Optimization Engine -> Publishing Editor -> Validator -> Publisher, then the Brain evaluates Evidence -> Context -> Understanding -> Reasoning -> Writing -> Self Critique -> Publishing."
     }
   };
+}
+
+function newsLabDossierToWriterHandoff(story = {}, context = {}) {
+  return newsLabEnsureWriterDossierHandoff({
+    ...story,
+    ...(context.storyDossier && !story.storyDossier ? { storyDossier: context.storyDossier } : {})
+  });
 }
 
 function newsLabDossierParagraphs(dossier = {}, story = {}) {
@@ -48287,7 +48553,33 @@ function shutdownNewsLabWorkerProcess() {
   });
 }
 
-if (isSiteScheduledContentWorkerProcess) {
+if (isRuntimeSmokeTest) {
+  const role = process.env.CE_RUNTIME_SMOKE_ROLE || "web";
+  try {
+    ensureDataFiles();
+    const validation = newsLabFrameworkStartupDependencyValidation(`runtime-smoke-test:${role}`, { fatal: true });
+    console.log(JSON.stringify({
+      ok: true,
+      role,
+      generatedAt: new Date().toISOString(),
+      pid: process.pid,
+      build: validation.build,
+      missing: validation.missing,
+      optionalMissing: validation.optionalMissing,
+      heartbeat: "runtime-smoke-test-passed"
+    }, null, 2));
+    process.exit(0);
+  } catch (error) {
+    console.error(JSON.stringify({
+      ok: false,
+      role,
+      generatedAt: new Date().toISOString(),
+      error: error.stack || error.message || String(error),
+      heartbeat: "runtime-smoke-test-failed"
+    }, null, 2));
+    process.exit(1);
+  }
+} else if (isSiteScheduledContentWorkerProcess) {
   console.log(`Censored Expressions scheduled content worker running as pid ${process.pid}`);
   ensureDataFiles();
   scheduledContentWorkerStatusPatch({ lastStatus: "starting", startedAt: new Date().toISOString() });
@@ -48380,7 +48672,7 @@ if (isKnowledgeDistillationWorkerProcess) {
 } else if (isNewsLabCollectorWorkerProcess) {
   console.log(`Censored Expressions News Lab ${newsLabCollectorWorkerCategory} collector running as pid ${process.pid}`);
   ensureDataFiles();
-  newsLabFrameworkStartupDependencyValidation("news-lab-collector-worker-boot");
+  newsLabFrameworkStartupDependencyValidation("news-lab-collector-worker-boot", { fatal: true });
   if (isNewsLabCollectorWorkerOnce) {
     runNewsLabCollectorCycle(newsLabCollectorWorkerCategory, process.env.CE_NEWS_LAB_COLLECTOR_REASON || "manual-one-shot-category-collection")
       .then(record => process.exit(record ? 0 : 1))
@@ -48394,17 +48686,17 @@ if (isKnowledgeDistillationWorkerProcess) {
 } else if (isNewsLabApiWorkerProcess) {
   console.log(`Censored Expressions News Lab API response worker running as pid ${process.pid}`);
   ensureDataFiles();
-  newsLabFrameworkStartupDependencyValidation("news-lab-api-worker-boot");
+  newsLabFrameworkStartupDependencyValidation("news-lab-api-worker-boot", { fatal: true });
   startNewsLabApiResponseLoop();
 } else if (isNewsLabStuckRescueWorkerProcess) {
   console.log(`Censored Expressions News Lab stuck-rescue worker running as pid ${process.pid}`);
   ensureDataFiles();
-  newsLabFrameworkStartupDependencyValidation("news-lab-stuck-rescue-worker-boot");
+  newsLabFrameworkStartupDependencyValidation("news-lab-stuck-rescue-worker-boot", { fatal: true });
   startNewsLabStuckRescueLoop();
 } else if (isNewsLabWorkerProcess) {
   console.log(`Censored Expressions News Lab worker running as pid ${process.pid}`);
   ensureDataFiles();
-  newsLabFrameworkStartupDependencyValidation("news-lab-worker-boot");
+  newsLabFrameworkStartupDependencyValidation("news-lab-worker-boot", { fatal: true });
   writeNewsLabWorkerStatus({
     active: false,
     lastStatus: "worker-booted",
@@ -48482,7 +48774,7 @@ if (isKnowledgeDistillationWorkerProcess) {
   server.listen(port, () => {
     console.log(`Censored Expressions live feed server running on port ${port}`);
     ensureDataFiles();
-    newsLabFrameworkStartupDependencyValidation("server-listen");
+    newsLabFrameworkStartupDependencyValidation("server-listen", { fatal: true });
     if (serverStartsBackgroundWorkers) {
       startMaintenanceLoop();
       if (backgroundLoopsEnabled) {
