@@ -36,3 +36,15 @@ Runtime contract recovery comes before quality tuning. If article generation is 
 ## Brain Lesson
 
 The Framework must not keep proposing writing, headline, image, or tab-coverage changes while the runtime contract layer is broken. A missing helper is a publication-blocking integration regression. Fix the contract, prove boot health, then return to article quality.
+
+## Public Visibility Lesson
+
+Startup success is not enough. The public article path must also prove that one valid current approved story can pass:
+
+`newsLabShelfDisplayReadyStory -> newsLabAnnotateBoardVisibility -> newsLabApplyCurrentBoardPolicy -> filterNewsLabPayloadForCategory -> newsLabFastPublishedApiPayload`
+
+If that chain returns zero stories or throws, News Lab is not deploy-safe even if every function exists.
+
+## Prepared Cache Anti-Collapse Rule
+
+Prepared API cache rebuilds must be atomic and validated before promotion. A zero-story candidate must not replace a previously valid prepared cache when the durable shelf still contains eligible active articles. Cache metadata must record active public count, source public count, durable active count, expired board-policy count, latest article publication/update dates, and rejection reasons.

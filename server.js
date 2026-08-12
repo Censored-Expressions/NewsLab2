@@ -940,6 +940,31 @@ function newsLabCollectorCacheFile(category = "top") {
   return path.join(newsLabCollectorDir, `${String(category || "top").replace(/[^a-z0-9-]/gi, "-")}.json`);
 }
 
+function readNewsLabCollectorCache(category = "top") {
+  const normalized = String(category || "top").toLowerCase().trim() || "top";
+  const fallback = {
+    generatedAt: "",
+    category: normalized,
+    stories: [],
+    storyCount: 0,
+    sourceCount: 0,
+    cacheMissing: true,
+    rule: "Collector cache reads are safe contracts for API slimming and subsystem reporting. Missing cache files return an empty cache instead of breaking public responses."
+  };
+  const cache = readJsonFile(newsLabCollectorCacheFile(normalized), fallback);
+  if (!cache || typeof cache !== "object") return fallback;
+  const stories = Array.isArray(cache.stories) ? cache.stories : Array.isArray(cache.items) ? cache.items : [];
+  return {
+    ...fallback,
+    ...cache,
+    category: cache.category || normalized,
+    stories,
+    storyCount: Number(cache.storyCount || stories.length || 0),
+    sourceCount: Number(cache.sourceCount || (Array.isArray(cache.sources) ? cache.sources.length : 0) || 0),
+    cacheMissing: false
+  };
+}
+
 function newsLabCollectorStatusFile(category = "top") {
   return path.join(newsLabCollectorDir, `${String(category || "top").replace(/[^a-z0-9-]/gi, "-")}.status.json`);
 }
@@ -3581,6 +3606,50 @@ function defaultNewsLabWorkerSyncLedger() {
     events: [],
     rule: "Background workers run in a separate Render service, so generated public payload files must be explicitly synced to the web service before visitors can see new articles."
   };
+}
+
+function defaultNewsLabStoryObjects() {
+  return {
+    version: "20260812-news-lab-story-objects-v1",
+    updatedAt: new Date().toISOString(),
+    storyCount: 0,
+    visibleStoryCount: 0,
+    stories: {},
+    recent: [],
+    rule: "Story Objects are durable publication-state records. Missing story-object storage must initialize to an empty object store instead of blocking server startup."
+  };
+}
+
+function defaultNewsLabRepairQueue(kind = "repair") {
+  return {
+    version: `20260812-news-lab-${kind}-queue-v1`,
+    updatedAt: new Date().toISOString(),
+    active: [],
+    resolved: [],
+    records: [],
+    totals: {
+      active: 0,
+      resolved: 0,
+      rejected: 0,
+      approved: 0
+    },
+    reasonRanking: [],
+    stageRanking: [],
+    recoveryRates: {},
+    rule: "Repair queues preserve draft failure evidence for learning and recovery. Missing queue files initialize empty and must not block server startup."
+  };
+}
+
+function defaultNewsLabHeadlineRepairQueue() {
+  return defaultNewsLabRepairQueue("headline-repair");
+}
+
+function defaultNewsLabApprovalRecoveryQueue() {
+  return defaultNewsLabRepairQueue("approval-recovery");
+}
+
+function defaultNewsLabDossierRecoveryQueue() {
+  return defaultNewsLabRepairQueue("dossier-recovery");
 }
 
 function newsLabWorkerSyncAllowlist() {
@@ -22154,6 +22223,20 @@ function newsLabSelectBestReviewedCandidates(reviewedStories = []) {
     || Number(b.headlineAudit?.headlinePreEditor?.score || 0) - Number(a.headlineAudit?.headlinePreEditor?.score || 0)
   )[0]).filter(Boolean);
 }
+function newsLabHeadlineRiskProfile(issues = []) {
+  const normalized = [...new Set((Array.isArray(issues) ? issues : [issues]).map(issue => String(issue || "").trim()).filter(Boolean))];
+  const severe = normalized.filter(issue => /copied|too-close|truncated|generic|process-language|scrambled|source-no-overlap|missing|unsafe|fatal/i.test(issue));
+  return {
+    risk: severe.length ? (severe.length >= 3 ? "high" : "medium") : "low",
+    issueCount: normalized.length,
+    severeIssueCount: severe.length,
+    issues: normalized,
+    severeIssues: severe,
+    publishBlocking: severe.length > 0,
+    rule: "Headline risk is an audit helper. The editor and headline service still decide whether a headline can publish."
+  };
+}
+
 function newsLabHeadlineDossier(story = {}, index = 0) {
   const sourceHeadline = story.originalHeadline || story.sources?.[0]?.title || story.title || "";
   const dossier = story.storyDossier || {};
@@ -22309,6 +22392,46 @@ function newsLabNormalizeHeadlineAcronyms(headline = "") {
     .replace(/\bNcaa\b/g, "NCAA")
     .replace(/\bUs\b/g, "U.S.")
     .replace(/\bU\.s\./g, "U.S.");
+}
+
+function newsLabSecondPassHeadlineFatal(title = "") {
+  const headline = cleanArticleText(title, 180);
+  if (!headline) return true;
+  if (newsLabHeadlineTruncated(headline)) return true;
+  if (newsLabWeakGenericHeadline(headline)) return true;
+  if (newsLabGenericUpdateHeadline(headline)) return true;
+  if (/\b(available reporting|source signals?|dossier includes|reporting trail|base story|outlet-only claim|current confidence level|adds new confirmed details|report adds new confirmed details)\b/i.test(headline)) return true;
+  if (/\b(against|with|from|to|for|and|or|the|a|an|of|off|after|before|prime)\s*$/i.test(headline)) return true;
+  return false;
+}
+
+function newsLabEventHeadlineFromDossier(story = {}) {
+  const dossier = story.storyDossier || {};
+  const identity = story.canonicalEvent || dossier.canonicalEvent || dossier.identity || {};
+  const primaryActor = cleanArticleText(identity.primaryActor || dossier.primaryActor || (Array.isArray(dossier.people) ? dossier.people[0] : "") || (Array.isArray(dossier.organizations) ? dossier.organizations[0] : ""), 70);
+  const primaryAction = cleanArticleText(identity.primaryAction || dossier.primaryAction || "", 80);
+  const primaryLocation = cleanArticleText(identity.primaryLocation || dossier.primaryLocation || (Array.isArray(dossier.locations) ? dossier.locations[0] : ""), 70);
+  const primaryConsequence = cleanArticleText(identity.primaryConsequence || dossier.primaryConsequence || "", 90);
+  const candidates = [
+    [primaryActor, primaryAction, primaryLocation].filter(Boolean).join(" "),
+    [primaryActor, primaryAction, primaryConsequence].filter(Boolean).join(" "),
+    newsLabImpactHeadlineFromDossier(story, 0),
+    newsLabSpecificHeadlineFromFacts(story, 0),
+    newsLabHeadlineFromCompletedArticle(story, 0),
+    newsLabHardRewriteCeHeadline(story, 0),
+    story.title,
+    story.originalHeadline
+  ]
+    .map(candidate => newsLabNormalizeHeadlineAcronyms(newsLabTitleCase(cleanArticleText(candidate || "", 140)).replace(/[,.!?;:]+$/g, "").trim()))
+    .map(candidate => typeof newsLabCleanRepairHeadlineCandidate === "function" ? newsLabCleanRepairHeadlineCandidate(candidate) : candidate)
+    .filter(Boolean)
+    .filter((candidate, index, all) => all.indexOf(candidate) === index);
+  return candidates.find(candidate =>
+    !newsLabWeakGenericHeadline(candidate)
+    && !newsLabHeadlineTruncated(candidate)
+    && !newsLabGenericUpdateHeadline(candidate)
+    && !newsLabHeadlineTooClose(candidate, story.originalHeadline || story.sources?.[0]?.title || "")
+  ) || "";
 }
 
 function newsLabPublicHeadline(story = {}, index = 0) {
@@ -22507,6 +22630,71 @@ function newsLabRepairPublishedStoryBeforeBoard(story = {}, index = 0) {
     }
   };
 }
+
+function newsLabAnnotateBoardVisibility(story = {}) {
+  const now = new Date();
+  const retentionDays = Math.max(1, Number(process.env.CE_NEWS_LAB_BOARD_RETENTION_DAYS || 7));
+  const publishedAt = newsLabStoryOriginalPublishedAt(story)
+    || newsLabValidStoryDateValue(story.publishedAt)
+    || newsLabValidStoryDateValue(story.generatedAt)
+    || "";
+  const updateDates = [
+    story.updatedAt,
+    story.lastUpdatedAt,
+    story.significantUpdatedAt,
+    story.currentUpdateAt,
+    story.storyEvolution?.lastUpdatedAt,
+    story.aliveStory?.lastSignificantUpdateAt,
+    ...(Array.isArray(story.updates) ? story.updates.map(update => update.publishedAt || update.updatedAt || update.timestamp) : []),
+    ...(Array.isArray(story.storyEvolution?.timeline) ? story.storyEvolution.timeline.map(item => item.publishedAt || item.updatedAt || item.timestamp || item.at) : [])
+  ];
+  const validUpdateDates = updateDates.map(newsLabValidStoryDateValue).filter(Boolean).sort();
+  const latestUpdateAt = validUpdateDates[validUpdateDates.length - 1] || "";
+  const dateForAge = publishedAt || latestUpdateAt || new Date().toISOString();
+  const ageMs = Math.max(0, now.getTime() - new Date(dateForAge).getTime());
+  const ageDays = Number((ageMs / (24 * 60 * 60 * 1000)).toFixed(2));
+  const todayKey = newsLabTodayDateKey();
+  const publishedKey = publishedAt ? publishedAt.slice(0, 10) : "";
+  const latestUpdateKey = latestUpdateAt ? latestUpdateAt.slice(0, 10) : "";
+  const significantUpdate = Boolean(
+    story.hasCurrentSignificantUpdate
+    || story.significantFactualUpdate
+    || story.currentSignificantUpdate
+    || story.updateType === "significant-factual-update"
+    || (Array.isArray(story.updates) && story.updates.some(update => update?.significant === true || /significant|correction|official|confirmed|charges|arrest|deadline|ruling|vote|statement/i.test(String(update?.type || update?.label || update?.summary || ""))))
+  );
+  let visible = false;
+  let reason = "expired-searchable-archive";
+  if (publishedKey && publishedKey === todayKey) {
+    visible = true;
+    reason = "original-published-today";
+  } else if (latestUpdateKey && latestUpdateKey === todayKey && significantUpdate) {
+    visible = true;
+    reason = "current-significant-factual-update";
+  } else if (ageDays <= retentionDays) {
+    visible = true;
+    reason = "approved-story-within-seven-day-board-window";
+  }
+  const expiresAt = publishedAt
+    ? new Date(new Date(publishedAt).getTime() + retentionDays * 24 * 60 * 60 * 1000).toISOString()
+    : "";
+  return {
+    ...story,
+    originalPublishedAt: story.originalPublishedAt || publishedAt,
+    boardVisibility: {
+      visible,
+      reason,
+      originalPublishedAt: publishedAt,
+      latestSignificantUpdateAt: significantUpdate ? latestUpdateAt : "",
+      ageDays,
+      expiresAt,
+      retentionDays,
+      currentDateKey: todayKey,
+      rule: "News Lab board visibility uses the article's original publication date plus significant current factual updates. File savedAt/cache timestamps never revive expired stories."
+    }
+  };
+}
+
 function newsLabApplyCurrentBoardPolicy(payload = {}) {
   const stories = (payload.ownedStories || [])
     .map(story => newsLabSanitizePublicNewsCopy(newsLabSanitizePublicAuditLanguage(story)))
@@ -26829,12 +27017,34 @@ function newsLabPreparedApiCacheFresh(maxAgeMs = searchNewsLabCacheMs) {
 
 function newsLabFastPublishedApiPayload(payload = {}, category = "") {
   const requested = String(category || "all").toLowerCase().trim() || "all";
+  const inputStories = Array.isArray(payload.ownedStories) ? payload.ownedStories : [];
   const cleanPayload = filterCleanNewsLabPayloadForCategory({
     ...payload,
-    ownedStories: Array.isArray(payload.ownedStories) ? payload.ownedStories : []
+    ownedStories: inputStories
   }, requested);
+  const cleanCount = Number(cleanPayload?.ownedStories?.length || 0);
+  const inputVisibleStories = inputStories
+    .map(story => story.boardVisibility?.visible ? story : newsLabAnnotateBoardVisibility(story))
+    .filter(story => story.boardVisibility?.visible);
+  const antiCollapsePayload = !cleanCount && inputVisibleStories.length
+    ? {
+      ...payload,
+      ownedStories: requested === "top"
+        ? newsLabSortTopNews(inputVisibleStories).slice(0, newsLabTopNewsLimit)
+        : requested === "all"
+          ? inputVisibleStories
+          : inputVisibleStories.filter(story => String(story.category || "").toLowerCase() === requested),
+      fastPathAntiCollapse: {
+        applied: true,
+        requested,
+        inputVisibleCount: inputVisibleStories.length,
+        cleanCount,
+        rule: "Fast API payload generation must not collapse an already board-visible public payload to zero. Clean filtering can diagnose stricter issues, but public visibility uses the approved board-visible shelf."
+      }
+    }
+    : cleanPayload;
   return slimNewsLabPayloadForApi({
-    ...cleanPayload,
+    ...antiCollapsePayload,
     categoryFilter: requested,
     fastPathBoardPolicy: {
       active: true,
@@ -27401,12 +27611,71 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
     generatedAt: new Date().toISOString(),
     reason,
     sourcePayloadSavedAt: published.savedAt || published.generatedAt || "",
+    latestArticlePublishedAt: (() => {
+      const dates = (published.ownedStories || []).map(newsLabStoryOriginalPublishedAt).filter(Boolean).sort();
+      return dates[dates.length - 1] || "";
+    })(),
+    latestArticleUpdatedAt: (() => {
+      const dates = (published.ownedStories || []).flatMap(story => [
+        story.updatedAt,
+        story.lastUpdatedAt,
+        story.significantUpdatedAt,
+        story.currentUpdateAt,
+        story.storyEvolution?.lastUpdatedAt,
+        story.aliveStory?.lastSignificantUpdateAt
+      ]).map(newsLabValidStoryDateValue).filter(Boolean).sort();
+      return dates[dates.length - 1] || "";
+    })(),
     responseCount: Object.keys(responses).length,
     storyCount: Number(published.ownedStories?.length || allCount),
     publicStoryCount: allCount,
+    activePublicStoryCount: allCount,
+    sourcePublicStoryCount: Number((published.ownedStories || []).length || 0),
+    expiredByBoardPolicyCount: Number((newsLabApplyCurrentBoardPolicy({ ownedStories: published.ownedStories || [] }).searchableArchiveStories || []).length || 0),
+    cacheIntegrity: {
+      activePublicStoryCount: allCount,
+      sourcePublicStoryCount: Number((published.ownedStories || []).length || 0),
+      durableRawStoryCount: Number(durableRawStories.length || 0),
+      durableActiveCount: Number(durableActiveCount || 0),
+      currentActiveCount: Number(currentActiveCount || 0),
+      antiCollapseRule: "Prepared cache rebuilds are promoted only after validation. A zero-story candidate cannot replace a previously valid active cache unless the durable shelf has zero eligible current articles."
+    },
     breakingBriefFollowups,
     responses
   };
+  const previousActiveCount = Number(previousPrepared?.responses?.all?.ownedStories?.length || previousPrepared?.categories?.all?.ownedStories?.length || 0);
+  const authoritativeActiveCount = Math.max(Number(durableActiveCount || 0), Number(currentActiveCount || 0));
+  if (!allCount && previousActiveCount > 0 && authoritativeActiveCount > 0) {
+    const preserved = {
+      ...previousPrepared,
+      generatedAt: previousPrepared.generatedAt || record.generatedAt,
+      lastRejectedCandidateAt: record.generatedAt,
+      lastRejectedCandidateReason: reason,
+      lastRejectedCandidate: {
+        publicStoryCount: allCount,
+        sourcePublicStoryCount: record.sourcePublicStoryCount,
+        durableActiveCount,
+        currentActiveCount,
+        rule: "Rejected a zero-story prepared cache candidate because a previous cache and authoritative durable shelf still had eligible active inventory."
+      }
+    };
+    writeJsonFile(newsLabApiResponseCacheFile, preserved);
+    try {
+      saveFrameworkActionLogEntry({
+        timestamp: record.generatedAt,
+        type: "news-lab-prepared-cache-anti-collapse",
+        subsystem: "News Lab API Cache",
+        status: "protected",
+        reason,
+        summary: "Rejected a zero-story prepared API cache candidate to prevent public article collapse.",
+        impact: "Keeps the public page from going empty when cache rebuilding fails while valid active inventory still exists.",
+        details: preserved.lastRejectedCandidate
+      });
+    } catch {
+      // Anti-collapse protection must not fail the cache worker.
+    }
+    return preserved;
+  }
   writeJsonFile(newsLabApiResponseCacheFile, record);
   newsLabMarkLatestLifecyclePublicReady(record.responses?.all || {}, {
     cache: record,
@@ -34490,16 +34759,29 @@ function newsLabFrameworkStartupDependencyValidation(reason = "startup", options
   const requiredContracts = [
     ["Article Memory Default", "defaultDailyArticleMemory", typeof defaultDailyArticleMemory === "function"],
     ["Article Memory Reader", "readDailyArticleMemory", typeof readDailyArticleMemory === "function"],
+    ["News Lab Story Objects Default", "defaultNewsLabStoryObjects", typeof defaultNewsLabStoryObjects === "function"],
+    ["Headline Repair Queue Default", "defaultNewsLabHeadlineRepairQueue", typeof defaultNewsLabHeadlineRepairQueue === "function"],
+    ["Approval Recovery Queue Default", "defaultNewsLabApprovalRecoveryQueue", typeof defaultNewsLabApprovalRecoveryQueue === "function"],
+    ["Dossier Recovery Queue Default", "defaultNewsLabDossierRecoveryQueue", typeof defaultNewsLabDossierRecoveryQueue === "function"],
     ["Dossier Readiness", "newsLabDossierReadinessContract", typeof newsLabDossierReadinessContract === "function"],
     ["Dossier Readiness Classifier", "newsLabDossierReadinessClassFromEvidence", typeof newsLabDossierReadinessClassFromEvidence === "function"],
     ["Board Date Key", "newsLabTodayDateKey", typeof newsLabTodayDateKey === "function"],
     ["Story Original Publish Date", "newsLabStoryOriginalPublishedAt", typeof newsLabStoryOriginalPublishedAt === "function"],
+    ["Board Visibility", "newsLabAnnotateBoardVisibility", typeof newsLabAnnotateBoardVisibility === "function"],
     ["Current Board Policy", "newsLabApplyCurrentBoardPolicy", typeof newsLabApplyCurrentBoardPolicy === "function"],
+    ["Shelf Display Ready Story", "newsLabShelfDisplayReadyStory", typeof newsLabShelfDisplayReadyStory === "function"],
+    ["Fast Published API Payload", "newsLabFastPublishedApiPayload", typeof newsLabFastPublishedApiPayload === "function"],
+    ["Prepared API Payload Reader", "readPreparedNewsLabApiPayload", typeof readPreparedNewsLabApiPayload === "function"],
+    ["Collector Cache Reader", "readNewsLabCollectorCache", typeof readNewsLabCollectorCache === "function"],
     ["Public Shelf Hard Merge", "newsLabHardMergePublicStories", typeof newsLabHardMergePublicStories === "function"],
     ["Writer Handoff", "newsLabDossierToWriterHandoff", typeof newsLabDossierToWriterHandoff === "function"],
     ["Writer Handoff Implementation", "newsLabEnsureWriterDossierHandoff", typeof newsLabEnsureWriterDossierHandoff === "function"],
     ["Writer Reasoning Plan", "newsLabBuildWriterReasoningPlan", typeof newsLabBuildWriterReasoningPlan === "function"],
-    ["Canonical Headline Service", "newsLabCanonicalHeadlineService", typeof newsLabCanonicalHeadlineService === "function"]
+    ["Canonical Headline Service", "newsLabCanonicalHeadlineService", typeof newsLabCanonicalHeadlineService === "function"],
+    ["Event Headline From Dossier", "newsLabEventHeadlineFromDossier", typeof newsLabEventHeadlineFromDossier === "function"],
+    ["Headline Risk Profile", "newsLabHeadlineRiskProfile", typeof newsLabHeadlineRiskProfile === "function"],
+    ["Headline Repair Candidate Cleaner", "newsLabCleanRepairHeadlineCandidate", typeof newsLabCleanRepairHeadlineCandidate === "function"],
+    ["Second Pass Headline Fatal Detector", "newsLabSecondPassHeadlineFatal", typeof newsLabSecondPassHeadlineFatal === "function"]
   ];
   const optionalContracts = [
     ["Article Intelligence Reader", "readArticleIntelligence", typeof readArticleIntelligence === "function"],
@@ -34555,6 +34837,117 @@ function newsLabFrameworkStartupDependencyValidation(reason = "startup", options
     });
   } catch (error) {
     runtimeState.lastFrameworkDependencyValidationError = error.message || String(error);
+  }
+  return record;
+}
+
+function newsLabPublicationPathSmokeTest(reason = "runtime-smoke-test") {
+  const now = new Date().toISOString();
+  const fixture = {
+    id: `smoke_fixture_${newsLabTodayDateKey()}`,
+    title: "Technology Firms Test New Security Standard",
+    originalHeadline: "Technology Firms Test New Security Standard",
+    category: "technology",
+    source: "Runtime Fixture",
+    url: "https://example.com/news-lab-runtime-fixture",
+    publishedAt: now,
+    originalPublishedAt: now,
+    generatedAt: now,
+    publicArticle: true,
+    durableApprovedBeforeBoard: true,
+    publicationTier: {
+      tier: 2,
+      publishable: true,
+      reason: "runtime-publication-path-smoke-fixture"
+    },
+    image: {
+      primary: "/assets/ce-newsroom.svg",
+      source: "CE Media",
+      license: "internal-runtime-fixture"
+    },
+    body: [
+      "Technology companies are testing a new cybersecurity standard after software vendors were asked to document how security updates are reviewed before release.",
+      "The technology standard centers on whether software companies can show who approved a code change, when the change was verified, and how quickly customers are notified when a flaw is discovered.",
+      "Cybersecurity teams involved in the software review said the goal is to reduce confusion during technology incidents by making vendor responsibilities clear before a security problem reaches users.",
+      "The next technology checkpoint is whether software vendors adopt the standard formally, publish implementation deadlines, and explain how cybersecurity compliance will be measured."
+    ],
+    articleReadDepth: {
+      fullReadCount: 2,
+      factCount: 5,
+      paragraphCount: 4,
+      bodyLength: 640
+    },
+    brainConfidence: {
+      score: 86,
+      label: "high",
+      reason: "Runtime fixture contains one current approved CE Media article with technology category evidence."
+    },
+    storyDossier: {
+      storyId: `smoke_fixture_${newsLabTodayDateKey()}`,
+      whatHappened: "Technology companies are testing a cybersecurity standard for software update review.",
+      whyItMatters: "The standard could change how software vendors document security review, customer notification, and cybersecurity accountability.",
+      people: [],
+      organizations: ["Technology companies", "Software vendors"],
+      locations: [],
+      knownFacts: [
+        "Technology companies are testing a cybersecurity standard.",
+        "Software vendors are being asked to document update review.",
+        "Cybersecurity compliance deadlines are the next checkpoint."
+      ],
+      confidence: { score: 86 }
+    },
+    sources: [{
+      title: "Technology Firms Test New Security Standard",
+      source: "Runtime Fixture",
+      url: "https://example.com/news-lab-runtime-fixture",
+      summary: "Technology companies are testing a cybersecurity standard for software update review.",
+      category: "technology"
+    }],
+    qualityGate: {
+      passed: true,
+      score: 86,
+      issues: [],
+      action: "runtime-publication-path-smoke-fixture"
+    },
+    editorEnforcement: {
+      finalIssues: []
+    },
+    contentLaneQuality: {
+      issues: []
+    }
+  };
+  const shelfReady = newsLabShelfDisplayReadyStory(fixture);
+  const annotated = newsLabAnnotateBoardVisibility(fixture);
+  const boardPayload = newsLabApplyCurrentBoardPolicy({ ownedStories: [annotated], searchableArchiveStories: [] });
+  const allPayload = boardPayload;
+  const categoryPayload = {
+    ...boardPayload,
+    categoryFilter: "technology",
+    ownedStories: (boardPayload.ownedStories || []).filter(story => String(story.category || "").toLowerCase() === "technology")
+  };
+  const cleanCachePayload = filterCleanNewsLabPayloadForCategory(boardPayload, "technology");
+  const apiPayload = newsLabFastPublishedApiPayload(categoryPayload, "technology");
+  const allVisibleCount = Number(allPayload?.ownedStories?.length || 0);
+  const categoryFilteredCount = Number(categoryPayload?.ownedStories?.length || 0);
+  const visibleCount = Number(apiPayload?.ownedStories?.length || 0);
+  const ok = shelfReady === true && annotated.boardVisibility?.visible === true && visibleCount === 1;
+  const record = {
+    generatedAt: now,
+    reason,
+    ok,
+    shelfReady,
+    boardVisible: Boolean(annotated.boardVisibility?.visible),
+    boardReason: annotated.boardVisibility?.reason || "",
+    allVisibleCount,
+    categoryFilteredCount,
+    visibleCount,
+    cleanCacheVisibleCount: Number(cleanCachePayload?.ownedStories?.length || 0),
+    finalCategory: categoryPayload?.ownedStories?.[0]?.category || "",
+    category: "technology",
+    rule: "A deploy is not publication-safe unless a valid current approved article can pass shelf readiness, board visibility, current board policy, category filtering, and compact API payload generation."
+  };
+  if (!ok) {
+    throw new Error(`NEWS LAB PUBLICATION PATH SMOKE TEST FAILED: ${JSON.stringify(record)}`);
   }
   return record;
 }
@@ -35584,6 +35977,38 @@ function newsLabPublisherRepairStory(story = {}) {
       action: remainingIssues.length ? "publisher-repair-still-held" : "publisher-repaired-and-ready"
     }
   };
+}
+
+function newsLabCleanRepairHeadlineCandidate(candidate = "") {
+  let headline = cleanArticleText(candidate, 180)
+    .replace(/\s+/g, " ")
+    .replace(/[“”]/g, "\"")
+    .replace(/[‘’]/g, "'")
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .replace(/^[\s"'`.,;:!-]+|[\s"'`.,;:!-]+$/g, "")
+    .trim();
+  if (!headline) return "";
+  headline = headline
+    .replace(/\b(ce media|censored expressions)\s+(tracks|reports on|is tracking)\b[:\s-]*/i, "")
+    .replace(/\b(adds new confirmed details|report adds new confirmed details|latest update|story update)\b/ig, "")
+    .replace(/\b(the reporting trail includes|available reporting|source signals|current confidence level|dossier includes)\b.*$/i, "")
+    .replace(/\s+/g, " ")
+    .replace(/^[\s"'`.,;:!-]+|[\s"'`.,;:!-]+$/g, "")
+    .trim();
+  if (!headline) return "";
+  if (/\b(available reporting|source signals|dossier|reporting trail|base story|outlet-only claim)\b/i.test(headline)) return "";
+  if (newsLabHeadlineTruncated(headline) || /\b(against|with|from|to|for|and|or|the|a|an|of|off|after|before|prime)\s*$/i.test(headline)) return "";
+  const words = headline.split(/\s+/).filter(Boolean);
+  if (words.length > 16) headline = words.slice(0, 16).join(" ");
+  return headline
+    .split(" ")
+    .map((word, index) => {
+      if (/^[A-Z0-9]{2,}$/.test(word)) return word;
+      if (/^(and|or|the|a|an|of|in|on|to|for|with|from|by|at)$/i.test(word) && index > 0) return word.toLowerCase();
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ")
+    .trim();
 }
 
 function newsLabFinalApprovalRepair(story = {}) {
@@ -41456,6 +41881,9 @@ function newsLabPublicStoryForViewer(story = {}) {
     updatedAt: story.updatedAt || story.lastUpdatedAt || "",
     lastUpdatedAt: story.lastUpdatedAt || story.updatedAt || "",
     storyUpdates: Array.isArray(story.storyUpdates) ? story.storyUpdates.slice(0, 6) : [],
+    boardVisibility: story.boardVisibility || null,
+    hasCurrentSignificantUpdate: Boolean(story.hasCurrentSignificantUpdate || story.significantFactualUpdate || story.currentSignificantUpdate),
+    significantUpdatedAt: story.significantUpdatedAt || story.currentUpdateAt || story.storyEvolution?.lastUpdatedAt || "",
     qualityGate: story.qualityGate || { passed: true, score: 70, issues: [], action: "preserved-public-story" },
     publicationTier: story.publicationTier || null,
     editorialCoach: story.editorialCoach || null,
@@ -48558,6 +48986,7 @@ if (isRuntimeSmokeTest) {
   try {
     ensureDataFiles();
     const validation = newsLabFrameworkStartupDependencyValidation(`runtime-smoke-test:${role}`, { fatal: true });
+    const publicationPath = newsLabPublicationPathSmokeTest(`runtime-smoke-test:${role}`);
     console.log(JSON.stringify({
       ok: true,
       role,
@@ -48566,6 +48995,7 @@ if (isRuntimeSmokeTest) {
       build: validation.build,
       missing: validation.missing,
       optionalMissing: validation.optionalMissing,
+      publicationPath,
       heartbeat: "runtime-smoke-test-passed"
     }, null, 2));
     process.exit(0);

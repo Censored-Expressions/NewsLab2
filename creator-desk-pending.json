@@ -1,9 +1,1 @@
-{
-  "dayId": "2026-08-08",
-  "dateLabel": "August 8, 2026",
-  "targetDateIso": "2026-08-09T03:00:52.005Z",
-  "firstQueuedAt": "2026-08-09T03:00:52.060Z",
-  "retryCount": 0,
-  "lastReason": "startup",
-  "lastAttemptAt": "2026-08-09T03:00:52.058Z"
-}
+{}

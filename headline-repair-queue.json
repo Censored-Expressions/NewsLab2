@@ -1,1 +1,17 @@
-﻿{"version":"deploy-compact","items":[],"queue":[],"note":"Repair queue starts compact and is rebuilt from new runtime activity."}
+{
+  "version": "20260812-news-lab-headline-repair-queue-v1",
+  "updatedAt": "2026-08-12T07:02:49.840Z",
+  "active": [],
+  "resolved": [],
+  "records": [],
+  "totals": {
+    "active": 0,
+    "resolved": 0,
+    "rejected": 0,
+    "approved": 0
+  },
+  "reasonRanking": [],
+  "stageRanking": [],
+  "recoveryRates": {},
+  "rule": "Repair queues preserve draft failure evidence for learning and recovery. Missing queue files initialize empty and must not block server startup."
+}
