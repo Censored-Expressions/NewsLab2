@@ -970,6 +970,34 @@ function newsLabCollectorStatusFile(category = "top") {
   return path.join(newsLabCollectorDir, `${String(category || "top").replace(/[^a-z0-9-]/gi, "-")}.status.json`);
 }
 
+function writeNewsLabCollectorStatus(category = "top", extra = {}) {
+  const normalized = String(category || "top").toLowerCase().trim() || "top";
+  const status = {
+    generatedAt: new Date().toISOString(),
+    category: normalized,
+    pid: process.pid,
+    active: Boolean(extra.active),
+    cycleMs: newsLabCollectorCycleMs,
+    sourceLimit: newsLabCollectorSourceLimit,
+    storyLimit: newsLabCollectorStoryLimit,
+    ...extra
+  };
+  runtimeState.newsLabCollectorStatuses[normalized] = status;
+  try {
+    writeJsonFile(newsLabCollectorStatusFile(normalized), status);
+  } catch (error) {
+    runtimeState.lastError = `Collector status write failed: ${error.message || error}`;
+  }
+  if (process.send) {
+    try {
+      process.send({ type: "news-lab-collector-status", category: normalized, status });
+    } catch {
+      // Parent process may have disconnected during shutdown.
+    }
+  }
+  return status;
+}
+
 function newsLabCollectorSourcesForCategory(category = "top") {
   const normalized = String(category || "top").toLowerCase();
   if (normalized === "top") {
@@ -1130,6 +1158,102 @@ const fallbackStories = [
     engagementLabel: "Local Pulse"
   }))
 ];
+
+function newsLabCollectorTabTerms(category = "top") {
+  const normalized = String(category || "top").toLowerCase().trim() || "top";
+  const terms = {
+    top: "breaking|latest|top|national|world|politics|business|technology|sports|entertainment|local",
+    world: "world|international|global|foreign|war|diplomacy|nato|united nations|europe|asia|africa|middle east|ukraine|russia|iran|israel|china",
+    politics: "politics|election|congress|senate|house|white house|president|governor|mayor|campaign|policy|law|court|supreme court|administration",
+    business: "business|market|economy|stocks|inflation|jobs|earnings|company|companies|bank|finance|housing|wall street|federal reserve",
+    technology: "technology|tech|ai|software|cybersecurity|startup|internet|platform|chip|semiconductor|device|data|privacy",
+    sports: "sports|game|match|team|league|season|playoff|world cup|world series|nba|nfl|mlb|nhl|soccer|tennis|golf|college",
+    entertainment: "entertainment|movie|film|music|television|tv|celebrity|streaming|box office|festival|hollywood|culture",
+    local: "local|city|county|school|police|fire|weather|traffic|community|neighborhood|council|sheriff|district"
+  };
+  return new RegExp(terms[normalized] || terms.top, "i");
+}
+
+function applyDiscoverySignals(stories = []) {
+  return (Array.isArray(stories) ? stories : []).map(story => ({
+    ...story,
+    discoveryScore: Number(story.discoveryScore || 0) + (story.isDiscovery ? 6 : 0) + (story.sourceHomepage ? 2 : 0),
+    discoverySignal: story.isDiscovery ? "source-discovery" : story.discoverySignal || "direct-feed"
+  }));
+}
+
+function addEngagementSignals(stories = []) {
+  const now = Date.now();
+  return (Array.isArray(stories) ? stories : []).map((story, index) => {
+    const ageHours = storyAgeHours(story, now);
+    const recencyScore = Math.max(0, 28 - Math.min(28, ageHours));
+    const sourceScore = story.source ? 8 : 0;
+    const imageScore = story.hasFeedImage ? 4 : 0;
+    const discoveryScore = Number(story.discoveryScore || 0);
+    const existing = Number(story.engagementScore || 0);
+    const engagementScore = Math.max(existing, Math.round(recencyScore + sourceScore + imageScore + discoveryScore + Math.max(0, 10 - index / 5)));
+    return {
+      ...story,
+      engagementScore,
+      engagementLabel: story.engagementLabel || (engagementScore >= 45 ? "High Signal" : engagementScore >= 25 ? "Developing" : "Monitor")
+    };
+  });
+}
+
+function ensureCategoryCoverage(stories = []) {
+  const sourceStories = Array.isArray(stories) ? stories : [];
+  const existing = new Set(sourceStories.map(story => String(story.category || "").toLowerCase()).filter(Boolean));
+  const fillers = fallbackStories.filter(story => !existing.has(String(story.category || "").toLowerCase()));
+  return [...sourceStories, ...fillers];
+}
+
+function buildStoryPayload(stories = []) {
+  return dedupeStoryCluster((Array.isArray(stories) ? stories : [])
+    .filter(story => story && (story.title || story.summary || story.url))
+    .map((story, index) => {
+      const category = classifyStoryCategory(story, { category: story.category || "top" });
+      return {
+        id: story.id || `feed_story_${crypto.createHash("sha1").update(`${story.url || story.title || index}`).digest("hex").slice(0, 12)}`,
+        title: cleanArticleText(story.title || "Untitled story", 220),
+        source: cleanArticleText(story.source || story.publisher || story.name || "Source", 90),
+        category,
+        categoryLabel: newsLabCategoryLabel(category),
+        url: story.url || story.link || story.homepage || "",
+        sourceHomepage: story.sourceHomepage || story.homepage || "",
+        summary: trimToCompleteSentence(cleanArticleText(story.summary || story.description || story.articleSummary || "", 600), 260) || "Open the full story for the latest confirmed details.",
+        published: story.published || story.publishedAt || story.pubDate || new Date().toISOString(),
+        image: story.image || "./assets/logo.png",
+        hasFeedImage: Boolean(story.hasFeedImage),
+        isDiscovery: Boolean(story.isDiscovery),
+        engagementScore: Number(story.engagementScore || 0),
+        engagementLabel: story.engagementLabel || "",
+        articleSummary: story.articleSummary || "",
+        fullText: story.fullText || "",
+        sources: Array.isArray(story.sources) ? story.sources : [{
+          source: story.source || story.publisher || "",
+          url: story.url || story.link || "",
+          title: story.title || ""
+        }].filter(item => item.source || item.url || item.title)
+      };
+    }));
+}
+
+function dedupeStoryCluster(stories = []) {
+  const seen = new Set();
+  const seenTitleSource = new Set();
+  return (Array.isArray(stories) ? stories : []).filter(story => {
+    if (!story) return false;
+    const urlKey = String(story.url || story.link || "").toLowerCase().replace(/[?#].*$/, "");
+    const title = cleanArticleText(story.title || story.headline || "", 180).toLowerCase();
+    const source = cleanArticleText(story.source || story.publisher || "", 90).toLowerCase();
+    const titleKey = `${title}::${source}`;
+    const identity = urlKey || titleKey;
+    if (!identity || seen.has(identity) || seenTitleSource.has(titleKey)) return false;
+    seen.add(identity);
+    if (titleKey.trim() !== "::") seenTitleSource.add(titleKey);
+    return true;
+  });
+}
 
 let cache = {
   expires: 0,
@@ -19681,6 +19805,405 @@ function parseFeed(xml, source) {
   });
 }
 
+function feedSourceDomain(source = {}) {
+  const candidate = source.feed || source.homepage || source.url || source.sourceUrl || "";
+  try {
+    return new URL(candidate).hostname.replace(/^www\./i, "").toLowerCase();
+  } catch {
+    return cleanArticleText(source.name || "unknown-source", 90).toLowerCase().replace(/\s+/g, "-") || "unknown-source";
+  }
+}
+
+function feedSourceProvider(source = {}) {
+  const domain = feedSourceDomain(source);
+  if (/newsdata\.io/i.test(domain) || source.newsData) return "NewsData";
+  if (/google\.com/i.test(domain)) return "Google News";
+  if (/apnews\.com/i.test(domain)) return "AP";
+  if (/cnn\.com/i.test(domain)) return "CNN";
+  if (/foxnews\.com/i.test(domain)) return "Fox News";
+  if (/abcnews|go\.com|abc\d*\.com/i.test(domain)) return "ABC";
+  if (/nbcnews|nbc/i.test(domain)) return "NBC";
+  if (/cbsnews|cbssports|cbs/i.test(domain)) return "CBS";
+  if (/espn\.com/i.test(domain)) return "ESPN";
+  if (/washingtonpost\.com/i.test(domain)) return "Washingtonpost";
+  return cleanArticleText(source.name || domain || "Unknown provider", 80);
+}
+
+function sourceErrorKey(source = {}) {
+  return `${feedSourceProvider(source)}::${feedSourceDomain(source)}::${source.feed || source.url || source.homepage || source.name || "unknown"}`.toLowerCase();
+}
+
+function feedSourceRuntimeStatus(source = {}) {
+  const key = sourceErrorKey(source);
+  const quarantine = runtimeState.feedSourceQuarantine?.[key] || null;
+  const quarantineUntil = quarantine?.until ? Date.parse(quarantine.until) : 0;
+  const quarantined = Boolean(quarantineUntil && quarantineUntil > Date.now());
+  return {
+    key,
+    quarantined,
+    quarantinedUntil: quarantined ? quarantine.until : "",
+    reason: quarantined ? quarantine.reason || "adaptive-source-quarantine" : "",
+    cache: runtimeState.feedSourceStoryCache?.[key] || null
+  };
+}
+
+function updateFeedSourceTelemetry(source = {}, patch = {}) {
+  const key = sourceErrorKey(source);
+  const previous = runtimeState.feedSourceTelemetry?.[key] || {};
+  const next = {
+    key,
+    name: source.name || previous.name || "",
+    category: source.category || previous.category || "",
+    domain: feedSourceDomain(source),
+    provider: feedSourceProvider(source),
+    feed: source.feed || previous.feed || "",
+    homepage: source.homepage || previous.homepage || "",
+    attemptCount: Number(previous.attemptCount || 0) + Number(patch.attemptIncrement || 0),
+    successCount: Number(previous.successCount || 0) + Number(patch.successIncrement || 0),
+    failureCount: Number(previous.failureCount || 0) + Number(patch.failureIncrement || 0),
+    cacheHitCount: Number(previous.cacheHitCount || 0) + Number(patch.cacheHitIncrement || 0),
+    skippedCount: Number(previous.skippedCount || 0) + Number(patch.skippedIncrement || 0),
+    slowCount: Number(previous.slowCount || 0) + Number(patch.slowIncrement || 0),
+    transientNetworkCount: Number(previous.transientNetworkCount || 0) + Number(patch.transientNetworkIncrement || 0),
+    recoveryCount: Number(previous.recoveryCount || 0) + Number(patch.recoveryIncrement || 0),
+    lastStatus: patch.lastStatus || previous.lastStatus || "",
+    lastErrorType: patch.lastErrorType || previous.lastErrorType || "",
+    lastErrorCode: patch.lastErrorCode || previous.lastErrorCode || "",
+    lastDurationMs: Number(patch.lastDurationMs ?? previous.lastDurationMs ?? 0),
+    lastAttemptAt: patch.lastAttemptAt || previous.lastAttemptAt || "",
+    lastSuccessAt: patch.lastSuccessAt || previous.lastSuccessAt || "",
+    lastFailedAt: patch.lastFailedAt || previous.lastFailedAt || "",
+    lastTransientNetworkAt: patch.lastTransientNetworkAt || previous.lastTransientNetworkAt || "",
+    lastCacheHitAt: patch.lastCacheHitAt || previous.lastCacheHitAt || "",
+    cachedStoryCount: Number(patch.cachedStoryCount ?? previous.cachedStoryCount ?? 0),
+    slow: Boolean(patch.slow ?? previous.slow),
+    updatedAt: new Date().toISOString()
+  };
+  runtimeState.feedSourceTelemetry[key] = next;
+  return next;
+}
+
+function quarantineFeedSource(source = {}, reason = "feed-source-failure", durationMs = 5 * 60 * 1000) {
+  const key = sourceErrorKey(source);
+  const until = new Date(Date.now() + Math.max(30000, Number(durationMs || 0))).toISOString();
+  runtimeState.feedSourceQuarantine[key] = {
+    key,
+    name: source.name || "",
+    category: source.category || "",
+    domain: feedSourceDomain(source),
+    provider: feedSourceProvider(source),
+    feed: source.feed || "",
+    reason,
+    until,
+    updatedAt: new Date().toISOString()
+  };
+  return runtimeState.feedSourceQuarantine[key];
+}
+
+function activeFeedTimeoutMs(source = {}) {
+  const provider = feedSourceProvider(source);
+  const override = runtimeState.feedProviderTimeouts?.[provider];
+  return Math.max(1500, Number(override || feedFetchTimeoutMs || 8000));
+}
+
+function feedSourceConcurrencyLimit(source = {}) {
+  const provider = feedSourceProvider(source);
+  return Math.max(1, Number(runtimeState.feedProviderConcurrency?.[provider] || feedFetchConcurrency || 4));
+}
+
+function rankedFeedSourcesForReliability(sources = []) {
+  return [...sources].sort((a, b) => {
+    const aKey = sourceErrorKey(a);
+    const bKey = sourceErrorKey(b);
+    const aTelemetry = runtimeState.feedSourceTelemetry?.[aKey] || {};
+    const bTelemetry = runtimeState.feedSourceTelemetry?.[bKey] || {};
+    const aStatus = feedSourceRuntimeStatus(a);
+    const bStatus = feedSourceRuntimeStatus(b);
+    const aScore = (aStatus.quarantined ? -100 : 0)
+      + Number(aTelemetry.successCount || 0) * 3
+      + Number(aTelemetry.cacheHitCount || 0)
+      - Number(aTelemetry.failureCount || 0) * 4
+      - Number(aTelemetry.slowCount || 0) * 2;
+    const bScore = (bStatus.quarantined ? -100 : 0)
+      + Number(bTelemetry.successCount || 0) * 3
+      + Number(bTelemetry.cacheHitCount || 0)
+      - Number(bTelemetry.failureCount || 0) * 4
+      - Number(bTelemetry.slowCount || 0) * 2;
+    return bScore - aScore;
+  });
+}
+
+async function runFeedSourcesWithAdaptiveConcurrency(sources = [], worker, options = {}) {
+  const limit = Math.max(1, Number(options.concurrency || feedFetchConcurrency || 4));
+  const results = new Array(sources.length);
+  let nextIndex = 0;
+  async function runNext() {
+    while (nextIndex < sources.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      const source = sources[index];
+      try {
+        results[index] = { status: "fulfilled", value: await worker(source, index), source };
+      } catch (error) {
+        results[index] = { status: "rejected", reason: error, source };
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, sources.length) }, runNext));
+  return results;
+}
+
+async function loadFeed(source = {}, options = {}) {
+  const status = feedSourceRuntimeStatus(source);
+  if (status.quarantined && options.adaptive !== false) {
+    updateFeedSourceTelemetry(source, {
+      skippedIncrement: 1,
+      cacheHitIncrement: status.cache?.stories?.length ? 1 : 0,
+      lastStatus: status.cache?.stories?.length ? "quarantined-source-cache" : "quarantined-source-skip",
+      lastCacheHitAt: status.cache?.stories?.length ? new Date().toISOString() : ""
+    });
+    return Array.isArray(status.cache?.stories) ? status.cache.stories : [];
+  }
+
+  const feedUrl = source.feed || source.url || "";
+  if (!feedUrl) return [];
+  const started = Date.now();
+  const controller = new AbortController();
+  const timeoutMs = activeFeedTimeoutMs(source);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  updateFeedSourceTelemetry(source, { attemptIncrement: 1, lastAttemptAt: new Date().toISOString(), lastStatus: "attempting" });
+  runtimeState.feedSourceLastAttemptAt = new Date().toISOString();
+  try {
+    const response = await fetch(feedUrl, {
+      signal: controller.signal,
+      headers: {
+        "user-agent": "CensoredExpressionsNewsLab/1.0 (+https://censoredexpressionsmedia.com)",
+        accept: source.newsData ? "application/json" : "application/rss+xml, application/xml, text/xml, application/json;q=0.8, */*;q=0.5"
+      }
+    });
+    if (!response.ok) {
+      const error = new Error(`feed-http-${response.status}`);
+      error.code = `HTTP_${response.status}`;
+      throw error;
+    }
+    const text = await response.text();
+    const parsed = source.newsData
+      ? parseNewsDataFeed(JSON.parse(text), source)
+      : parseFeed(text, source);
+    const stories = (Array.isArray(parsed) ? parsed : [])
+      .filter(story => story && (story.title || story.summary))
+      .map(story => ({ ...story, category: classifyStoryCategory(story, source) }));
+    const durationMs = Date.now() - started;
+    const slow = durationMs > Math.max(2500, timeoutMs * 0.75);
+    if (stories.length) {
+      runtimeState.feedSourceStoryCache[sourceErrorKey(source)] = {
+        generatedAt: new Date().toISOString(),
+        storyCount: stories.length,
+        stories: stories.slice(0, Number(source.limit || 12))
+      };
+    }
+    delete runtimeState.feedSourceErrors[sourceErrorKey(source)];
+    updateFeedSourceTelemetry(source, {
+      successIncrement: 1,
+      recoveryIncrement: runtimeState.feedSourceErrors?.[sourceErrorKey(source)] ? 1 : 0,
+      slowIncrement: slow ? 1 : 0,
+      lastStatus: stories.length ? "ok" : "empty",
+      lastDurationMs: durationMs,
+      lastSuccessAt: new Date().toISOString(),
+      cachedStoryCount: stories.length,
+      slow
+    });
+    return stories;
+  } catch (error) {
+    const durationMs = Date.now() - started;
+    const key = sourceErrorKey(source);
+    const transientNetwork = isTransientNetworkError(error) || error.name === "AbortError";
+    const errorRecord = {
+      key,
+      name: source.name || "",
+      category: source.category || "",
+      domain: feedSourceDomain(source),
+      provider: feedSourceProvider(source),
+      feed: feedUrl,
+      message: error.name === "AbortError" ? `feed-timeout-${timeoutMs}ms` : error.message || String(error),
+      code: error.code || error.cause?.code || (error.name === "AbortError" ? "ABORT_TIMEOUT" : ""),
+      type: error.name === "AbortError" ? "timeout" : transientNetwork ? "transient-network" : "feed-error",
+      transientNetwork,
+      count: Number(runtimeState.feedSourceErrors?.[key]?.count || 0) + 1,
+      transientNetworkCount: Number(runtimeState.feedSourceErrors?.[key]?.transientNetworkCount || 0) + (transientNetwork ? 1 : 0),
+      lastFailedAt: new Date().toISOString(),
+      durationMs
+    };
+    runtimeState.feedSourceErrors[key] = errorRecord;
+    runtimeState.feedSourceErrorCount = Object.keys(runtimeState.feedSourceErrors || {}).length;
+    if (transientNetwork) {
+      runtimeState.transientFeedSourceErrorCount = Number(runtimeState.transientFeedSourceErrorCount || 0) + 1;
+      runtimeState.lastTransientFeedSourceErrorAt = errorRecord.lastFailedAt;
+      runtimeState.lastTransientFeedSourceError = `${source.name || feedUrl}: ${errorRecord.message}`.slice(0, 500);
+    }
+    const slow = durationMs > Math.max(2500, timeoutMs * 0.75);
+    if (slow) runtimeState.feedSourceSlowCount = Number(runtimeState.feedSourceSlowCount || 0) + 1;
+    updateFeedSourceTelemetry(source, {
+      failureIncrement: 1,
+      transientNetworkIncrement: transientNetwork ? 1 : 0,
+      slowIncrement: slow ? 1 : 0,
+      lastStatus: "failed",
+      lastErrorType: errorRecord.type,
+      lastErrorCode: errorRecord.code,
+      lastDurationMs: durationMs,
+      lastFailedAt: errorRecord.lastFailedAt,
+      lastTransientNetworkAt: transientNetwork ? errorRecord.lastFailedAt : "",
+      slow
+    });
+    if (errorRecord.count >= Math.max(2, Number(process.env.CE_FEED_SOURCE_QUARANTINE_AFTER_FAILURES || 3))) {
+      quarantineFeedSource(source, errorRecord.type, Math.max(2 * 60 * 1000, Number(process.env.CE_FEED_SOURCE_QUARANTINE_MS || 10 * 60 * 1000)));
+    }
+    const cached = runtimeState.feedSourceStoryCache?.[key]?.stories || [];
+    if (cached.length) {
+      updateFeedSourceTelemetry(source, {
+        cacheHitIncrement: 1,
+        lastStatus: "failed-source-cache",
+        lastCacheHitAt: new Date().toISOString(),
+        cachedStoryCount: cached.length
+      });
+      return cached;
+    }
+    return [];
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function loadFeeds(sources = [], options = {}) {
+  const sourceLimit = Math.max(1, Number(options.sourceLimit || sources.length || 1));
+  const selected = rankedFeedSourcesForReliability(sources).slice(0, sourceLimit);
+  const settled = await runFeedSourcesWithAdaptiveConcurrency(selected, source => loadFeed(source, options), options);
+  return settled.flatMap(result => result.status === "fulfilled" && Array.isArray(result.value) ? result.value : []);
+}
+
+function feedFailureAttribution(limit = 10) {
+  const telemetry = runtimeState.feedSourceTelemetry || {};
+  const errors = runtimeState.feedSourceErrors || {};
+  const rows = Object.entries({ ...telemetry, ...errors }).map(([key, value]) => {
+    const t = telemetry[key] || {};
+    const e = errors[key] || {};
+    const failureCount = Number(e.count || t.failureCount || 0);
+    const slowCount = Number(t.slowCount || 0);
+    return {
+      key,
+      name: e.name || t.name || key,
+      category: e.category || t.category || "",
+      domain: e.domain || t.domain || "unknown",
+      provider: e.provider || t.provider || "Unknown",
+      feed: e.feed || t.feed || "",
+      failureCount,
+      slowCount,
+      transientNetworkCount: Number(e.transientNetworkCount || t.transientNetworkCount || 0),
+      successCount: Number(t.successCount || 0),
+      cacheHitCount: Number(t.cacheHitCount || 0),
+      skippedCount: Number(t.skippedCount || 0),
+      lastErrorType: e.type || t.lastErrorType || "",
+      lastErrorCode: e.code || t.lastErrorCode || "",
+      lastFailedAt: e.lastFailedAt || t.lastFailedAt || "",
+      lastDurationMs: Number(e.durationMs || t.lastDurationMs || 0)
+    };
+  });
+  const sumBy = keyName => Object.values(rows.reduce((map, row) => {
+    const key = row[keyName] || "unknown";
+    map[key] = map[key] || { [keyName]: key, failureCount: 0, slowCount: 0, transientNetworkCount: 0, cacheHitCount: 0, sources: 0 };
+    map[key].failureCount += row.failureCount;
+    map[key].slowCount += row.slowCount;
+    map[key].transientNetworkCount += row.transientNetworkCount;
+    map[key].cacheHitCount += row.cacheHitCount;
+    map[key].sources += 1;
+    return map;
+  }, {})).sort((a, b) => (b.failureCount + b.slowCount) - (a.failureCount + a.slowCount)).slice(0, limit);
+  return {
+    generatedAt: new Date().toISOString(),
+    sourceCount: rows.length,
+    failedSourceCount: rows.filter(row => row.failureCount > 0).length,
+    slowSourceCount: rows.filter(row => row.slowCount > 0).length,
+    worstSources: rows.sort((a, b) => (b.failureCount + b.slowCount) - (a.failureCount + a.slowCount)).slice(0, limit),
+    worstDomains: sumBy("domain"),
+    worstProviders: sumBy("provider"),
+    rule: "Feed Reliability attributes failures by exact URL/source, domain, and provider so the Brain can quarantine, back off, or tune only the failing source instead of treating feed health as one aggregate problem."
+  };
+}
+
+async function runNewsLabCollectorCycle(category = "top", reason = "scheduled-category-collection") {
+  const normalized = String(category || "top").toLowerCase().trim() || "top";
+  const started = Date.now();
+  writeNewsLabCollectorStatus(normalized, { active: true, lastStatus: "running", lastReason: reason, startedAt: new Date().toISOString() });
+  try {
+    const sources = newsLabCollectorBackfillSourcesForCategory(normalized).slice(0, newsLabCollectorSourceLimit);
+    const stories = addEngagementSignals(ensureCategoryCoverage(await loadFeeds(sources, {
+      sourceLimit: newsLabCollectorSourceLimit,
+      concurrency: Math.max(1, Math.min(feedFetchConcurrency, Number(process.env.CE_NEWS_LAB_COLLECTOR_CONCURRENCY || feedFetchConcurrency)))
+    })))
+      .filter(story => normalized === "top" || newsLabCategory(story) === normalized || classifyStoryCategory(story, { category: normalized }) === normalized)
+      .slice(0, newsLabCollectorStoryLimit);
+    const record = {
+      generatedAt: new Date().toISOString(),
+      category: normalized,
+      reason,
+      pid: process.pid,
+      buildMs: Date.now() - started,
+      sourceCount: sources.length,
+      storyCount: stories.length,
+      stories,
+      feedFailureAttribution: feedFailureAttribution(8),
+      rule: "A collector cycle gathers one category's source material, writes a category cache, and reports liveness/evidence back to the Brain."
+    };
+    writeJsonFile(newsLabCollectorCacheFile(normalized), record);
+    writeNewsLabCollectorStatus(normalized, {
+      active: false,
+      lastStatus: "completed",
+      lastReason: reason,
+      lastFinishedAt: record.generatedAt,
+      lastMetrics: {
+        buildMs: record.buildMs,
+        sourceCount: record.sourceCount,
+        storyCount: record.storyCount,
+        feedFailureAttribution: record.feedFailureAttribution
+      }
+    });
+    return record;
+  } catch (error) {
+    writeNewsLabCollectorStatus(normalized, {
+      active: false,
+      lastStatus: "failed",
+      lastReason: reason,
+      lastFinishedAt: new Date().toISOString(),
+      lastError: error.message || String(error),
+      lastMetrics: { buildMs: Date.now() - started }
+    });
+    throw error;
+  }
+}
+
+function startNewsLabCollectorLoop() {
+  const category = String(newsLabCollectorWorkerCategory || process.env.CE_NEWS_LAB_COLLECTOR_WORKER || "top").toLowerCase().trim() || "top";
+  if (runtimeState.newsLabCollectorLoopStarted) return;
+  runtimeState.newsLabCollectorLoopStarted = true;
+  const run = reason => runNewsLabCollectorCycle(category, reason).catch(error => {
+    runtimeState.lastError = `News Lab ${category} collector failed: ${error.message || error}`;
+    writeNewsLabCollectorStatus(category, {
+      active: false,
+      lastStatus: "failed",
+      lastReason: reason,
+      lastError: error.message || String(error)
+    });
+  });
+  writeNewsLabCollectorStatus(category, {
+    active: false,
+    lastStatus: "loop-started",
+    lastReason: "collector-loop-startup",
+    nextRunAt: new Date(Date.now() + Math.max(1000, Number(process.env.CE_NEWS_LAB_COLLECTOR_STARTUP_DELAY_MS || 2000))).toISOString()
+  });
+  setTimeout(() => run("startup-category-collection"), Math.max(1000, Number(process.env.CE_NEWS_LAB_COLLECTOR_STARTUP_DELAY_MS || 2000))).unref?.();
+  setInterval(() => run("scheduled-category-collection"), newsLabCollectorCycleMs).unref?.();
+}
+
 function storyDate(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? 0 : date.getTime();
@@ -28233,6 +28756,10 @@ function runNewsLabStuckRescueWorkerCycle(reason = "scheduled-stuck-rescue") {
   }
 }
 
+function runNewsLabStuckRescueCycle(reason = "scheduled-stuck-rescue") {
+  return runNewsLabStuckRescueWorkerCycle(reason);
+}
+
 function startNewsLabStuckRescueLoop() {
   writeNewsLabStuckRescueWorkerStatus({
     lastStatus: "stuck-rescue-loop-started",
@@ -34884,6 +35411,18 @@ function newsLabFrameworkStartupDependencyValidation(reason = "startup", options
     ["Public Snapshot Hash", "newsLabPublicSnapshotHashFromResponses", typeof newsLabPublicSnapshotHashFromResponses === "function"],
     ["Last Known Good API Writer", "writeNewsLabLastKnownGoodApiResponse", typeof writeNewsLabLastKnownGoodApiResponse === "function"],
     ["Collector Cache Reader", "readNewsLabCollectorCache", typeof readNewsLabCollectorCache === "function"],
+    ["Collector Status Writer", "writeNewsLabCollectorStatus", typeof writeNewsLabCollectorStatus === "function"],
+    ["Collector Cycle", "runNewsLabCollectorCycle", typeof runNewsLabCollectorCycle === "function"],
+    ["Collector Loop", "startNewsLabCollectorLoop", typeof startNewsLabCollectorLoop === "function"],
+    ["Feed Loader", "loadFeed", typeof loadFeed === "function"],
+    ["Feed Loader Batch", "loadFeeds", typeof loadFeeds === "function"],
+    ["Feed Failure Attribution", "feedFailureAttribution", typeof feedFailureAttribution === "function"],
+    ["Feed Source Error Key", "sourceErrorKey", typeof sourceErrorKey === "function"],
+    ["Feed Source Domain", "feedSourceDomain", typeof feedSourceDomain === "function"],
+    ["Feed Source Provider", "feedSourceProvider", typeof feedSourceProvider === "function"],
+    ["Feed Source Runtime Status", "feedSourceRuntimeStatus", typeof feedSourceRuntimeStatus === "function"],
+    ["Feed Source Ranking", "rankedFeedSourcesForReliability", typeof rankedFeedSourcesForReliability === "function"],
+    ["Adaptive Feed Concurrency", "runFeedSourcesWithAdaptiveConcurrency", typeof runFeedSourcesWithAdaptiveConcurrency === "function"],
     ["Public Shelf Hard Merge", "newsLabHardMergePublicStories", typeof newsLabHardMergePublicStories === "function"],
     ["Writer Handoff", "newsLabDossierToWriterHandoff", typeof newsLabDossierToWriterHandoff === "function"],
     ["Writer Handoff Implementation", "newsLabEnsureWriterDossierHandoff", typeof newsLabEnsureWriterDossierHandoff === "function"],
@@ -34950,6 +35489,45 @@ function newsLabFrameworkStartupDependencyValidation(reason = "startup", options
     runtimeState.lastFrameworkDependencyValidationError = error.message || String(error);
   }
   return record;
+}
+
+async function newsLabExecutableModeSmokeTest(role = "web") {
+  const normalized = String(role || "web").toLowerCase().trim() || "web";
+  const result = {
+    role: normalized,
+    generatedAt: new Date().toISOString(),
+    mode: "contract-only",
+    ok: true,
+    checks: []
+  };
+  const addCheck = (name, ok, details = {}) => {
+    result.checks.push({ name, ok: Boolean(ok), ...details });
+    if (!ok) result.ok = false;
+  };
+  addCheck("feed-failure-attribution", typeof feedFailureAttribution === "function", feedFailureAttribution(3));
+  addCheck("learning-summary", typeof learningSummary === "function", { hasLearningSummary: true });
+  addCheck("collector-loop-contract", typeof startNewsLabCollectorLoop === "function");
+  addCheck("collector-cycle-contract", typeof runNewsLabCollectorCycle === "function");
+  addCheck("feed-loader-contract", typeof loadFeed === "function" && typeof loadFeeds === "function");
+  addCheck("api-cache-contract", typeof runNewsLabApiResponseCycle === "function" && typeof readPreparedNewsLabApiPayload === "function");
+  addCheck("publication-worker-contract", typeof runNewsLabProductionCycle === "function" && typeof startNewsLabProductionLoop === "function");
+  addCheck("image-worker-contract", typeof runNewsLabImageImprovementPass === "function");
+  addCheck("stuck-rescue-contract", typeof runNewsLabStuckRescueCycle === "function" && typeof startNewsLabStuckRescueLoop === "function");
+  addCheck("scheduled-content-contract", typeof startNewsletterLoop === "function" && typeof startCreatorDeskLoop === "function");
+  if (normalized.startsWith("collector-") && process.env.CE_RUNTIME_SMOKE_EXECUTE_CYCLE === "true") {
+    const category = normalized.replace(/^collector-/, "") || "top";
+    result.mode = "collector-controlled-cycle";
+    const cycle = await runNewsLabCollectorCycle(category, `runtime-smoke-test:${normalized}`);
+    addCheck("collector-cycle-executed", Boolean(cycle && cycle.category === category), {
+      category,
+      sourceCount: Number(cycle?.sourceCount || 0),
+      storyCount: Number(cycle?.storyCount || 0),
+      buildMs: Number(cycle?.buildMs || 0),
+      remainedAlive: true,
+      rule: "A collector smoke test must run one bounded category cycle without throwing. Story count may be zero in offline/sandboxed environments, but the process must stay alive and write status/cache evidence."
+    });
+  }
+  return result;
 }
 
 function newsLabPublicationPathSmokeTest(reason = "runtime-smoke-test") {
@@ -49110,33 +49688,38 @@ function shutdownNewsLabWorkerProcess() {
 }
 
 if (isRuntimeSmokeTest) {
-  const role = process.env.CE_RUNTIME_SMOKE_ROLE || "web";
-  try {
-    ensureDataFiles();
-    const validation = newsLabFrameworkStartupDependencyValidation(`runtime-smoke-test:${role}`, { fatal: true });
-    const publicationPath = newsLabPublicationPathSmokeTest(`runtime-smoke-test:${role}`);
-    console.log(JSON.stringify({
-      ok: true,
-      role,
-      generatedAt: new Date().toISOString(),
-      pid: process.pid,
-      build: validation.build,
-      missing: validation.missing,
-      optionalMissing: validation.optionalMissing,
-      publicationPath,
-      heartbeat: "runtime-smoke-test-passed"
-    }, null, 2));
-    process.exit(0);
-  } catch (error) {
-    console.error(JSON.stringify({
-      ok: false,
-      role,
-      generatedAt: new Date().toISOString(),
-      error: error.stack || error.message || String(error),
-      heartbeat: "runtime-smoke-test-failed"
-    }, null, 2));
-    process.exit(1);
-  }
+  (async () => {
+    const role = process.env.CE_RUNTIME_SMOKE_ROLE || "web";
+    try {
+      ensureDataFiles();
+      const validation = newsLabFrameworkStartupDependencyValidation(`runtime-smoke-test:${role}`, { fatal: true });
+      const publicationPath = newsLabPublicationPathSmokeTest(`runtime-smoke-test:${role}`);
+      const modeSmoke = await newsLabExecutableModeSmokeTest(role);
+      if (!modeSmoke.ok) throw new Error(`Runtime mode smoke failed for ${role}`);
+      console.log(JSON.stringify({
+        ok: true,
+        role,
+        generatedAt: new Date().toISOString(),
+        pid: process.pid,
+        build: validation.build,
+        missing: validation.missing,
+        optionalMissing: validation.optionalMissing,
+        publicationPath,
+        modeSmoke,
+        heartbeat: "runtime-smoke-test-passed"
+      }, null, 2));
+      process.exit(0);
+    } catch (error) {
+      console.error(JSON.stringify({
+        ok: false,
+        role,
+        generatedAt: new Date().toISOString(),
+        error: error.stack || error.message || String(error),
+        heartbeat: "runtime-smoke-test-failed"
+      }, null, 2));
+      process.exit(1);
+    }
+  })();
 } else if (isSiteScheduledContentWorkerProcess) {
   console.log(`Censored Expressions scheduled content worker running as pid ${process.pid}`);
   ensureDataFiles();

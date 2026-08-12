@@ -60,3 +60,13 @@ Only a nonempty, validated prepared API cache produced by a worker/publication p
 ## Public Revision Rule
 
 Prepared API cache records must carry a `publicRevision` and `publicSnapshotHash`. Revisions advance only when the worker/publisher produces a different public story snapshot. Viewer refreshes must not advance revisions.
+
+## Runtime Integrity Recovery Rule
+
+Feature tuning stops when an executable mode is missing a critical runtime contract. The Brain must restore the real implementation, not delete or bypass the caller simply to boot.
+
+Critical collector/feed contracts include `startNewsLabCollectorLoop`, `runNewsLabCollectorCycle`, `writeNewsLabCollectorStatus`, `loadFeed`, `loadFeeds`, `feedFailureAttribution`, `sourceErrorKey`, `feedSourceDomain`, `feedSourceProvider`, `feedSourceRuntimeStatus`, `rankedFeedSourcesForReliability`, and `runFeedSourcesWithAdaptiveConcurrency`.
+
+## Deployment Gate Rule
+
+Deployment is invalid unless `runtime-integrity-smoke.js` passes. That script checks syntax, verifies critical contract definitions across the executable surface, and runs smoke tests for web, API worker, production worker, stuck rescue, image worker, scheduled content worker, and every collector category. Collector smoke tests must execute one bounded category cycle without throwing; zero stories are acceptable only in offline/sandboxed conditions, but crashes are not.
