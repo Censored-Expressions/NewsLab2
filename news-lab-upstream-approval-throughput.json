@@ -1,0 +1,314 @@
+{
+  "version": "20260813-upstream-approval-throughput-v1",
+  "updatedAt": "2026-08-13T16:13:41.879Z",
+  "mode": "worker-finish-mode",
+  "sourceLifecycleGeneratedAt": "2026-08-13T16:13:41.764Z",
+  "uat": 0,
+  "numerator": 0,
+  "denominator": 15,
+  "viableCanonicalStoryCandidates": 15,
+  "firstPassApproved": 0,
+  "stages": [
+    {
+      "key": "event",
+      "label": "Viable Events",
+      "passed": 15,
+      "action": "Re-segment source inputs into one canonical event before any dossier work.",
+      "input": 15,
+      "lost": 0,
+      "conversionRate": 1,
+      "lossRate": 0,
+      "responsibleSubsystem": "Event Segmentation",
+      "stopAction": "Re-segment source inputs into one canonical event before any dossier work."
+    },
+    {
+      "key": "dossier",
+      "label": "Dossier Ready",
+      "passed": 5,
+      "action": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer.",
+      "input": 15,
+      "lost": 10,
+      "conversionRate": 0.3333,
+      "lossRate": 0.6667,
+      "responsibleSubsystem": "Story Dossier Builder",
+      "stopAction": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer."
+    },
+    {
+      "key": "understanding",
+      "label": "Understanding Ready",
+      "passed": 4,
+      "action": "Build Story Understanding from the locked dossier before Writer Reasoning starts.",
+      "input": 5,
+      "lost": 1,
+      "conversionRate": 0.8,
+      "lossRate": 0.2,
+      "responsibleSubsystem": "Story Understanding Engine",
+      "stopAction": "Build Story Understanding from the locked dossier before Writer Reasoning starts."
+    },
+    {
+      "key": "reasoning",
+      "label": "Writer Ready",
+      "passed": 4,
+      "action": "Rerun Writer Reasoning from the locked dossier and required fact plan.",
+      "input": 4,
+      "lost": 0,
+      "conversionRate": 1,
+      "lossRate": 0,
+      "responsibleSubsystem": "Writer Reasoning",
+      "stopAction": "Rerun Writer Reasoning from the locked dossier and required fact plan."
+    },
+    {
+      "key": "draft",
+      "label": "Draft Complete",
+      "passed": 0,
+      "action": "Generate only the article tier supported by the dossier; expand evidence instead of padding prose.",
+      "input": 4,
+      "lost": 4,
+      "conversionRate": 0,
+      "lossRate": 1,
+      "responsibleSubsystem": "Article Writer",
+      "stopAction": "Generate only the article tier supported by the dossier; expand evidence instead of padding prose."
+    },
+    {
+      "key": "headline",
+      "label": "Headline Valid",
+      "passed": 0,
+      "action": "Run headline-only repair through the Canonical Headline Service after body verification.",
+      "input": 0,
+      "lost": 0,
+      "conversionRate": 0,
+      "lossRate": 0,
+      "responsibleSubsystem": "Canonical Headline Service",
+      "stopAction": "Run headline-only repair through the Canonical Headline Service after body verification."
+    },
+    {
+      "key": "editor",
+      "label": "Editor Submitted",
+      "passed": 0,
+      "action": "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired.",
+      "input": 0,
+      "lost": 0,
+      "conversionRate": 0,
+      "lossRate": 0,
+      "responsibleSubsystem": "Publishing Editor",
+      "stopAction": "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired."
+    },
+    {
+      "key": "firstPass",
+      "label": "First-Pass Approved",
+      "passed": 0,
+      "action": "Use successful patterns to train Writer Reasoning and Headline Intelligence.",
+      "input": 0,
+      "lost": 0,
+      "conversionRate": 0,
+      "lossRate": 0,
+      "responsibleSubsystem": "Production Intelligence",
+      "stopAction": "Use successful patterns to train Writer Reasoning and Headline Intelligence."
+    }
+  ],
+  "stageLosses": [
+    {
+      "stage": "Dossier Ready",
+      "lost": 10,
+      "input": 15,
+      "conversionRate": 0.3333,
+      "responsibleSubsystem": "Story Dossier Builder",
+      "action": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer."
+    },
+    {
+      "stage": "Understanding Ready",
+      "lost": 1,
+      "input": 5,
+      "conversionRate": 0.8,
+      "responsibleSubsystem": "Story Understanding Engine",
+      "action": "Build Story Understanding from the locked dossier before Writer Reasoning starts."
+    },
+    {
+      "stage": "Draft Complete",
+      "lost": 4,
+      "input": 4,
+      "conversionRate": 0,
+      "responsibleSubsystem": "Article Writer",
+      "action": "Generate only the article tier supported by the dossier; expand evidence instead of padding prose."
+    }
+  ],
+  "weakestStage": {
+    "key": "dossier",
+    "label": "Dossier Ready",
+    "passed": 5,
+    "action": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer.",
+    "input": 15,
+    "lost": 10,
+    "conversionRate": 0.3333,
+    "lossRate": 0.6667,
+    "responsibleSubsystem": "Story Dossier Builder",
+    "stopAction": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer."
+  },
+  "candidateTraces": [
+    {
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "title": "Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche",
+      "category": "politics",
+      "statusLine": "EVENT PASS -> DOSSIER PASS -> UNDERSTANDING PASS -> REASONING PASS -> DRAFT PASS -> HEADLINE PASS -> EDITOR STOP -> PUBLISHED PASS",
+      "stoppedAt": "EDITOR",
+      "responsibleSubsystem": "Publishing Editor",
+      "scoreAtStop": 0,
+      "action": "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired.",
+      "firstPassApproved": false,
+      "published": true,
+      "openIssues": [
+        "needs-writer-evidence-pack",
+        "needs-meaningful-timeline",
+        "needs-canonical-actor",
+        "needs-canonical-action",
+        "needs-semantic-category",
+        "needs-dossier-evidence"
+      ],
+      "failureCodes": [
+        "EVIDENCE_DEPTH_NEEDS_WRITER_EVIDENCE_PACK",
+        "GENERAL_PUBLISHABILITY_NEEDS_MEANINGFUL_TIMELINE",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTOR",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTION",
+        "GENERAL_PUBLISHABILITY_NEEDS_SEMANTIC_CATEGORY",
+        "EVIDENCE_DEPTH_NEEDS_DOSSIER_EVIDENCE"
+      ]
+    },
+    {
+      "storyId": "news_lab_world:news-lab-world-event-iran-iranian-blasts-attacks-sixth-mounts-reported-0__candidate_2",
+      "title": "U.S.-Iran Tensions Rise After New Strike Reports Near Hormuz",
+      "category": "world",
+      "statusLine": "EVENT PASS -> DOSSIER PASS -> UNDERSTANDING PASS -> REASONING PASS -> DRAFT PASS -> HEADLINE PASS -> EDITOR STOP -> PUBLISHED PASS",
+      "stoppedAt": "EDITOR",
+      "responsibleSubsystem": "Publishing Editor",
+      "scoreAtStop": 10,
+      "action": "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired.",
+      "firstPassApproved": false,
+      "published": true,
+      "openIssues": [
+        "paragraph-topic-contamination",
+        "needs-canonical-actor",
+        "needs-canonical-action",
+        "needs-semantic-category",
+        "needs-dossier-evidence"
+      ],
+      "failureCodes": [
+        "STORY_IDENTITY_INTEGRITY_PARAGRAPH_TOPIC_CONTAMINATION",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTOR",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTION",
+        "GENERAL_PUBLISHABILITY_NEEDS_SEMANTIC_CATEGORY",
+        "EVIDENCE_DEPTH_NEEDS_DOSSIER_EVIDENCE"
+      ]
+    },
+    {
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "title": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+      "category": "world",
+      "statusLine": "EVENT PASS -> DOSSIER PASS -> UNDERSTANDING STOP -> REASONING PASS -> DRAFT PASS -> HEADLINE PASS -> EDITOR STOP -> PUBLISHED PASS",
+      "stoppedAt": "UNDERSTANDING",
+      "responsibleSubsystem": "Story Understanding Engine",
+      "scoreAtStop": 53,
+      "action": "Build Story Understanding from the locked dossier before Writer Reasoning starts.",
+      "firstPassApproved": false,
+      "published": true,
+      "openIssues": [
+        "needs-writer-evidence-pack",
+        "needs-two-unique-verified-facts",
+        "needs-meaningful-timeline",
+        "needs-canonical-actor",
+        "needs-canonical-action",
+        "needs-semantic-category",
+        "needs-dossier-evidence"
+      ],
+      "failureCodes": [
+        "EVIDENCE_DEPTH_NEEDS_WRITER_EVIDENCE_PACK",
+        "EVIDENCE_DEPTH_NEEDS_TWO_UNIQUE_VERIFIED_FACTS",
+        "GENERAL_PUBLISHABILITY_NEEDS_MEANINGFUL_TIMELINE",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTOR",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTION",
+        "GENERAL_PUBLISHABILITY_NEEDS_SEMANTIC_CATEGORY",
+        "EVIDENCE_DEPTH_NEEDS_DOSSIER_EVIDENCE"
+      ]
+    },
+    {
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "title": "Google Deepmind Brings Gemini Robotics Into Physical Tasks",
+      "category": "technology",
+      "statusLine": "EVENT PASS -> DOSSIER PASS -> UNDERSTANDING PASS -> REASONING PASS -> DRAFT PASS -> HEADLINE PASS -> EDITOR STOP -> PUBLISHED PASS",
+      "stoppedAt": "EDITOR",
+      "responsibleSubsystem": "Publishing Editor",
+      "scoreAtStop": 0,
+      "action": "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired.",
+      "firstPassApproved": false,
+      "published": true,
+      "openIssues": [
+        "needs-writer-evidence-pack",
+        "needs-meaningful-timeline",
+        "needs-canonical-actor",
+        "needs-canonical-action",
+        "needs-semantic-category",
+        "needs-dossier-evidence"
+      ],
+      "failureCodes": [
+        "EVIDENCE_DEPTH_NEEDS_WRITER_EVIDENCE_PACK",
+        "GENERAL_PUBLISHABILITY_NEEDS_MEANINGFUL_TIMELINE",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTOR",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTION",
+        "GENERAL_PUBLISHABILITY_NEEDS_SEMANTIC_CATEGORY",
+        "EVIDENCE_DEPTH_NEEDS_DOSSIER_EVIDENCE"
+      ]
+    },
+    {
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "title": "Todd Blanche Nomination Faces Senate Delay",
+      "category": "politics",
+      "statusLine": "EVENT PASS -> DOSSIER PASS -> UNDERSTANDING PASS -> REASONING PASS -> DRAFT PASS -> HEADLINE PASS -> EDITOR STOP -> PUBLISHED PASS",
+      "stoppedAt": "EDITOR",
+      "responsibleSubsystem": "Publishing Editor",
+      "scoreAtStop": 0,
+      "action": "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired.",
+      "firstPassApproved": false,
+      "published": true,
+      "openIssues": [
+        "needs-writer-evidence-pack",
+        "needs-meaningful-timeline",
+        "needs-canonical-actor",
+        "needs-canonical-action",
+        "needs-semantic-category",
+        "needs-dossier-evidence"
+      ],
+      "failureCodes": [
+        "EVIDENCE_DEPTH_NEEDS_WRITER_EVIDENCE_PACK",
+        "GENERAL_PUBLISHABILITY_NEEDS_MEANINGFUL_TIMELINE",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTOR",
+        "GENERAL_PUBLISHABILITY_NEEDS_CANONICAL_ACTION",
+        "GENERAL_PUBLISHABILITY_NEEDS_SEMANTIC_CATEGORY",
+        "EVIDENCE_DEPTH_NEEDS_DOSSIER_EVIDENCE"
+      ]
+    },
+    {
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "title": "There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List",
+      "category": "technology",
+      "statusLine": "EVENT PASS -> DOSSIER STOP -> UNDERSTANDING STOP -> REASONING STOP -> DRAFT PASS -> HEADLINE PASS -> EDITOR STOP -> PUBLISHED PASS",
+      "stoppedAt": "DOSSIER",
+      "responsibleSubsystem": "Story Dossier Builder",
+      "scoreAtStop": 0,
+      "action": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer.",
+      "firstPassApproved": false,
+      "published": true,
+      "openIssues": [
+        "missing-source-context",
+        "missing-story-dossier-facts",
+        "needs-completed-story-dossier"
+      ],
+      "failureCodes": [
+        "EVIDENCE_DEPTH_MISSING_SOURCE_CONTEXT",
+        "EVIDENCE_DEPTH_MISSING_STORY_DOSSIER_FACTS",
+        "GENERAL_PUBLISHABILITY_NEEDS_COMPLETED_STORY_DOSSIER"
+      ]
+    }
+  ],
+  "nextAction": "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer.",
+  "brainRule": "When UAT drops, move the story backward to the earliest failed upstream stage. Do not raise throughput by weakening the Editor or padding weak stories.",
+  "formula": "UAT = first-pass-approved articles / viable canonical story candidates"
+}

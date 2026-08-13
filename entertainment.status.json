@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T01:49:20.407Z",
+  "generatedAt": "2026-08-13T16:15:42.668Z",
   "category": "entertainment",
-  "pid": 24928,
+  "pid": 27852,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-entertainment",
-  "lastFinishedAt": "2026-08-13T01:49:20.403Z",
+  "lastFinishedAt": "2026-08-13T16:15:42.664Z",
   "lastMetrics": {
-    "buildMs": 697,
+    "buildMs": 684,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T01:49:20.403Z",
+      "generatedAt": "2026-08-13T16:15:42.664Z",
       "sourceCount": 10,
       "failedSourceCount": 2,
       "slowSourceCount": 0,
@@ -34,8 +34,8 @@
           "skippedCount": 0,
           "lastErrorType": "feed-error",
           "lastErrorCode": "HTTP_403",
-          "lastFailedAt": "2026-08-13T01:49:20.021Z",
-          "lastDurationMs": 219
+          "lastFailedAt": "2026-08-13T16:15:42.247Z",
+          "lastDurationMs": 194
         },
         {
           "key": "entertainment weekly::ew.com::https://ew.com/feed/",
@@ -52,8 +52,8 @@
           "skippedCount": 0,
           "lastErrorType": "feed-error",
           "lastErrorCode": "HTTP_403",
-          "lastFailedAt": "2026-08-13T01:49:20.036Z",
-          "lastDurationMs": 234
+          "lastFailedAt": "2026-08-13T16:15:42.255Z",
+          "lastDurationMs": 203
         },
         {
           "key": "variety::variety.com::https://variety.com/feed/",
@@ -71,7 +71,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 191
+          "lastDurationMs": 169
         },
         {
           "key": "hollywood reporter::hollywoodreporter.com::https://www.hollywoodreporter.com/feed/",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 151
+          "lastDurationMs": 125
         },
         {
           "key": "rolling stone::rollingstone.com::https://www.rollingstone.com/music/music-news/feed/",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 151
+          "lastDurationMs": 128
         },
         {
           "key": "billboard::billboard.com::https://www.billboard.com/feed/",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 175
+          "lastDurationMs": 165
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=pop%20culture%20music%20movies%20entertainment%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 598
+          "lastDurationMs": 182
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=film%20tv%20streaming%20entertainment%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 529
+          "lastDurationMs": 174
         }
       ],
       "worstDomains": [

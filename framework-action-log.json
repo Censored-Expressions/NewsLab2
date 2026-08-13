@@ -1,13 +1,13 @@
 [
   {
-    "id": "framework_action_1786630255614_epx2cc",
-    "at": "2026-08-13T14:10:55.614Z",
+    "id": "framework_action_1786637726352_o1lecl",
+    "at": "2026-08-13T16:15:26.352Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:10:55.613Z",
+    "timestamp": "2026-08-13T16:15:26.351Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -15,7 +15,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:10:55.613Z",
+      "generatedAt": "2026-08-13T16:15:26.351Z",
       "reason": "runtime-smoke-test:web",
       "ok": true,
       "checked": [
@@ -312,14 +312,14 @@
     }
   },
   {
-    "id": "framework_action_1786630256602_2hdstb",
-    "at": "2026-08-13T14:10:56.603Z",
+    "id": "framework_action_1786637727261_uz7zvv",
+    "at": "2026-08-13T16:15:27.261Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:10:56.601Z",
+    "timestamp": "2026-08-13T16:15:27.260Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -327,7 +327,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:10:56.601Z",
+      "generatedAt": "2026-08-13T16:15:27.260Z",
       "reason": "runtime-smoke-test:api-worker",
       "ok": true,
       "checked": [
@@ -624,14 +624,14 @@
     }
   },
   {
-    "id": "framework_action_1786630257534_bu3ey4",
-    "at": "2026-08-13T14:10:57.534Z",
+    "id": "framework_action_1786637728134_dlvv6s",
+    "at": "2026-08-13T16:15:28.134Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:10:57.533Z",
+    "timestamp": "2026-08-13T16:15:28.133Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -639,7 +639,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:10:57.533Z",
+      "generatedAt": "2026-08-13T16:15:28.133Z",
       "reason": "runtime-smoke-test:production-worker",
       "ok": true,
       "checked": [
@@ -936,14 +936,14 @@
     }
   },
   {
-    "id": "framework_action_1786630258495_cm3oyc",
-    "at": "2026-08-13T14:10:58.495Z",
+    "id": "framework_action_1786637728995_dx3jyq",
+    "at": "2026-08-13T16:15:28.995Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:10:58.494Z",
+    "timestamp": "2026-08-13T16:15:28.994Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -951,7 +951,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:10:58.494Z",
+      "generatedAt": "2026-08-13T16:15:28.994Z",
       "reason": "runtime-smoke-test:stuck-rescue-worker",
       "ok": true,
       "checked": [
@@ -1248,14 +1248,14 @@
     }
   },
   {
-    "id": "framework_action_1786630259464_nlfxcv",
-    "at": "2026-08-13T14:10:59.464Z",
+    "id": "framework_action_1786637729866_zn071u",
+    "at": "2026-08-13T16:15:29.866Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:10:59.463Z",
+    "timestamp": "2026-08-13T16:15:29.865Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -1263,7 +1263,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:10:59.463Z",
+      "generatedAt": "2026-08-13T16:15:29.865Z",
       "reason": "runtime-smoke-test:image-worker",
       "ok": true,
       "checked": [
@@ -1560,14 +1560,14 @@
     }
   },
   {
-    "id": "framework_action_1786630260411_nu36q3",
-    "at": "2026-08-13T14:11:00.411Z",
+    "id": "framework_action_1786637730739_h15tni",
+    "at": "2026-08-13T16:15:30.739Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:00.410Z",
+    "timestamp": "2026-08-13T16:15:30.738Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -1575,7 +1575,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:00.410Z",
+      "generatedAt": "2026-08-13T16:15:30.738Z",
       "reason": "runtime-smoke-test:scheduled-content-worker",
       "ok": true,
       "checked": [
@@ -1872,14 +1872,14 @@
     }
   },
   {
-    "id": "framework_action_1786630261361_b0ouwg",
-    "at": "2026-08-13T14:11:01.361Z",
+    "id": "framework_action_1786637731589_9x7ak4",
+    "at": "2026-08-13T16:15:31.589Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:01.359Z",
+    "timestamp": "2026-08-13T16:15:31.588Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -1887,7 +1887,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:01.359Z",
+      "generatedAt": "2026-08-13T16:15:31.588Z",
       "reason": "runtime-smoke-test:collector-top",
       "ok": true,
       "checked": [
@@ -2184,14 +2184,14 @@
     }
   },
   {
-    "id": "framework_action_1786630263051_ua89wx",
-    "at": "2026-08-13T14:11:03.051Z",
+    "id": "framework_action_1786637732913_3p7xz5",
+    "at": "2026-08-13T16:15:32.913Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:03.050Z",
+    "timestamp": "2026-08-13T16:15:32.911Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -2199,7 +2199,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:03.050Z",
+      "generatedAt": "2026-08-13T16:15:32.911Z",
       "reason": "runtime-smoke-test:collector-world",
       "ok": true,
       "checked": [
@@ -2496,14 +2496,14 @@
     }
   },
   {
-    "id": "framework_action_1786630264796_s4iceg",
-    "at": "2026-08-13T14:11:04.796Z",
+    "id": "framework_action_1786637734463_yu48ti",
+    "at": "2026-08-13T16:15:34.463Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:04.794Z",
+    "timestamp": "2026-08-13T16:15:34.462Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -2511,7 +2511,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:04.794Z",
+      "generatedAt": "2026-08-13T16:15:34.462Z",
       "reason": "runtime-smoke-test:collector-politics",
       "ok": true,
       "checked": [
@@ -2808,14 +2808,14 @@
     }
   },
   {
-    "id": "framework_action_1786630267344_zh0dcx",
-    "at": "2026-08-13T14:11:07.344Z",
+    "id": "framework_action_1786637736936_04feuc",
+    "at": "2026-08-13T16:15:36.936Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:07.342Z",
+    "timestamp": "2026-08-13T16:15:36.934Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -2823,7 +2823,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:07.342Z",
+      "generatedAt": "2026-08-13T16:15:36.934Z",
       "reason": "runtime-smoke-test:collector-business",
       "ok": true,
       "checked": [
@@ -3120,14 +3120,14 @@
     }
   },
   {
-    "id": "framework_action_1786630268954_nrv6px",
-    "at": "2026-08-13T14:11:08.954Z",
+    "id": "framework_action_1786637738393_pq008z",
+    "at": "2026-08-13T16:15:38.393Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:08.953Z",
+    "timestamp": "2026-08-13T16:15:38.392Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -3135,7 +3135,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:08.953Z",
+      "generatedAt": "2026-08-13T16:15:38.392Z",
       "reason": "runtime-smoke-test:collector-technology",
       "ok": true,
       "checked": [
@@ -3432,14 +3432,14 @@
     }
   },
   {
-    "id": "framework_action_1786630270580_90g1by",
-    "at": "2026-08-13T14:11:10.580Z",
+    "id": "framework_action_1786637739881_zqyg6p",
+    "at": "2026-08-13T16:15:39.881Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:10.578Z",
+    "timestamp": "2026-08-13T16:15:39.880Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -3447,7 +3447,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:10.578Z",
+      "generatedAt": "2026-08-13T16:15:39.880Z",
       "reason": "runtime-smoke-test:collector-sports",
       "ok": true,
       "checked": [
@@ -3744,14 +3744,14 @@
     }
   },
   {
-    "id": "framework_action_1786630272243_l4gfhy",
-    "at": "2026-08-13T14:11:12.243Z",
+    "id": "framework_action_1786637741365_xjeml5",
+    "at": "2026-08-13T16:15:41.365Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:12.241Z",
+    "timestamp": "2026-08-13T16:15:41.363Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -3759,7 +3759,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:12.241Z",
+      "generatedAt": "2026-08-13T16:15:41.363Z",
       "reason": "runtime-smoke-test:collector-entertainment",
       "ok": true,
       "checked": [
@@ -4056,14 +4056,14 @@
     }
   },
   {
-    "id": "framework_action_1786630274151_liox7u",
-    "at": "2026-08-13T14:11:14.151Z",
+    "id": "framework_action_1786637742922_v148si",
+    "at": "2026-08-13T16:15:42.922Z",
     "actor": "AI Framework",
     "safeExecution": false,
     "bounded": true,
     "reversible": true,
     "verified": false,
-    "timestamp": "2026-08-13T14:11:14.150Z",
+    "timestamp": "2026-08-13T16:15:42.920Z",
     "type": "news-lab-framework-dependency-validation",
     "subsystem": "Framework OS",
     "status": "healthy",
@@ -4071,7 +4071,7 @@
     "summary": "News Lab Framework startup dependency validation passed.",
     "impact": "Catches renamed or omitted helper contracts at boot instead of allowing worker execution to fail one missing dependency at a time.",
     "details": {
-      "generatedAt": "2026-08-13T14:11:14.150Z",
+      "generatedAt": "2026-08-13T16:15:42.920Z",
       "reason": "runtime-smoke-test:collector-local",
       "ok": true,
       "checked": [

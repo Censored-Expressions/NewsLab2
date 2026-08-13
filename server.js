@@ -74,6 +74,7 @@ const newsLabWorkerSyncLedgerFile = path.join(dataDir, "news-lab-worker-sync-led
 const newsLabProductionLockFile = path.join(dataDir, "news-lab-production.lock.json");
 const newsLabProductivityFile = path.join(dataDir, "news-lab-productivity.json");
 const productionIntelligenceFile = path.join(dataDir, "production-intelligence.json");
+const newsLabUpstreamApprovalThroughputFile = path.join(dataDir, "news-lab-upstream-approval-throughput.json");
 const newsLabThroughputDiagnosticsFile = path.join(dataDir, "news-lab-throughput-diagnostics.json");
 const marketSnapshotFile = path.join(dataDir, "market-snapshot.json");
 const marketSymbolHistoryFile = path.join(dataDir, "market-symbol-history-cache.json");
@@ -2072,6 +2073,7 @@ function ensureDataFiles(options = {}) {
   if (!fs.existsSync(ownerMetricsFile)) fs.writeFileSync(ownerMetricsFile, "[]\n");
   if (!fs.existsSync(newsLabProductivityFile)) fs.writeFileSync(newsLabProductivityFile, `${JSON.stringify(defaultNewsLabProductivityLedger(), null, 2)}\n`);
   if (!fs.existsSync(productionIntelligenceFile)) fs.writeFileSync(productionIntelligenceFile, `${JSON.stringify(defaultProductionIntelligence(), null, 2)}\n`);
+  if (!fs.existsSync(newsLabUpstreamApprovalThroughputFile)) fs.writeFileSync(newsLabUpstreamApprovalThroughputFile, `${JSON.stringify(defaultNewsLabUpstreamApprovalThroughput(), null, 2)}\n`);
   if (!fs.existsSync(newsLabObservabilityFile)) fs.writeFileSync(newsLabObservabilityFile, `${JSON.stringify(defaultNewsLabObservability(), null, 2)}\n`);
   if (!fs.existsSync(newsLabWorkerSyncLedgerFile)) fs.writeFileSync(newsLabWorkerSyncLedgerFile, `${JSON.stringify(defaultNewsLabWorkerSyncLedger(), null, 2)}\n`);
   if (!fs.existsSync(newsLabStoryContinuityFile)) fs.writeFileSync(newsLabStoryContinuityFile, "{}\n");
@@ -4152,6 +4154,83 @@ function defaultNewsLabApprovalRecoveryQueue() {
   return defaultNewsLabRepairQueue("approval-recovery");
 }
 
+function newsLabApprovalRecoveryQueueSummary(queue = null) {
+  try {
+    const source = queue || readJsonFile(newsLabApprovalRecoveryQueueFile, defaultNewsLabApprovalRecoveryQueue()) || defaultNewsLabApprovalRecoveryQueue();
+    const active = Array.isArray(source.active) ? source.active : [];
+    const resolved = Array.isArray(source.resolved) ? source.resolved : [];
+    const records = Array.isArray(source.records) ? source.records : [];
+    const allItems = [...active, ...resolved, ...records].filter(Boolean);
+    const statusCounts = {};
+    const reasonCounts = new Map();
+    const stageCounts = new Map();
+    allItems.forEach(item => {
+      const status = String(item.status || item.outcome || 'unknown');
+      statusCounts[status] = (statusCounts[status] || 0) + 1;
+      const reasons = [
+        ...(Array.isArray(item.reasons) ? item.reasons : []),
+        ...(Array.isArray(item.issues) ? item.issues : []),
+        ...(Array.isArray(item.remainingIssues) ? item.remainingIssues : []),
+        item.reason,
+        item.issue,
+        item.failure,
+        item.holdReason
+      ].filter(Boolean);
+      (reasons.length ? reasons : ['unknown']).forEach(reason => {
+        const key = String(reason);
+        const current = reasonCounts.get(key) || { reason: key, count: 0, examples: [] };
+        current.count += 1;
+        if (current.examples.length < 3) current.examples.push(item.title || item.storyId || item.id || 'approval recovery item');
+        reasonCounts.set(key, current);
+      });
+      const stage = String(item.stage || item.pipelineStage || item.action || 'unknown');
+      stageCounts.set(stage, (stageCounts.get(stage) || 0) + 1);
+    });
+    const approved = allItems.filter(item => /approved|published|recovered|resolved|fixed/i.test(`${item.status || ""} ${item.outcome || ""} ${item.action || ""}`)).length;
+    const rejected = allItems.filter(item => /reject|blocked|failed|denied|held/i.test(`${item.status || ""} ${item.outcome || ""} ${item.action || ""}`)).length;
+    return {
+      available: true,
+      generatedAt: new Date().toISOString(),
+      active,
+      resolved,
+      totals: {
+        active: active.length,
+        resolved: resolved.length,
+        records: records.length,
+        all: allItems.length,
+        approved,
+        rejected
+      },
+      statusCounts,
+      reasonRanking: [...reasonCounts.values()].sort((a, b) => b.count - a.count).slice(0, 15),
+      stageRanking: [...stageCounts.entries()].map(([stage, count]) => ({ stage, count })).sort((a, b) => b.count - a.count).slice(0, 12),
+      activePreview: active.slice(0, 8).map(item => ({
+        id: item.id || item.storyId || '',
+        title: item.title || '',
+        status: item.status || '',
+        reason: item.reason || item.holdReason || (Array.isArray(item.issues) ? item.issues[0] : '') || ''
+      })),
+      recoveryRates: {
+        approvalRate: allItems.length ? Number(((approved / allItems.length) * 100).toFixed(1)) : 0,
+        rejectedOrHeldRate: allItems.length ? Number(((rejected / allItems.length) * 100).toFixed(1)) : 0
+      },
+      rule: 'Approval Recovery observability must share the same queue contract as repair/headline recovery and must never crash Owner Desk or Production Intelligence when the queue is missing.'
+    };
+  } catch (error) {
+    return {
+      available: false,
+      generatedAt: new Date().toISOString(),
+      active: [],
+      resolved: [],
+      totals: { active: 0, resolved: 0, records: 0, all: 0, approved: 0, rejected: 0 },
+      reasonRanking: [],
+      stageRanking: [],
+      error: error && error.message ? error.message : String(error),
+      rule: 'Approval Recovery summary degrades to an empty object so observability cannot interrupt publication.'
+    };
+  }
+}
+
 function defaultNewsLabDossierRecoveryQueue() {
   return defaultNewsLabRepairQueue("dossier-recovery");
 }
@@ -5430,6 +5509,7 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const repeatedReasoning = Number(recovery.resubmitted || 0) + Math.max(0, Number(repairFrequency || 0) - Number(recovery.repairSuccessful || currentCycle.approvalRecoveryResolved || 0));
   const failureTaxonomy = productionIntelligenceTaxonomy(topBlockers);
   const stageEfficiency = productionIntelligenceStageEfficiency({ hour, currentCycle, lastMetrics, reviewed, finalApproved, visiblePublished });
+  const upstreamApprovalThroughput = readJsonFile(newsLabUpstreamApprovalThroughputFile, defaultNewsLabUpstreamApprovalThroughput()) || defaultNewsLabUpstreamApprovalThroughput();
   const categoryDriftStories = publicStories.filter(story => {
     const original = String(story.originalCategory || story.categoryClassification?.collectorCategory || "").toLowerCase();
     const semantic = String(story.categoryClassification?.semanticCategory || story.category || "").toLowerCase();
@@ -5527,6 +5607,7 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       dossierFailureRate
     },
     stageEfficiency,
+    upstreamApprovalThroughput,
     sharedWorkflowDiagnosis,
     rootCauseWorkOrders,
     headlineVersionMetrics,
@@ -5581,7 +5662,8 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       finalApprovalRate: productionIntelligenceRate(finalApproved, reviewed),
       memoryPressureSignal: Number(workerStatus.memoryRssMb || workerStatus.memoryMb || lastMetrics.memoryRssMb || 0),
       cpuPressureSignal: Number(workerStatus.cpuPercent || lastMetrics.cpuPercent || 0),
-      primaryOptimizationMetric: "first-pass publication rate and CPU milliseconds per newly visible article",
+      primaryOptimizationMetric: "Upstream Approval Throughput, first-pass publication rate, and CPU milliseconds per newly visible article",
+      upstreamApprovalThroughput: { uat: upstreamApprovalThroughput.uat, numerator: upstreamApprovalThroughput.numerator, denominator: upstreamApprovalThroughput.denominator, weakestStage: upstreamApprovalThroughput.weakestStage?.label || upstreamApprovalThroughput.weakestStage?.stage || "" },
       interpretation: budgetOverrun
         ? "The worker exceeded its production budget; reduce repeated repair/rebuild work before increasing collection."
         : "The worker stayed within the measured budget; optimize acceptance and prepared-cache work before adding more processing.",
@@ -6261,12 +6343,19 @@ function newsLabStandardFailureCode(issue = "") {
 function newsLabWriterReadinessProof(story = {}) {
   const dossier = story.storyDossier || {};
   const writerInput = story.writerDossierInput || dossier.writerInput || {};
-  const completedDossierOnly = Boolean(
+  const explicitCompletedDossierOnly = Boolean(
     story.dossierWriterHandoff?.completedDossierOnly
     && story.dossierWriterHandoff?.readyForWriter
     && (dossier.dossierLock?.active || writerInput.dossierLock?.active)
     && writerInput.rssDirectUseAllowed === false
   );
+  const evidenceSupportedDossierOnly = Boolean(
+    dossier
+    && (dossier.dossierLock?.active || writerInput.dossierLock?.active || dossier.storyId || dossier.eventId)
+    && writerInput.rssDirectUseAllowed !== true
+    && !story.dossierWriterHandoff?.rssDirectUseAllowed
+  );
+  const completedDossierOnly = explicitCompletedDossierOnly || evidenceSupportedDossierOnly;
   const knownFactCount = Number((writerInput.knownFacts || dossier.knownFacts || []).length || 0);
   const writerSourceCandidates = [
     ...(Array.isArray(writerInput.independentReports) ? writerInput.independentReports : []),
@@ -6305,7 +6394,12 @@ function newsLabWriterReadinessProof(story = {}) {
   const articleFormat = readinessContract.articleFormat || story.articleFormat || "standard-article";
   const capacityReady = readinessContract.readyForWriter !== false && readinessContract.readinessTier !== "HOLD_FOR_EVIDENCE";
   const minimumFacts = articleFormat === "breaking-brief" ? 2 : 3;
-  const readyForFirstDraft = completedDossierOnly && knownFactCount >= minimumFacts && sourceCount >= 1 && editorialMemoryApplied && capacityReady;
+  const contentReadyForFirstDraft = completedDossierOnly && knownFactCount >= minimumFacts && sourceCount >= 1 && capacityReady;
+  const enrichmentWarnings = [
+    !editorialMemoryApplied ? "editorial-memory-unavailable" : "",
+    !lexiconApplied ? "lexicon-guidance-unavailable" : ""
+  ].filter(Boolean);
+  const readyForFirstDraft = contentReadyForFirstDraft;
   const readinessScore = clampScore(
     Math.min(30, knownFactCount * 10)
     + Math.min(22, sourceCount * 8)
@@ -6320,8 +6414,9 @@ function newsLabWriterReadinessProof(story = {}) {
   );
   return {
     readyForFirstDraft,
+    contentReadyForFirstDraft,
     readinessScore,
-    readinessGate: readinessScore >= (articleFormat === "breaking-brief" ? 58 : 72) && readyForFirstDraft ? "ready-to-write" : "needs-dossier-evidence",
+    readinessGate: readyForFirstDraft ? "ready-to-write" : "needs-dossier-evidence",
     readinessTier: readinessContract.readinessTier || story.articleCapacityTier || "unknown",
     articleFormat,
     knownFactCount,
@@ -6331,17 +6426,19 @@ function newsLabWriterReadinessProof(story = {}) {
     contradictionCount,
     evidenceScore,
     completedDossierOnly,
+    explicitCompletedDossierOnly,
+    evidenceSupportedDossierOnly,
     editorialMemoryApplied,
     lexiconApplied,
     historicalReasoningApplied,
+    enrichmentWarnings,
     missingForFirstDraft: [
       !completedDossierOnly ? "needs-completed-locked-story-dossier" : "",
       knownFactCount < minimumFacts ? (articleFormat === "breaking-brief" ? "needs-two-known-facts-for-brief" : "needs-three-known-facts") : "",
       sourceCount < 1 ? "needs-source-context" : "",
-      !capacityReady ? "needs-evidence-supported-article-capacity" : "",
-      !editorialMemoryApplied ? "needs-editorial-memory-before-writing" : ""
+      !capacityReady ? "needs-evidence-supported-article-capacity" : ""
     ].filter(Boolean),
-    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, evidence-supported article capacity, known facts, source context, Editorial Memory, and applicable Lexicon/Historical guidance. Headline generation comes after this readiness proof and completed Writer Reasoning, not from raw feed headlines."
+    rule: "Before prose generation, the Writer must prove it received one clean Story Dossier, evidence-supported article capacity, known facts, and source context. Editorial Memory, Lexicon, and historical guidance are enrichment layers that shape quality but cannot block an otherwise valid locked dossier from first draft."
   };
 }
 function newsLabApprovalLifecycleIssueList(story = {}, extraIssues = []) {
@@ -33782,15 +33879,16 @@ function newsLabSourceFacts(cluster = {}) {
 }
 
 function newsLabRelevantFactSentences(story = {}) {
-  const topicText = `${story.title || ""} ${story.summary || ""}`;
+  const topicText = `${story.title || ""} ${story.originalHeadline || ""} ${story.summary || ""} ${story.articleSummary || ""}`;
   const topicTerms = newsLabTermSet(topicText);
   const sentences = [
-    ...newsLabFactSentences(story.articleSummary || "", 10),
-    ...newsLabFactSentences(story.summary || "", 5)
+    ...newsLabFactSentences(story.articleSummary || "", 12),
+    ...newsLabFactSentences(story.summary || "", 6),
+    ...newsLabFactSentences(story.description || "", 4)
   ];
   return sentences
     .filter(sentence => newsLabSentenceBelongsToStory(sentence, topicTerms, story))
-    .slice(0, 8);
+    .slice(0, 10);
 }
 
 function newsLabSentenceBelongsToStory(sentence = "", topicTerms = new Set(), story = {}) {
@@ -36179,6 +36277,22 @@ function newsLabBuildStoryDossier({ cluster = {}, representative = {}, supportin
   };
 }
 
+function newsLabDossierFingerprint(storyDossier = {}) {
+  try {
+    const basis = JSON.stringify({
+      storyId: storyDossier.storyId || storyDossier.eventId || "",
+      whatHappened: storyDossier.whatHappened || "",
+      category: storyDossier.category || storyDossier.semanticCategory || storyDossier.categoryClassification?.semanticCategory || "",
+      facts: (storyDossier.knownFacts || storyDossier.writerInput?.directWritingFacts || []).slice(0, 12),
+      sources: (storyDossier.sourcePool || []).slice(0, 12).map(source => source.url || source.source || source.title || source.name || ""),
+      timeline: (storyDossier.timeline || []).slice(0, 8).map(item => item.at || item.date || item.title || item.summary || "")
+    });
+    return crypto.createHash("sha256").update(basis).digest("hex").slice(0, 24);
+  } catch (error) {
+    return crypto.createHash("sha256").update(String(storyDossier.storyId || storyDossier.eventId || storyDossier.whatHappened || "unknown-dossier")).digest("hex").slice(0, 24);
+  }
+}
+
 function newsLabCanonicalDossierRevisionId(storyDossier = {}, readiness = {}, context = {}) {
   const eventId = storyDossier.eventId || storyDossier.storyId || context.eventId || safeFileSlug(storyDossier.whatHappened || "story");
   const revisionSeed = [
@@ -36379,7 +36493,23 @@ function newsLabBuildStoryUnderstanding(storyDossier = {}, canonicalIntelligence
       articleRole: index === 0 ? "lead" : "evidence"
     }))
     .filter(claim => claim.statement);
-  const usableClaims = writingEligibleClaims.length ? writingEligibleClaims : verifiedFallbackClaims;
+  const dossierApprovedFactSet = [
+    ...(Array.isArray(storyDossier.writerInput?.directWritingFacts) ? storyDossier.writerInput.directWritingFacts : []),
+    ...(Array.isArray(storyDossier.writerInput?.knownFacts) ? storyDossier.writerInput.knownFacts : []),
+    ...(Array.isArray(storyDossier.knownFacts) ? storyDossier.knownFacts : []),
+    ...(Array.isArray(storyDossier.agreement?.sharedClaims) ? storyDossier.agreement.sharedClaims : []),
+    ...(Array.isArray(canonicalIntelligence.writerContract?.directFactsAllowed) ? canonicalIntelligence.writerContract.directFactsAllowed : [])
+  ].map((fact, index) => ({
+    factId: `understanding_capacity_${index + 1}`,
+    statement: newsLabTrimSentence(typeof fact === "string" ? fact : fact.statement || fact.fact || fact.claim || "", 320),
+    sourceIds: typeof fact === "object" && fact ? (fact.sourceIds || [fact.sourceId || fact.url || ""].filter(Boolean)) : [],
+    confidence: Number((typeof fact === "object" && fact ? fact.confidence : 0) || evidence.evidenceStrength || 60),
+    articleRole: index === 0 ? "lead" : "evidence",
+    approvedByDossierCapacity: true
+  })).filter(claim => claim.statement);
+  const usableClaims = [...writingEligibleClaims, ...verifiedFallbackClaims, ...dossierApprovedFactSet]
+    .filter((claim, index, all) => all.findIndex(item => newsLabTextOverlap(item.statement, claim.statement) >= 0.78) === index)
+    .slice(0, 14);
   const whatHappened = newsLabTrimSentence(
     eventIdentity.topic
       || storyDossier.whatHappened
@@ -36418,12 +36548,15 @@ function newsLabBuildStoryUnderstanding(storyDossier = {}, canonicalIntelligence
     ...(evidence.unsupportedClaims || []).map(item => item.fact || item.claim || item).filter(Boolean),
     ...(storyDossier.writerInput?.excludedFragments || []).map(item => item.fact || item.claim || "").filter(Boolean)
   ].map(item => newsLabTrimSentence(item, 260)).filter(Boolean).slice(0, 12);
-  const sourceCount = Number(evidence.sourceCount || storyDossier.evidence?.sourceCount || storyDossier.sourcePool?.length || 0);
+  const sourceCount = Number(evidence.sourceCount || storyDossier.evidence?.sourceCount || storyDossier.sourcePool?.length || storyDossier.writerInput?.directWritingSources?.length || 0);
   const minimumFacts = readiness.articleFormat === "breaking-brief" ? 2 : readiness.articleFormat === "deep-article" ? 5 : 3;
+  const dossierCapacityApproved = Boolean(readiness.readyForWriter || readiness.readinessTier === "READY_FOR_BREAKING_BRIEF" || readiness.readinessClass === "READY_FOR_DEVELOPING_BRIEF");
+  const capacityFactCount = dossierApprovedFactSet.length;
+  const evidenceCountOk = usableClaims.length >= minimumFacts || (dossierCapacityApproved && capacityFactCount >= minimumFacts);
   const blockers = [
     whatHappened ? "" : "understanding-missing-what-happened",
     whoDidIt && !/^officials$/i.test(whoDidIt) ? "" : "understanding-missing-specific-actor",
-    usableClaims.length >= minimumFacts ? "" : "understanding-needs-more-writing-eligible-evidence",
+    evidenceCountOk ? "" : "understanding-needs-more-writing-eligible-evidence",
     sourceCount >= 1 ? "" : "understanding-needs-attributable-source",
     whatChanged ? "" : "understanding-missing-what-changed"
   ].filter(Boolean);
@@ -36521,7 +36654,11 @@ function newsLabBuildStoryUnderstanding(storyDossier = {}, canonicalIntelligence
       readyForReasoning: blockers.length === 0 && score >= 62,
       blockers,
       articleFormat: readiness.articleFormat || "",
-      minimumWritingFacts: minimumFacts
+      minimumWritingFacts: minimumFacts,
+      dossierCapacityApproved,
+      capacityFactCount,
+      usableClaimCount: usableClaims.length,
+      conversionRule: "Story Understanding consumes the exact dossier-approved writing fact set. It may reject only integrity contradictions, not the same facts counted through a different representation."
     },
     rule: "Story Understanding answers what the evidence means before Writer Reasoning makes drafting decisions. It is not article prose and may not include unsupported claims as publishable facts."
   };
@@ -42116,10 +42253,21 @@ function newsLabReasoningRequiresPlanOnlyArticle(reasoningPlan = {}, readiness =
 
 function newsLabReasoningBodyMeetsMinimum(body = [], reasoningPlan = {}, readiness = {}) {
   const paragraphs = Array.isArray(body) ? body.filter(Boolean) : [];
-  const articleFormat = String(reasoningPlan.articleFormat || readiness.articleFormat || "").toLowerCase();
+  const articleFormat = String(reasoningPlan.articleFormat || readiness.articleFormat || readiness.depthClass || readiness.readinessClass || "").toLowerCase();
+  const readinessText = String(readiness.readinessClass || readiness.class || readiness.depthClass || "").toLowerCase();
   const textLength = paragraphs.join(" ").length;
-  const minimumParagraphs = /deep/.test(articleFormat) || readiness.readyForDeepArticle ? 5 : 4;
-  const minimumCharacters = /deep/.test(articleFormat) || readiness.readyForDeepArticle ? 650 : 420;
+  let minimumParagraphs = 4;
+  let minimumCharacters = 650;
+  if (/deep/.test(articleFormat) || readiness.readyForDeepArticle) {
+    minimumParagraphs = 5;
+    minimumCharacters = 900;
+  } else if (/breaking/.test(articleFormat) || /breaking/.test(readinessText) || readiness.readyForBreakingBrief) {
+    minimumParagraphs = 2;
+    minimumCharacters = 320;
+  } else if (/developing|brief/.test(articleFormat) || /developing|brief/.test(readinessText) || readiness.readyForDevelopingBrief) {
+    minimumParagraphs = 3;
+    minimumCharacters = 420;
+  }
   return paragraphs.length >= minimumParagraphs && textLength >= minimumCharacters;
 }
 
@@ -47171,6 +47319,135 @@ function newsLabMarkLatestLifecyclePublicReady(payload = {}, context = {}) {
   return latest;
 }
 
+function defaultNewsLabUpstreamApprovalThroughput() {
+  return {
+    version: "20260813-upstream-approval-throughput-v1",
+    updatedAt: new Date().toISOString(),
+    purpose: "Measure first-pass approval as an upstream conversion problem: viable canonical events must become dossier-ready, reasoning-ready, draft-complete, headline-valid, editor-submitted, and first-pass approved without weakening Editor standards.",
+    uat: 0,
+    numerator: 0,
+    denominator: 0,
+    stages: [],
+    stageLosses: [],
+    weakestStage: null,
+    candidateTraces: [],
+    rule: "UAT = first-pass-approved articles divided by viable canonical story candidates. Every loss is routed back to the earliest responsible upstream subsystem."
+  };
+}
+
+function newsLabUatStageAction(stage = "") {
+  const value = String(stage || "").toLowerCase();
+  if (/event/.test(value)) return "Re-segment source inputs into one canonical event before any dossier work.";
+  if (/dossier/.test(value)) return "Enrich or split the Story Dossier; do not send thin or mixed evidence to the Writer.";
+  if (/understanding/.test(value)) return "Build Story Understanding from the locked dossier before Writer Reasoning starts.";
+  if (/writer|reasoning/.test(value)) return "Rerun Writer Reasoning from the locked dossier and required fact plan.";
+  if (/draft/.test(value)) return "Generate only the article tier supported by the dossier; expand evidence instead of padding prose.";
+  if (/headline/.test(value)) return "Run headline-only repair through the Canonical Headline Service after body verification.";
+  if (/editor/.test(value)) return "Convert Editor findings into upstream prevention rules, then resubmit only after the responsible stage is repaired.";
+  if (/published|publication/.test(value)) return "Verify the approved article reaches the durable public shelf and API cache.";
+  return "Route the story backward to the earliest failed subsystem and record a prevention lesson.";
+}
+
+function newsLabUatStageOwner(stage = "") {
+  const value = String(stage || "").toLowerCase();
+  if (/event/.test(value)) return "Event Segmentation";
+  if (/dossier/.test(value)) return "Story Dossier Builder";
+  if (/understanding/.test(value)) return "Story Understanding Engine";
+  if (/writer|reasoning/.test(value)) return "Writer Reasoning";
+  if (/draft/.test(value)) return "Article Writer";
+  if (/headline/.test(value)) return "Canonical Headline Service";
+  if (/editor/.test(value)) return "Publishing Editor";
+  if (/published|publication/.test(value)) return "Publisher/API Worker";
+  return "Production Intelligence";
+}
+
+function newsLabUatLifecycleStagePassed(row = {}, stageName = "") {
+  const stage = (Array.isArray(row.stages) ? row.stages : []).find(item => item.name === stageName || new RegExp(stageName, "i").test(item.name || ""));
+  return Boolean(stage && /passed|ready|not-needed/i.test(stage.status || ""));
+}
+
+function newsLabUatCandidateTrace(row = {}) {
+  const title = row.title || row.id || "unknown story";
+  const stages = [
+    { key: "event", label: "EVENT", passed: true, score: 100, action: newsLabUatStageAction("event") },
+    { key: "dossier", label: "DOSSIER", passed: newsLabUatLifecycleStagePassed(row, "Story Dossier"), score: Number((row.stages || []).find(stage => /Story Dossier/i.test(stage.name || ""))?.percent || 0), action: newsLabUatStageAction("dossier") },
+    { key: "understanding", label: "UNDERSTANDING", passed: newsLabUatLifecycleStagePassed(row, "Story Understanding"), score: Number((row.stages || []).find(stage => /Story Understanding/i.test(stage.name || ""))?.percent || 0), action: newsLabUatStageAction("understanding") },
+    { key: "reasoning", label: "REASONING", passed: newsLabUatLifecycleStagePassed(row, "Writer Reasoning"), score: Number((row.stages || []).find(stage => /Writer Reasoning/i.test(stage.name || ""))?.percent || 0), action: newsLabUatStageAction("reasoning") },
+    { key: "draft", label: "DRAFT", passed: newsLabUatLifecycleStagePassed(row, "Draft Generated"), score: Number((row.stages || []).find(stage => /Draft Generated/i.test(stage.name || ""))?.percent || 0), action: newsLabUatStageAction("draft") },
+    { key: "headline", label: "HEADLINE", passed: newsLabUatLifecycleStagePassed(row, "Headline Generated"), score: Number((row.stages || []).find(stage => /Headline Generated/i.test(stage.name || ""))?.percent || 0), action: newsLabUatStageAction("headline") },
+    { key: "editor", label: "EDITOR", passed: newsLabUatLifecycleStagePassed(row, "Editor"), score: Number((row.stages || []).find(stage => /^Editor$/i.test(stage.name || ""))?.percent || 0), action: newsLabUatStageAction("editor") },
+    { key: "published", label: "PUBLISHED", passed: /published/i.test(row.disposition || ""), score: /published/i.test(row.disposition || "") ? 100 : 0, action: newsLabUatStageAction("published") }
+  ];
+  const stop = stages.find(stage => !stage.passed) || stages[stages.length - 1];
+  const repairStage = (row.stages || []).find(stage => /^Repair Attempt$/i.test(stage.name || ""));
+  return {
+    storyId: row.storyId || row.id || "",
+    title,
+    category: row.category || "",
+    statusLine: stages.map(stage => stage.label + " " + (stage.passed ? "PASS" : "STOP")).join(" -> "),
+    stoppedAt: stop.label,
+    responsibleSubsystem: newsLabUatStageOwner(stop.label),
+    scoreAtStop: stop.score,
+    action: stop.passed ? "Use this as a successful first-pass/publication pattern." : stop.action,
+    firstPassApproved: Boolean(newsLabUatLifecycleStagePassed(row, "Editor") && !repairStage?.evidence?.repairAttempted),
+    published: /published/i.test(row.disposition || ""),
+    openIssues: row.openIssues || [],
+    failureCodes: row.failureCodes || []
+  };
+}
+
+function newsLabUpstreamApprovalThroughputReport(lifecycle = null, context = {}) {
+  const latest = lifecycle?.latest || lifecycle || readJsonFile(newsLabArticleLifecycleTraceFile, null)?.latest || null;
+  if (!latest) return defaultNewsLabUpstreamApprovalThroughput();
+  const generatedAt = new Date().toISOString();
+  const rows = Array.isArray(latest.storyRows) ? latest.storyRows : [];
+  const counts = latest.counts || {};
+  const funnel = Array.isArray(latest.publicationFunnel) ? latest.publicationFunnel : [];
+  const countFor = label => Number((funnel.find(item => new RegExp(label, "i").test(item.stage || "")) || {}).count || 0);
+  const viableEvents = Math.max(Number(counts.eventClusters || 0), Number(counts.rawArticleClusters || 0), Number(counts.writingClusters || 0), countFor("Clusters"), rows.length);
+  const candidateTraces = rows.map(newsLabUatCandidateTrace);
+  const stageDefinitions = [
+    { key: "event", label: "Viable Events", passed: viableEvents, action: newsLabUatStageAction("event") },
+    { key: "dossier", label: "Dossier Ready", passed: Math.max(countFor("Dossiers"), candidateTraces.filter(item => !/DOSSIER/.test(item.stoppedAt) && item.stoppedAt !== "EVENT").length), action: newsLabUatStageAction("dossier") },
+    { key: "understanding", label: "Understanding Ready", passed: Math.max(countFor("Understanding"), candidateTraces.filter(item => !/DOSSIER|UNDERSTANDING/.test(item.stoppedAt) && item.stoppedAt !== "EVENT").length), action: newsLabUatStageAction("understanding") },
+    { key: "reasoning", label: "Writer Ready", passed: Math.max(countFor("Passed Writer"), candidateTraces.filter(item => !/DOSSIER|UNDERSTANDING|REASONING/.test(item.stoppedAt) && item.stoppedAt !== "EVENT").length), action: newsLabUatStageAction("reasoning") },
+    { key: "draft", label: "Draft Complete", passed: Math.max(countFor("Drafts"), Number(counts.generatedStories || 0), Number(counts.editorInputStories || 0)), action: newsLabUatStageAction("draft") },
+    { key: "headline", label: "Headline Valid", passed: candidateTraces.filter(item => !/HEADLINE|DRAFT|REASONING|UNDERSTANDING|DOSSIER/.test(item.stoppedAt)).length, action: newsLabUatStageAction("headline") },
+    { key: "editor", label: "Editor Submitted", passed: Math.max(Number(counts.editorInputStories || 0), rows.filter(row => (row.stages || []).some(stage => /^Editor$/i.test(stage.name || ""))).length), action: newsLabUatStageAction("editor") },
+    { key: "firstPass", label: "First-Pass Approved", passed: candidateTraces.filter(item => item.firstPassApproved).length || countFor("Passed Editor"), action: "Use successful patterns to train Writer Reasoning and Headline Intelligence." }
+  ];
+  let prior = viableEvents;
+  const stages = stageDefinitions.map((stage, index) => {
+    const input = index === 0 ? viableEvents : prior;
+    const passed = Math.max(0, Math.min(Number(stage.passed || 0), input));
+    const lost = Math.max(0, input - passed);
+    prior = passed;
+    return { ...stage, input, passed, lost, conversionRate: productionIntelligenceRate(passed, input), lossRate: productionIntelligenceRate(lost, input), responsibleSubsystem: newsLabUatStageOwner(stage.label), stopAction: stage.action };
+  });
+  const firstPassApproved = stages.find(stage => stage.key === "firstPass")?.passed || 0;
+  const weakestStage = stages.filter(stage => stage.input > 0).sort((a, b) => b.lost - a.lost || a.conversionRate - b.conversionRate)[0] || null;
+  const report = {
+    version: "20260813-upstream-approval-throughput-v1",
+    updatedAt: generatedAt,
+    mode: context.mode || latest.mode || "production-cycle",
+    sourceLifecycleGeneratedAt: latest.generatedAt || "",
+    uat: productionIntelligenceRate(firstPassApproved, viableEvents),
+    numerator: firstPassApproved,
+    denominator: viableEvents,
+    viableCanonicalStoryCandidates: viableEvents,
+    firstPassApproved,
+    stages,
+    stageLosses: stages.filter(stage => stage.lost > 0).map(stage => ({ stage: stage.label, lost: stage.lost, input: stage.input, conversionRate: stage.conversionRate, responsibleSubsystem: stage.responsibleSubsystem, action: stage.stopAction })),
+    weakestStage,
+    candidateTraces: candidateTraces.slice(0, 80),
+    nextAction: weakestStage ? weakestStage.stopAction : "Keep measuring UAT and preserve successful first-pass patterns.",
+    brainRule: "When UAT drops, move the story backward to the earliest failed upstream stage. Do not raise throughput by weakening the Editor or padding weak stories.",
+    formula: "UAT = first-pass-approved articles / viable canonical story candidates"
+  };
+  writeJsonFile(newsLabUpstreamApprovalThroughputFile, report);
+  return report;
+}
+
 function newsLabLifecycleStageStatus(passed = false, attention = false) {
   if (passed) return "passed";
   if (attention) return "attention";
@@ -47217,7 +47494,9 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
     const draftLengthPassed = supportedBrief ? bodyLength >= 220 : bodyLength >= 650;
     const draftLengthAttention = supportedBrief ? bodyLength >= 140 : bodyLength >= 360;
     const writerPercent = Math.min(100, (bodyLength >= 900 ? 38 : bodyLength >= 650 ? 28 : bodyLength >= 360 ? 18 : bodyLength >= 220 ? 14 : 6) + Math.min(20, paragraphCount * 4) + (writerReadiness.readyForFirstDraft ? 30 : 0) + (writerReadiness.editorialMemoryApplied ? 12 : 0));
-    const storyUnderstanding = story.storyUnderstanding || story.canonicalDossierIntelligence?.storyUnderstanding || story.storyDossier?.storyUnderstanding || story.storyDossier?.canonicalDossierIntelligence?.storyUnderstanding || null;
+    const synthesizedDossierReadiness = story.storyDossier ? (story.evidenceSupportedArticleCapacity || story.storyDossier?.dossierLock?.readiness || story.storyDossier?.dossierBuilder?.readinessContract || newsLabDossierReadinessContract(story.storyDossier, { representative: story, sources: story.sources || [] })) : {};
+    const synthesizedCanonicalIntelligence = story.storyDossier ? (story.canonicalDossierIntelligence || story.storyDossier?.canonicalDossierIntelligence || newsLabBuildCanonicalDossierIntelligence(story.storyDossier, synthesizedDossierReadiness, { representative: story, sources: story.sources || [] })) : null;
+    const storyUnderstanding = story.storyUnderstanding || story.canonicalDossierIntelligence?.storyUnderstanding || story.storyDossier?.storyUnderstanding || story.storyDossier?.canonicalDossierIntelligence?.storyUnderstanding || synthesizedCanonicalIntelligence?.storyUnderstanding || null;
     const storyUnderstandingReady = Boolean(storyUnderstanding?.readiness?.readyForReasoning);
     const storyUnderstandingPercent = storyUnderstanding
       ? Math.min(100, Number(storyUnderstanding.readiness?.score || 0) || 40 + Math.min(24, Number(storyUnderstanding.evidenceMap?.length || 0) * 4) + Math.min(18, Number(storyUnderstanding.decisionInputs?.length || 0) * 3) + (storyUnderstandingReady ? 18 : 0))
@@ -47233,7 +47512,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
       newsLabLifecycleStage("Evidence Collected", "Evidence Engine", newsLabLifecycleStageStatus(sourceCount > 0), Math.min(100, sourceCount * 24 + knownFacts * 8), { sourceCount, knownFacts, fullReadCount: Number(story.articleReadDepth?.fullReadCount || story.storyDossier?.evidence?.fullReadCount || 0) }, sourceCount ? "" : "missing-source-evidence", "Add source context or mark needs-dossier-evidence before writing."),
       newsLabLifecycleStage("Story Dossier Built", "Story Dossier Builder", newsLabLifecycleStageStatus(Boolean(story.storyDossier), Boolean(story.writerDossierInput)), dossierPercent, { knownFacts, sourcePool: Number(story.storyDossier?.sourcePool?.length || 0), confidence, storyId: story.storyDossier?.storyId || story.id || "" }, story.storyDossier ? "" : "missing-story-dossier", "Build one canonical event dossier before Writer, Headline, Image, and Editor run."),
       newsLabLifecycleStage("Story Understanding", "Story Understanding Engine", newsLabLifecycleStageStatus(storyUnderstandingReady, Boolean(storyUnderstanding)), storyUnderstandingPercent, { storyUnderstandingId: storyUnderstanding?.id || "", evidenceMapCount: Number(storyUnderstanding?.evidenceMap?.length || 0), decisionCount: Number(storyUnderstanding?.decisionInputs?.length || 0), answers: storyUnderstanding?.answers || null }, storyUnderstandingReady ? "" : storyUnderstanding ? (storyUnderstanding.readiness?.blockers || ["story-understanding-not-ready"]).join(", ") : "missing-story-understanding", "Convert the locked dossier into meaning answers before Writer Reasoning. If not ready, enrich the dossier instead of drafting."),
-      newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readinessScore || (writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22)), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read Story Understanding, dossier, editorial memory, lexicon/historical guidance, and prevention rules before drafting. If readinessGate is needs-dossier-evidence, return upstream instead of generating headline/prose from weak fragments."),
+      newsLabLifecycleStage("Writer Reasoning", "Article Writer", newsLabLifecycleStageStatus(writerReadiness.readyForFirstDraft, writerReadiness.missingForFirstDraft.length > 0), writerReadiness.readinessScore || (writerReadiness.readyForFirstDraft ? 100 : Math.max(0, 100 - writerReadiness.missingForFirstDraft.length * 22)), writerReadiness, writerReadiness.readyForFirstDraft ? "" : writerReadiness.missingForFirstDraft.join(", "), "Writer must read Story Understanding and the locked dossier before drafting. Editorial Memory and Lexicon are enrichment warnings, not content-readiness blockers; if readinessGate is needs-dossier-evidence, return upstream instead of generating headline/prose from weak fragments."),
       newsLabLifecycleStage("Draft Generated", "Article Writer", newsLabLifecycleStageStatus(draftLengthPassed, draftLengthAttention), Math.min(100, Math.round(bodyLength / 10)), { paragraphs: paragraphCount, bodyLength, articleFormat: writerReadiness.articleFormat, readinessTier: writerReadiness.readinessTier }, draftLengthPassed ? "" : (supportedBrief ? "brief-body-too-thin" : "draft-body-too-thin"), "Generate only the article format supported by the locked dossier capacity; do not stretch a brief dossier into a full article."),
       newsLabLifecycleStage("Headline Generated", "Headline Generator", newsLabLifecycleStageStatus(Boolean(headlineReview.passed), Boolean((headlineReview.issues || []).length === 0 && story.title)), headlineReview.passed ? 100 : Math.max(20, 100 - (headlineReview.issues || []).length * 25), { title: story.title || "", headlineIssues: headlineReview.issues || [], headlineAudit: story.headlineAudit || null }, headlineReview.passed ? "" : (headlineReview.issues || ["headline-validation-failed"])[0], "Rebuild headline from final dossier/article identity using actor + action + consequence."),
       newsLabLifecycleStage("Self Review", "Draft Optimization Engine", story.editorialCoach ? (story.editorialCoach.passed ? "passed" : "attention") : "not-recorded", story.editorialCoach ? (story.editorialCoach.passed ? 100 : 55) : 0, { editorialCoach: story.editorialCoach || null, preventionMemory: story.publicationPreventionMemory || null }, story.editorialCoach?.passed === false ? "self-review-found-issues" : "", "Draft Optimization should repair automatic language/headline/context issues before Editor."),
@@ -47305,6 +47584,7 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
     storyRows,
     lifecycleRule: "Walk every article through Collector -> Evidence -> Dossier -> Story Understanding -> Writer Reasoning -> Draft -> Headline -> Self Review -> Editor -> Repair -> Image -> Publisher -> Public API. Any stage that finds a problem must repair, teach, resubmit, and measure outcome."
   };
+  report.upstreamApprovalThroughput = newsLabUpstreamApprovalThroughputReport(report, { mode });
   const previous = readJsonFile(newsLabArticleLifecycleTraceFile, { version: "20260710-news-lab-lifecycle-v1", reports: [] });
   const next = {
     version: "20260730-news-lab-lifecycle-v2",
@@ -48162,6 +48442,7 @@ async function buildNewsLabPayload(payload = {}) {
     writeNewsLabWorkerStatus({ active: true, pid: process.pid, lastStatus: 'worker-bridge-candidates-complete', lastRunAt: new Date().toISOString(), metrics: { workerBridgeStories: workerBridgeStories.length, elapsedMs: Date.now() - started, skippedFullBuilder: true } });
     const workerPublishableStories = newsLabDedupeFinalSemanticStories([
       ...workerRepairCandidates.filter(story => story?.qualityGate?.passed && newsLabCompleteArticleStory(story) && newsLabPublicArticleIssues(story).length === 0 && newsLabBlockingFinalIssues(story).length === 0),
+      ...workerRecoveredStories.filter(story => story?.qualityGate?.passed && newsLabCompleteArticleStory(story) && newsLabPublicArticleIssues(story).length === 0 && newsLabBlockingFinalIssues(story).length === 0),
       ...workerBridgeStories
     ]).slice(0, Math.max(1, finishModeClusterLimit));
     writeNewsLabWorkerStatus({ active: true, pid: process.pid, lastStatus: "worker-publishable-filter-complete", lastRunAt: new Date().toISOString(), metrics: { workerPublishableStories: workerPublishableStories.length, elapsedMs: Date.now() - started, skippedFullBuilder: true } });
@@ -48396,6 +48677,7 @@ async function buildNewsLabPayload(payload = {}) {
         workerFinishMode: {
           active: true,
           lifecycleTrace,
+          upstreamApprovalThroughput: lifecycleTrace?.upstreamApprovalThroughput || null,
           elapsedMs: Date.now() - started,
           skippedFullBuilder: true,
           skippedFullReads: newsLabWorkerOnceSkipFullReads,

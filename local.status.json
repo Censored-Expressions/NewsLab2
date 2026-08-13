@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T01:49:22.209Z",
+  "generatedAt": "2026-08-13T16:15:44.310Z",
   "category": "local",
-  "pid": 22296,
+  "pid": 9908,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-local",
-  "lastFinishedAt": "2026-08-13T01:49:22.205Z",
+  "lastFinishedAt": "2026-08-13T16:15:44.305Z",
   "lastMetrics": {
-    "buildMs": 755,
+    "buildMs": 768,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T01:49:22.205Z",
+      "generatedAt": "2026-08-13T16:15:44.306Z",
       "sourceCount": 10,
       "failedSourceCount": 0,
       "slowSourceCount": 0,
@@ -35,7 +35,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 239
+          "lastDurationMs": 242
         },
         {
           "key": "abc::abc7.com::https://abc7.com/feed/",
@@ -53,7 +53,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 278
+          "lastDurationMs": 192
         },
         {
           "key": "abc::abc7chicago.com::https://abc7chicago.com/feed/",
@@ -71,7 +71,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 204
+          "lastDurationMs": 270
         },
         {
           "key": "abc::6abc.com::https://6abc.com/feed/",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 239
+          "lastDurationMs": 249
         },
         {
           "key": "abc::abc13.com::https://abc13.com/feed/",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 237
+          "lastDurationMs": 343
         },
         {
           "key": "abc7 bay area::abc7news.com::https://abc7news.com/feed/",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 282
+          "lastDurationMs": 297
         },
         {
           "key": "abc::abc11.com::https://abc11.com/feed/",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 295
+          "lastDurationMs": 392
         },
         {
           "key": "abc::abc30.com::https://abc30.com/feed/",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 692
+          "lastDurationMs": 424
         }
       ],
       "worstDomains": [

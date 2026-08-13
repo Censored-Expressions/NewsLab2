@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T01:49:13.297Z",
+  "generatedAt": "2026-08-13T16:15:36.664Z",
   "category": "politics",
-  "pid": 15776,
+  "pid": 21796,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-politics",
-  "lastFinishedAt": "2026-08-13T01:49:13.288Z",
+  "lastFinishedAt": "2026-08-13T16:15:36.655Z",
   "lastMetrics": {
-    "buildMs": 1609,
+    "buildMs": 1590,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T01:49:13.289Z",
+      "generatedAt": "2026-08-13T16:15:36.655Z",
       "sourceCount": 10,
       "failedSourceCount": 1,
       "slowSourceCount": 0,
@@ -34,8 +34,8 @@
           "skippedCount": 0,
           "lastErrorType": "timeout",
           "lastErrorCode": 20,
-          "lastFailedAt": "2026-08-13T01:49:13.280Z",
-          "lastDurationMs": 1524
+          "lastFailedAt": "2026-08-13T16:15:36.650Z",
+          "lastDurationMs": 1516
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/nation?hl=en-us&gl=us&ceid=us:en",
@@ -53,7 +53,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 366
+          "lastDurationMs": 301
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=congress%20white%20house%20politics%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -71,7 +71,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 456
+          "lastDurationMs": 171
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=policy%20election%20congress%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 381
+          "lastDurationMs": 158
         },
         {
           "key": "nyt politics::rss.nytimes.com::https://rss.nytimes.com/services/xml/rss/nyt/politics.xml",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 134
+          "lastDurationMs": 164
         },
         {
           "key": "guardian us::theguardian.com::https://www.theguardian.com/us-news/rss",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 183
+          "lastDurationMs": 207
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=white%20house%20policy%20when%3a1d&hl=en-us&gl=us&ceid=us:en",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 485
+          "lastDurationMs": 160
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=congress%20vote%20when%3a1d&hl=en-us&gl=us&ceid=us:en",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 533
+          "lastDurationMs": 170
         }
       ],
       "worstDomains": [

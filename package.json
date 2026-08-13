@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "censored-expressions-site",
   "version": "1.0.0",
   "private": true,
@@ -10,7 +10,7 @@
     "worker:scheduled": "CE_SITE_SCHEDULED_CONTENT_WORKER=1 node server.js",
     "start:combined": "CE_SERVER_START_WORKERS=true node server.js",
     "check": "node runtime-integrity-smoke.js",
-    "check:syntax": "node --check server.js && node --check worker.js && node --check news-lab.js && node --check news-lab-story.js && node --check news-lab-viewer.js && node --check owner-desk.js",
+    "check:syntax": "node --check server.js && node --check worker.js && node --check news-lab.js && node --check news-lab-story.js && node --check owner-desk.js",
     "smoke:runtime": "node runtime-integrity-smoke.js",
     "pexels:download": "node download-pexels-assets.js",
     "mobile:sync": "npx cap sync",
