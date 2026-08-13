@@ -1,59 +1,302 @@
 {
-  "generatedAt": "2026-07-23T19:13:51.040Z",
-  "mode": "category-collector-worker",
+  "generatedAt": "2026-08-13T00:07:13.440Z",
   "category": "top",
-  "pid": 5564,
+  "pid": 8152,
+  "active": false,
   "cycleMs": 30000,
-  "sourceLimit": 80,
-  "storyLimit": 180,
-  "lastStatus": "cache-refreshed",
-  "lastReason": "scheduled-category-collection",
-  "lastFinishedAt": "2026-07-23T19:13:51.040Z",
+  "sourceLimit": 10,
+  "storyLimit": 25,
+  "lastStatus": "completed",
+  "lastReason": "runtime-smoke-test:collector-top",
+  "lastFinishedAt": "2026-08-13T00:07:13.436Z",
   "lastMetrics": {
-    "sourceCount": 120,
-    "activeSourceLimit": 120,
-    "activeStoryLimit": 260,
-    "storyCount": 260,
-    "backfillStoryCount": 0,
-    "carriedForward": false,
-    "subDossierAcceptedStories": 0,
-    "subDossierContextStories": 0,
-    "subDossierKnownFacts": 0,
-    "buildMs": 7135,
-    "editorLearningDirectives": [
-      {
-        "subsystem": "Collector",
-        "issue": "generic-weak-headline",
-        "category": "sports",
-        "priority": 85,
-        "nextAction": "rewrite-impact-headline-from-dossier",
-        "preventionRule": "Use the strongest actor, action, result, location, or measurable decision from the dossier as the headline subject.",
-        "lastSeenAt": "2026-07-23T16:19:41.787Z",
-        "learnedFromDecision": "rejected-for-subsystem-repair",
-        "occurrenceWeight": 3
-      },
-      {
-        "subsystem": "Collector",
-        "issue": "story-identity-mismatch",
-        "category": "sports",
-        "priority": 85,
-        "nextAction": "route-to-earliest-failing-subsystem",
-        "preventionRule": "Record the failed rule, compare against approved story patterns, and rerun the earliest affected subsystem before publishing.",
-        "lastSeenAt": "2026-07-23T16:19:41.787Z",
-        "learnedFromDecision": "rejected-for-subsystem-repair",
-        "occurrenceWeight": 3
-      },
-      {
-        "subsystem": "Collector",
-        "issue": "generic-weak-headline",
-        "category": "technology",
-        "priority": 85,
-        "nextAction": "rewrite-impact-headline-from-dossier",
-        "preventionRule": "Use the strongest actor, action, result, location, or measurable decision from the dossier as the headline subject.",
-        "lastSeenAt": "2026-07-23T16:19:41.787Z",
-        "learnedFromDecision": "rejected-for-subsystem-repair",
-        "occurrenceWeight": 3
-      }
-    ]
+    "buildMs": 378,
+    "sourceCount": 10,
+    "storyCount": 25,
+    "feedFailureAttribution": {
+      "generatedAt": "2026-08-13T00:07:13.436Z",
+      "sourceCount": 10,
+      "failedSourceCount": 0,
+      "slowSourceCount": 0,
+      "worstSources": [
+        {
+          "key": "ap::apnews.com::https://apnews.com/hub/ap-top-news?output=rss",
+          "name": "AP",
+          "category": "major",
+          "domain": "apnews.com",
+          "provider": "AP",
+          "feed": "https://apnews.com/hub/ap-top-news?output=rss",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 359
+        },
+        {
+          "key": "cnn::rss.cnn.com::http://rss.cnn.com/rss/cnn_topstories.rss",
+          "name": "CNN",
+          "category": "major",
+          "domain": "rss.cnn.com",
+          "provider": "CNN",
+          "feed": "http://rss.cnn.com/rss/cnn_topstories.rss",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 230
+        },
+        {
+          "key": "fox news::moxie.foxnews.com::https://moxie.foxnews.com/google-publisher/latest.xml",
+          "name": "Fox",
+          "category": "major",
+          "domain": "moxie.foxnews.com",
+          "provider": "Fox News",
+          "feed": "https://moxie.foxnews.com/google-publisher/latest.xml",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 154
+        },
+        {
+          "key": "cbs::cbsnews.com::https://www.cbsnews.com/latest/rss/main",
+          "name": "CBS",
+          "category": "major",
+          "domain": "cbsnews.com",
+          "provider": "CBS",
+          "feed": "https://www.cbsnews.com/latest/rss/main",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 148
+        },
+        {
+          "key": "nbc::feeds.nbcnews.com::https://feeds.nbcnews.com/nbcnews/public/news",
+          "name": "NBC",
+          "category": "major",
+          "domain": "feeds.nbcnews.com",
+          "provider": "NBC",
+          "feed": "https://feeds.nbcnews.com/nbcnews/public/news",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 214
+        },
+        {
+          "key": "abc::abcnews.go.com::https://abcnews.go.com/abcnews/topstories",
+          "name": "ABC",
+          "category": "major",
+          "domain": "abcnews.go.com",
+          "provider": "ABC",
+          "feed": "https://abcnews.go.com/abcnews/topstories",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 284
+        },
+        {
+          "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/world?hl=en-us&gl=us&ceid=us:en",
+          "name": "Google World",
+          "category": "world",
+          "domain": "news.google.com",
+          "provider": "Google News",
+          "feed": "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 243
+        },
+        {
+          "key": "google news::news.google.com::https://news.google.com/rss/search?q=world%20news%20foreign%20policy%20when:1d&hl=en-us&gl=us&ceid=us:en",
+          "name": "Global Affairs Pulse",
+          "category": "world",
+          "domain": "news.google.com",
+          "provider": "Google News",
+          "feed": "https://news.google.com/rss/search?q=world%20news%20foreign%20policy%20when:1d&hl=en-US&gl=US&ceid=US:en",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 177
+        }
+      ],
+      "worstDomains": [
+        {
+          "domain": "apnews.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "rss.cnn.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "moxie.foxnews.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "cbsnews.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "feeds.nbcnews.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "abcnews.go.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "news.google.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 3
+        },
+        {
+          "domain": "feeds.bbci.co.uk",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        }
+      ],
+      "worstProviders": [
+        {
+          "provider": "AP",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "CNN",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "Fox News",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "CBS",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "NBC",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "ABC",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "Google News",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 3
+        },
+        {
+          "provider": "BBC World",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        }
+      ],
+      "rule": "Feed Reliability attributes failures by exact URL/source, domain, and provider so the Brain can quarantine, back off, or tune only the failing source instead of treating feed health as one aggregate problem."
+    }
   }
 }

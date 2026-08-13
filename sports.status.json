@@ -1,59 +1,302 @@
 {
-  "generatedAt": "2026-07-23T19:13:50.609Z",
-  "mode": "category-collector-worker",
+  "generatedAt": "2026-08-13T00:07:22.963Z",
   "category": "sports",
-  "pid": 33640,
+  "pid": 4276,
+  "active": false,
   "cycleMs": 30000,
-  "sourceLimit": 80,
-  "storyLimit": 180,
-  "lastStatus": "cache-refreshed",
-  "lastReason": "scheduled-category-collection",
-  "lastFinishedAt": "2026-07-23T19:13:50.609Z",
+  "sourceLimit": 10,
+  "storyLimit": 25,
+  "lastStatus": "completed",
+  "lastReason": "runtime-smoke-test:collector-sports",
+  "lastFinishedAt": "2026-08-13T00:07:22.958Z",
   "lastMetrics": {
-    "sourceCount": 44,
-    "activeSourceLimit": 44,
-    "activeStoryLimit": 220,
-    "storyCount": 220,
-    "backfillStoryCount": 0,
-    "carriedForward": false,
-    "subDossierAcceptedStories": 210,
-    "subDossierContextStories": 10,
-    "subDossierKnownFacts": 40,
-    "buildMs": 6728,
-    "editorLearningDirectives": [
-      {
-        "subsystem": "Collector",
-        "issue": "generic-weak-headline",
-        "category": "sports",
-        "priority": 85,
-        "nextAction": "rewrite-impact-headline-from-dossier",
-        "preventionRule": "Use the strongest actor, action, result, location, or measurable decision from the dossier as the headline subject.",
-        "lastSeenAt": "2026-07-23T16:19:41.787Z",
-        "learnedFromDecision": "rejected-for-subsystem-repair",
-        "occurrenceWeight": 3
-      },
-      {
-        "subsystem": "Collector",
-        "issue": "story-identity-mismatch",
-        "category": "sports",
-        "priority": 85,
-        "nextAction": "route-to-earliest-failing-subsystem",
-        "preventionRule": "Record the failed rule, compare against approved story patterns, and rerun the earliest affected subsystem before publishing.",
-        "lastSeenAt": "2026-07-23T16:19:41.787Z",
-        "learnedFromDecision": "rejected-for-subsystem-repair",
-        "occurrenceWeight": 3
-      },
-      {
-        "subsystem": "Collector",
-        "issue": "generic-weak-headline",
-        "category": "technology",
-        "priority": 85,
-        "nextAction": "rewrite-impact-headline-from-dossier",
-        "preventionRule": "Use the strongest actor, action, result, location, or measurable decision from the dossier as the headline subject.",
-        "lastSeenAt": "2026-07-23T16:19:41.787Z",
-        "learnedFromDecision": "rejected-for-subsystem-repair",
-        "occurrenceWeight": 3
-      }
-    ]
+    "buildMs": 631,
+    "sourceCount": 10,
+    "storyCount": 25,
+    "feedFailureAttribution": {
+      "generatedAt": "2026-08-13T00:07:22.958Z",
+      "sourceCount": 10,
+      "failedSourceCount": 3,
+      "slowSourceCount": 0,
+      "worstSources": [
+        {
+          "key": "fox sports::foxsports.com::https://www.foxsports.com/rss",
+          "name": "Fox Sports",
+          "category": "sports",
+          "domain": "foxsports.com",
+          "provider": "Fox Sports",
+          "feed": "https://www.foxsports.com/rss",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 0,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "feed-error",
+          "lastErrorCode": "HTTP_404",
+          "lastFailedAt": "2026-08-13T00:07:22.551Z",
+          "lastDurationMs": 151
+        },
+        {
+          "key": "nfl::nfl.com::https://www.nfl.com/feeds/rss/news",
+          "name": "NFL",
+          "category": "sports",
+          "domain": "nfl.com",
+          "provider": "NFL",
+          "feed": "https://www.nfl.com/feeds/rss/news",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 0,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "feed-error",
+          "lastErrorCode": "HTTP_404",
+          "lastFailedAt": "2026-08-13T00:07:22.925Z",
+          "lastDurationMs": 525
+        },
+        {
+          "key": "nba::nba.com::https://www.nba.com/rss/nba_rss.xml",
+          "name": "NBA",
+          "category": "sports",
+          "domain": "nba.com",
+          "provider": "NBA",
+          "feed": "https://www.nba.com/rss/nba_rss.xml",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 0,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "feed-error",
+          "lastErrorCode": "HTTP_404",
+          "lastFailedAt": "2026-08-13T00:07:22.632Z",
+          "lastDurationMs": 231
+        },
+        {
+          "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/sports?hl=en-us&gl=us&ceid=us:en",
+          "name": "Google Sports",
+          "category": "sports",
+          "domain": "news.google.com",
+          "provider": "Google News",
+          "feed": "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-US&gl=US&ceid=US:en",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 369
+        },
+        {
+          "key": "espn::espn.com::https://www.espn.com/espn/rss/news",
+          "name": "ESPN",
+          "category": "sports",
+          "domain": "espn.com",
+          "provider": "ESPN",
+          "feed": "https://www.espn.com/espn/rss/news",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 126
+        },
+        {
+          "key": "google news::news.google.com::https://news.google.com/rss/search?q=espn%20sports%20when:1d&hl=en-us&gl=us&ceid=us:en",
+          "name": "ESPN Local Pulse",
+          "category": "sports",
+          "domain": "news.google.com",
+          "provider": "Google News",
+          "feed": "https://news.google.com/rss/search?q=ESPN%20sports%20when:1d&hl=en-US&gl=US&ceid=US:en",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 561
+        },
+        {
+          "key": "cbs::cbssports.com::https://www.cbssports.com/rss/headlines/",
+          "name": "CBS Sports",
+          "category": "sports",
+          "domain": "cbssports.com",
+          "provider": "CBS",
+          "feed": "https://www.cbssports.com/rss/headlines/",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 157
+        },
+        {
+          "key": "google news::news.google.com::https://news.google.com/rss/search?q=site:nbcsports.com%20sports%20when:1d&hl=en-us&gl=us&ceid=us:en",
+          "name": "NBC Sports",
+          "category": "sports",
+          "domain": "news.google.com",
+          "provider": "Google News",
+          "feed": "https://news.google.com/rss/search?q=site:nbcsports.com%20sports%20when:1d&hl=en-US&gl=US&ceid=US:en",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "successCount": 1,
+          "cacheHitCount": 0,
+          "skippedCount": 0,
+          "lastErrorType": "",
+          "lastErrorCode": "",
+          "lastFailedAt": "",
+          "lastDurationMs": 184
+        }
+      ],
+      "worstDomains": [
+        {
+          "domain": "foxsports.com",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "nfl.com",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "nba.com",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "news.google.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 3
+        },
+        {
+          "domain": "espn.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "cbssports.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "abcnews.go.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "domain": "mlb.com",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        }
+      ],
+      "worstProviders": [
+        {
+          "provider": "Fox Sports",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "NFL",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "NBA",
+          "failureCount": 1,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "Google News",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 3
+        },
+        {
+          "provider": "ESPN",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "CBS",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "ABC",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        },
+        {
+          "provider": "MLB",
+          "failureCount": 0,
+          "slowCount": 0,
+          "transientNetworkCount": 0,
+          "cacheHitCount": 0,
+          "sources": 1
+        }
+      ],
+      "rule": "Feed Reliability attributes failures by exact URL/source, domain, and provider so the Brain can quarantine, back off, or tune only the failing source instead of treating feed health as one aggregate problem."
+    }
   }
 }
