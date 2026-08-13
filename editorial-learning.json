@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-12T21:24:14.920Z",
+  "updatedAt": "2026-08-13T00:07:05.044Z",
   "topicWeights": {
     "politics": 6,
     "world": 6,
@@ -29,7 +29,7 @@
   },
   "adaptiveWeights": {
     "version": 1,
-    "updatedAt": "2026-08-12T21:24:14.920Z",
+    "updatedAt": "2026-08-13T00:07:05.045Z",
     "bounds": {
       "confidenceEvidence": [
         0.7,
@@ -116,7 +116,7 @@
     },
     "metaLearning": {
       "version": 1,
-      "updatedAt": "2026-08-12T21:24:14.920Z",
+      "updatedAt": "2026-08-13T00:07:05.045Z",
       "saturationWindow": 12,
       "saturationThreshold": 3,
       "redirectStepLimit": 0.008,

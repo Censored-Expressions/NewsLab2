@@ -1,0 +1,569 @@
+{
+  "ok": true,
+  "generatedAt": "2026-08-13T00:07:26.308Z",
+  "syntax": [
+    {
+      "file": "server.js",
+      "ok": true,
+      "stderr": ""
+    },
+    {
+      "file": "worker.js",
+      "ok": true,
+      "stderr": ""
+    },
+    {
+      "file": "news-lab.js",
+      "ok": true,
+      "stderr": ""
+    },
+    {
+      "file": "news-lab-story.js",
+      "ok": true,
+      "stderr": ""
+    },
+    {
+      "file": "owner-desk.js",
+      "ok": true,
+      "stderr": ""
+    }
+  ],
+  "contracts": [
+    {
+      "name": "startNewsLabCollectorLoop",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "runNewsLabCollectorCycle",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "writeNewsLabCollectorStatus",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "mergeNewsLabCollectorStories",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "enrichMissingImages",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "buildNewsLabDossierSourcePayload",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "absorbDailyArticleMemory",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "queueArticleMemoryAbsorption",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "connectivityDiagnostics",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "functionalityDiagnostics",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "revenueGrowthDiagnostics",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "publicRuntimeState",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "categoryCounts",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "imageCounts",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "storyIntegrityFindings",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "verifyFeedAdaptiveActionResults",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "scheduledContentDurableCounts",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "normalizeScheduledContentWorkerStatus",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "scheduledContentHeartbeatFreshness",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "backupDurableContentLane",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "guardDurableContentLaneWrite",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "restoreDurableContentLaneFromBackup",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "durableContentLaneInfo",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "loadFeed",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "loadFeeds",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "feedFailureAttribution",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "sourceErrorKey",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "feedSourceDomain",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "feedSourceProvider",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "feedSourceRuntimeStatus",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "rankedFeedSourcesForReliability",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "runFeedSourcesWithAdaptiveConcurrency",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "learningSummary",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "searchLearningSummary",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "searchInterestScoreForStory",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "searchLearningBoost",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabDossierReadinessContract",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabDossierReadinessClassFromEvidence",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabTodayDateKey",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabDossierToWriterHandoff",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabBuildWriterReasoningPlan",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabCanonicalHeadlineService",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabHeadlineSemanticFrame",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabHeadlineBuildFromSemanticFrame",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabHeadlineCandidateFailureClass",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabFastPublishedApiPayload",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "readPreparedNewsLabApiPayload",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "readNewsLabLastKnownGoodApiPayload",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "suppressNewsLabPublicReadCacheRefresh",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "runNewsLabProductionCycle",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "startNewsLabProductionLoop",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "runNewsLabApiResponseCycle",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "startNewsLabApiResponseLoop",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "runNewsLabImageImprovementPass",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabImageDeliveryStage",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabPreferResolvedImageStory",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "newsLabPublicGeneratedImageVisible",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "runNewsLabStuckRescueCycle",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    },
+    {
+      "name": "startNewsLabStuckRescueLoop",
+      "defined": true,
+      "referencedIn": [
+        "server.js"
+      ]
+    }
+  ],
+  "modes": [
+    {
+      "role": "web",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "stderr": ""
+    },
+    {
+      "role": "api-worker",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "stderr": ""
+    },
+    {
+      "role": "production-worker",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "stderr": ""
+    },
+    {
+      "role": "stuck-rescue-worker",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "stderr": ""
+    },
+    {
+      "role": "image-worker",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "stderr": ""
+    },
+    {
+      "role": "scheduled-content-worker",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "stderr": ""
+    },
+    {
+      "role": "collector-top",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-world",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-politics",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-business",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-technology",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-sports",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-entertainment",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    },
+    {
+      "role": "collector-local",
+      "ok": true,
+      "status": 0,
+      "heartbeat": "runtime-smoke-test-passed",
+      "modeSmokeOk": true,
+      "collectorStoryCount": 25,
+      "stderr": ""
+    }
+  ],
+  "rule": "Predeployment is invalid unless syntax, critical shared contracts, and every executable mode smoke test pass. Collectors must execute one bounded cycle without throwing."
+}
