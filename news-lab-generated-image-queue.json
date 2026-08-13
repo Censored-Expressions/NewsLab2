@@ -1,15 +1,18 @@
 {
   "version": "20260808-generated-image-queue-v2",
-  "updatedAt": "2026-08-09T01:45:49.774Z",
-  "reason": "codex-image-pipeline-compaction-bypass-verified:generated-asset-promotion",
+  "updatedAt": "2026-08-13T12:29:06.618Z",
+  "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
   "summary": {
-    "queuedItems": 15,
+    "queuedItems": 16,
     "addedThisPass": 0,
-    "pendingGeneration": 5,
+    "pendingGeneration": 6,
     "readyForReview": 0,
     "approvedForPublication": 0,
     "retiredStaleJobsThisPass": 0,
-    "assetsPromotedThisPass": 0
+    "assetsPromotedThisPass": 6,
+    "providerAttemptsThisPass": 0,
+    "temporaryFallbackAttachmentsThisPass": 6,
+    "rule": "CE fallback attachment does not close the AI image job. Only a provider-generated or high-confidence licensed image closes it."
   },
   "policy": {
     "publicUse": "Generated images remain behind the scenes until an actual file exists, provenance is attached, and the image editor approves it.",
@@ -323,7 +326,7 @@
       "category": "technology",
       "prompt": "original technology news illustration with devices, data patterns, infrastructure, and neutral newsroom lighting Story focus: Google Deepmind Brings Gemini Robotics Into Physical Tasks. Use these verified story details as visual guidance: Photo-Illustration: Darrell Jackson; Getty Images Save this story Save this story Google DeepMind just released a new version of its artificial intelligence model Gemini, and it can control a range of different The latest version of Google DeepMind's AI model includes a significant jump into physical AGI. But plopping AI into the real world comes with risks. Gemini Robotics 2 Brings Google's AI Into the Physical World. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "queued",
+      "status": "provider-not-configured",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-08-09T01:36:46.734Z",
       "provenance": {
@@ -349,7 +352,7 @@
       "dossierRevisionHash": "d42f87d5cc5adaf48885de5992807e57040dce2e",
       "currentImageStatus": "ce-fallback-temporary",
       "requiredAction": "licensed-search-then-generation",
-      "attempts": 0,
+      "attempts": 2,
       "priority": 50,
       "imageDossier": {
         "version": "20260801-image-dossier-v1",
@@ -426,7 +429,21 @@
       "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
       "queuedAt": "2026-08-09T01:36:46.790Z",
       "refreshedAt": "",
-      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible.",
+      "deliveryStatus": "temporary-fallback-attached-provider-needed",
+      "providerAttempts": 0,
+      "generatedAt": "2026-08-13T12:29:06.350Z",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "assetFile": "technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reviewStatus": "temporary-fallback-owner-provider-needed",
+      "imageRevision": 1,
+      "publicVisibilityVerified": true,
+      "fallbackAttached": true,
+      "fallbackIsTemporary": true,
+      "imageGenerationRequired": true,
+      "lastProviderStatus": "provider-not-configured",
+      "promotionReason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "updatedAt": "2026-08-13T12:29:06.419Z"
     },
     {
       "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
@@ -434,7 +451,7 @@
       "category": "politics",
       "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Senate Judiciary Committee Delays Vote on Todd Blanche's Nomination as Attorney General Blanche. Use these verified story details as visual guidance: Senate judiciary committee delays vote on Todd Blanche's nomination as attorney general Blanche, who holds the role on an acting basis, apparently lacks the votes of two Republican senators who want him to confirm Veteran medical adviser likely to face questions over disputed lab leak theory in investigation seen by scientists as vilification and harassment of 85-year-old Sign. Dr. Anthony Fauci's journal entries, published this week by a Republican senator, offer new details about how the administrations of Presidents Donald Trump and Joe Biden. Fauci to face Republican questions over Covid pandemic origins US politics live. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "queued",
+      "status": "provider-not-configured",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-08-09T01:36:46.790Z",
       "provenance": {
@@ -460,7 +477,7 @@
       "dossierRevisionHash": "391c82ca6c1ccab4543cad248b9cc35e3211a77a",
       "currentImageStatus": "ce-fallback-temporary",
       "requiredAction": "licensed-search-then-generation",
-      "attempts": 0,
+      "attempts": 2,
       "priority": 50,
       "imageDossier": {
         "version": "20260801-image-dossier-v1",
@@ -537,7 +554,21 @@
       "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
       "queuedAt": "2026-08-09T01:36:46.792Z",
       "refreshedAt": "",
-      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible.",
+      "deliveryStatus": "temporary-fallback-attached-provider-needed",
+      "providerAttempts": 0,
+      "generatedAt": "2026-08-13T12:29:06.439Z",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "assetFile": "politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reviewStatus": "temporary-fallback-owner-provider-needed",
+      "imageRevision": 1,
+      "publicVisibilityVerified": true,
+      "fallbackAttached": true,
+      "fallbackIsTemporary": true,
+      "imageGenerationRequired": true,
+      "lastProviderStatus": "provider-not-configured",
+      "promotionReason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "updatedAt": "2026-08-13T12:29:06.454Z"
     },
     {
       "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
@@ -545,7 +576,7 @@
       "category": "politics",
       "prompt": "original editorial news illustration with a civic setting, documents, podiums, and public-institution atmosphere Story focus: Todd Blanche Nomination Faces Senate Delay. Use these verified story details as visual guidance: President Trump on Thursday said he has \"no objection\" to withdrawing Todd Blanche's nomination for attorney general until Republican Senators John Cornyn of Texas and Thom Tillis of North Carolina leave office President Trump said Todd Blanche will remain acting attorney general as a holdup on his nomination continues. Trump says he may pull Blanche's nomination until 2 Senate critics leave office. Cornyn said he isn't prepared to vote \"yes\" without an agreement. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "queued",
+      "status": "provider-not-configured",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-08-09T01:36:46.792Z",
       "provenance": {
@@ -571,7 +602,7 @@
       "dossierRevisionHash": "cf284779df30b51456725a41f16d1fcccb92c93f",
       "currentImageStatus": "ce-fallback-temporary",
       "requiredAction": "licensed-search-then-generation",
-      "attempts": 0,
+      "attempts": 2,
       "priority": 50,
       "imageDossier": {
         "version": "20260801-image-dossier-v1",
@@ -648,7 +679,21 @@
       "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
       "queuedAt": "2026-08-09T01:36:46.795Z",
       "refreshedAt": "",
-      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible.",
+      "deliveryStatus": "temporary-fallback-attached-provider-needed",
+      "providerAttempts": 0,
+      "generatedAt": "2026-08-13T12:29:06.478Z",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "assetFile": "politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reviewStatus": "temporary-fallback-owner-provider-needed",
+      "imageRevision": 1,
+      "publicVisibilityVerified": true,
+      "fallbackAttached": true,
+      "fallbackIsTemporary": true,
+      "imageGenerationRequired": true,
+      "lastProviderStatus": "provider-not-configured",
+      "promotionReason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "updatedAt": "2026-08-13T12:29:06.495Z"
     },
     {
       "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
@@ -656,7 +701,7 @@
       "category": "world",
       "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: U.S. Strikes Iran as Hormuz Tensions Rise. Use these verified story details as visual guidance: Tehran has threatened a response after a Ukrainian strike on an Iranian cargo ship in the Caspian Sea that Kyiv says was carrying weapons to Russia. Still, Ukraine says it wants to avoid escalation with Tehran. Are Iran and Ukraine wars getting tangled in Caspian Sea? The story focuses on the international development, the officials involved, the security stakes, and the next diplomatic or military step, especially the international actors, confirmed action, and next diplomatic Are Iran and Ukraine wars getting tangled in Caspian Sea? Ukraine has increasingly been targeting Russia-linked vessels [FILE: 2019] Image: PantherMedia/picture alliance A recent Ukrainian strike on an Iranian vessel Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "queued",
+      "status": "provider-not-configured",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-08-09T01:36:46.796Z",
       "provenance": {
@@ -682,7 +727,7 @@
       "dossierRevisionHash": "edef9491e48680ec8370647bbf8b527e9f15123a",
       "currentImageStatus": "ce-fallback-temporary",
       "requiredAction": "licensed-search-then-generation",
-      "attempts": 0,
+      "attempts": 2,
       "priority": 50,
       "imageDossier": {
         "version": "20260801-image-dossier-v1",
@@ -759,7 +804,21 @@
       "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
       "queuedAt": "2026-08-09T01:36:46.797Z",
       "refreshedAt": "",
-      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible.",
+      "deliveryStatus": "temporary-fallback-attached-provider-needed",
+      "providerAttempts": 0,
+      "generatedAt": "2026-08-13T12:29:06.521Z",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "assetFile": "world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reviewStatus": "temporary-fallback-owner-provider-needed",
+      "imageRevision": 1,
+      "publicVisibilityVerified": true,
+      "fallbackAttached": true,
+      "fallbackIsTemporary": true,
+      "imageGenerationRequired": true,
+      "lastProviderStatus": "provider-not-configured",
+      "promotionReason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "updatedAt": "2026-08-13T12:29:06.539Z"
     },
     {
       "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
@@ -767,7 +826,7 @@
       "category": "business",
       "prompt": "original business news illustration with markets, charts, offices, and economic decision-making context Story focus: There Are Fresh Signs That Fusion Power Startup Commonwealth Fusion Systems Will List. Use these verified story details as visual guidance: The story focuses on the announcement, the people involved, the schedule, and the audience or business response tied to the story, especially the people involved, the public response, and the next industry or legal step. There are fresh signs that fusion power startup Commonwealth Fusion Systems will list in the next two to three years. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
       "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
-      "status": "queued",
+      "status": "provider-not-configured",
       "providerPreference": "OpenAI image generation or owner-approved local generator",
       "createdAt": "2026-08-09T01:36:46.797Z",
       "provenance": {
@@ -793,7 +852,7 @@
       "dossierRevisionHash": "51eb4e56b5e095f006587d135544866e1d1df2e4",
       "currentImageStatus": "ce-fallback-temporary",
       "requiredAction": "licensed-search-then-generation",
-      "attempts": 0,
+      "attempts": 2,
       "priority": 50,
       "imageDossier": {
         "version": "20260801-image-dossier-v1",
@@ -870,7 +929,163 @@
       "queuedReason": "codex-image-queue-promotion:existing-fallback-backfill",
       "queuedAt": "2026-08-09T01:36:46.798Z",
       "refreshedAt": "",
-      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible."
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible.",
+      "deliveryStatus": "temporary-fallback-attached-provider-needed",
+      "providerAttempts": 0,
+      "generatedAt": "2026-08-13T12:29:06.560Z",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "assetFile": "business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reviewStatus": "temporary-fallback-owner-provider-needed",
+      "imageRevision": 2,
+      "publicVisibilityVerified": true,
+      "fallbackAttached": true,
+      "fallbackIsTemporary": true,
+      "imageGenerationRequired": true,
+      "lastProviderStatus": "provider-not-configured",
+      "promotionReason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "updatedAt": "2026-08-13T12:29:06.577Z"
+    },
+    {
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "title": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+      "category": "world",
+      "prompt": "original international news illustration with maps, diplomacy, security context, and neutral public-interest tone Story focus: Ukraine Strike Reports Put Russian Military Targets in Focus. Use these verified story details as visual guidance: US President Donald Trump says he may let Ukraine produce Patriot air defense missiles. Analysts welcome the move as a sign of support for the country - but warn it could take years before production begins. President Trump has wrongly attributed the $2 billion windfall he gained during his second term to a hot stock market and claimed that he was the only president to donate. Trump Justifies $2 Billion Made as President With Inaccurate Claims. US President Donald Trump says he may let Ukraine produce Patriot air defense missiles. Avoid unsupported entity-specific claims. Create a realistic but clearly original editorial image. Do not copy publisher photos, layouts, logos, watermarks, or distinctive copyrighted images. Avoid exact likenesses of real people unless a human owner has approved that use. Do not add text overlays.",
+      "negativePrompt": "No publisher photo recreation, no outlet logos, no watermarks, no fake screenshots, no text overlays, no graphic gore, no misleading documentary scene, no exact likeness of a living person without review.",
+      "status": "provider-not-configured",
+      "providerPreference": "OpenAI image generation or owner-approved local generator",
+      "createdAt": "2026-08-13T12:29:05.923Z",
+      "provenance": {
+        "source": "CE Generated Image Brief",
+        "photographer": "CE Media / AI-assisted visual workflow",
+        "license": "CE-generated-pending-owner-review",
+        "imageStatus": "",
+        "retrievedAt": "2026-08-13T12:29:05.923Z",
+        "originalQuery": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+        "sourceUrl": "",
+        "photoId": "",
+        "auditNote": "This is a generated-image brief only. It is not public image provenance until an actual generated asset is created, reviewed, and stored."
+      },
+      "editorialSafety": {
+        "requiresReview": true,
+        "copyrightRisk": "low-if-generated-from-brief-not-publisher-image",
+        "accuracyRisk": "must remain illustrative unless generated from verified scene evidence",
+        "rule": "Generated images can be article-specific, but must be labeled and reviewed as CE-created visuals before replacing licensed photos."
+      },
+      "jobId": "image_job_1786624145934_b78775cc",
+      "eventId": "world:event:trump-patriot-ukraine-signals-support-production-president",
+      "dossierRevision": "unversioned",
+      "dossierRevisionHash": "46d0918d14f47e743a15f605b69d49cd1dedd2bc",
+      "currentImageStatus": "ce-fallback-temporary",
+      "requiredAction": "licensed-search-then-generation",
+      "imageState": "generation-queued",
+      "imageGenerationRequired": true,
+      "providerLane": "ai-editorial-image",
+      "fallbackIsTemporary": true,
+      "requiresProvider": true,
+      "deliverySla": {
+        "queuedAt": "2026-08-13T12:29:05.934Z",
+        "claimByMinutes": 1,
+        "attemptByMinutes": 3,
+        "attachOrFailByMinutes": 5,
+        "rescueByMinutes": 10
+      },
+      "deliveryStages": [
+        {
+          "stage": "JOB_QUEUED",
+          "at": "2026-08-13T12:29:05.934Z",
+          "reason": "part3-real-ai-image-lane-telemetry-refresh:existing-fallback-backfill"
+        }
+      ],
+      "attempts": 1,
+      "priority": 50,
+      "imageDossier": {
+        "version": "20260801-image-dossier-v1",
+        "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+        "eventId": "world:event:trump-patriot-ukraine-signals-support-production-president",
+        "canonicalIntelligenceRef": {
+          "id": "",
+          "dossierRevisionId": "",
+          "consumed": false,
+          "rule": "Image Intelligence consumes the same canonical dossier revision as Writer, Headline, Editor, Repair, Newsletter, and Creator Desk."
+        },
+        "category": "world",
+        "canonicalEvent": {
+          "actor": "Ukraine Strike Reports Put Russian Military Targets in Focus",
+          "action": "US President Donald Trump says he may let Ukraine produce Patriot air defense missiles.",
+          "consequence": "President Trump has wrongly attributed the $2 billion windfall he gained during his second term to a hot stock market and claimed that he was the only",
+          "summary": "US President Donald Trump says he may let Ukraine produce Patriot air defense missiles. Analysts welcome the move as a sign of support for the country - but warn it could take years before production begins.",
+          "locations": [],
+          "entities": [
+            "Ukraine Strike Reports Put Russian Military Targets in Focus"
+          ]
+        },
+        "searchStrategy": {
+          "queryTerms": [
+            "ukraine",
+            "strike",
+            "reports",
+            "russian",
+            "military",
+            "targets",
+            "focus",
+            "president",
+            "donald",
+            "trump",
+            "says",
+            "ukraine"
+          ],
+          "preferredQueries": [
+            "international diplomacy meeting",
+            "military conflict news",
+            "government press conference",
+            "Ukraine Strike Reports Put Russian Military Targets",
+            "president trump ukraine billion analysts begins"
+          ],
+          "avoidTerms": [
+            "graphic injury",
+            "misleading portrait",
+            "unverified scene",
+            "specific private person without rights context"
+          ],
+          "relevanceRule": "Prefer images that match the event type, setting, and public subject without pretending to depict the exact event unless provenance proves it."
+        },
+        "licensePolicy": {
+          "preferred": [
+            "Pexels",
+            "Unsplash",
+            "Pixabay"
+          ],
+          "sourceImagesAllowed": false,
+          "generatedFallbackAllowed": true,
+          "requireCredit": true,
+          "requireProviderProvenance": true
+        },
+        "generatedFallbackBrief": {
+          "useWhen": "No licensed image passes relevance, credit, duplicate, and rights checks.",
+          "promptSeed": "world. US President Donald Trump says he may let Ukraine produce Patriot air defense missiles. Analysts welcome the move as a sign of support for the country - but warn it could take years before production begins.. Ukraine Strike Reports Put Russian Military Targets in Focus. US President Donald Trump says he may let Ukraine produce Patriot air defense missiles.. President Trump has wrongly attributed the $2 billion windfall he gained during his second term to a hot stock market and claimed that he was the only",
+          "guardrail": "Create a non-deceptive editorial illustration or scene abstraction; do not fabricate a real event photo or recognizable private person."
+        },
+        "postPublicationRepair": {
+          "allowed": true,
+          "rule": "If the article text is publishable but only a CE fallback is available, publish the article with an attached image work item and upgrade the image later after relevance/licensing checks."
+        }
+      },
+      "queuedReason": "part3-real-ai-image-lane-telemetry-refresh:existing-fallback-backfill",
+      "queuedAt": "2026-08-13T12:29:05.934Z",
+      "refreshedAt": "",
+      "persistenceRule": "This work order remains open across worker restarts until a licensed, stock-match, or generated-approved image is attached and verified visible.",
+      "deliveryStatus": "temporary-fallback-attached-provider-needed",
+      "providerAttempts": 0,
+      "generatedAt": "2026-08-13T12:29:06.601Z",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "assetFile": "world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reviewStatus": "temporary-fallback-owner-provider-needed",
+      "imageRevision": 1,
+      "publicVisibilityVerified": true,
+      "fallbackAttached": true,
+      "lastProviderStatus": "provider-not-configured",
+      "promotionReason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "updatedAt": "2026-08-13T12:29:06.618Z"
     }
   ]
 }

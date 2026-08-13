@@ -1,0 +1,1975 @@
+{
+  "version": "20260812-image-delivery-ledger-v1",
+  "updatedAt": "2026-08-13T12:29:28.732Z",
+  "summary": {
+    "totalJobs": 6,
+    "openJobs": 0,
+    "verifiedVisibleGeneratedImages": 6,
+    "eventsRecorded": 111,
+    "sla": {
+      "articleApprovedToQueuedMinutes": 0,
+      "queuedToClaimedMinutes": 1,
+      "generationAttemptMinutes": 3,
+      "attachOrFailureMinutes": 5,
+      "rescueMinutes": 10
+    },
+    "successDefinition": "Generated image success means asset saved, attached to the story, cache rebuilt, and public asset visibility verified."
+  },
+  "jobs": {
+    "image_job_1786239406790_e161633c": {
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "lastStage": "CACHE_REBUILT",
+      "lastStatus": "cache-rebuilt",
+      "lastEventAt": "2026-08-13T12:29:28.712Z",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "verifiedVisible": true,
+      "stages": [
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:26:25.941Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:26:25.945Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:26:25.955Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:26:25.958Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:26:25.963Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:26:25.967Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:26:25.971Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:26:25.975Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:26:25.978Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:26:49.325Z",
+          "status": "cache-rebuilt"
+        },
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:29:06.327Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:29:06.331Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:29:06.338Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:29:06.343Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:29:06.346Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:29:06.350Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:29:06.354Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:29:06.359Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:29:06.362Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:29:28.712Z",
+          "status": "cache-rebuilt"
+        }
+      ]
+    },
+    "image_job_1786239406791_3b7c19a4": {
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "lastStage": "CACHE_REBUILT",
+      "lastStatus": "cache-rebuilt",
+      "lastEventAt": "2026-08-13T12:29:28.719Z",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "verifiedVisible": true,
+      "stages": [
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:26:25.983Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:26:25.987Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:26:25.994Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:26:25.997Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:26:26.002Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:26:26.006Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:26:26.011Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:26:26.014Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:26:26.018Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:26:49.331Z",
+          "status": "cache-rebuilt"
+        },
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:29:06.419Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:29:06.423Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:29:06.428Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:29:06.431Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:29:06.436Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:29:06.439Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:29:06.442Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:29:06.446Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:29:06.450Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:29:28.719Z",
+          "status": "cache-rebuilt"
+        }
+      ]
+    },
+    "image_job_1786239406793_97770475": {
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "lastStage": "CACHE_REBUILT",
+      "lastStatus": "cache-rebuilt",
+      "lastEventAt": "2026-08-13T12:29:28.724Z",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "verifiedVisible": true,
+      "stages": [
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:26:26.022Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:26:26.026Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:26:26.034Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:26:26.038Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:26:26.043Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:26:26.046Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:26:26.050Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:26:26.055Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:26:26.059Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:26:49.337Z",
+          "status": "cache-rebuilt"
+        },
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:29:06.454Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:29:06.457Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:29:06.463Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:29:06.469Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:29:06.475Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:29:06.478Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:29:06.481Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:29:06.485Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:29:06.490Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:29:28.724Z",
+          "status": "cache-rebuilt"
+        }
+      ]
+    },
+    "image_job_1786239406797_10aa94ac": {
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "lastStage": "CACHE_REBUILT",
+      "lastStatus": "cache-rebuilt",
+      "lastEventAt": "2026-08-13T12:29:28.729Z",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "verifiedVisible": true,
+      "stages": [
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:26:26.063Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:26:26.067Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:26:26.074Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:26:26.078Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:26:26.083Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:26:26.088Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:26:26.091Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:26:26.094Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:26:26.098Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:26:49.343Z",
+          "status": "cache-rebuilt"
+        },
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:29:06.495Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:29:06.500Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:29:06.506Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:29:06.511Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:29:06.516Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:29:06.521Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:29:06.526Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:29:06.529Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:29:06.536Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:29:28.729Z",
+          "status": "cache-rebuilt"
+        }
+      ]
+    },
+    "image_job_1786239406798_c208f7b8": {
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "lastStage": "CACHE_REBUILT",
+      "lastStatus": "cache-rebuilt",
+      "lastEventAt": "2026-08-13T12:29:28.732Z",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "verifiedVisible": true,
+      "stages": [
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:26:26.101Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:26:26.105Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:26:26.110Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:26:26.113Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:26:26.117Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:26:26.121Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:26:26.125Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:26:26.129Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:26:26.134Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:26:49.348Z",
+          "status": "cache-rebuilt"
+        },
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:29:06.539Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:29:06.544Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:29:06.550Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:29:06.553Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:29:06.557Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:29:06.560Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:29:06.565Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:29:06.570Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:29:06.574Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:29:28.732Z",
+          "status": "cache-rebuilt"
+        }
+      ]
+    },
+    "image_job_1786624145934_b78775cc": {
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "lastStage": "CACHE_REBUILT",
+      "lastStatus": "cache-rebuilt",
+      "lastEventAt": "2026-08-13T12:29:28.707Z",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "verifiedVisible": true,
+      "stages": [
+        {
+          "stage": "JOB_QUEUED",
+          "at": "2026-08-13T12:29:05.934Z",
+          "status": "queued"
+        },
+        {
+          "stage": "JOB_CLAIMED",
+          "at": "2026-08-13T12:29:06.578Z",
+          "status": "generating"
+        },
+        {
+          "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+          "at": "2026-08-13T12:29:06.581Z",
+          "status": "provider-not-configured"
+        },
+        {
+          "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+          "at": "2026-08-13T12:29:06.589Z",
+          "status": "generating"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_CREATED",
+          "at": "2026-08-13T12:29:06.593Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "ASSET_SAVED",
+          "at": "2026-08-13T12:29:06.597Z",
+          "status": "asset-saved"
+        },
+        {
+          "stage": "LOCAL_FALLBACK_VALIDATED",
+          "at": "2026-08-13T12:29:06.601Z",
+          "status": "ce-fallback-temporary"
+        },
+        {
+          "stage": "PUBLIC_IMAGE_VERIFIED",
+          "at": "2026-08-13T12:29:06.605Z",
+          "status": "verified-visible"
+        },
+        {
+          "stage": "ARTICLE_ATTACHMENT_QUEUED",
+          "at": "2026-08-13T12:29:06.608Z",
+          "status": "article-attachment-queued"
+        },
+        {
+          "stage": "ARTICLE_UPDATED",
+          "at": "2026-08-13T12:29:06.612Z",
+          "status": "temporary-fallback-attached"
+        },
+        {
+          "stage": "CACHE_REBUILT",
+          "at": "2026-08-13T12:29:28.707Z",
+          "status": "cache-rebuilt"
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "at": "2026-08-13T12:26:25.941Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "generating",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.945Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:26:25.955Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.958Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.963Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.967Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.971Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.975Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.978Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.983Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "generating",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.987Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:26:25.994Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:25.997Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.002Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.006Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.011Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.014Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.018Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.022Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "generating",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.026Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:26:26.034Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.038Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.043Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.046Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.050Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.055Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.059Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.063Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "generating",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.067Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:26:26.074Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.078Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.083Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.088Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.091Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.094Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.098Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.101Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "generating",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.105Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:26:26.110Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.113Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.117Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.121Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.125Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.129Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:26.134Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:49.325Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-verification",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:49.331Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-verification",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:49.337Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-verification",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:49.343Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-verification",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:26:49.348Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-verification",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:05.934Z",
+      "stage": "JOB_QUEUED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "queued",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:existing-fallback-backfill",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.327Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.331Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:29:06.338Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.343Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.346Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.350Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.354Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.359Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.362Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.419Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.423Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:29:06.428Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.431Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.436Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.439Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.442Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.446Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.450Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.454Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.457Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:29:06.463Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.469Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.475Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.478Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.481Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.485Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.490Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.495Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.500Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:29:06.506Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.511Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.516Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.521Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.526Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.529Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.536Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.539Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.544Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:29:06.550Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.553Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.557Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.560Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.565Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.570Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.574Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.578Z",
+      "stage": "JOB_CLAIMED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "generating",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 1,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.581Z",
+      "stage": "PROVIDER_SKIPPED_NOT_CONFIGURED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "provider-not-configured",
+      "assetUrl": "",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    },
+    {
+      "at": "2026-08-13T12:29:06.589Z",
+      "stage": "LOCAL_CE_FALLBACK_GENERATION_STARTED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "generating",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 3,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.593Z",
+      "stage": "LOCAL_FALLBACK_CREATED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.597Z",
+      "stage": "ASSET_SAVED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "asset-saved",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.601Z",
+      "stage": "LOCAL_FALLBACK_VALIDATED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "ce-fallback-temporary",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.605Z",
+      "stage": "PUBLIC_IMAGE_VERIFIED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "verified-visible",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion:temporary-local-fallback",
+      "slaMinute": 5,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.608Z",
+      "stage": "ARTICLE_ATTACHMENT_QUEUED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "article-attachment-queued",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": false,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:06.612Z",
+      "stage": "ARTICLE_UPDATED",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "temporary-fallback-attached",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh:generated-asset-promotion",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:28.707Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_world:event:trump-patriot-ukraine-signals-support-production-president_0__candidate_4",
+      "jobId": "image_job_1786624145934_b78775cc",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/world-ukraine-strike-reports-put-russian-military-targets-in-focus-b78775cc8d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:28.712Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_business_4_business-update-centers-on-google-gemini-model-save-",
+      "jobId": "image_job_1786239406790_e161633c",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/technology-google-deepmind-brings-gemini-robotics-into-physical-tasks-e161633c33.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:28.719Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_politics_2_senate-judiciary-committee-delays-vote-on-todd-blanc",
+      "jobId": "image_job_1786239406791_3b7c19a4",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/politics-senate-judiciary-committee-delays-vote-on-todd-blanche-s-nomination-as-attorney-general-3b7c19a428.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:28.724Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_politics_3_todd-blanche-nomination-faces-senate-delay",
+      "jobId": "image_job_1786239406793_97770475",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/politics-todd-blanche-nomination-faces-senate-delay-977704759d.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:28.729Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_world_3_u-s-strikes-iran-as-hormuz-tensions-rise",
+      "jobId": "image_job_1786239406797_10aa94ac",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/world-u-s-strikes-iran-as-hormuz-tensions-rise-10aa94ac3c.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    },
+    {
+      "at": "2026-08-13T12:29:28.732Z",
+      "stage": "CACHE_REBUILT",
+      "storyId": "news_lab_worker_slice_entertainment_17_there-are-fresh-signs-that-fusion-power-startup-comm",
+      "jobId": "image_job_1786239406798_c208f7b8",
+      "status": "cache-rebuilt",
+      "assetUrl": "/assets/generated-news-lab/business-there-are-fresh-signs-that-fusion-power-startup-commonwealth-fusion-systems-will-list-c208f7b848.svg",
+      "reason": "part3-real-ai-image-lane-telemetry-refresh",
+      "slaMinute": 0,
+      "verifiedVisible": true,
+      "note": ""
+    }
+  ]
+}

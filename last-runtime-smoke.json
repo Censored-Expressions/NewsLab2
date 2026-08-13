@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-08-13T01:49:22.239Z",
+  "generatedAt": "2026-08-13T12:12:40.253Z",
   "syntax": [
     {
       "file": "server.js",
@@ -498,7 +498,7 @@
       "status": 0,
       "heartbeat": "runtime-smoke-test-passed",
       "modeSmokeOk": true,
-      "collectorStoryCount": 25,
+      "collectorStoryCount": 24,
       "stderr": ""
     },
     {

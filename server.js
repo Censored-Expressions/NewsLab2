@@ -968,6 +968,54 @@ function readNewsLabCollectorCache(category = "top") {
   };
 }
 
+function newsLabPrioritizeSourceStoriesForTabProduction(stories = [], limit = 60, perCategoryFloor = 4) {
+  const max = Math.max(0, Number(limit || 0));
+  if (!max) return [];
+  const list = dedupeStoryCluster(Array.isArray(stories) ? stories : [])
+    .filter(story => story && (story.title || story.summary || story.url));
+  const scoreStory = story => {
+    const sourceCount = Number(story.uniqueSourceCount || story.sourceCount || story.popularity?.uniqueSourceCount || story.sources?.length || 1);
+    const bodyText = String(story.articleSummary || story.summary || story.description || story.body || "");
+    const bodyScore = Math.min(40, Math.floor(bodyText.length / 80));
+    const recencyMs = Date.parse(story.publishedAt || story.createdAt || story.absorbedAt || story.generatedAt || 0);
+    const recencyScore = recencyMs ? Math.max(0, 30 - Math.floor((Date.now() - recencyMs) / (60 * 60 * 1000))) : 0;
+    const categoryBonus = newsLabPublicCategories.includes(newsLabCategory(story)) ? 12 : 0;
+    const officialText = String((story.source || "") + " " + (story.url || ""));
+    const officialBonus = /official|court|filing|agency|police|government|statement/i.test(officialText) ? 10 : 0;
+    return sourceCount * 12 + bodyScore + recencyScore + categoryBonus + officialBonus;
+  };
+  const ranked = list
+    .map((story, index) => ({ story, index, score: scoreStory(story), category: newsLabCategory(story) || "top" }))
+    .sort((a, b) => b.score - a.score || a.index - b.index);
+  const selected = [];
+  const selectedKeys = new Set();
+  const add = item => {
+    const key = item.story.id || item.story.eventId || item.story.canonicalEventId || item.story.topicKey || item.story.url || normalizeText(item.story.title || "") || String(item.index);
+    if (selectedKeys.has(key) || selected.length >= max) return;
+    selected.push({
+      ...item.story,
+      sourcePrioritization: {
+        score: item.score,
+        category: item.category,
+        rule: "Part 4 source prioritization feeds the canonical dossier path; it does not publish directly from source order."
+      }
+    });
+    selectedKeys.add(key);
+  };
+  newsLabPublicCategories.forEach(category => {
+    ranked.filter(item => item.category === category).slice(0, Math.max(0, Number(perCategoryFloor || 0))).forEach(add);
+  });
+  ranked.forEach(add);
+  return selected.slice(0, max);
+}
+
+function newsLabCollectorCacheMaxAgeMs(options = {}) {
+  const base = Math.max(60 * 1000, Number(process.env.CE_NEWS_LAB_COLLECTOR_CACHE_MAX_AGE_MS || 20 * 60 * 1000));
+  if (options.manualMicro || options.catchupProduction) return Math.max(base, 30 * 60 * 1000);
+  if (options.deepProduction) return Math.max(base, 45 * 60 * 1000);
+  return base;
+}
+
 function mergeNewsLabCollectorStories(baseStories = [], options = {}) {
   const maxAgeMs = Math.max(0, Number(options.maxAgeMs || process.env.CE_NEWS_LAB_COLLECTOR_CACHE_MAX_AGE_MS || 20 * 60 * 1000));
   const now = Date.now();
@@ -2272,6 +2320,15 @@ function compactNewsLabPublishedPayload(value) {
     boardPolicyPreservedShelf: boardReady.boardPolicyPreservedShelf || undefined,
     imageImprovementPolicy: boardReady.imageImprovementPolicy || undefined,
     publicShelfWriteFloor: boardReady.publicShelfWriteFloor || undefined,
+    qualityPublicationSprint: boardReady.qualityPublicationSprint || undefined,
+    naturalProductionCutover: boardReady.naturalProductionCutover || boardReady.qualityPublicationSprint?.naturalProductionCutover || undefined,
+    publicStateAuthority: boardReady.publicStateAuthority ? {
+      ...boardReady.publicStateAuthority,
+      publicStoryCount: compactOwnedStories.length,
+      searchableArchiveCount: compactArchiveStories.length,
+      source: boardReady.publicStateAuthority.source || "news-lab-published-payload",
+      rule: boardReady.publicStateAuthority.rule || "Production Intelligence reads the same compacted public shelf that /api/news-lab and the tile layer serve."
+    } : undefined,
     workerFinishModePersisted: boardReady.workerFinishModePersisted || undefined,
     savedAt: boardReady.savedAt || freshness.payloadWrittenAt,
     ownedStories: compactOwnedStories,
@@ -2526,8 +2583,24 @@ function dailyArticleMemorySearchStories(memory = {}) {
     .filter((story, index, all) => all.findIndex(match => (match.url && match.url === story.url) || (match.title && match.title === story.title)) === index);
 }
 
+
+function newsLabLatestDailyMemoryStories(limit = 90, dayId = "") {
+  const max = Math.max(0, Number(limit || 0));
+  if (!max) return [];
+  const memory = readDailyArticleMemory(dayId);
+  return dailyArticleMemorySearchStories(memory)
+    .map((story, index) => ({
+      ...story,
+      memoryRank: index + 1,
+      memoryDayId: memory.dayId || dayId || "",
+      memorySource: "daily-article-memory"
+    }))
+    .sort((a, b) => Date.parse(b.absorbedAt || b.publishedAt || b.createdAt || 0) - Date.parse(a.absorbedAt || a.publishedAt || a.createdAt || 0))
+    .slice(0, max);
+}
+
 function articleIntelligenceForStory(story = {}, articleIntelligence = {}) {
-  const title = normalizeText(story.title || "");
+  const title = segmentNormalize(story.title || "");
   const url = normalizeText(story.url || "");
   const clusters = Array.isArray(articleIntelligence.clusters) ? articleIntelligence.clusters : [];
   const directMatch = clusters.find(cluster => {
@@ -3946,6 +4019,75 @@ function defaultNewsLabStoryObjects() {
   };
 }
 
+
+function recordNewsLabStoryObjects(stories = [], context = {}) {
+  const now = new Date().toISOString();
+  const list = Array.isArray(stories) ? stories.filter(Boolean) : [stories].filter(Boolean);
+  const store = readJsonFile(newsLabStoryObjectsFile, defaultNewsLabStoryObjects()) || defaultNewsLabStoryObjects();
+  const existingStories = store.stories && typeof store.stories === "object" && !Array.isArray(store.stories) ? store.stories : {};
+  const nextStories = { ...existingStories };
+  const recent = Array.isArray(store.recent) ? store.recent : [];
+  const recentStoryIds = Array.isArray(store.recentStoryIds) ? store.recentStoryIds : [];
+  const written = [];
+  const stage = context.stage || "story-object-recorded";
+  const status = context.status || "recorded";
+
+  list.forEach((story, index) => {
+    const fallbackId = "story-object-" + Date.now() + "-" + index;
+    const id = story.id || story.storyId || story.eventId || story.topicKey || story.dossierRevisionId || safeFileSlug(story.title || fallbackId);
+    if (!id) return;
+    const prior = nextStories[id] || {};
+    const revision = story.publicRevision || story.revision || story.dossierRevisionId || prior.revision || now;
+    const nextRecord = {
+      ...prior,
+      ...story,
+      id,
+      storyId: story.storyId || story.id || id,
+      eventId: story.eventId || story.storyDossier?.eventId || prior.eventId || id,
+      title: story.title || prior.title || "",
+      stage,
+      status: story.status || status,
+      revision,
+      updatedAt: now,
+      createdAt: prior.createdAt || story.createdAt || story.generatedAt || now,
+      lastRecordedContext: {
+        ...context,
+        recordedAt: now,
+        rule: "Story Object persistence is additive and revision-safe; it records pipeline state without bypassing publication gates."
+      }
+    };
+    nextStories[id] = nextRecord;
+    written.push({ id, title: nextRecord.title || "", status: nextRecord.status || "", stage });
+  });
+
+  const nextRecentIds = [...written.map(item => item.id), ...recentStoryIds].filter((id, index, all) => id && all.indexOf(id) === index).slice(0, 120);
+  const nextRecent = [...written, ...recent].filter((item, index, all) => item?.id && all.findIndex(match => match.id === item.id) === index).slice(0, 120);
+  const values = Object.values(nextStories);
+  const nextStore = {
+    ...store,
+    version: store.version || "20260812-news-lab-story-objects-v1",
+    updatedAt: now,
+    storyCount: values.length,
+    visibleStoryCount: values.filter(story => story.published || story.publicationStatus === "published" || story.status === "reviewed" || story.status === "approved" || story.status === "published").length,
+    executableStoryCount: values.filter(story => story.storyDossier || story.writerReasoningPlan || story.naturalProductionFlow).length,
+    shellStoryCount: values.filter(story => !story.storyDossier && !story.writerReasoningPlan && !story.naturalProductionFlow).length,
+    stories: nextStories,
+    recent: nextRecent,
+    recentStoryIds: nextRecentIds,
+    lastWrite: {
+      at: now,
+      stage,
+      status,
+      writtenCount: written.length,
+      written: written.slice(0, 30),
+      rule: "New production writes story objects as durable state records; public visibility still depends on final approval and shelf publication."
+    },
+    rule: store.rule || "Story Objects are durable publication-state records."
+  };
+  writeJsonFile(newsLabStoryObjectsFile, nextStore);
+  return nextStore;
+}
+
 function defaultNewsLabRepairQueue(kind = "repair") {
   return {
     version: `20260812-news-lab-${kind}-queue-v1`,
@@ -4012,6 +4154,61 @@ function defaultNewsLabApprovalRecoveryQueue() {
 
 function defaultNewsLabDossierRecoveryQueue() {
   return defaultNewsLabRepairQueue("dossier-recovery");
+}
+
+function recordNewsLabDossierRecovery(record = {}) {
+  const now = new Date().toISOString();
+  const queue = readJsonFile(newsLabDossierRecoveryQueueFile, defaultNewsLabDossierRecoveryQueue()) || defaultNewsLabDossierRecoveryQueue();
+  const id = record.id || record.eventId || record.clusterId || safeFileSlug(record.title || "dossier-recovery") || "dossier-recovery";
+  const blockingReasons = [...new Set([...(record.blockingReasons || []), record.holdReason, record.reason].filter(Boolean))];
+  const readinessClass = record.readinessClass || (blockingReasons.some(reason => /mixed|identity/i.test(reason)) ? "NEEDS_IDENTITY_RESOLUTION" : blockingReasons.length ? "NEEDS_ENRICHMENT" : "READY_FOR_DEVELOPING_BRIEF");
+  const holdReason = blockingReasons[0] || "needs-dossier-review";
+  const nextRecord = {
+    ...record,
+    id,
+    eventId: record.eventId || id,
+    clusterId: record.clusterId || id,
+    readinessClass,
+    holdReason,
+    blockingReasons,
+    status: record.status || (readinessClass.startsWith("READY") ? "ready-for-retry" : "active"),
+    updatedAt: now,
+    createdAt: record.createdAt || now,
+    rule: "Dossier recovery records why a story did not enter writing, so Collector/Dossier subsystems can enrich or split the event without weakening the Editor."
+  };
+  const active = [nextRecord, ...(Array.isArray(queue.active) ? queue.active : []).filter(item => item.id !== id)].slice(0, 120);
+  const records = [nextRecord, ...(Array.isArray(queue.records) ? queue.records : [])].slice(0, 300);
+  const reasonCounts = {};
+  const actionCounts = {};
+  active.forEach(item => {
+    (item.blockingReasons || [item.holdReason || "unknown"]).filter(Boolean).forEach(reason => { reasonCounts[reason] = (reasonCounts[reason] || 0) + 1; });
+    const action = item.recommendedAction || "collect-more-same-event-evidence";
+    actionCounts[action] = (actionCounts[action] || 0) + 1;
+  });
+  const statusText = item => String((item.readinessClass || "") + " " + ((item.blockingReasons || []).join(" ")) + " " + (item.holdReason || ""));
+  const totals = {
+    queued: active.length,
+    fullArticleReady: active.filter(item => /FULL|STANDARD|WRITER/i.test(item.readinessClass || "")).length,
+    developingBriefReady: active.filter(item => /DEVELOPING/i.test(item.readinessClass || "")).length,
+    needsEnrichment: active.filter(item => /ENRICH/i.test(item.readinessClass || "")).length,
+    needsClusterRepair: active.filter(item => /CLUSTER|MIXED/i.test(statusText(item))).length,
+    needsIdentityResolution: active.filter(item => /IDENTITY/i.test(statusText(item))).length,
+    duplicateEvent: active.filter(item => /duplicate/i.test(statusText(item))).length,
+    rejected: active.filter(item => /reject|blocked/i.test(item.status || "")).length
+  };
+  const nextQueue = {
+    ...queue,
+    version: queue.version || "20260730-dossier-recovery-queue-v1",
+    updatedAt: now,
+    scope: queue.scope || "collector-to-dossier-readiness",
+    totals,
+    reasonCounts,
+    actionCounts,
+    active,
+    records
+  };
+  writeJsonFile(newsLabDossierRecoveryQueueFile, nextQueue);
+  return nextRecord;
 }
 
 function newsLabWorkerSyncAllowlist() {
@@ -4360,6 +4557,82 @@ function newsLabDossierSourceOfTruthContract(story = {}) {
     },
     rule: "Every downstream subsystem must consume the same canonical dossier revision. If a subsystem needs context, it reads this contract instead of rebuilding story identity from feeds, headlines, or repair memory."
   };
+}
+
+function newsLabCanonicalStoryIdentityLock(story = {}, options = {}) {
+  const storyDossier = story.storyDossier || {};
+  const canonical = story.canonicalDossierIntelligence
+    || story.canonicalIntelligence
+    || storyDossier.canonicalDossierIntelligence
+    || storyDossier.canonicalIntelligence
+    || null;
+  const lock = story.dossierLock || storyDossier.dossierLock || canonical?.dossierLock || null;
+  const storyUnderstanding = story.storyUnderstanding
+    || canonical?.storyUnderstanding
+    || storyDossier.storyUnderstanding
+    || null;
+  const eventId = story.eventId
+    || canonical?.eventIdentity?.canonicalEventId
+    || storyDossier.eventId
+    || storyDossier.storyId
+    || story.topicKey
+    || "";
+  const dossierRevisionId = story.dossierRevisionId
+    || lock?.revisionId
+    || canonical?.revision?.id
+    || storyDossier.dossierRevisionId
+    || "";
+  const dossierRevisionHash = story.dossierRevisionHash
+    || lock?.revisionHash
+    || canonical?.revision?.hash
+    || storyUnderstanding?.dossierRevisionHash
+    || "";
+  const integrity = newsLabDossierIntegrityCheck(storyDossier, { representative: story, sources: story.sources || storyDossier.sourcePool || [] });
+  const readiness = story.evidenceSupportedArticleCapacity || storyDossier.dossierBuilder?.readinessContract || lock?.readiness || {};
+  const depthClass = readiness.articleFormat === "breaking-brief" ? "Developing Brief" : readiness.articleFormat === "deep-article" ? "Deep Article" : readiness.readyForStandardArticle ? "Standard Article" : integrity.ready ? "Developing Brief" : "Hold For Identity";
+  const outputLane = options.outputLane || story.outputLane || story.publicationLane || story.publicationTier?.lane || (depthClass === "Developing Brief" ? "developing-brief" : depthClass === "Deep Article" ? "deep-article" : "standard-article");
+  const locked = Boolean(eventId && dossierRevisionId && storyUnderstanding && integrity.ready);
+  const contractStory = {
+    ...story,
+    eventId,
+    topicKey: story.topicKey || eventId,
+    workflowVersion: story.workflowVersion || newsLabCanonicalWorkflowVersion,
+    publicationWorkflowVersion: story.publicationWorkflowVersion || newsLabCanonicalWorkflowVersion,
+    dossierRevisionId,
+    dossierRevisionHash,
+    storyUnderstanding,
+    canonicalDossierIntelligence: canonical || story.canonicalDossierIntelligence || null,
+    canonicalIntelligence: canonical || story.canonicalIntelligence || null,
+    outputLane,
+    articleCapacityTier: story.articleCapacityTier || readiness.readinessTier || depthClass,
+    articleFormat: story.articleFormat || readiness.articleFormat || outputLane,
+    canonicalIdentityLock: {
+      active: true,
+      locked,
+      generatedAt: new Date().toISOString(),
+      eventId,
+      dossierRevisionId,
+      dossierRevisionHash,
+      storyUnderstandingId: storyUnderstanding?.id || "",
+      outputLane,
+      integrity: { ready: Boolean(integrity.ready), holdReasons: integrity.holdReasons || [], contaminationScore: Number(integrity.contaminationScore || 0), eventCoherence: Number(integrity.eventCoherence || 0) },
+      depth: { class: depthClass, articleFormat: readiness.articleFormat || outputLane, score: Number(readiness.score || 0), readinessTier: readiness.readinessTier || "" },
+      immutableForArticleRevision: ["eventId", "dossierRevisionId", "dossierRevisionHash", "storyUnderstanding", "outputLane"],
+      rule: "Once this canonical event is locked, downstream systems cannot redefine what the story is. Thin but coherent dossiers publish only as Developing Briefs; richer dossiers may become Standard or Deep articles."
+    }
+  };
+  return { ...contractStory, dossierSourceOfTruthContract: newsLabDossierSourceOfTruthContract(contractStory) };
+}
+
+function newsLabCanonicalStoryIdentityLockIssues(story = {}) {
+  const lock = story.canonicalIdentityLock || {};
+  const issues = [];
+  if (!story.eventId) issues.push("missing-canonical-event-id");
+  if (!story.dossierRevisionId) issues.push("missing-dossier-revision-id");
+  if (!story.storyUnderstanding) issues.push("missing-story-understanding");
+  if (!story.outputLane) issues.push("missing-output-lane");
+  if (story.workflowVersion === newsLabCanonicalWorkflowVersion && lock.active && !lock.locked) issues.push("canonical-identity-lock-not-ready");
+  return [...new Set(issues)];
 }
 
 function newsLabDossierSourceOfTruthReport(stories = []) {
@@ -5135,7 +5408,10 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
   const firstPassApproved = Number(currentCycle.firstPassApproved || hour.approvedArticles || 0);
   const finalApproved = Number(currentCycle.finalApproved || hour.approvedArticles || 0);
   const finalBlocked = Number(currentCycle.finalBlocked || hour.rejectedDrafts || 0);
-  const visiblePublished = Number(lastMetrics.publicStoryCount || currentCycle.publishedShelfCount || 0);
+  const publicStateForProduction = newsLabPublicStateStabilityGate();
+  const authoritativePublicMetrics = publicStateForProduction.metrics || {};
+  const workerBatchPublicStories = Number(lastMetrics.publicStoryCount || currentCycle.publishedShelfCount || 0);
+  const visiblePublished = Number(authoritativePublicMetrics.visibleTileStories || authoritativePublicMetrics.apiReturnedStories || authoritativePublicMetrics.authoritativeActiveStories || workerBatchPublicStories || 0);
   const sourceStories = Number(lastMetrics.sourceStoryCount || hour.sourceStoriesCollected || 0);
   const attemptedCount = Number(lastMetrics.attemptedCount || currentCycle.generatedCandidates || reviewed || 0);
   const buildMs = Number(lastMetrics.buildMs || recentCycles.slice(-1)[0]?.publicationLatencyMs || 0);
@@ -5277,7 +5553,18 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
     },
     publicationEfficiencyDashboard: {
       visiblePublishedArticles: visiblePublished,
-      sourceStories,
+      authoritativePublicRevision: authoritativePublicMetrics.publicRevision || 0,
+      preparedCacheRevision: authoritativePublicMetrics.preparedCacheRevision || 0,
+      memoryCacheRevision: authoritativePublicMetrics.memoryCacheRevision || "",
+      lastKnownGoodRevision: authoritativePublicMetrics.lastKnownGoodRevision || 0,
+      authoritativeActiveStories: Number(authoritativePublicMetrics.authoritativeActiveStories || 0),
+      preparedCacheStories: Number(authoritativePublicMetrics.preparedCacheStories || 0),
+      memoryCacheStories: Number(authoritativePublicMetrics.memoryCacheStories || 0),
+      apiReturnedStories: Number(authoritativePublicMetrics.apiReturnedStories || 0),
+      visibleTileStories: Number(authoritativePublicMetrics.visibleTileStories || 0),
+      workerBatchStories: Number(authoritativePublicMetrics.workerBatchStories || workerBatchPublicStories || 0),
+      publicStateConverged: Boolean(Number(authoritativePublicMetrics.visibleTileStories || 0) === visiblePublished && publicStateForProduction.gate?.passed),
+      publicStateSource: "newsLabPublicStateStabilityGate",      sourceStories,
       attemptedCandidates: attemptedCount,
       finalApproved,
       recentNewPublishedArticles: recentPublished,
@@ -5298,7 +5585,7 @@ function productionIntelligenceReport(reason = "cycle", options = {}) {
       interpretation: budgetOverrun
         ? "The worker exceeded its production budget; reduce repeated repair/rebuild work before increasing collection."
         : "The worker stayed within the measured budget; optimize acceptance and prepared-cache work before adding more processing.",
-      rule: "The Brain should optimize for published articles per unit of work, not raw candidates processed."
+      rule: "Production Intelligence reads the same authoritative public revision and visible tile count as /api/news-lab. Worker batch counts are diagnostic only and cannot redefine public inventory."
     },
     unnecessaryWork: {
       repairFrequency,
@@ -20888,6 +21175,11 @@ function reportedStoryClusters(stories = []) {
     .sort((a, b) => b.reportingScore - a.reportingScore);
 }
 
+function newsLabImportantTerms(story = {}, limit = 18) {
+  const terms = typeof newsLabTerms === "function" ? newsLabTerms(story) : storyIdentityTerms(story);
+  return [...new Set((terms || []).map(term => String(term || "").toLowerCase().trim()).filter(term => term.length >= 4))].slice(0, Math.max(1, Number(limit || 18)));
+}
+
 function newsLabTerms(story = {}) {
   const generic = new Set([
     "news", "latest", "local", "video", "watch", "live", "update", "updates", "report", "reports",
@@ -22951,6 +23243,22 @@ function newsLabHeadlineDossierBuilder(story = {}, index = 0) {
 }
 
 function newsLabHeadlinePreEditor(story = {}, index = 0) {
+  const canonical = newsLabCanonicalHeadlineService(story, index, story.title || story.summary || "");
+  if (canonical.validationPassed && canonical.publicationHeadline) {
+    return {
+      passed: true,
+      title: canonical.publicationHeadline,
+      chosen: { title: canonical.publicationHeadline, passed: true, issues: [], score: Number(canonical.candidateMetrics?.bestCandidateScore || 100), failureClass: "NONE" },
+      candidates: canonical.validation || [],
+      builder: { canonicalServiceAuthority: true, finalHeadline: canonical.publicationHeadline },
+      sourceHeadline: story.originalHeadline || story.sources?.[0]?.title || "",
+      semanticFrame: canonical.semanticFrame || null,
+      canonicalHeadline: canonical,
+      failureClass: "NONE",
+      candidateMetrics: canonical.candidateMetrics || { candidateCount: Number(canonical.candidates?.length || 0), firstCandidatePassed: false, anyCandidatePassed: true },
+      action: "canonical-headline-service-approved"
+    };
+  }
   const builder = newsLabHeadlineDossierBuilder(story, index);
   const semanticFrame = builder.semanticFrame || newsLabHeadlineSemanticFrame(story, index);
   const sourceHeadline = story.originalHeadline || story.sources?.[0]?.title || "";
@@ -22964,7 +23272,8 @@ function newsLabHeadlinePreEditor(story = {}, index = 0) {
       semanticFrame,
       sourceHeadline,
       failureClass: "HEADLINE_INPUT_FAILURE",
-      candidateMetrics: { candidateCount: 0, firstCandidatePassed: false, anyCandidatePassed: false, firstCandidateScore: 0, bestCandidateScore: 0, target: { firstCandidatePassRate: 0.6, anyCandidatePassRate: 0.9 } },
+      canonicalHeadline: canonical,
+      candidateMetrics: canonical.candidateMetrics || { candidateCount: 0, firstCandidatePassed: false, anyCandidatePassed: false, firstCandidateScore: 0, bestCandidateScore: 0, target: { firstCandidatePassRate: 0.6, anyCandidatePassRate: 0.9 } },
       action: "headline-input-return-to-writer-reasoning"
     };
   }
@@ -23009,7 +23318,8 @@ function newsLabHeadlinePreEditor(story = {}, index = 0) {
     sourceHeadline,
     semanticFrame,
     failureClass: chosen.failureClass || newsLabHeadlineCandidateFailureClass(chosen.issues || []),
-    candidateMetrics: {
+    canonicalHeadline: canonical,
+    candidateMetrics: canonical.candidateMetrics || {
       candidateCount: reviewed.length,
       firstCandidatePassed: Boolean(reviewed[0]?.passed),
       anyCandidatePassed: reviewed.some(item => item.passed),
@@ -23017,7 +23327,7 @@ function newsLabHeadlinePreEditor(story = {}, index = 0) {
       bestCandidateScore: Number((reviewed.slice().sort((a, b) => b.score - a.score)[0] || {}).score || 0),
       target: { firstCandidatePassRate: 0.6, anyCandidatePassRate: 0.9 }
     },
-    action: chosen.passed ? "headline-pre-editor-approved" : "headline-pre-editor-needs-repair"
+    action: chosen.passed ? "canonical-headline-service-approved" : (canonical.failureClass === "HEADLINE_INPUT_FAILURE" ? "headline-input-return-to-writer-reasoning" : "headline-rendering-repair-through-canonical-service")
   };
 }
 
@@ -23578,7 +23888,8 @@ function newsLabImageStatus(story = {}) {
   const explicit = story.imageStatus || image.imageStatus || image.status || image.type || provenance.imageStatus || provenance.status || "";
   const text = `${explicit} ${image.primary || ""} ${image.url || ""} ${image.src || ""} ${image.fallback || ""} ${image.source || ""} ${image.license || ""} ${image.credit || ""} ${provenance.source || ""} ${provenance.license || ""} ${provenance.auditNote || ""}`.toLowerCase();
   if (!image || !(image.primary || image.url || image.src || image.fallback)) return IMAGE_STATUS.MISSING;
-  if (/generated-approved|ce-generated|generated editorial image|\/assets\/generated-news-lab\//i.test(text)) return IMAGE_STATUS.GENERATED_APPROVED;
+  if (/ce-local-fallback|ce local fallback graphic|local ce fallback|ce fallback temporary|ce-fallback-temporary|local fallback image used/i.test(text)) return IMAGE_STATUS.CE_FALLBACK_TEMPORARY;
+  if (/generated-approved|ai-generated-editorial-image|external ai image provider|generated editorial image/i.test(text)) return IMAGE_STATUS.GENERATED_APPROVED;
   if (/generation-queued|pending-generation|queued|generated-pending-validation|generating/i.test(text)) return IMAGE_STATUS.GENERATION_QUEUED;
   if (/source-provided-review-required|failed-final/i.test(text)) return IMAGE_STATUS.FAILED_FINAL;
   if (/logo\.png|favicon|icon|creator-bg-|newsroom-hero|local-placeholder|temporary local image|ce fallback|ce media visual|local fallback image used/i.test(text)) return IMAGE_STATUS.CE_FALLBACK_TEMPORARY;
@@ -27032,7 +27343,9 @@ function newsLabFullRejectIssues(story = {}) {
 }
 
 function newsLabPublishableAfterFullReview(story = {}) {
-  return newsLabFullRejectIssues(story).length === 0
+  const canonicalIssues = story.workflowVersion === newsLabCanonicalWorkflowVersion ? newsLabCanonicalStoryIdentityLockIssues(story) : [];
+  return canonicalIssues.length === 0
+    && newsLabFullRejectIssues(story).length === 0
     && newsLabCompleteArticleStory(story)
     && Number(story.qualityGate?.score || newsLabPublicArticleScore(story) || 0) >= 55;
 }
@@ -31892,13 +32205,16 @@ function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker")
       dossierRevisionHash,
       currentImageStatus: newsLabImageStatus(story),
       requiredAction: "licensed-search-then-generation",
-      imageState: IMAGE_STATUS.CE_FALLBACK_TEMPORARY,
+      imageState: IMAGE_STATUS.GENERATION_QUEUED,
       imageGenerationRequired: true,
+      providerLane: "ai-editorial-image",
+      fallbackIsTemporary: true,
+      requiresProvider: true,
       deliverySla: { queuedAt: existingBrief?.queuedAt || new Date().toISOString(), claimByMinutes: 1, attemptByMinutes: 3, attachOrFailByMinutes: 5, rescueByMinutes: 10 },
       deliveryStages: [...(Array.isArray(existingBrief?.deliveryStages) ? existingBrief.deliveryStages : []), { stage: "JOB_QUEUED", at: new Date().toISOString(), reason }].slice(-30),
-      status: existingBrief?.status && !["pending-generation", "queued", IMAGE_STATUS.GENERATION_QUEUED].includes(existingBrief.status)
+      status: existingBrief?.status && !["pending-generation", "queued", IMAGE_STATUS.GENERATION_QUEUED, "provider-not-configured", "provider-failed"].includes(existingBrief.status)
         ? existingBrief.status
-        : "queued",
+        : IMAGE_STATUS.GENERATION_QUEUED,
       attempts: Number(existingBrief?.attempts || 0),
       priority: Number(story.isBreaking ? 100 : story.priority || 50),
       imageDossier,
@@ -31918,7 +32234,9 @@ function newsLabGeneratedImageQueueRecord(stories = [], reason = "image-worker")
     summary: {
       queuedItems: items.length,
       addedThisPass: added,
-      pendingGeneration: items.filter(item => ["queued", "pending-generation", IMAGE_STATUS.GENERATION_QUEUED].includes(item.status)).length,
+      requiredImageArticles: stories.length,
+      fallbackContradictionFixed: stories.length > 0,
+      pendingGeneration: items.filter(item => ["queued", "pending-generation", IMAGE_STATUS.GENERATION_QUEUED, "provider-not-configured", "provider-failed"].includes(item.status)).length,
       readyForReview: items.filter(item => item.status === "generated-awaiting-review").length,
       approvedForPublication: items.filter(item => item.status === "approved-for-publication").length
     },
@@ -31974,6 +32292,117 @@ function newsLabGeneratedImageMotif(category = "top") {
   return '<g fill="none" stroke="url(#accent)" stroke-width="18" opacity="0.9"><path d="M300 640V285h600v355"/><path d="M375 350h450M375 430h340M375 510h450"/><circle cx="900" cy="260" r="82"/></g>';
 }
 
+function newsLabGeneratedImageProviderConfig() {
+  const provider = String(process.env.CE_NEWS_LAB_IMAGE_PROVIDER || "").trim().toLowerCase();
+  const apiKey = process.env.OPENAI_IMAGE_API_KEY || process.env.OPENAI_API_KEY || "";
+  return {
+    provider,
+    configured: Boolean(provider === "openai" && apiKey),
+    apiKey,
+    model: process.env.CE_NEWS_LAB_OPENAI_IMAGE_MODEL || "gpt-image-1",
+    size: process.env.CE_NEWS_LAB_OPENAI_IMAGE_SIZE || "1024x1024"
+  };
+}
+
+function newsLabAiImagePrompt(brief = {}, story = {}) {
+  const dossier = story.imageDossier || newsLabBuildImageDossier(story);
+  const title = cleanArticleText(brief.title || story.title || "CE Media news image", 140);
+  const category = newsLabCategory(story) || brief.category || "news";
+  const facts = [
+    ...(Array.isArray(dossier.visualFacts) ? dossier.visualFacts : []),
+    ...(Array.isArray(dossier.canonicalEvent?.verifiedFacts) ? dossier.canonicalEvent.verifiedFacts : []),
+    story.summary || story.articleSummary || ""
+  ].map(item => cleanArticleText(typeof item === "string" ? item : item?.text || item?.summary || "", 180)).filter(Boolean).slice(0, 6);
+  return [
+    "Create an original editorial news image for CE Media.",
+    "Topic: " + title + ".",
+    "Category: " + category + ".",
+    facts.length ? "Verified visual context: " + facts.join(" | ") + "." : "Use a realistic, non-branded, non-publisher-specific news visual based on the dossier.",
+    "Do not copy any publisher photo, logo, screenshot, celebrity likeness unless publicly necessary and rights-safe, or protected layout.",
+    "Style: realistic editorial news photography or clean news illustration, no text overlays, no watermarks."
+  ].join(" ");
+}
+
+async function generateAiEditorialImage(brief = {}, story = {}, reason = "ai-editorial-image-provider") {
+  const storyId = String(brief.storyId || story.id || story.topicKey || story.eventId || brief.title || "");
+  const jobId = brief.jobId || "image_job_" + crypto.createHash("sha1").update(storyId || Date.now().toString()).digest("hex").slice(0, 10);
+  const config = newsLabGeneratedImageProviderConfig();
+  if (!config.configured) {
+    newsLabImageDeliveryStage({ storyId, jobId, status: "provider-not-configured" }, "PROVIDER_SKIPPED_NOT_CONFIGURED", {
+      reason,
+      status: "provider-not-configured",
+      note: "No external AI image provider request was sent. Configure CE_NEWS_LAB_IMAGE_PROVIDER=openai and OPENAI_IMAGE_API_KEY or OPENAI_API_KEY to enable true AI image generation."
+    });
+    return { ok: false, status: "provider-not-configured", provider: config.provider || "none" };
+  }
+  const prompt = newsLabAiImagePrompt(brief, story);
+  newsLabImageDeliveryStage({ storyId, jobId, status: "provider-request-sent" }, "PROVIDER_REQUEST_SENT", { reason, status: "provider-request-sent", slaMinute: 3, note: "External AI image provider request started." });
+  try {
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + config.apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: config.model, prompt, size: config.size, n: 1 })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload?.error?.message || "image provider returned " + response.status);
+    const first = Array.isArray(payload.data) ? payload.data[0] || {} : {};
+    let buffer = null;
+    if (first.b64_json) {
+      buffer = Buffer.from(first.b64_json, "base64");
+    } else if (first.url) {
+      const imageResponse = await fetch(first.url);
+      if (!imageResponse.ok) throw new Error("generated image download returned " + imageResponse.status);
+      buffer = Buffer.from(await imageResponse.arrayBuffer());
+    }
+    if (!buffer || !buffer.length) throw new Error("image provider response did not contain an image asset");
+    fs.mkdirSync(newsLabGeneratedImageAssetDir, { recursive: true });
+    const slug = newsLabGeneratedImageAssetSlug((newsLabCategory(story) || brief.category || "news") + "-" + (brief.title || story.title || storyId));
+    const fileName = slug + "-" + crypto.createHash("sha1").update(storyId + ":" + Date.now()).digest("hex").slice(0, 10) + ".png";
+    const assetPath = path.join(newsLabGeneratedImageAssetDir, fileName);
+    const assetUrl = "/assets/generated-news-lab/" + fileName;
+    fs.writeFileSync(assetPath, buffer);
+    newsLabImageDeliveryStage({ storyId, jobId, assetUrl, status: "provider-response-received" }, "PROVIDER_RESPONSE_RECEIVED", { reason, status: "provider-response-received", assetUrl });
+    newsLabImageDeliveryStage({ storyId, jobId, assetUrl, status: "asset-saved" }, "ASSET_SAVED", { reason, status: "asset-saved", assetUrl });
+    const title = cleanArticleText(brief.title || story.title || "CE Media news visual", 140);
+    const image = newsLabImageWithRevision({
+      url: assetUrl,
+      primary: assetUrl,
+      fallback: "/assets/newsroom-hero.png",
+      imageStatus: IMAGE_STATUS.GENERATED_APPROVED,
+      status: IMAGE_STATUS.GENERATED_APPROVED,
+      type: IMAGE_STATUS.GENERATED_APPROVED,
+      alt: title + " - AI-generated CE Media editorial visual",
+      credit: "AI-generated editorial image by CE Media",
+      source: "OpenAI Image Provider",
+      license: "AI-generated CE Media original",
+      photographer: "CE Media",
+      originalQuery: brief.title || title,
+      query: brief.title || title,
+      generatedAt: new Date().toISOString(),
+      generatedBy: "generateAiEditorialImage",
+      provider: "openai",
+      articleRevisionId: story.articleRevisionId || story.publicRevisionId || story.revisionId || "",
+      dossierRevisionId: story.dossierRevisionId || story.dossierRevision || story.storyDossier?.dossierLock?.revisionId || "",
+      provenance: newsLabImageProvenance({
+        source: "OpenAI Image Provider",
+        photographer: "CE Media",
+        license: "AI-generated CE Media original",
+        imageStatus: IMAGE_STATUS.GENERATED_APPROVED,
+        sourceUrl: assetUrl,
+        retrievedAt: new Date().toISOString(),
+        originalQuery: brief.title || title,
+        auditNote: "External AI image generated from locked Story Dossier image brief during " + reason + "."
+      })
+    }, story.image || {}, IMAGE_STATUS.GENERATED_APPROVED);
+    newsLabImageDeliveryStage({ storyId, jobId, assetUrl, status: "generated-approved" }, "ASSET_VALIDATED", { reason, status: "generated-approved", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
+    newsLabImageDeliveryStage({ storyId, jobId, assetUrl, status: "verified-visible" }, "PUBLIC_IMAGE_VERIFIED", { reason, status: "verified-visible", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
+    return { ok: true, image, assetPath, assetUrl, fileName, provider: "openai" };
+  } catch (error) {
+    newsLabImageDeliveryStage({ storyId, jobId, status: "provider-failed" }, "PROVIDER_REQUEST_FAILED", { reason, status: "provider-failed", note: String(error?.message || error).slice(0, 240) });
+    return { ok: false, status: "provider-failed", error: String(error?.message || error), provider: "openai" };
+  }
+}
+
 function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "generated-image-worker") {
   const storyId = String(brief.storyId || story.id || story.topicKey || brief.title || "ce-generated-story");
   const category = newsLabCategory(story) || brief.category || "top";
@@ -32005,8 +32434,8 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
 `;
   fs.writeFileSync(assetPath, svg, "utf8");
   newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generating" }, "LOCAL_CE_FALLBACK_GENERATION_STARTED", { reason, status: "generating", slaMinute: 3, providerRequestSent: false, rule: "Local CE SVG fallback generation is not an external AI image provider request." });
-  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generated-pending-validation" }, "PROVIDER_RESPONSE_RECEIVED", { reason, status: "generated-pending-validation", assetUrl });
-  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "asset-saved" }, "ASSET_SAVED", { reason, status: "asset-saved", assetUrl });
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "ce-fallback-temporary" }, "LOCAL_FALLBACK_CREATED", { reason, status: "ce-fallback-temporary", assetUrl, providerRequestSent: false });
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "asset-saved" }, "ASSET_SAVED", { reason, status: "asset-saved", assetUrl, providerRequestSent: false });
   const image = newsLabImageWithRevision({
     url: assetUrl,
     primary: assetUrl,
@@ -32022,7 +32451,7 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
     originalQuery: brief.title || title,
     query: brief.title || title,
     generatedAt: new Date().toISOString(),
-    generatedBy: "news-lab-image-worker",
+    generatedBy: "generateLocalCeFallbackGraphic",
     provenance: newsLabImageProvenance({
       source: "CE local fallback graphic",
       photographer: "CE Media",
@@ -32033,94 +32462,63 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
       originalQuery: brief.title || title,
       auditNote: `Local CE fallback graphic generated from Story Dossier image brief during ${reason}; no publisher image was copied and no external AI image provider request was sent.`
     })
-  }, story.image || {}, IMAGE_STATUS.GENERATED_APPROVED);
-  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generated-approved" }, "ASSET_VALIDATED", { reason, status: "generated-approved", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
+  }, story.image || {}, IMAGE_STATUS.CE_FALLBACK_TEMPORARY);
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "ce-fallback-temporary" }, "LOCAL_FALLBACK_VALIDATED", { reason, status: "ce-fallback-temporary", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
   newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "verified-visible" }, "PUBLIC_IMAGE_VERIFIED", { reason, status: "verified-visible", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
-  return { image, assetPath, assetUrl, fileName };
+  return { image, assetPath, assetUrl, fileName, ok: false, fallbackAttached: true, status: IMAGE_STATUS.CE_FALLBACK_TEMPORARY };
 }
 
-function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generated-image-promotion") {
+function generateLocalCeFallbackGraphic(brief = {}, story = {}, reason = "local-ce-fallback") {
+  return newsLabWriteGeneratedImageAsset(brief, story, reason);
+}
+
+async function newsLabPromoteGeneratedImagesForStories(stories = [], reason = "generated-image-promotion") {
   const queue = readJsonFile(newsLabGeneratedImageQueueFile, { version: "20260722-generated-image-queue-v1", items: [] }) || { items: [] };
   const items = Array.isArray(queue.items) ? queue.items : [];
   if (!items.length || !Array.isArray(stories)) return { stories, applied: 0, queue };
   const storyMap = new Map(stories.map(story => [String(story.id || story.topicKey || story.eventId || ""), story]));
-  const pendingStatuses = new Set(["queued", "pending-generation", IMAGE_STATUS.GENERATION_QUEUED]);
+  const activeStatuses = new Set(["queued", "pending-generation", IMAGE_STATUS.GENERATION_QUEUED, "provider-not-configured", "provider-failed"]);
   let applied = 0;
   let staleRetired = 0;
-  const updatedItems = items.map(item => {
+  let providerAttempts = 0;
+  let temporaryFallbackAttachments = 0;
+  const updatedItems = [];
+  for (const item of items) {
     const storyId = String(item.storyId || "");
     const story = storyMap.get(storyId);
-    if (!story && pendingStatuses.has(item.status)) {
+    if (!story && activeStatuses.has(item.status)) {
       staleRetired += 1;
-      return {
-        ...item,
-        status: "retired-story-not-current",
-        retiredAt: new Date().toISOString(),
-        retiredReason: "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending."
-      };
+      updatedItems.push({ ...item, status: "retired-story-not-current", retiredAt: new Date().toISOString(), retiredReason: "Generated image job no longer matches a current published News Lab story; keep the audit record but stop counting it as pending." });
+      continue;
     }
-    if (!story || !pendingStatuses.has(item.status)) return item;
+    if (!story || !activeStatuses.has(item.status)) {
+      updatedItems.push(item);
+      continue;
+    }
     const currentImage = story.image || {};
     const currentScore = newsLabImageQualityScore(story, currentImage);
-    const currentText = `${currentImage.source || ""} ${currentImage.license || ""} ${currentImage.credit || ""} ${currentImage.url || ""}`;
-    const shouldGenerate = currentScore < 30 || /fallback|placeholder|newsroom-hero|creator-bg|local asset/i.test(currentText);
-    if (!shouldGenerate) return item;
+    const currentText = String((currentImage.source || "") + " " + (currentImage.license || "") + " " + (currentImage.credit || "") + " " + (currentImage.url || "") + " " + (currentImage.primary || ""));
+    const shouldGenerate = item.imageGenerationRequired || currentScore < 30 || /fallback|placeholder|newsroom-hero|creator-bg|local asset|ce local fallback/i.test(currentText) || newsLabImageStatus(story) === IMAGE_STATUS.CE_FALLBACK_TEMPORARY;
+    if (!shouldGenerate) { updatedItems.push(item); continue; }
     newsLabImageDeliveryStage(item, "JOB_CLAIMED", { reason, status: "generating", slaMinute: 1 });
-    const generated = newsLabWriteGeneratedImageAsset(item, story, reason);
-    newsLabImageDeliveryStage({ ...item, assetUrl: generated.assetUrl }, "ARTICLE_ATTACHMENT_QUEUED", { reason, status: "article-attachment-queued", assetUrl: generated.assetUrl });
+    const providerResult = await generateAiEditorialImage(item, story, reason);
+    if (providerResult.provider === "openai" && providerResult.status !== "provider-not-configured") providerAttempts += 1;
+    const imageResult = providerResult.ok ? providerResult : generateLocalCeFallbackGraphic(item, story, reason + ":temporary-local-fallback");
+    if (!providerResult.ok) temporaryFallbackAttachments += 1;
+    newsLabImageDeliveryStage({ ...item, assetUrl: imageResult.assetUrl || "" }, "ARTICLE_ATTACHMENT_QUEUED", { reason, status: "article-attachment-queued", assetUrl: imageResult.assetUrl || "" });
+    const verifiedVisible = imageResult.image ? newsLabPublicGeneratedImageVisible(imageResult.image) || publicAssetExists(imageResult.assetUrl || "") : false;
     storyMap.set(storyId, {
       ...story,
-      image: generated.image,
-      imageProvenance: generated.image.provenance,
-      imageImprovement: {
-        ...(story.imageImprovement || {}),
-        appliedAt: new Date().toISOString(),
-        reason,
-        beforeScore: currentScore,
-        afterScore: Math.max(72, currentScore + 35),
-        rule: "Image Intelligence generated and attached a CE-owned article visual when licensed image search did not produce a suitable match."
-      },
-      imagePublicationStatus: {
-        ...(story.imagePublicationStatus || {}),
-        ready: true,
-        needsRepair: false,
-        deliveryStatus: "verified-visible-generated-image",
-        imageJobId: item.jobId || "",
-        imageRevision: generated.image.revision || 0,
-        publicVisibilityVerified: newsLabPublicGeneratedImageVisible(generated.image)
-      }
+      image: imageResult.image || story.image,
+      imageProvenance: imageResult.image?.provenance || story.imageProvenance,
+      imageImprovement: { ...(story.imageImprovement || {}), appliedAt: new Date().toISOString(), reason, beforeScore: currentScore, afterScore: providerResult.ok ? Math.max(82, currentScore + 45) : Math.max(20, currentScore + 8), providerStatus: providerResult.status || "generated-approved", rule: providerResult.ok ? "Image Intelligence attached a true AI-generated editorial image from the configured provider." : "Image Intelligence attached a clearly labeled temporary CE fallback while keeping the provider image job open." },
+      imagePublicationStatus: { ...(story.imagePublicationStatus || {}), ready: Boolean(providerResult.ok), needsRepair: !providerResult.ok, deliveryStatus: providerResult.ok ? "verified-visible-generated-image" : "temporary-ce-fallback-visible-provider-needed", imageJobId: item.jobId || "", imageRevision: imageResult.image?.revision || 0, publicVisibilityVerified: verifiedVisible, providerStatus: providerResult.status || "generated-approved" }
     });
-    newsLabImageDeliveryStage({ ...item, assetUrl: generated.assetUrl }, "ARTICLE_UPDATED", { reason, status: "article-updated", assetUrl: generated.assetUrl, verifiedVisible: newsLabPublicGeneratedImageVisible(generated.image) });
+    newsLabImageDeliveryStage({ ...item, assetUrl: imageResult.assetUrl || "" }, "ARTICLE_UPDATED", { reason, status: providerResult.ok ? "article-updated" : "temporary-fallback-attached", assetUrl: imageResult.assetUrl || "", verifiedVisible });
     applied += 1;
-    return {
-      ...item,
-      status: "approved-for-publication",
-      deliveryStatus: newsLabPublicGeneratedImageVisible(generated.image) ? "verified-visible" : "asset-attached-needs-public-verification",
-      attempts: Number(item.attempts || 0) + 1,
-      generatedAt: generated.image.generatedAt,
-      assetUrl: generated.assetUrl,
-      assetFile: generated.fileName,
-      reviewStatus: "automated-image-editor-approved",
-      imageRevision: generated.image.revision || 0,
-      publicVisibilityVerified: newsLabPublicGeneratedImageVisible(generated.image),
-      promotionReason: reason
-    };
-  });
-  const updatedQueue = {
-    ...queue,
-    updatedAt: new Date().toISOString(),
-    reason,
-    summary: {
-      queuedItems: updatedItems.length,
-      addedThisPass: 0,
-      pendingGeneration: updatedItems.filter(item => pendingStatuses.has(item.status)).length,
-      readyForReview: updatedItems.filter(item => item.status === "generated-awaiting-review").length,
-      approvedForPublication: updatedItems.filter(item => item.status === "approved-for-publication").length,
-      retiredStaleJobsThisPass: staleRetired,
-      assetsPromotedThisPass: applied
-    },
-    items: updatedItems
-  };
+    updatedItems.push({ ...item, status: providerResult.ok ? "approved-for-publication" : (providerResult.status || "provider-failed"), deliveryStatus: providerResult.ok ? (verifiedVisible ? "verified-visible" : "asset-attached-needs-public-verification") : "temporary-fallback-attached-provider-needed", attempts: Number(item.attempts || 0) + 1, providerAttempts: Number(item.providerAttempts || 0) + (providerResult.provider === "openai" && providerResult.status !== "provider-not-configured" ? 1 : 0), generatedAt: imageResult.image?.generatedAt || item.generatedAt || "", assetUrl: imageResult.assetUrl || item.assetUrl || "", assetFile: imageResult.fileName || item.assetFile || "", reviewStatus: providerResult.ok ? "automated-image-editor-approved" : "temporary-fallback-owner-provider-needed", imageRevision: imageResult.image?.revision || item.imageRevision || 0, publicVisibilityVerified: verifiedVisible, fallbackAttached: !providerResult.ok, fallbackIsTemporary: !providerResult.ok, imageGenerationRequired: !providerResult.ok, lastProviderStatus: providerResult.status || "generated-approved", promotionReason: reason, updatedAt: new Date().toISOString() });
+  }
+  const updatedQueue = { ...queue, updatedAt: new Date().toISOString(), reason, summary: { queuedItems: updatedItems.length, addedThisPass: 0, pendingGeneration: updatedItems.filter(item => activeStatuses.has(item.status)).length, readyForReview: updatedItems.filter(item => item.status === "generated-awaiting-review").length, approvedForPublication: updatedItems.filter(item => item.status === "approved-for-publication").length, retiredStaleJobsThisPass: staleRetired, assetsPromotedThisPass: applied, providerAttemptsThisPass: providerAttempts, temporaryFallbackAttachmentsThisPass: temporaryFallbackAttachments, rule: "CE fallback attachment does not close the AI image job. Only a provider-generated or high-confidence licensed image closes it." }, items: updatedItems };
   writeJsonFile(newsLabGeneratedImageQueueFile, updatedQueue);
   return { stories: stories.map(story => storyMap.get(String(story.id || story.topicKey || story.eventId || "")) || story), applied, queue: updatedQueue };
 }
@@ -32292,7 +32690,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
           ...storyContext,
           generatedImageFallbackReason: blockingFindings.map(finding => finding.code || finding.message || "image-editor-finding").join(", ") || "licensed-image-not-specific-enough"
         });
-        const generated = newsLabWriteGeneratedImageAsset(brief, storyContext, `${reason}:immediate-generated-fallback`);
+        const generated = generateLocalCeFallbackGraphic(brief, storyContext, `${reason}:immediate-temporary-ce-fallback`);
         const generatedStory = {
           ...story,
           image: generated.image,
@@ -32303,7 +32701,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
             reason: `${reason}:immediate-generated-fallback`,
             beforeScore,
             afterScore: Math.max(72, beforeScore + 35),
-            rule: "Image Intelligence used the built-in CE image generator immediately because licensed image search did not produce a suitable match and the public article otherwise would have kept a generic CE fallback."
+            rule: "Image Intelligence attached a clearly labeled temporary CE fallback because licensed image search did not produce a suitable match; the AI provider image job remains open until a generated or licensed image replaces it."
           }
         };
         nextStories.push(generatedStory);
@@ -32344,7 +32742,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     ? newsLabGeneratedImageQueueRecord(generatedImageQueueStories, `${reason}:article-ready-image-attachment`)
     : null;
   const generatedImagePromotion = generationQueueEnabled
-    ? newsLabPromoteGeneratedImagesForStories(nextStories, `${reason}:generated-asset-promotion`)
+    ? await newsLabPromoteGeneratedImagesForStories(nextStories, `${reason}:generated-asset-promotion`)
     : { stories: nextStories, applied: 0, queue: generatedImageQueue };
   nextStories = generatedImagePromotion.stories;
 
@@ -32393,6 +32791,15 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     writeJsonFile(newsLabPublishedPayloadFile, persisted);
     cache = buildPreparedNewsLabApiResponses(`image-improvement-pass:${reason}:shelf-restored`);
   }
+  const imageDeliveryLedger = newsLabImageDeliveryLedger();
+  const imageDeliveryJobs = Object.values(imageDeliveryLedger.jobs || {});
+  const imageProviderStatus = newsLabImageGenerationProviderStatus();
+  const imageJobsClaimed = imageDeliveryJobs.filter(job => (job.stages || []).some(stage => stage.stage === "JOB_CLAIMED")).length;
+  const providerRequestsSent = imageDeliveryJobs.filter(job => (job.stages || []).some(stage => stage.stage === "PROVIDER_REQUEST_SENT")).length;
+  const providerResponsesReceived = imageDeliveryJobs.filter(job => (job.stages || []).some(stage => stage.stage === "PROVIDER_RESPONSE_RECEIVED")).length;
+  const temporaryFallbackAttached = imageDeliveryJobs.filter(job => (job.stages || []).some(stage => stage.stage === "LOCAL_FALLBACK_CREATED")).length;
+  const providerApprovedAttachments = imageDeliveryJobs.filter(job => (job.stages || []).some(stage => stage.stage === "PROVIDER_RESPONSE_RECEIVED") && (job.stages || []).some(stage => stage.stage === "ARTICLE_UPDATED")).length;
+
   const audit = {
     version: "20260722-news-lab-image-intelligence-v1",
     reason,
@@ -32400,7 +32807,7 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
     finishedAt: new Date().toISOString(),
     policy: {
       copyright: "Pexels, Unsplash, and Pixabay are preferred licensed/search-provider lanes. Unsplash API images must keep photographer/Unsplash attribution and returned image URLs. NewsData/source images remain disabled unless CE_NEWS_LAB_ALLOW_SOURCE_IMAGES=true confirms separate rights review.",
-      generatedImages: "CE-generated image briefs may be queued from article descriptions. When an article is already publishable and only has a generic CE fallback image, the built-in CE generated image asset may be created and promoted in the same worker pass after provenance and safety checks.",
+      generatedImages: "AI-generated editorial image briefs are queued from locked Story Dossier facts and handled in a provider lane. Local CE fallback graphics are temporary, separately labeled, and never count as external AI provider requests or completed provider images.",
       articleSafety: "Articles remain published during image review; image improvements are field-only updates."
     },
     config: {
@@ -32423,15 +32830,16 @@ async function runNewsLabImageImprovementPass(reason = "manual-image-worker", op
       temporaryCeFallbacks: imageDiagnostics.temporaryCeFallbacks,
       fallbackJobsAwaitingQueue: imageDiagnostics.fallbackJobsAwaitingQueue,
       generationJobsQueued: (generatedImagePromotion.queue || generatedImageQueue || fallbackBackfillQueue)?.summary?.pendingGeneration || 0,
-      generationJobsClaimed: generatedImagePromotion.applied || 0,
-      generationProviderConfigured: Boolean(process.env.OPENAI_API_KEY || process.env.CE_IMAGE_GENERATION_PROVIDER || process.env.CE_NEWS_LAB_GENERATED_IMAGE_ASSETS !== "false"),
-      generationRequestsSent: generatedImagePromotion.applied || 0,
-      generationResponsesReceived: generatedImagePromotion.applied || 0,
+      generationJobsClaimed: imageJobsClaimed,
+      generationProviderConfigured: imageProviderStatus.providerConfigured,
+      generationRequestsSent: providerRequestsSent,
+      generationResponsesReceived: providerResponsesReceived,
       validationFailures: auditItems.filter(item => /held-for-image-editor|unchanged/.test(item.status || "") && (item.findings || []).length).length,
-      verifiedVisibleReplacements: generatedImagePromotion.applied || 0,
+      verifiedVisibleReplacements: Number(imageDeliveryLedger.summary?.verifiedVisibleGeneratedImages || 0),
       generatedImageBriefsQueued: (generatedImagePromotion.queue || generatedImageQueue || fallbackBackfillQueue)?.summary?.queuedItems || 0,
       generatedImageBriefsAdded: (generatedImageQueue?.summary?.addedThisPass || 0) + (fallbackBackfillQueue?.summary?.addedThisPass || 0),
-      generatedImageAssetsPromoted: generatedImagePromotion.applied || 0,
+      generatedImageAssetsPromoted: providerApprovedAttachments,
+      temporaryFallbackAttachments: temporaryFallbackAttached,
       publishedImageAttachmentsQueued: persistentImageAttachmentStories.length,
       cacheRebuilt: Boolean(cache)
     },
@@ -37310,6 +37718,90 @@ function newsLabEnsureWriterDossierHandoff(story = {}) {
   };
 }
 
+function newsLabSameEventSignature(left = {}, right = {}) {
+  const leftRep = left.representative || left.story || left || {};
+  const rightRep = right.representative || right.story || right || {};
+  if (left.eventId && right.eventId && left.eventId === right.eventId) return true;
+  const leftSig = left.eventSignature || newsLabEventSignature([leftRep]);
+  const rightSig = right.eventSignature || newsLabEventSignature([rightRep]);
+  if (leftSig.eventId && rightSig.eventId && leftSig.eventId === rightSig.eventId) return true;
+  return Boolean(newsLabCanonicalEventAgreement(leftRep, rightRep).canMerge);
+}
+
+function newsLabCleanWriterEventDossierHandoff(representative = {}, candidates = [], context = {}) {
+  const cleanRepresentative = cleanNewsLabSourceStory(representative || {});
+  const rawCandidates = [cleanRepresentative, ...(Array.isArray(candidates) ? candidates : [])]
+    .map(story => cleanNewsLabSourceStory(story))
+    .filter(story => story && (story.title || story.summary || story.articleSummary));
+  const accepted = [];
+  const rejected = [];
+  rawCandidates.forEach((story, index) => {
+    const generic = isGenericStory(story);
+    const same = index === 0 || newsLabSameStory(cleanRepresentative, story) || newsLabSameEventSignature({ representative: cleanRepresentative, eventId: context.cluster?.eventId, eventSignature: context.cluster?.eventSignature }, { representative: story });
+    if (!generic && same) accepted.push(story);
+    else rejected.push({ ...story, rejectionReason: generic ? "generic-source-fragment" : "mixed-event-source" });
+  });
+  const sourcePool = newsLabUniqueSourceStories(accepted.length ? accepted : [cleanRepresentative]);
+  const facts = sourcePool
+    .flatMap(story => newsLabRelevantFactSentences(story))
+    .filter(Boolean)
+    .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.72) === index)
+    .slice(0, 14);
+  const cluster = context.cluster || {};
+  const storyDossier = newsLabBuildStoryDossier({
+    cluster,
+    representative: cleanRepresentative,
+    supporting: sourcePool.filter(story => (story.url || story.title) !== (cleanRepresentative.url || cleanRepresentative.title)).slice(0, 12),
+    sourcePool,
+    facts,
+    eventWorkspace: {
+      sourceCount: sourcePool.length,
+      deepReadCount: sourcePool.filter(story => String(story.articleSummary || story.summary || "").length >= 180).length,
+      confidenceScore: Math.min(100, 45 + sourcePool.length * 10 + facts.length * 4)
+    }
+  });
+  const readiness = newsLabDossierReadinessContract(storyDossier, { representative: cleanRepresentative, cluster, sourcePool });
+  const hasEnoughFacts = facts.length >= (context.workerFinishMode ? 1 : 2);
+  const coherent = !storyDossier.eventCoherence || storyDossier.eventCoherence.readyForWriting !== false;
+  const readyForDevelopingBrief = Boolean(cleanRepresentative.title && hasEnoughFacts && coherent);
+  const readyForWriter = Boolean(readiness.readyForWriter || readiness.readyForStandardArticle || readyForDevelopingBrief);
+  const blockingReasons = [];
+  if (!cleanRepresentative.title) blockingReasons.push("missing-representative-title");
+  if (!hasEnoughFacts) blockingReasons.push("insufficient-same-event-facts");
+  if (!coherent) blockingReasons.push("mixed-event-contamination");
+  return {
+    readyForWriter,
+    readyForDevelopingBrief,
+    readinessClass: readiness.articleFormat === "developing-brief" || readyForDevelopingBrief ? "READY_FOR_DEVELOPING_BRIEF" : readyForWriter ? "READY_FOR_WRITER" : "HELD_FOR_DOSSIER_ENRICHMENT",
+    representative: cleanRepresentative,
+    sourcePool,
+    supporting: sourcePool.filter(story => (story.url || story.title) !== (cleanRepresentative.url || cleanRepresentative.title)),
+    facts,
+    eventSubDossier: storyDossier,
+    storyDossier,
+    readiness,
+    blockingReasons,
+    warnings: rejected.length ? ["rejected-mixed-or-generic-sources"] : [],
+    missingEvidence: hasEnoughFacts ? [] : ["more same-event facts"],
+    recommendedAction: readyForWriter ? "send-to-writer-reasoning" : "collect-more-same-event-evidence",
+    nextRetryAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    topicIsolation: {
+      accepted: sourcePool,
+      rejected,
+      rule: "Only same-event, non-generic sources enter the Writer handoff. Mixed sources return to dossier enrichment or event splitting."
+    },
+    diagnostic: {
+      inputCandidateCount: rawCandidates.length,
+      acceptedSameEventCount: sourcePool.length,
+      rejectedMixedTopicCount: rejected.filter(story => story.rejectionReason === "mixed-event-source").length,
+      rejectedGenericCount: rejected.filter(story => story.rejectionReason === "generic-source-fragment").length,
+      factCount: facts.length,
+      readinessScore: Number(readiness.score || 0),
+      rule: "Clean Writer Event Dossier Handoff is the only handoff into Writer Reasoning for news-v4 production."
+    }
+  };
+}
+
 function newsLabDossierToWriterHandoff(story = {}, context = {}) {
   return newsLabEnsureWriterDossierHandoff({
     ...story,
@@ -41420,7 +41912,24 @@ function newsLabBuildWriterReasoningPlan(story = {}, dossierInput = null, contex
       storyUnderstandingId: storyUnderstanding.id || "",
       generationRule: "Generate headline only after the plan-bound draft passes sentence-to-fact verification."
     },
-    writerReasoningContract,
+    writerReasoningContract: {
+      ...writerReasoningContract,
+      allowedFactIds: factRecords.map(record => record.factId),
+      requiredAttribution: attributionPlan.filter(item => item.required).map(item => item.factId),
+      knownUnknowns: uncertainty,
+      leadDecision: "Open with the central event supported by allowedFactIds.",
+      paragraphAssignments: paragraphPlan.map((paragraph, index) => ({ paragraph: index + 1, role: paragraph.role, allowedFactIds: paragraph.factsAllowed || [], purpose: paragraph.purpose || "" })),
+      endingDecision: "Close with the verified next step, known unknown, or direct consequence.",
+      headlineInputs: {
+        actor: identity.primaryActor || "",
+        action: identity.action || "",
+        object: storyUnderstanding.answers?.whatHappened || identity.primaryEvent || dossier.whatHappened || "",
+        consequence: identity.consequence || "",
+        allowedFactIds: factRecords.map(record => record.factId),
+        dossierRevisionId: canonicalIntelligence.revision?.id || dossier.dossierLock?.revisionId || "",
+        storyUnderstandingId: storyUnderstanding.id || ""
+      }
+    },
     reasoningHardChecks,
     readiness: {
       ready: readinessReady,
@@ -41892,8 +42401,8 @@ function newsLabImageGenerationProviderStatus() {
     activeProvider: provider || "none-configured",
     openAiProviderReady: Boolean(/openai/i.test(provider) && openAiReady),
     providerConfigured: Boolean(provider && (/openai/i.test(provider) ? openAiReady : true)),
-    localFallbackFunction: "newsLabWriteGeneratedImageAsset",
-    futureProviderFunction: "generateAiEditorialImage",
+    localFallbackFunction: "generateLocalCeFallbackGraphic",
+    aiProviderFunction: "generateAiEditorialImage",
     rule: "Local CE fallback graphics and true external AI-generated editorial images are separate lanes. Local SVG generation never records PROVIDER_REQUEST_SENT."
   };
 }
@@ -42215,6 +42724,147 @@ function newsLabQualityPublicationRepairBudget(story = {}, issues = []) {
   };
 }
 
+
+function newsLabNaturalProductionCutoverEnabled() {
+  return process.env.CE_NEWS_LAB_NATURAL_PRODUCTION_CUTOVER !== "false";
+}
+
+function newsLabNaturalProductionIsV4Story(story = {}) {
+  const versions = [story.workflowVersion, story.publicationWorkflowVersion, story.qualityPublicationSprint?.workflowVersion]
+    .map(value => String(value || ""));
+  return versions.some(value => value === newsLabCanonicalWorkflowVersion || value === NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION || /news-v4|quality-publication/i.test(value));
+}
+
+function newsLabNaturalProductionLegacyArchiveOnly(story = {}) {
+  return !newsLabNaturalProductionIsV4Story(story) && !story.canonicalIdentityLock?.locked && !story.dossierRevisionId;
+}
+
+function newsLabNaturalProductionRepairPlan(story = {}, issues = []) {
+  const route = newsLabTargetedRepairRouteFromIssues(issues, story);
+  const scope = String(route.scope || "targeted-editorial");
+  const action = /headline-only/i.test(scope)
+    ? "headline-only-canonical-regeneration"
+    : /image-only/i.test(scope)
+      ? "route-to-image-intelligence-without-text-repair"
+      : /dossier|evidence/i.test(scope)
+        ? "hold-for-dossier-enrichment"
+        : /language-only/i.test(scope)
+          ? "language-only-cleanup"
+          : "hold-no-broad-repair";
+  return {
+    ...route,
+    actionType: action,
+    repairBudget: newsLabQualityPublicationRepairBudget(story, issues),
+    broadRepairDisabled: true,
+    rule: "Part 4 repair is causal and bounded: headline fixes touch headlines only, body issues touch affected prose only, missing evidence returns to dossier enrichment, mixed events split upstream, and image issues stay in Image Intelligence."
+  };
+}
+
+function newsLabNaturalProductionApplyTargetedRepair(story = {}, issues = [], context = {}) {
+  const repairPlan = newsLabNaturalProductionRepairPlan(story, issues);
+  const scope = String(repairPlan.scope || "");
+  const budget = repairPlan.repairBudget || {};
+  if (budget.exhausted || /dossier|evidence/i.test(scope) || /targeted-editorial/i.test(scope)) {
+    return {
+      ...story,
+      naturalProductionRepair: {
+        applied: false,
+        held: true,
+        stage: context.stage || "natural-production-final-gate",
+        beforeIssues: issues,
+        afterIssues: issues,
+        repairPlan,
+        reason: budget.exhausted ? "repair-budget-exhausted" : /dossier|evidence/i.test(scope) ? "needs-dossier-enrichment-before-writing" : "broad-general-repair-disabled",
+        rule: "Part 4 holds instead of entering an endless or broad repair loop."
+      }
+    };
+  }
+  let repaired = story;
+  if (/headline-only/i.test(scope)) {
+    repaired = newsLabApplyHeadlinePreEditor(repaired, Number(context.index || 0));
+    const headline = repaired.headlineAudit?.headlinePreEditor?.publicationHeadline || repaired.canonicalHeadline?.publicationHeadline || repaired.title || "";
+    if (headline) repaired = { ...repaired, title: newsLabCleanPublicHeadlineText(headline) };
+  } else if (/language-only/i.test(scope)) {
+    repaired = newsLabSanitizePublicNewsCopy(repaired);
+    if (Array.isArray(repaired.body)) {
+      repaired = { ...repaired, body: repaired.body.map(paragraph => newsLabCleanPublicParagraphSentences(paragraph)).filter(Boolean) };
+    }
+  } else if (/image-only/i.test(scope)) {
+    const presentation = newsLabImagePendingPresentationState(repaired);
+    repaired = {
+      ...repaired,
+      presentationReadiness: presentation,
+      imagePublicationStatus: { ...(repaired.imagePublicationStatus || {}), needsRepair: true, deliveryStatus: "image-intelligence-continues-asynchronously", rule: "Image issue did not send text back through writing repair." }
+    };
+  }
+  const afterIssues = [...new Set([...newsLabBlockingFinalIssues(repaired), ...newsLabBlockingEditorFinalIssues(repaired)])];
+  return {
+    ...repaired,
+    naturalProductionRepair: {
+      applied: true,
+      held: afterIssues.length > 0,
+      stage: context.stage || "natural-production-final-gate",
+      beforeIssues: issues,
+      afterIssues,
+      correctedIssues: issues.filter(issue => !afterIssues.includes(issue)),
+      repairPlan,
+      rule: "Only the failed component was repaired; story identity, dossier revision, Writer Reasoning contract, and approved components were preserved."
+    }
+  };
+}
+
+function newsLabNaturalProductionFinalTextApproval(story = {}, index = 0, context = {}) {
+  let prepared = newsLabEnsureLayeredDossierMetadata(story);
+  prepared = newsLabCanonicalStoryIdentityLock(prepared, { outputLane: prepared.outputLane || prepared.articleFormat || "standard-article" });
+  prepared = enforceContentEditor(prepared, "news-lab");
+  prepared = enforceNewsLabEditorCategory(prepared);
+  prepared = newsLabFinalSemanticEditor(prepared);
+  prepared = newsLabPublishingEditorPass(prepared, { stage: context.stage || "natural-production-final-text-approval" });
+  prepared = newsLabApplyQualityPublicationSprintGate(prepared, { index, cycleId: context.cycleId || newsLabSprintCycleId(), stage: context.stage || "natural-production-final-text-approval" });
+  const issues = [...new Set([...newsLabBlockingFinalIssues(prepared), ...newsLabBlockingEditorFinalIssues(prepared)])];
+  const nonImageIssues = issues.filter(issue => !/image|photo|visual|placeholder/i.test(issue));
+  const presentation = newsLabImagePendingPresentationState(prepared);
+  return {
+    ...prepared,
+    naturalProductionFlow: {
+      active: true,
+      stage: context.stage || "natural-production-final-text-approval",
+      checkedAt: new Date().toISOString(),
+      sourceCollection: true,
+      eventSegmentation: Boolean(prepared.eventId || prepared.topicKey),
+      canonicalEvent: Boolean(prepared.canonicalIdentityLock?.eventId || prepared.eventId),
+      dossier: Boolean(prepared.storyDossier || prepared.canonicalDossierIntelligence),
+      dossierIntegrityDepthClassification: Boolean(prepared.articleDepthLane || prepared.qualityPublicationSprint?.articleDepthLane),
+      storyUnderstanding: Boolean(prepared.storyUnderstanding || prepared.storyDossier?.storyUnderstanding || prepared.canonicalDossierIntelligence?.storyUnderstanding),
+      dossierRevisionLocked: Boolean(prepared.canonicalIdentityLock?.locked && prepared.dossierRevisionId),
+      writerReasoningContract: Boolean(prepared.writerReasoningPlan?.writerReasoningContract || prepared.writerReasoningContract?.passed),
+      reasoningValidation: Boolean(prepared.writerReasoningVerification?.passed !== false),
+      planBoundDraft: Boolean(Array.isArray(prepared.body) && prepared.body.length),
+      paragraphFactVerification: Boolean(prepared.writerReasoningVerification || prepared.qualityPublicationSprint?.draftToFactVerification),
+      canonicalHeadlineService: Boolean(prepared.headlineAudit?.sprintHeadlineGate || prepared.headlineAudit?.canonicalHeadline || prepared.canonicalHeadline),
+      headlineHardGate: Boolean(prepared.qualityPublicationSprint?.headlineGatePassed),
+      textApproved: Boolean(prepared.qualityPublicationSprint?.textApproved && !nonImageIssues.length),
+      imagePendingAllowed: presentation.status === "IMAGE_PENDING",
+      publicEligible: Boolean(prepared.qualityPublicationSprint?.finalApproval || (prepared.qualityPublicationSprint?.textApproved && presentation.status === "IMAGE_PENDING" && !nonImageIssues.length)),
+      legacyCompetingPathsDisabled: true,
+      rule: "News-v4 uses one authoritative production path. Legacy body reconstruction, generic headline fallback, broad repair loops, and old image telemetry cannot create new production."
+    }
+  };
+}
+
+function newsLabNaturalProductionShelfStory(story = {}) {
+  if (!newsLabNaturalProductionCutoverEnabled()) return story;
+  if (newsLabNaturalProductionLegacyArchiveOnly(story)) {
+    return { ...story, legacyArchiveOnly: true, publicArticle: false, boardVisibility: { ...(story.boardVisibility || {}), active: false, reason: "legacy-archive-only-after-news-v4-cutover" } };
+  }
+  return story;
+}
+
+function newsLabNaturalProductionArchiveOnlyStories(payload = {}) {
+  const stories = [ ...(Array.isArray(payload?.ownedStories) ? payload.ownedStories : []), ...(Array.isArray(payload?.searchableArchiveStories) ? payload.searchableArchiveStories : []) ];
+  return newsLabHardMergePublicStories(stories.filter(newsLabNaturalProductionLegacyArchiveOnly).map(story => ({ ...story, legacyArchiveOnly: true, publicArticle: false, searchableArchive: true, archivedReason: "legacy-story-preserved-searchable-after-news-v4-cutover" })));
+}
+
 function newsLabApplyQualityPublicationSprintGate(story = {}, context = {}) {
   const now = new Date().toISOString();
   const depthLane = newsLabQualityPublicationDepthLane(story);
@@ -42239,14 +42889,23 @@ function newsLabApplyQualityPublicationSprintGate(story = {}, context = {}) {
     dossierRevisionId: reasoningContract.dossierRevisionId || story.dossierRevisionId || story.storyDossier?.dossierLock?.revisionId || "",
     reasoningPlanId: reasoningContract.planId,
     headlineServiceVersion: headlineGate.headlineServiceVersion,
+    headlineFailureClass: story.headlineAudit?.canonicalHeadline?.failureClass || story.canonicalHeadline?.failureClass || story.headlineAudit?.headlinePreEditor?.failureClass || "",
+    headlineCandidateCount: Number(story.headlineAudit?.canonicalHeadline?.candidateMetrics?.candidateCount || story.canonicalHeadline?.candidateMetrics?.candidateCount || headlineGate.candidateCount || 0),
+    headlineFirstCandidatePassed: Boolean(story.headlineAudit?.canonicalHeadline?.candidateMetrics?.firstCandidatePassed || story.canonicalHeadline?.candidateMetrics?.firstCandidatePassed),
+    headlineAnyCandidatePassed: Boolean(story.headlineAudit?.canonicalHeadline?.candidateMetrics?.anyCandidatePassed || story.canonicalHeadline?.candidateMetrics?.anyCandidatePassed || headlineGate.passed),
     articleDepthLane: depthLane.lane,
-    firstPassResult: story.qualityGate?.passed ? "editorial-first-pass-approved" : "editorial-first-pass-held",
+    outputLane: story.outputLane || story.articleFormat || depthLane.lane,
+    firstPassResult: story.qualityGate?.passed && reasoningContract.passed && headlineGate.passed ? "editorial-first-pass-approved" : "editorial-first-pass-held",
     repairCount: repairBudget.attempts,
     finalApproval,
     verifiedVisible: false,
     presentationStatus: presentation.status,
     integrityReady: depthLane.publishable,
     reasoningContractPassed: reasoningContract.passed,
+    writerReasoningContractVersion: story.writerReasoningPlan?.version || "",
+    writerReasoningContract: story.writerReasoningPlan?.writerReasoningContract || null,
+    paragraphFactPlan: story.writerReasoningPlan?.paragraphExecutionPlan || story.writerReasoningPlan?.paragraphPlan || [],
+    draftToFactVerification: story.writerReasoningVerification || null,
     headlineGatePassed: headlineGate.passed,
     textApproved,
     imagePending: presentation.status === "IMAGE_PENDING",
@@ -42301,6 +42960,10 @@ function newsLabRecordQualityPublicationSprintCohort(candidates = [], publicStor
       imagePending: story.presentationReadiness?.status === "IMAGE_PENDING" || record.imagePending,
       finalApproval: Boolean(record.finalApproval),
       repairCount: Number(record.repairCount || 0),
+      headlineFailureClass: record.headlineFailureClass || story.headlineAudit?.canonicalHeadline?.failureClass || story.canonicalHeadline?.failureClass || story.headlineAudit?.headlinePreEditor?.failureClass || "",
+      headlineCandidateCount: Number(record.headlineCandidateCount || story.headlineAudit?.canonicalHeadline?.candidateMetrics?.candidateCount || story.canonicalHeadline?.candidateMetrics?.candidateCount || 0),
+      headlineFirstCandidatePassed: Boolean(record.headlineFirstCandidatePassed || story.headlineAudit?.canonicalHeadline?.candidateMetrics?.firstCandidatePassed || story.canonicalHeadline?.candidateMetrics?.firstCandidatePassed),
+      headlineAnyCandidatePassed: Boolean(record.headlineAnyCandidatePassed || story.headlineAudit?.canonicalHeadline?.candidateMetrics?.anyCandidatePassed || story.canonicalHeadline?.candidateMetrics?.anyCandidatePassed),
       outputLane: record.outputLane || newsLabQualityPublicationOutputLane(story),
       legacyPathUsed: Boolean((story.workflowVersion && story.workflowVersion !== newsLabCanonicalWorkflowVersion && story.workflowVersion !== NEWS_LAB_QUALITY_PUBLICATION_WORKFLOW_VERSION) || /legacy/i.test(`${story.publicationWorkflowVersion || ""} ${story.workflowVersion || ""}`)),
       storyId: story.id || story.storyId || story.topicKey || story.eventId || "",
@@ -42323,6 +42986,9 @@ function newsLabRecordQualityPublicationSprintCohort(candidates = [], publicStor
     finalApprovalRate: Number((records.filter(record => record.finalApproval).length / count).toFixed(2)),
     verifiedVisibleYield: Number((records.filter(record => record.verifiedVisible).length / count).toFixed(2)),
     headlineSourceMismatch: issueCount(/headline-source|semantic-title-source|source-evidence/),
+    headlineInputFailures: records.filter(record => record.headlineFailureClass === "HEADLINE_INPUT_FAILURE").length,
+    headlineRenderingFailures: records.filter(record => record.headlineFailureClass === "HEADLINE_RENDERING_FAILURE").length,
+    headlineCandidatePoolAverage: Number((records.reduce((sum, record) => sum + Number(record.headlineCandidateCount || 0), 0) / count).toFixed(2)),
     headlineLeadMismatch: issueCount(/headline-lead|lead-topic/),
     topicContamination: issueCount(/topic-contamination|topic-drift|mixed-source-topic/),
     repairPasses: records.reduce((sum, record) => sum + Number(record.repairCount || 0), 0),
@@ -43662,6 +44328,77 @@ async function newsLabConcurrentMap(items = [], limit = newsLabBuildConcurrency,
     }
   }));
   return results;
+}
+
+function newsLabRankWritingClusters(clusters = []) {
+  return (Array.isArray(clusters) ? clusters : [])
+    .filter(Boolean)
+    .map((cluster, index) => {
+      const representative = cluster.representative || (Array.isArray(cluster.stories) ? cluster.stories[0] : {}) || {};
+      const stories = Array.isArray(cluster.stories) ? cluster.stories : [];
+      const uniqueSources = new Set(stories.map(story => story.source).filter(Boolean));
+      const coherence = cluster.eventCoherence || newsLabEventCoherenceAssessment(stories.length ? stories : [representative], representative);
+      const sourceScore = Math.min(60, uniqueSources.size * 15 + stories.length * 5);
+      const coherenceScore = Math.round(Number(coherence.eventCoherence || 0) * 35);
+      const contaminationPenalty = Math.round(Number(coherence.contaminationScore || 0) * 45);
+      const recencyMs = Date.parse(representative.publishedAt || representative.published || representative.createdAt || representative.generatedAt || 0);
+      const recencyScore = recencyMs ? Math.max(0, 20 - Math.floor((Date.now() - recencyMs) / (3 * 60 * 60 * 1000))) : 0;
+      const categoryBonus = newsLabPublicCategories.includes(newsLabCategory(representative)) ? 8 : 0;
+      return {
+        ...cluster,
+        writingRank: sourceScore + coherenceScore + recencyScore + categoryBonus - contaminationPenalty,
+        writingRankDiagnostics: {
+          sourceScore,
+          coherenceScore,
+          contaminationPenalty,
+          recencyScore,
+          category: newsLabCategory(representative),
+          rule: "Writing clusters are ranked after canonical event segmentation. Ranking changes order only; it cannot redefine story identity."
+        },
+        originalClusterIndex: cluster.originalClusterIndex ?? index
+      };
+    })
+    .sort((a, b) => Number(b.writingRank || 0) - Number(a.writingRank || 0) || Number(a.originalClusterIndex || 0) - Number(b.originalClusterIndex || 0));
+}
+
+function newsLabClusterMatchesCategory(cluster = {}, category = "top") {
+  const normalized = String(category || "top").toLowerCase();
+  if (normalized === "top") return true;
+  const representative = cluster.representative || (Array.isArray(cluster.stories) ? cluster.stories[0] : {}) || {};
+  if (newsLabCategory(representative) === normalized) return true;
+  if (String(cluster.category || cluster.eventSignature?.category || "").toLowerCase() === normalized) return true;
+  const stories = Array.isArray(cluster.stories) ? cluster.stories : [];
+  return stories.some(story => newsLabCategory(story) === normalized || String(story.category || "").toLowerCase() === normalized);
+}
+
+function newsLabPrioritizeUnderfilledCategoryClusters(clusters = [], limit = newsLabClusterLimit, perCategoryFloor = 4) {
+  const ranked = newsLabRankWritingClusters(clusters);
+  const max = Math.max(0, Number(limit || 0));
+  const selected = [];
+  const selectedKeys = new Set();
+  const keyFor = cluster => cluster.eventId || cluster.key || cluster.eventSignature?.eventId || (cluster.representative && reportClusterKey(cluster.representative)) || String(selected.length);
+  const add = (cluster, reason) => {
+    if (!cluster || selected.length >= max) return;
+    const key = keyFor(cluster);
+    if (selectedKeys.has(key)) return;
+    selected.push({
+      ...cluster,
+      categoryCoveragePriority: {
+        active: true,
+        reason,
+        rule: "Coverage priority may choose which canonical clusters build first, but it cannot bypass dossier, reasoning, editor, or publication gates."
+      }
+    });
+    selectedKeys.add(key);
+  };
+  newsLabSectionCategories.forEach(category => {
+    ranked
+      .filter(cluster => newsLabCanonicalCategoryFromIdentity(cluster.representative || {}).category === category || newsLabClusterMatchesCategory(cluster, category))
+      .slice(0, Math.max(0, Number(perCategoryFloor || 0)))
+      .forEach(cluster => add(cluster, "underfilled-category-floor:" + category));
+  });
+  ranked.forEach(cluster => add(cluster, "ranked-fill"));
+  return selected.slice(0, max);
 }
 
 function newsLabBalancedClusters(clusters = [], limit = newsLabClusterLimit) {
@@ -45334,7 +46071,10 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     },
     storyDossier,
     canonicalDossierIntelligence: storyDossier.canonicalDossierIntelligence || storyDossier.canonicalIntelligence || null,
+    storyUnderstanding: storyDossier.storyUnderstanding || storyDossier.canonicalDossierIntelligence?.storyUnderstanding || storyDossier.canonicalIntelligence?.storyUnderstanding || null,
     dossierRevisionId: storyDossier.dossierLock?.revisionId || storyDossier.canonicalDossierIntelligence?.revision?.id || storyDossier.canonicalIntelligence?.revision?.id || "",
+    dossierRevisionHash: storyDossier.dossierLock?.revisionHash || storyDossier.canonicalDossierIntelligence?.revision?.hash || storyDossier.canonicalIntelligence?.revision?.hash || "",
+    outputLane: articleFormat === "breaking-brief" ? "developing-brief" : articleFormat === "deep-article" ? "deep-article" : "standard-article",
     productionPlanner,
     writerDossierInput,
     canonicalStoryIdentity,
@@ -45410,6 +46150,246 @@ async function buildOwnedNewsStoryFromCluster(cluster = {}, index = 0, usedPhoto
     sourceSpecifics,
     sourcePolicy: "RSS feeds and publisher links are collection/provenance inputs. The public article must be written from the structured Story Dossier and use original Censored Expressions wording with licensed image provenance.",
     generatedAt: new Date().toISOString()
+  };
+}
+
+
+
+function newsLabUnderfilledPublicCategories(defaultFloor = 7, payload = null) {
+  const shelf = payload || readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
+  const stories = Array.isArray(shelf.ownedStories) ? shelf.ownedStories : [];
+  const categories = Array.isArray(newsLabPublicCategories) && newsLabPublicCategories.length
+    ? newsLabPublicCategories
+    : ["top", "world", "politics", "business", "technology", "sports", "entertainment", "local"];
+  const counts = Object.fromEntries(categories.map(category => [category, 0]));
+  stories
+    .filter(story => !newsLabNaturalProductionLegacyArchiveOnly(story))
+    .forEach(story => {
+      const canonical = newsLabCanonicalCategoryFromIdentity(story).category || newsLabCategory(story) || "top";
+      if (counts[canonical] !== undefined) counts[canonical] += 1;
+      if (canonical !== "top" && counts.top !== undefined && newsLabStoryCoverageScore(story) >= 1) counts.top += 1;
+    });
+  return categories
+    .map(category => {
+      const floor = category === "top"
+        ? Math.max(newsLabTopNewsMinimum || 10, Number(defaultFloor || 7))
+        : Math.max(1, Number(defaultFloor || 7));
+      const count = Number(counts[category] || 0);
+      return {
+        category,
+        count,
+        floor,
+        needed: Math.max(0, floor - count),
+        rule: "Underfilled category analysis reads the durable public shelf and guides backfill selection without replacing public state."
+      };
+    })
+    .filter(item => item.needed > 0);
+}
+
+
+function newsLabPrioritizeUnderfilledStoriesForEditor(stories = [], defaultFloor = 7) {
+  const list = Array.isArray(stories) ? stories.filter(Boolean) : [];
+  if (!list.length) return [];
+  const underfilled = newsLabUnderfilledPublicCategories(defaultFloor);
+  const neededByCategory = new Map(underfilled.map(item => [item.category, Number(item.needed || 0)]));
+  return [...list].sort((a, b) => {
+    const aCategory = newsLabCanonicalCategoryFromIdentity(a).category || newsLabCategory(a) || "top";
+    const bCategory = newsLabCanonicalCategoryFromIdentity(b).category || newsLabCategory(b) || "top";
+    const aNeed = Number(neededByCategory.get(aCategory) || 0);
+    const bNeed = Number(neededByCategory.get(bCategory) || 0);
+    if (aNeed !== bNeed) return bNeed - aNeed;
+    const aDepth = a.hasArticleDepth ? 1 : 0;
+    const bDepth = b.hasArticleDepth ? 1 : 0;
+    if (aDepth !== bDepth) return bDepth - aDepth;
+    return newsLabStoryCoverageScore(b) - newsLabStoryCoverageScore(a)
+      || Number(b.popularity?.uniqueSourceCount || 0) - Number(a.popularity?.uniqueSourceCount || 0)
+      || Number(b.popularity?.relatedArticleCount || 0) - Number(a.popularity?.relatedArticleCount || 0);
+  }).map(story => {
+    const category = newsLabCanonicalCategoryFromIdentity(story).category || newsLabCategory(story) || "top";
+    const needed = Number(neededByCategory.get(category) || 0);
+    if (!needed) return story;
+    return {
+      ...story,
+      editorPriority: {
+        ...(story.editorPriority || {}),
+        underfilledCategory: category,
+        neededBeforeEditor: needed,
+        priorityReason: "underfilled-public-category",
+        rule: "Underfilled category priority can reorder candidates for editor attention but cannot bypass dossier, writer, headline, or editor approval gates."
+      }
+    };
+  });
+}
+
+function newsLabDossierRecoveryRecordToCluster(record = {}, globalSourceStories = []) {
+  const partial = record.partialDossier || {};
+  const acceptedSources = [
+    ...(Array.isArray(record.acceptedSources) ? record.acceptedSources : []),
+    ...(Array.isArray(partial.sourcePool) ? partial.sourcePool : []),
+    ...(Array.isArray(partial.sourceContext) ? partial.sourceContext : [])
+  ]
+    .map(source => cleanNewsLabSourceStory({
+      title: source.title || record.title || partial.whatHappened || "",
+      summary: source.summary || source.articleSummary || partial.whatHappened || "",
+      articleSummary: source.articleSummary || source.summary || partial.whatHappened || "",
+      source: source.source || source.name || "Dossier Recovery",
+      name: source.name || source.source || "Dossier Recovery",
+      url: source.url || "",
+      category: source.category || record.category || partial.category || "top"
+    }))
+    .filter(source => source.title || source.summary || source.articleSummary);
+  const dossierFacts = [
+    ...(Array.isArray(partial.knownFacts) ? partial.knownFacts : []),
+    ...(Array.isArray(partial.facts) ? partial.facts : []),
+    ...(Array.isArray(partial.writerInput?.directWritingFacts) ? partial.writerInput.directWritingFacts : [])
+  ]
+    .map(fact => newsLabCleanDossierFactSentence(fact))
+    .filter(Boolean)
+    .filter((fact, index, all) => all.findIndex(item => newsLabTextOverlap(item, fact) >= 0.78) === index)
+    .slice(0, 10);
+  const title = record.title || partial.representative || partial.whatHappened || acceptedSources[0]?.title || "Recovered News Lab dossier";
+  const summary = dossierFacts[0] || partial.whatHappened || acceptedSources[0]?.summary || acceptedSources[0]?.articleSummary || title;
+  const representative = cleanNewsLabSourceStory({
+    title,
+    summary,
+    articleSummary: summary,
+    source: acceptedSources[0]?.source || acceptedSources[0]?.name || "Dossier Recovery",
+    name: acceptedSources[0]?.name || acceptedSources[0]?.source || "Dossier Recovery",
+    url: acceptedSources[0]?.url || "",
+    category: record.category || partial.category || acceptedSources[0]?.category || "top",
+    publishedAt: record.updatedAt || record.createdAt || new Date().toISOString(),
+    articleTextLength: summary.length
+  });
+  const globalMatches = (Array.isArray(globalSourceStories) ? globalSourceStories : [])
+    .map(source => cleanNewsLabSourceStory(source))
+    .filter(source => source.title || source.summary || source.articleSummary)
+    .filter(source => source.category === representative.category || newsLabTextOverlap(title + " " + summary, [source.title, source.summary, source.articleSummary].filter(Boolean).join(" ")) >= 0.1)
+    .slice(0, 6);
+  const stories = [representative, ...acceptedSources, ...globalMatches]
+    .filter(Boolean)
+    .filter((source, index, all) => all.findIndex(item => (item.url && item.url === source.url) || newsLabTextOverlap(item.title || "", source.title || "") >= 0.9) === index)
+    .slice(0, 8);
+  return {
+    key: record.clusterId || record.eventId || reportClusterKey(representative),
+    eventId: record.eventId || record.clusterId || reportClusterKey(representative),
+    representative,
+    stories,
+    supportingStories: stories.slice(1),
+    absorbedStories: stories.slice(1),
+    category: representative.category,
+    dossierRecovery: {
+      active: true,
+      recordId: record.id || record.eventId || "",
+      readinessClass: record.readinessClass || "",
+      factCount: dossierFacts.length,
+      acceptedSourceCount: acceptedSources.length,
+      rule: "Dossier recovery converts only ready held dossiers back into bounded writing clusters. It does not invent missing facts or bypass Editor gates."
+    }
+  };
+}
+
+function newsLabRunBoundedDossierRecoveryPhase(globalSourceStories = [], options = {}) {
+  const started = Date.now();
+  const limit = Math.max(0, Number(options.limit || 2));
+  const budgetMs = Math.max(250, Number(options.budgetMs || 5000));
+  const queue = readJsonFile(newsLabDossierRecoveryQueueFile, defaultNewsLabDossierRecoveryQueue()) || defaultNewsLabDossierRecoveryQueue();
+  const active = Array.isArray(queue.active) ? queue.active : [];
+  const now = Date.now();
+  const promotedStories = [];
+  const attemptedRecords = [];
+  const heldRecords = [];
+  const promotedIds = new Set();
+  let briefReady = 0;
+  let standardReady = 0;
+  let readyAfterRecovery = 0;
+
+  const candidates = active
+    .filter(record => record && (record.id || record.eventId || record.title))
+    .filter(record => {
+      const retryAt = record.nextRetryAt ? Date.parse(record.nextRetryAt) : 0;
+      const readyClass = /READY|DEVELOPING|STANDARD|WRITER/i.test(String(record.readinessClass || record.status || ""));
+      return readyClass || !retryAt || retryAt <= now;
+    })
+    .sort((a, b) => {
+      const aReady = /READY|DEVELOPING|STANDARD|WRITER/i.test(String(a.readinessClass || a.status || "")) ? 1 : 0;
+      const bReady = /READY|DEVELOPING|STANDARD|WRITER/i.test(String(b.readinessClass || b.status || "")) ? 1 : 0;
+      if (aReady !== bReady) return bReady - aReady;
+      return Number(b.factCount || 0) - Number(a.factCount || 0);
+    })
+    .slice(0, Math.max(limit * 3, limit));
+
+  for (const record of candidates) {
+    if (promotedStories.length >= limit) break;
+    if (Date.now() - started > budgetMs) break;
+    attemptedRecords.push(record);
+    const readinessText = String(record.readinessClass || record.status || "");
+    if (/DEVELOPING|READY_FOR_DEVELOPING/i.test(readinessText)) briefReady += 1;
+    if (/STANDARD|FULL|WRITER/i.test(readinessText)) standardReady += 1;
+    const factCount = Number(record.factCount || record.partialDossier?.knownFacts?.length || record.partialDossier?.facts?.length || 0);
+    const sourceCount = Number(record.acceptedSourceCount || record.partialDossier?.sourcePool?.length || record.partialDossier?.sourceContext?.length || 0);
+    const eligible = /READY|DEVELOPING|STANDARD|WRITER/i.test(readinessText) || (factCount >= 2 && sourceCount >= 1);
+    if (!eligible) {
+      heldRecords.push({ ...record, lastRecoveryAttemptAt: new Date().toISOString(), status: record.status || "active", recoveryHoldReason: "not-enough-facts-or-sources-for-bounded-promotion" });
+      continue;
+    }
+    const cluster = newsLabDossierRecoveryRecordToCluster(record, globalSourceStories);
+    const story = newsLabWorkerSliceStoryFromCluster(cluster, promotedStories.length, globalSourceStories);
+    if (story) {
+      promotedIds.add(record.id || record.eventId || record.clusterId || "");
+      readyAfterRecovery += 1;
+      promotedStories.push({
+        ...story,
+        dossierRecoveryPromotion: {
+          active: true,
+          promotedAt: new Date().toISOString(),
+          recoveryRecordId: record.id || record.eventId || "",
+          readinessClass: record.readinessClass || "",
+          bounded: true,
+          rule: "Recovered dossiers enter the normal Writer, Editor, Headline, and public shelf gates; recovery is not a publication bypass."
+        }
+      });
+    } else {
+      heldRecords.push({ ...record, lastRecoveryAttemptAt: new Date().toISOString(), status: "active", recoveryHoldReason: "worker-slice-could-not-build-editor-candidate" });
+    }
+  }
+
+  if (attemptedRecords.length) {
+    const promotedRecords = attemptedRecords
+      .filter(record => promotedIds.has(record.id || record.eventId || record.clusterId || ""))
+      .map(record => ({ ...record, status: "promoted-to-writer", promotedAt: new Date().toISOString() }));
+    const nextActive = [
+      ...heldRecords,
+      ...active.filter(record => !attemptedRecords.some(attempt => (attempt.id || attempt.eventId || attempt.clusterId) === (record.id || record.eventId || record.clusterId)))
+    ].slice(0, 120);
+    const nextQueue = {
+      ...queue,
+      updatedAt: new Date().toISOString(),
+      active: nextActive,
+      records: [...promotedRecords, ...heldRecords, ...(Array.isArray(queue.records) ? queue.records : [])].slice(0, 300),
+      lastBoundedRecoveryPhase: {
+        ranAt: new Date().toISOString(),
+        attempted: attemptedRecords.length,
+        promoted: promotedStories.length,
+        held: heldRecords.length,
+        elapsedMs: Date.now() - started,
+        rule: "Bounded dossier recovery promotes ready held dossiers and keeps insufficient records active without weakening article quality gates."
+      }
+    };
+    writeJsonFile(newsLabDossierRecoveryQueueFile, nextQueue);
+  }
+
+  return {
+    promotedStories,
+    attemptedRecords,
+    metrics: {
+      attempted: attemptedRecords.length,
+      promoted: promotedStories.length,
+      unchanged: Math.max(0, active.length - attemptedRecords.length),
+      readyAfterRecovery,
+      briefReady,
+      standardReady,
+      elapsedMs: Date.now() - started
+    }
   };
 }
 
@@ -45858,7 +46838,10 @@ function newsLabWorkerSliceStoryFromCluster(cluster = {}, index = 0, globalSourc
     secondaryCategories: workerCategoryClassification.secondaryCategories || [],
     storyDossier: dossier,
     canonicalDossierIntelligence: dossier.canonicalDossierIntelligence || dossier.canonicalIntelligence || null,
+    storyUnderstanding: dossier.storyUnderstanding || dossier.canonicalDossierIntelligence?.storyUnderstanding || dossier.canonicalIntelligence?.storyUnderstanding || null,
     dossierRevisionId: dossier.dossierLock?.revisionId || dossier.canonicalDossierIntelligence?.revision?.id || dossier.canonicalIntelligence?.revision?.id || "",
+    dossierRevisionHash: dossier.dossierLock?.revisionHash || dossier.canonicalDossierIntelligence?.revision?.hash || dossier.canonicalIntelligence?.revision?.hash || "",
+    outputLane: workerSliceDossierReadiness.articleFormat === "breaking-brief" ? "developing-brief" : workerSliceDossierReadiness.articleFormat === "deep-article" ? "deep-article" : "standard-article",
     canonicalStoryIdentity: workerCanonicalStoryIdentity,
     writerReasoningPlan: workerReasoningPlan,
     writerReasoningVerification: workerReasoningVerification,
@@ -46332,6 +47315,207 @@ function newsLabArticleLifecycleWalkRecord({ payload = {}, sourceInputStories = 
   writeJsonFile(newsLabArticleLifecycleTraceFile, next);
   return report;
 }
+function newsLabReportedStoryClusters(stories = []) {
+  const clusters = reportedStoryClusters(stories);
+  return (Array.isArray(clusters) ? clusters : []).map((cluster, index) => ({
+    ...cluster,
+    key: cluster.key || cluster.eventId || (cluster.representative ? reportClusterKey(cluster.representative) : "cluster-" + index),
+    representative: cluster.representative || (Array.isArray(cluster.stories) ? cluster.stories[0] : {}) || {},
+    stories: Array.isArray(cluster.stories)
+      ? cluster.stories
+      : [cluster.representative, ...(Array.isArray(cluster.supportingStories) ? cluster.supportingStories : [])].filter(Boolean),
+    supportingStories: Array.isArray(cluster.supportingStories) ? cluster.supportingStories : [],
+    sourceContract: {
+      stage: "SOURCE COLLECTION -> EVENT SEGMENTATION",
+      authoritativeFor: "canonical-event-dossier-input",
+      rule: "Part 4 uses the News Lab reported-story cluster contract as the only entrance into canonical event/dossier construction."
+    }
+  }));
+}
+
+function newsLabSplitMixedEventClusters(clusters = []) {
+  const input = Array.isArray(clusters) ? clusters.filter(Boolean) : [];
+  const output = [];
+  const metrics = {
+    inputCount: input.length,
+    outputCount: 0,
+    splitClusterCount: 0,
+    splitStoryCount: 0,
+    heldClusterCount: 0,
+    rule: "Mixed event clusters split upstream. Writer, headline, and image lanes receive one canonical event at a time."
+  };
+  input.forEach((cluster, index) => {
+    const representative = cluster.representative || (Array.isArray(cluster.stories) ? cluster.stories[0] : {}) || {};
+    const stories = Array.isArray(cluster.stories) && cluster.stories.length
+      ? cluster.stories
+      : [representative, ...(Array.isArray(cluster.supportingStories) ? cluster.supportingStories : [])].filter(Boolean);
+    const coherence = cluster.eventCoherence || newsLabEventCoherenceAssessment(stories, representative);
+    if (coherence.readyForWriting || stories.length <= 1) {
+      output.push({ ...cluster, eventCoherence: coherence, eventSplit: { applied: false, reason: coherence.readyForWriting ? "coherent-event" : "single-source-event" } });
+      return;
+    }
+    const buckets = new Map();
+    stories.forEach((story, storyIndex) => {
+      const signature = newsLabEventSignature([story]);
+      const key = signature.eventId || "split-" + index + "-" + storyIndex;
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(story);
+    });
+    if (buckets.size <= 1) {
+      output.push({ ...cluster, eventCoherence: coherence, eventSplit: { applied: false, reason: "split-not-material", attempted: true } });
+      metrics.heldClusterCount += 1;
+      return;
+    }
+    metrics.splitClusterCount += 1;
+    metrics.splitStoryCount += stories.length;
+    [...buckets.entries()].forEach(([eventId, bucketStories], bucketIndex) => {
+      const bucketRepresentative = bucketStories[0] || representative;
+      const eventSignature = newsLabEventSignature(bucketStories);
+      const bucketCoherence = newsLabEventCoherenceAssessment(bucketStories, bucketRepresentative);
+      output.push({
+        ...cluster,
+        key: eventId + "__split_" + bucketIndex,
+        eventId,
+        eventSignature,
+        eventCoherence: bucketCoherence,
+        representative: bucketRepresentative,
+        stories: bucketStories,
+        supportingStories: bucketStories.slice(1).map(story => ({ title: story.title, source: story.source, url: story.url, summary: story.summary || story.articleSummary || "" })),
+        eventSplit: {
+          applied: true,
+          parentKey: cluster.key || "cluster-" + index,
+          reason: "canonical-event-contamination-cleared-before-writing",
+          parentContaminationScore: Number(coherence.contaminationScore || 0)
+        }
+      });
+    });
+  });
+  metrics.outputCount = output.length;
+  return { clusters: output, metrics };
+}
+
+function newsLabEventSignature(stories = []) {
+  const list = Array.isArray(stories) ? stories.filter(Boolean) : [];
+  const representative = list[0] || {};
+  const signature = representative.canonicalEventSignature || newsLabCanonicalEventSignatureFromStory(representative);
+  const category = newsLabCategory(representative) || signature.categoryHint || "top";
+  const actor = signature.primaryActor || storyNamedEntities(representative)[0] || "event";
+  const action = signature.primaryAction || "develops";
+  const object = signature.eventObject || (signature.eventObjectTerms || []).slice(0, 3).join(" ") || representative.title || representative.summary || "story";
+  const timeWindow = signature.eventTimeWindow || newsLabTodayDateKey();
+  const sourceNames = [...new Set(list.map(story => story.source).filter(Boolean))];
+  const eventId = category + ":event:" + safeFileSlug([actor, action, object, timeWindow].filter(Boolean).join("-")).slice(0, 140);
+  return {
+    eventId,
+    category,
+    primaryActor: actor,
+    primaryAction: action,
+    eventObject: object,
+    eventTimeWindow: timeWindow,
+    sourceCount: list.length,
+    uniqueSources: sourceNames.length,
+    sourceNames,
+    representativeTitle: representative.title || "",
+    canonicalEventSignature: signature,
+    rule: "Part 4 event signatures are canonical event IDs derived before dossier lock. Downstream writer, headline, image, and publication lanes consume this identity instead of rebuilding it."
+  };
+}
+
+async function newsLabEventClusterWorkerPass(clusters = []) {
+  const input = Array.isArray(clusters) ? clusters.filter(Boolean) : [];
+  return input.map((cluster, index) => {
+    const representative = cluster.representative || (Array.isArray(cluster.stories) ? cluster.stories[0] : {}) || {};
+    const stories = Array.isArray(cluster.stories) && cluster.stories.length
+      ? cluster.stories
+      : [representative, ...(Array.isArray(cluster.supportingStories) ? cluster.supportingStories : [])].filter(Boolean);
+    const eventSignature = cluster.eventSignature || newsLabEventSignature(stories);
+    const eventCoherence = cluster.eventCoherence || newsLabEventCoherenceAssessment(stories, representative);
+    return {
+      ...cluster,
+      key: cluster.key || eventSignature.eventId || reportClusterKey(representative) || "event-cluster-" + index,
+      eventId: cluster.eventId || eventSignature.eventId || cluster.key || "event-cluster-" + index,
+      eventSignature,
+      eventCoherence,
+      representative,
+      stories,
+      eventSourceArticleCount: Number(cluster.eventSourceArticleCount || stories.length || 0),
+      canonicalEventWorkerPass: {
+        active: true,
+        stage: "EVENT SEGMENTATION -> CANONICAL EVENT",
+        coherenceScore: Number(eventCoherence.score || eventCoherence.coherenceScore || 0),
+        rule: "Canonical event workers annotate event identity before dossier construction. Downstream systems may not redefine the story after dossier lock."
+      }
+    };
+  });
+}
+
+function newsLabExpandStoriesWithIntraSourceSegments(stories = []) {
+  const input = Array.isArray(stories) ? stories.filter(Boolean) : [];
+  const expanded = [];
+  const metrics = {
+    inputCount: input.length,
+    outputCount: 0,
+    segmentedStoryCount: 0,
+    addedSegmentCount: 0,
+    rule: "Event segmentation must isolate multi-topic source bundles before dossier construction. Segments are candidates only; canonical event clustering still decides what becomes one CE Media story."
+  };
+  const separatorPattern = new RegExp('(?:\\s+[|]\\s+|\\s+;\\s+|\\s+/{2}\\s+|\\s+-\\s+)', 'g');
+  const headlineBoundaryPattern = new RegExp("(?<=[.!?])\\s+(?=[A-Z][A-Za-z0-9-]+\\s+(?:says|said|wins|faces|backs|approves|announces|warns|reports|seeks|plans|moves|returns|strikes|launches|delays|blocks|orders|asks|calls|finds|sets|will|could|may)\\b)", "g");
+  const segmentNormalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const storyKey = story => story.id || story.eventId || story.topicKey || story.url || segmentNormalize(story.title || story.summary || "");
+  const splitCandidateText = value => {
+    const textValue = cleanArticleText(value || "", 900);
+    if (!textValue || textValue.length < 180) return [];
+    const rawPieces = textValue
+      .replace(separatorPattern, ". ")
+      .split(headlineBoundaryPattern)
+      .map(item => cleanArticleText(item, 240))
+      .filter(item => item && item.length >= 45 && item.split(/\s+/).length >= 7);
+    const unique = [];
+    const seen = new Set();
+    rawPieces.forEach(piece => {
+      const key = segmentNormalize(piece).slice(0, 90);
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      unique.push(piece);
+    });
+    return unique.slice(0, 5);
+  };
+  input.forEach(story => {
+    expanded.push(story);
+    const combined = [story.title, story.summary, story.description, story.articleSummary]
+      .filter(Boolean)
+      .map(value => String(value))
+      .join(". ");
+    const segments = splitCandidateText(combined)
+      .filter(segment => segmentNormalize(segment).slice(0, 90) !== segmentNormalize(story.title || "").slice(0, 90));
+    if (segments.length < 2) return;
+    metrics.segmentedStoryCount += 1;
+    segments.forEach((segment, segmentIndex) => {
+      expanded.push({
+        ...story,
+        id: (storyKey(story) || "source") + "__segment_" + segmentIndex,
+        title: segment,
+        summary: segment,
+        description: segment,
+        articleSummary: segment,
+        intraSourceSegment: {
+          active: true,
+          parentId: storyKey(story),
+          segmentIndex,
+          originalTitle: story.title || "",
+          originalUrl: story.url || "",
+          reason: "multi-topic-source-item-isolated-before-canonical-event-dossier"
+        }
+      });
+      metrics.addedSegmentCount += 1;
+    });
+  });
+  const output = dedupeStoryCluster(expanded);
+  metrics.outputCount = output.length;
+  return { stories: output, metrics };
+}
+
 async function buildNewsLabPayload(payload = {}) {
   const started = Date.now();
   const rawSourceInputStories = Array.isArray(payload.dossierStories) && payload.dossierStories.length
@@ -47110,6 +48294,37 @@ async function buildNewsLabPayload(payload = {}) {
         images: "Use local or previously selected licensed images during worker finish mode; richer image lookup runs outside the public request path.",
         duplicatePrevention: "Several outlet reports become one original Censored Expressions story instead of several duplicate tiles."
       },
+      qualityPublicationSprint: {
+        naturalProductionCutover: {
+          enabled: newsLabNaturalProductionCutoverEnabled(),
+          authoritativePath: "collection -> event segmentation -> canonical event -> dossier -> story understanding -> locked revision -> writer reasoning -> plan-bound draft -> fact verification -> canonical headline -> editor -> durable shelf -> visible article",
+          competingLegacyPathsDisabled: true,
+          legacyArchiveOnlyCount: 0,
+          activePreviousShelfPreserved: Number(previousPublishedForWorker?.ownedStories?.length || 0),
+          imageLane: "Image Intelligence runs in parallel and cannot send approved text back into writing repair."
+        },
+        approvalRecoveryQueue: {
+          productionRole: newsLabNaturalProductionCutoverEnabled() ? "audit-and-learning-only-after-part4-cutover" : "repair-publication-bridge-enabled"
+        },
+        workerFinishMode: true,
+        rule: "Worker finish mode exposes the same authoritative cutover telemetry as the full publication path."
+      },
+      naturalProductionCutover: {
+        enabled: newsLabNaturalProductionCutoverEnabled(),
+        authoritativePath: "collection -> event segmentation -> canonical event -> dossier -> story understanding -> locked revision -> writer reasoning -> plan-bound draft -> fact verification -> canonical headline -> editor -> durable shelf -> visible article",
+        competingLegacyPathsDisabled: true,
+        legacyArchiveOnlyCount: 0,
+        activePreviousShelfPreserved: Number(previousPublishedForWorker?.ownedStories?.length || 0),
+        imageLane: "Image Intelligence runs in parallel and cannot send approved text back into writing repair."
+      },
+      publicStateAuthority: {
+        source: "news-lab-published-payload",
+        publicStoryCount: finalWorkerStories.length,
+        searchableArchiveCount: Number(previousPublishedForWorker?.searchableArchiveStories?.length || 0),
+        revisionBasis: lifecycleTrace?.cycleId || new Date().toISOString(),
+        workerFinishMode: true,
+        rule: "The durable public shelf is additive and revision-safe; worker finish mode may add or update approved stories but may not batch-replace valid visible articles."
+      },
       articleReadIntelligence: {
         uniquePublisherReads: Number(payload.dailyArticleMemory?.fullArticleReadCount || 0),
         absorbedArticles: Number(payload.dailyArticleMemory?.articleCount || 0),
@@ -47354,7 +48569,31 @@ async function buildNewsLabPayload(payload = {}) {
     }
     runtimeState.newsLabSearchPayload = persistedWorkerResult;
     persistedWorkerResult = newsLabPreserveLockedPublicPayload(persistedWorkerResult, "worker-finish-payload-persisted");
-    writeJsonFile(newsLabPublishedPayloadFile, persistedWorkerResult);
+        persistedWorkerResult.naturalProductionCutover = persistedWorkerResult.naturalProductionCutover || {
+      enabled: newsLabNaturalProductionCutoverEnabled(),
+      authoritativePath: "collection -> event segmentation -> canonical event -> dossier -> story understanding -> locked revision -> writer reasoning -> plan-bound draft -> fact verification -> canonical headline -> editor -> durable shelf -> visible article",
+      competingLegacyPathsDisabled: true,
+      legacyArchiveOnlyCount: Number(persistedWorkerResult.searchableArchiveStories?.length || 0),
+      activePreviousShelfPreserved: Number(previousWorkerStories.length || 0),
+      imageLane: "Image Intelligence runs in parallel and cannot send approved text back into writing repair."
+    };
+    persistedWorkerResult.qualityPublicationSprint = persistedWorkerResult.qualityPublicationSprint || {
+      naturalProductionCutover: persistedWorkerResult.naturalProductionCutover,
+      approvalRecoveryQueue: {
+        productionRole: newsLabNaturalProductionCutoverEnabled() ? "audit-and-learning-only-after-part4-cutover" : "repair-publication-bridge-enabled"
+      },
+      workerFinishMode: true,
+      attachedAfterPreservation: true,
+      rule: "Worker finish mode exposes the same authoritative cutover telemetry as the full publication path."
+    };
+    persistedWorkerResult.publicStateAuthority = persistedWorkerResult.publicStateAuthority || {
+      source: "news-lab-published-payload",
+      publicStoryCount: Number(persistedWorkerResult.ownedStories?.length || 0),
+      searchableArchiveCount: Number(persistedWorkerResult.searchableArchiveStories?.length || 0),
+      workerFinishMode: true,
+      rule: "The durable public shelf is additive and revision-safe; worker finish mode may add or update approved stories but may not batch-replace valid visible articles."
+    };
+writeJsonFile(newsLabPublishedPayloadFile, persistedWorkerResult);
     const inlineApiCacheRebuildAllowed = process.env.CE_NEWS_LAB_INLINE_API_CACHE_REBUILD === "true";
     if (inlineApiCacheRebuildAllowed) {
       runNewsLabApiResponseCycle("worker-finish-after-published-payload-persist-inline");
@@ -47417,23 +48656,9 @@ async function buildNewsLabPayload(payload = {}) {
   });
   const qualityPublicationSprintCycleId = newsLabSprintCycleId();
   let finalReviewedStories = newsLabDedupeFinalSemanticStories(reviewedStoriesWithSubsystems
-    .map(newsLabEnsureLayeredDossierMetadata)
-    .map(story => enforceContentEditor(story, "news-lab"))
-    .map(enforceNewsLabEditorCategory)
-    .map(newsLabFinalSemanticEditor)
-    .map(story => enforceContentEditor(story, "news-lab"))
-    .map(newsLabFinalSemanticEditor)
-    .map(newsLabFinalApprovalRepair)
-    .map(story => enforceContentEditor(story, "news-lab"))
-    .map(newsLabFinalSemanticEditor)
-    .map(newsLabFinalApprovalRepair)
-    .map(newsLabAcceptanceRepairPass)
-    .map(newsLabSanitizePublicNewsCopy)
-    .map(story => newsLabPublishingEditorPass(story, { stage: "final-publishing-editor-before-validator" }))
-    .map((story, index) => newsLabApplyQualityPublicationSprintGate(story, {
-      index,
+    .map((story, index) => newsLabNaturalProductionFinalTextApproval(story, index, {
       cycleId: qualityPublicationSprintCycleId,
-      stage: "final-publisher-gate"
+      stage: "natural-production-final-text-approval"
     }))
     .map(story => ({ ...story, brainPipeline: newsLabBrainPipelineIntelligence(story) })));
   const finalApprovalRecoveryAttempted = finalReviewedStories.filter(story =>
@@ -47467,7 +48692,7 @@ async function buildNewsLabPayload(payload = {}) {
             }
           };
         }
-        const recovered = newsLabEditorRepairReviewCycle({
+        const recovered = newsLabNaturalProductionApplyTargetedRepair({
           ...story,
           approvalRecoveryInitialIssues: beforeIssues,
           qualityGate: {
@@ -47475,13 +48700,13 @@ async function buildNewsLabPayload(payload = {}) {
             issues: beforeIssues,
             remainingIssues: beforeIssues,
             passed: false,
-            action: "final-approval-recovery-needed"
+            action: "natural-production-targeted-repair-needed"
           }
-        }, repairLimit);
-        const rechecked = newsLabPublishingEditorPass(
-          newsLabAcceptanceRepairPass(newsLabFinalApprovalRepair(newsLabFinalSemanticEditor(enforceContentEditor(recovered, "news-lab")))),
-          { stage: "final-recovery-publishing-editor", attempt: 1 }
-        );
+        }, beforeIssues, { stage: "natural-production-final-recovery", attempt: 1, index: 0 });
+        const rechecked = newsLabNaturalProductionFinalTextApproval(recovered, 0, {
+          cycleId: qualityPublicationSprintCycleId,
+          stage: "natural-production-final-recovery-recheck"
+        });
         const afterIssues = [...new Set([
           ...newsLabBlockingFinalIssues(rechecked),
           ...newsLabBlockingEditorFinalIssues(rechecked)
@@ -47605,6 +48830,7 @@ async function buildNewsLabPayload(payload = {}) {
   });
   const finalPublishedIds = new Set();
   const publishableStories = finalReviewedStories
+    .map(story => newsLabCanonicalStoryIdentityLock(story, { outputLane: story.outputLane || story.articleFormat || "standard-article" }))
     .map(story => ({ ...story, image: newsLabNormalizeStoryImage(story, story.image) }))
     .map(story => ({ ...story, imageProvenance: story.image?.provenance || story.imageProvenance || null }))
     .filter(newsLabPublishableAfterFullReview)
@@ -47625,33 +48851,41 @@ async function buildNewsLabPayload(payload = {}) {
       || Number(b.popularity?.reportingScore || 0) - Number(a.popularity?.reportingScore || 0)
     )
     .slice(0, newsLabOwnedStoryLimit);
-  const approvalRepairPublicationBridge = (() => {
-    try {
-      return newsLabRunApprovalRepairQueue({ limit: Math.max(24, newsLabEditorWorkers * 8) });
-    } catch (error) {
-      return {
+  const approvalRepairPublicationBridge = newsLabNaturalProductionCutoverEnabled()
+    ? {
         generatedAt: new Date().toISOString(),
         processed: 0,
         approved: 0,
         stillActive: 0,
-        error: error.message || String(error),
-        rule: "Approval repair bridge failures must be contained so one repair queue error cannot block normal publication."
-      };
-    }
-  })();
+        disabled: true,
+        rule: "Part 4 cutover disables the old approval-repair bridge for new news-v4 production. Repair queues remain learning/audit inputs only; they cannot publish new articles, headlines, bodies, or images."
+      }
+    : (() => {
+        try {
+          return newsLabRunApprovalRepairQueue({ limit: Math.max(24, newsLabEditorWorkers * 8) });
+        } catch (error) {
+          return { generatedAt: new Date().toISOString(), processed: 0, approved: 0, stillActive: 0, error: error.message || String(error), rule: "Approval repair bridge failures must be contained so one repair queue error cannot block normal publication." };
+        }
+      })();
   const previousPublishedForShelf = readNewsLabPublishedPayload();
   const rescueApprovedShelf = readJsonFile(newsLabRescuedApprovedShelfFile, { ownedStories: [] });
+  const previousActiveShelfStories = ((previousPublishedForShelf?.ownedStories || previousPublishedForShelf?.stories || []))
+    .map(newsLabNaturalProductionShelfStory)
+    .filter(story => !story.legacyArchiveOnly);
+  const legacyArchiveOnlyStories = newsLabNaturalProductionArchiveOnlyStories(previousPublishedForShelf);
   const approvedShelfInputs = [
     ...ownedStories,
-    ...((previousPublishedForShelf?.ownedStories || previousPublishedForShelf?.stories || [])),
+    ...previousActiveShelfStories,
     ...((rescueApprovedShelf?.ownedStories || rescueApprovedShelf?.stories || []))
+      .map(newsLabNaturalProductionShelfStory)
+      .filter(story => !story.legacyArchiveOnly)
   ];
   const shelfMergedStories = mergeNewsLabApprovedStories(approvedShelfInputs, previousPublishedForShelf);
   const finalOwnedStories = newsLabHardMergePublicStories(shelfMergedStories.length >= ownedStories.length
     ? shelfMergedStories
     : approvedShelfInputs)
-    .map(newsLabEnsureWriterDossierHandoff)
-    .map(enforceNewsLabEditorCategory)
+    .map(story => newsLabNaturalProductionIsV4Story(story) ? newsLabEnsureWriterDossierHandoff(story) : story)
+    .map(story => newsLabNaturalProductionIsV4Story(story) ? enforceNewsLabEditorCategory(story) : story)
     .map(newsLabSanitizePublicNewsCopy)
     .map(story => ({ ...story, image: newsLabNormalizeStoryImage(story, story.image) }))
     .map(story => ({ ...story, imageProvenance: story.image?.provenance || story.imageProvenance || null }))
@@ -47692,12 +48926,21 @@ async function buildNewsLabPayload(payload = {}) {
       headlinePassed: Number(approvalRepairPublicationBridge.secondPassMetrics?.headlinePassed || 0),
       finalApproved: Number(approvalRepairPublicationBridge.secondPassMetrics?.finalApproved || 0),
       error: approvalRepairPublicationBridge.error || "",
-      rule: "Before each public shelf merge, the Brain runs the approval-repair bridge so repaired dossier-backed stories can become durable public articles instead of staying in a side queue."
+      disabled: Boolean(approvalRepairPublicationBridge.disabled),
+      rule: approvalRepairPublicationBridge.disabled ? "Part 4 makes old approval repair queues audit-only for new production. Natural production repair is causal and bounded inside the final text gate." : "Before each public shelf merge, the Brain runs the approval-repair bridge so repaired dossier-backed stories can become durable public articles instead of staying in a side queue."
     }
   };
   shelfDiagnostics.approvalToVisiblePublication = publicationOutcomeAudit.counters;
   shelfDiagnostics.mergeOutcomes = publicationOutcomeAudit.outcomes.slice(0, 80);
   shelfDiagnostics.metricRule = "Published means editor-approved, saved, merged/deduped, persisted, and visible in the public shelf. Approved updates and duplicates are measured separately.";
+  shelfDiagnostics.naturalProductionCutover = {
+    enabled: newsLabNaturalProductionCutoverEnabled(),
+    authoritativePath: "collection -> event segmentation -> canonical event -> dossier -> story understanding -> locked revision -> writer reasoning -> plan-bound draft -> fact verification -> canonical headline -> editor -> durable shelf -> visible article",
+    legacyArchiveOnlyCount: legacyArchiveOnlyStories.length,
+    activePreviousShelfPreserved: previousActiveShelfStories.length,
+    competingLegacyPathsDisabled: true,
+    imageLane: "Image Intelligence runs in parallel and cannot send approved text back into writing repair."
+  };
   shelfDiagnostics.qualityPublicationSprint = {
     sprintId: qualityPublicationSprintReport.sprintId,
     candidateCount: qualityPublicationSprintReport.candidateCount,
@@ -47739,6 +48982,24 @@ async function buildNewsLabPayload(payload = {}) {
       images: "Use local Pexels-licensed images saved in assets/pexels/ for publishing; fall back to existing controlled test art only in the lab.",
       duplicatePrevention: "Several outlet reports become one original Censored Expressions story instead of several duplicate tiles."
     },
+    qualityPublicationSprint: {
+      shelfDiagnostics,
+      naturalProductionCutover: shelfDiagnostics.naturalProductionCutover,
+      approvalRecoveryQueue: {
+        ...newsLabApprovalRecoveryQueueSummary(publishedApprovalRecoveryQueue || finalApprovalRecoveryQueue),
+        productionRole: newsLabNaturalProductionCutoverEnabled() ? "audit-and-learning-only-after-part4-cutover" : "repair-publication-bridge-enabled"
+      },
+      rule: "Production Intelligence, Owner Desk, /api/news-lab, and tile rendering read the same authoritative public shelf diagnostics instead of reconstructing separate status paths."
+    },
+    naturalProductionCutover: shelfDiagnostics.naturalProductionCutover,
+    publicStateAuthority: {
+      source: "news-lab-published-payload",
+      publicStoryCount: finalOwnedStories.length,
+      searchableArchiveCount: legacyArchiveOnlyStories.length + Number(previousPublishedForShelf?.searchableArchiveStories?.length || 0),
+      revisionBasis: qualityPublicationSprintCycleId,
+      shelfDiagnostics,
+      rule: "The durable public shelf is additive and revision-safe; new production may add or supersede approved stories but may not batch-replace valid visible articles."
+    },
     articleReadIntelligence: {
       uniquePublisherReads: Number(payload.dailyArticleMemory?.fullArticleReadCount || 0),
       absorbedArticles: Number(payload.dailyArticleMemory?.articleCount || 0),
@@ -47770,7 +49031,10 @@ async function buildNewsLabPayload(payload = {}) {
       productivity: newsLabProductivitySummary(),
       editorDecisionLearning: newsLabEditorLearningSummary(),
       headlineRepairQueue: newsLabHeadlineRepairQueueSummary(publishedHeadlineRepairQueue || finalHeadlineRepairQueue),
-      approvalRecoveryQueue: newsLabApprovalRecoveryQueueSummary(publishedApprovalRecoveryQueue || finalApprovalRecoveryQueue),
+      approvalRecoveryQueue: {
+        ...newsLabApprovalRecoveryQueueSummary(publishedApprovalRecoveryQueue || finalApprovalRecoveryQueue),
+        productionRole: newsLabNaturalProductionCutoverEnabled() ? "audit-and-learning-only-after-part4-cutover" : "repair-publication-bridge-enabled"
+      },
       publicationIntelligenceActionQueue: {
         summary: (publishedPublicationIntelligenceActionQueue || finalPublicationIntelligenceActionQueue || publicationIntelligenceActionQueue || {}).summary || {},
         topFailureCodes: (publishedPublicationIntelligenceActionQueue || finalPublicationIntelligenceActionQueue || publicationIntelligenceActionQueue || {}).topFailureCodes || [],
@@ -47836,7 +49100,11 @@ async function buildNewsLabPayload(payload = {}) {
     dossierSourceStoryCount: sourceInputStories.length,
     clusteredStoryCount: clusters.length,
     writingClusterCount: writingClusters.length,
-    ownedStories: finalOwnedStories
+    ownedStories: finalOwnedStories,
+    searchableArchiveStories: newsLabDedupePublicStoriesPreferFull([
+      ...(Array.isArray(previousPublishedForShelf?.searchableArchiveStories) ? previousPublishedForShelf.searchableArchiveStories : []),
+      ...legacyArchiveOnlyStories
+    ])
   };
   return rememberNewsLabSearchPayload(result);
 }

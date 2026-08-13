@@ -1,50 +1,635 @@
-﻿{
-    "version":  "20260728-production-intelligence-v1",
-    "updatedAt":  "2026-07-28T20:41:43.1006920Z",
-    "reason":  "seeded-from-current-metrics",
-    "purpose":  "Answer what caused unnecessary production work today and choose one bounded measurable improvement.",
-    "primaryGoal":  "Increase First-Pass Publication Rate.",
-    "current":  {
-                    "firstPassPublicationRate":  1,
-                    "finalApprovalRate":  1,
-                    "reviewedCandidates":  1,
-                    "firstPassApproved":  1,
-                    "finalApproved":  1,
-                    "finalBlocked":  19,
-                    "highQualityPublishedArticlesPerHour":  16,
-                    "averagePublicationLatencyMs":  35171
-                },
-    "unnecessaryWork":  {
-                            "repairFrequency":  12,
-                            "editorialRejections":  19,
-                            "headlineRewritePressure":  236,
-                            "evidenceOrDossierPressure":  43,
-                            "duplicateEffort":  0,
-                            "imageRepairPressure":  0,
-                            "repeatedReasoning":  0,
-                            "slowEndpoints":  [
-
-                                              ]
-                        },
-    "boundedImprovementProposal":  {
-                                       "subsystem":  "Headline Generator",
-                                       "action":  "Generate headline candidates from the completed Story Dossier after the article body exists, then pre-score Actor + Action + Consequence and body overlap before editorial review.",
-                                       "expectedOutcome":  "Improve first-pass publication and reduce repair loops during the next production window without lowering editorial standards.",
-                                       "measurement":  "Compare firstPassPublicationRate, finalApprovalRate, repairFrequency, repeatedReasoning, and highQualityPublishedArticlesPerHour after the next production window."
-                                   },
-    "failurePreventionMemory":  {
-                                    "writerInstruction":  "Before drafting, read the Story Dossier, Editorial Memory, Headline Pattern Memory, Learner Lexicon, and prevention rules; then reason internally about verified event, uncertainty, headline direction, and likely editorial risk before prose generation.",
-                                    "rules":  [
-                                                  {
-                                                      "id":  "prevent-headline-failures-before-editor",
-                                                      "appliesTo":  "Headline Generator",
-                                                      "preventBy":  "Use Actor + Action + Consequence from the completed event dossier and score body overlap before editorial review."
-                                                  },
-                                                  {
-                                                      "id":  "prevent-thin-or-unsupported-drafts",
-                                                      "appliesTo":  "Story Dossier Builder",
-                                                      "preventBy":  "Expand thin fragments or mark needs-dossier-evidence before Writer work starts."
-                                                  }
-                                              ]
-                                }
+{
+  "version": "20260801-production-intelligence-v2",
+  "updatedAt": "2026-08-13T14:07:46.989Z",
+  "reason": "productivity-cycle",
+  "purpose": "Produce the highest-quality public article with the fewest possible computational steps by finding where useful work stops becoming visible articles.",
+  "primaryGoal": "Increase First-Pass Publication Rate while lowering CPU, memory, repair loops, and latency per verified-visible public article.",
+  "masterSubsystem": {
+    "name": "Production Intelligence",
+    "owns": [
+      "collection efficiency",
+      "cluster efficiency",
+      "dossier efficiency",
+      "reasoning efficiency",
+      "writing efficiency",
+      "headline efficiency",
+      "editorial efficiency",
+      "repair efficiency",
+      "publication efficiency"
+    ],
+    "decisionRule": "Optimize the earliest shared workflow bottleneck before patching individual tabs or downstream symptoms."
+  },
+  "current": {
+    "firstPassPublicationRate": 0.2593,
+    "finalApprovalRate": 0.2222,
+    "reviewedCandidates": 27,
+    "firstPassApproved": 7,
+    "firstPassApprovedNew": 7,
+    "finalApproved": 6,
+    "finalApprovedNew": 6,
+    "finalBlocked": 21,
+    "highQualityPublishedArticlesPerHour": 30,
+    "averagePublicationLatencyMs": 22343,
+    "averageRepairPasses": 1.6296,
+    "headlineRewriteRate": 86.8148,
+    "dossierFailureRate": 30.8889
+  },
+  "stageEfficiency": {
+    "rows": [
+      {
+        "stage": "Collection",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 0,
+        "output": 27,
+        "inputCount": 0,
+        "outputCount": 27,
+        "newlyCreatedCount": 0,
+        "carriedForwardCount": 27,
+        "failedCount": 0,
+        "efficiency": 0,
+        "inventoryInflated": true,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Collect unique same-event inputs, not raw volume."
+      },
+      {
+        "stage": "Clustering",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 27,
+        "output": 27,
+        "inputCount": 27,
+        "outputCount": 27,
+        "newlyCreatedCount": 27,
+        "carriedForwardCount": 0,
+        "failedCount": 0,
+        "efficiency": 1,
+        "inventoryInflated": false,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Merge by canonical event before category assignment."
+      },
+      {
+        "stage": "Dossier",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 27,
+        "output": 27,
+        "inputCount": 27,
+        "outputCount": 27,
+        "newlyCreatedCount": 27,
+        "carriedForwardCount": 0,
+        "failedCount": 0,
+        "efficiency": 1,
+        "inventoryInflated": false,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Only complete or clearly developing dossiers reach Writer."
+      },
+      {
+        "stage": "Writer Reasoning",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 27,
+        "output": 27,
+        "inputCount": 27,
+        "outputCount": 27,
+        "newlyCreatedCount": 27,
+        "carriedForwardCount": 0,
+        "failedCount": 0,
+        "efficiency": 1,
+        "inventoryInflated": false,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Every draft proves actor, action, facts, unknowns, attribution, and paragraph plan."
+      },
+      {
+        "stage": "First-Pass Editor",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 27,
+        "output": 7,
+        "inputCount": 27,
+        "outputCount": 7,
+        "newlyCreatedCount": 7,
+        "carriedForwardCount": 0,
+        "failedCount": 20,
+        "efficiency": 0.2593,
+        "inventoryInflated": false,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Raise first-pass approvals by preventing known failure classes upstream."
+      },
+      {
+        "stage": "Repair Recovery",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 22,
+        "output": 0,
+        "inputCount": 22,
+        "outputCount": 0,
+        "newlyCreatedCount": 0,
+        "carriedForwardCount": 0,
+        "failedCount": 22,
+        "efficiency": 0,
+        "inventoryInflated": false,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Repair only failed component, resubmit, and measure recovery."
+      },
+      {
+        "stage": "Publication",
+        "cycleId": "cycle_2026-08-13",
+        "workflowVersion": "news-v4",
+        "input": 6,
+        "output": 30,
+        "inputCount": 6,
+        "outputCount": 30,
+        "newlyCreatedCount": 6,
+        "carriedForwardCount": 24,
+        "failedCount": 0,
+        "efficiency": 1,
+        "inventoryInflated": true,
+        "timestamp": "2026-08-13T14:07:46.987Z",
+        "target": "Count newly verified-visible articles separately from carried-forward shelf inventory.",
+        "visiblePublicInventory": 5,
+        "newlyVerifiedVisible": 30,
+        "carriedForwardVisible": 0
+      }
+    ],
+    "weakestStage": {
+      "stage": "Repair Recovery",
+      "cycleId": "cycle_2026-08-13",
+      "workflowVersion": "news-v4",
+      "input": 22,
+      "output": 0,
+      "inputCount": 22,
+      "outputCount": 0,
+      "newlyCreatedCount": 0,
+      "carriedForwardCount": 0,
+      "failedCount": 22,
+      "efficiency": 0,
+      "inventoryInflated": false,
+      "timestamp": "2026-08-13T14:07:46.987Z",
+      "target": "Repair only failed component, resubmit, and measure recovery."
+    },
+    "cohortIntegrity": {
+      "cycleId": "cycle_2026-08-13",
+      "workflowVersion": "news-v4",
+      "newVisiblePublished": 30,
+      "carriedForwardVisible": 0,
+      "visiblePublicInventory": 5,
+      "inventoryRows": [
+        "Collection",
+        "Publication"
+      ],
+      "rule": "Stage efficiency is calculated from current-cycle input and newly created output. Existing public shelf inventory is carriedForwardCount and must not inflate first-pass or final approval rates."
+    },
+    "rule": "Production Intelligence optimizes the whole article lifecycle by finding the earliest stage where useful work stops becoming visible articles, while separating current-cycle conversion from carried-forward public inventory."
+  },
+  "sharedWorkflowDiagnosis": {
+    "shared": true,
+    "weakestStage": "Repair Recovery",
+    "topFailureClass": "HEADLINE_QUALITY_FAILURE",
+    "likelySharedCause": "headline-generated-without-locked-dossier-and-reasoning-inputs",
+    "interventionLayer": "Writer Reasoning + Headline Generator",
+    "rule": "When multiple failures share a signature, patch the earliest common workflow layer instead of generating separate Business/Technology/Politics fixes."
+  },
+  "rootCauseWorkOrders": [
+    {
+      "id": "root-cause-headline-before-reasoning",
+      "layer": "Writer Reasoning + Headline Generator",
+      "affectedSubsystems": [
+        "Story Dossier Builder",
+        "Article Writer",
+        "Headline Generator",
+        "Publishing Editor"
+      ],
+      "evidence": {
+        "blockerCount": 1851,
+        "examples": [
+          "headline-word-salad",
+          "generic-weak-headline",
+          "headline-editor-needs-rewrite"
+        ]
+      },
+      "rootCause": "Headline failures share a common upstream cause: headline construction is not always anchored to the locked dossier, reasoning plan, and completed body.",
+      "action": "Require actor/action/consequence fields from the Writer Reasoning plan and reject headline candidates before Editor when body overlap or action clarity fails.",
+      "preventionRule": "Generate headlines after dossier lock and writer reasoning, not from source headlines or loose cluster fragments.",
+      "verification": "Headline blocker count and headline rewrite rate decline while first-pass approvals rise.",
+      "goalImpact": "Raise first-pass publication and reduce wasted work."
+    },
+    {
+      "id": "root-cause-dossier-readiness-before-writing",
+      "layer": "Story Curator + Story Dossier Builder",
+      "affectedSubsystems": [
+        "Collector",
+        "Event Clusterer",
+        "Evidence Engine",
+        "Story Dossier Builder",
+        "Article Writer"
+      ],
+      "evidence": {
+        "blockerCount": 834,
+        "examples": [
+          "missing-reporting-context",
+          "body-too-short",
+          "body-needs-intro-body-ending",
+          "semantic-title-source-mismatch"
+        ]
+      },
+      "rootCause": "Multiple failures trace to the story object not being complete, stable, or semantically separated before writing begins.",
+      "action": "Expand or hold as needs-dossier-evidence until canonical event, verified facts, attribution, category, and known unknowns are ready.",
+      "preventionRule": "The Writer may consume only locked Story Dossiers and must never draft from raw RSS or thin source fragments.",
+      "verification": "Dossier stage efficiency improves and story-identity/headline-lead mismatch failures fall.",
+      "goalImpact": "Raise first-pass publication and reduce wasted work."
+    },
+    {
+      "id": "root-cause-image-dossier-detached",
+      "layer": "Image Intelligence",
+      "affectedSubsystems": [
+        "Story Dossier Builder",
+        "Image Worker",
+        "Publisher"
+      ],
+      "evidence": {
+        "blockerCount": 205,
+        "examples": [
+          "image-topic-mismatch"
+        ]
+      },
+      "rootCause": "Image work is not always driven by a structured image dossier tied to the story ID and licensing requirements.",
+      "action": "Create image dossiers from canonical story facts, rank licensed candidates, and keep post-publication image repair attached to the live article.",
+      "preventionRule": "A clean article can publish with a temporary CE fallback, but must retain an image work item until a matched licensed or CE-generated visual is attached.",
+      "verification": "Fallback persistence decreases while image mismatch never removes otherwise publishable articles.",
+      "goalImpact": "Raise first-pass publication and reduce wasted work."
+    },
+    {
+      "id": "root-cause-image-work-needs-persistent-queue",
+      "layer": "Image Intelligence",
+      "affectedSubsystems": [
+        "Image Worker",
+        "Publisher",
+        "Public API"
+      ],
+      "evidence": {
+        "reviewed": 5,
+        "upgraded": 5,
+        "queued": 16,
+        "generatedPromoted": 0,
+        "needingImage": 0,
+        "fallbackCount": 4,
+        "queueDepth": 0,
+        "live": true,
+        "pexels": true,
+        "unsplash": false,
+        "pixabay": true
+      },
+      "rootCause": "Image acquisition can lag article publication, so image tasks need persistent story-attached work orders instead of optional one-shot visibility.",
+      "action": "Keep image dossiers and generated-image briefs queued by story ID until a licensed or CE-generated image passes relevance and credit checks.",
+      "preventionRule": "Do not abandon image work after public publication; upgrade the live article when a better image is verified.",
+      "verification": "Image queue age and CE fallback count decline without reducing public article count.",
+      "goalImpact": "Raise first-pass publication and reduce wasted work."
+    }
+  ],
+  "headlineVersionMetrics": [
+    {
+      "headlineServiceVersion": "unknown",
+      "articlesEvaluated": 5,
+      "candidatesGenerated": 0,
+      "candidatePassCount": 0,
+      "firstCandidatePassCount": 0,
+      "wordSalad": 0,
+      "genericHeadline": 0,
+      "sourceMismatch": 0,
+      "leadMismatch": 0,
+      "grammarFailure": 0,
+      "editorRewrite": 4,
+      "firstPassArticleApproval": 0,
+      "repairRounds": 0,
+      "verifiedVisibleOutput": 5,
+      "candidatePassRate": 0,
+      "firstCandidatePassRate": 0,
+      "editorRewriteRate": 0.8,
+      "firstPassArticleApprovalRate": 0,
+      "verifiedVisibleRate": 1,
+      "averageHeadlineAttempts": 0,
+      "rule": "Headline success means final normalized headline passed the canonical gate, passed first Editorial review, and reached publication without headline replacement."
+    }
+  ],
+  "semanticReclassification": {
+    "changedCount": 0,
+    "changedExamples": [],
+    "rule": "Collector/RSS categories are hints. The locked Story Dossier assigns the final semantic public tab after canonical event identity is known."
+  },
+  "imageIntelligence": {
+    "reviewed": 5,
+    "upgraded": 5,
+    "queued": 16,
+    "generatedPromoted": 0,
+    "needingImage": 0,
+    "fallbackCount": 4,
+    "queueDepth": 0,
+    "live": true,
+    "pexels": true,
+    "unsplash": false,
+    "pixabay": true,
+    "sourcePolicy": {
+      "preferredLicensedProviders": [
+        "Pexels",
+        "Unsplash",
+        "Pixabay"
+      ],
+      "sourceImages": "disabled unless separately rights-reviewed",
+      "generatedImages": "use CE-generated story-specific image briefs when licensed search cannot find a relevant, credited image",
+      "postPublicationRepair": true
+    },
+    "dossierRequirements": [
+      "storyId",
+      "canonical event summary",
+      "primary actor/action/consequence",
+      "category",
+      "locations and entities",
+      "avoid real-person/event misrepresentation",
+      "license and credit requirements",
+      "relevance score and duplicate-image check"
+    ],
+    "rule": "Image Intelligence selects visuals from an Image Dossier tied to the locked Story Dossier and keeps image repair alive after text publication."
+  },
+  "publicationEfficiencyDashboard": {
+    "visiblePublishedArticles": 5,
+    "authoritativePublicRevision": 1,
+    "preparedCacheRevision": 1,
+    "memoryCacheRevision": "",
+    "lastKnownGoodRevision": 1,
+    "authoritativeActiveStories": 5,
+    "preparedCacheStories": 6,
+    "memoryCacheStories": 0,
+    "apiReturnedStories": 6,
+    "visibleTileStories": 5,
+    "workerBatchStories": 7,
+    "publicStateConverged": true,
+    "publicStateSource": "newsLabPublicStateStabilityGate",
+    "sourceStories": 0,
+    "attemptedCandidates": 27,
+    "finalApproved": 6,
+    "recentNewPublishedArticles": 30,
+    "buildMs": 38682,
+    "workerBudgetMs": 30000,
+    "budgetOverrun": true,
+    "cpuMsPerVisibleArticle": 7736,
+    "cpuMsPerNewPublishedArticle": 1289,
+    "candidatesPerPublishedArticle": 4.5,
+    "sourcesPerPublishedArticle": 0,
+    "repairLoopsPerArticle": 7.33,
+    "repeatedReasoningPerArticle": 103.5,
+    "firstPassPublicationRate": 0.2593,
+    "finalApprovalRate": 0.2222,
+    "memoryPressureSignal": 0,
+    "cpuPressureSignal": 0,
+    "primaryOptimizationMetric": "first-pass publication rate and CPU milliseconds per newly visible article",
+    "interpretation": "The worker exceeded its production budget; reduce repeated repair/rebuild work before increasing collection.",
+    "rule": "Production Intelligence reads the same authoritative public revision and visible tile count as /api/news-lab. Worker batch counts are diagnostic only and cannot redefine public inventory."
+  },
+  "unnecessaryWork": {
+    "repairFrequency": 44,
+    "editorialRejections": 21,
+    "headlineRewritePressure": 2344,
+    "evidenceOrDossierPressure": 834,
+    "duplicateEffort": 99,
+    "imageRepairPressure": 205,
+    "repeatedReasoning": 621,
+    "unnecessaryFileReads": [
+      {
+        "file": "approval-recovery-queue.json",
+        "hits": 2,
+        "readMs": 1580,
+        "parseMs": 811,
+        "bytes": 87738389,
+        "totalMs": 2391
+      },
+      {
+        "file": "framework-action-log.json",
+        "hits": 2,
+        "readMs": 1712,
+        "parseMs": 662,
+        "bytes": 111674103,
+        "totalMs": 2374
+      },
+      {
+        "file": "headline-repair-queue.json",
+        "hits": 2,
+        "readMs": 1008,
+        "parseMs": 495,
+        "bytes": 64170907,
+        "totalMs": 1503
+      },
+      {
+        "file": "editorial-learning.json",
+        "hits": 12,
+        "readMs": 1035,
+        "parseMs": 458,
+        "bytes": 10413259,
+        "totalMs": 1493
+      },
+      {
+        "file": "news-lab-rescued-approved-shelf.json",
+        "hits": 8,
+        "readMs": 220,
+        "parseMs": 41,
+        "bytes": 1627295,
+        "totalMs": 261
+      },
+      {
+        "file": "newsletters.json",
+        "hits": 2,
+        "readMs": 152,
+        "parseMs": 42,
+        "bytes": 9780455,
+        "totalMs": 194
+      },
+      {
+        "file": "news-lab-article-lifecycle-trace.json",
+        "hits": 2,
+        "readMs": 156,
+        "parseMs": 31,
+        "bytes": 5557486,
+        "totalMs": 187
+      },
+      {
+        "file": "news-lab-productivity.json",
+        "hits": 5,
+        "readMs": 183,
+        "parseMs": 3,
+        "bytes": 197630,
+        "totalMs": 186
+      }
+    ],
+    "slowEndpoints": [
+      {
+        "endpoint": "GET /api/subsystems",
+        "avgMs": 13792.4,
+        "maxMs": 22504,
+        "requests": 15,
+        "avgFileReadMs": 38.1,
+        "avgJsonParseMs": 3.9,
+        "avgResponseBytes": 31970
+      },
+      {
+        "endpoint": "GET /api/owner-brain-state",
+        "avgMs": 15492,
+        "maxMs": 15492,
+        "requests": 1,
+        "avgFileReadMs": 1840,
+        "avgJsonParseMs": 471,
+        "avgResponseBytes": 95812
+      },
+      {
+        "endpoint": "GET /api/news-lab",
+        "avgMs": 1453.2,
+        "maxMs": 5460,
+        "requests": 80,
+        "avgFileReadMs": 19.6,
+        "avgJsonParseMs": 6.4,
+        "avgResponseBytes": 304452
+      },
+      {
+        "endpoint": "GET /api/news-lab-observability",
+        "avgMs": 4399.5,
+        "maxMs": 4808,
+        "requests": 2,
+        "avgFileReadMs": 2084.5,
+        "avgJsonParseMs": 716.5,
+        "avgResponseBytes": 98670
+      },
+      {
+        "endpoint": "GET /api/learning",
+        "avgMs": 817,
+        "maxMs": 2156,
+        "requests": 3,
+        "avgFileReadMs": 460.7,
+        "avgJsonParseMs": 144.7,
+        "avgResponseBytes": 1532997
+      },
+      {
+        "endpoint": "GET /api/learning/summary",
+        "avgMs": 126.5,
+        "maxMs": 128,
+        "requests": 2,
+        "avgFileReadMs": 1,
+        "avgJsonParseMs": 0,
+        "avgResponseBytes": 1513595
+      },
+      {
+        "endpoint": "GET /api/newsletter/archive",
+        "avgMs": 98,
+        "maxMs": 98,
+        "requests": 1,
+        "avgFileReadMs": 71,
+        "avgJsonParseMs": 21,
+        "avgResponseBytes": 122119
+      },
+      {
+        "endpoint": "GET /api/creator/archive",
+        "avgMs": 52,
+        "maxMs": 52,
+        "requests": 1,
+        "avgFileReadMs": 47,
+        "avgJsonParseMs": 1,
+        "avgResponseBytes": 528635
+      }
+    ],
+    "failureTaxonomy": [
+      {
+        "code": "HEADLINE_QUALITY_FAILURE",
+        "count": 1851,
+        "repairScope": "headline-only",
+        "examples": [
+          "headline-word-salad",
+          "generic-weak-headline",
+          "headline-editor-needs-rewrite"
+        ]
+      },
+      {
+        "code": "DOSSIER_INCOMPLETE",
+        "count": 834,
+        "repairScope": "dossier-rebuild-before-writing",
+        "examples": [
+          "missing-reporting-context",
+          "body-too-short",
+          "body-needs-intro-body-ending",
+          "semantic-title-source-mismatch"
+        ]
+      },
+      {
+        "code": "HEADLINE_TOPIC_MISMATCH",
+        "count": 233,
+        "repairScope": "headline-only",
+        "examples": [
+          "headline-lead-topic-mismatch"
+        ]
+      },
+      {
+        "code": "REPETITIVE_LANGUAGE",
+        "count": 212,
+        "repairScope": "affected-passage",
+        "examples": [
+          "repetitive-sentence-leak",
+          "coach-repeated-phrases"
+        ]
+      },
+      {
+        "code": "IMAGE_MISMATCH",
+        "count": 205,
+        "repairScope": "image-only-post-publication-safe",
+        "examples": [
+          "image-topic-mismatch"
+        ]
+      }
+    ]
+  },
+  "boundedImprovementProposal": {
+    "subsystem": "Writer Reasoning + Headline Generator",
+    "cause": "Headline failures share a common upstream cause: headline construction is not always anchored to the locked dossier, reasoning plan, and completed body.",
+    "action": "Require actor/action/consequence fields from the Writer Reasoning plan and reject headline candidates before Editor when body overlap or action clarity fails.",
+    "expectedOutcome": "Reduce duplicate subsystem fixes, raise first-pass publication rate, and lower repair loops per visible article by fixing the earliest common production cause.",
+    "measurement": "Headline blocker count and headline rewrite rate decline while first-pass approvals rise.",
+    "risk": "bounded-low-to-medium; changes should affect prevention, routing, or caching before standards are loosened."
+  },
+  "failurePreventionMemory": {
+    "rules": [
+      {
+        "id": "prevent-headline-failures-before-editor",
+        "appliesTo": "Headline Generator",
+        "preventBy": "Build headline only from the completed event dossier using Actor + Action + Consequence, then score body overlap before editorial review.",
+        "detection": "Reject headline candidates with missing actor/action, copied source structure, word salad, or weak body overlap."
+      },
+      {
+        "id": "prevent-thin-or-unsupported-drafts",
+        "appliesTo": "Story Dossier Builder",
+        "preventBy": "Require verified facts, primary actors, timeline, source attribution, and known unknowns before prose generation.",
+        "detection": "Mark candidate needs-dossier-evidence instead of letting thin source fragments reach the Writer."
+      },
+      {
+        "id": "prevent-image-blocking-publication",
+        "appliesTo": "Image Worker",
+        "preventBy": "Treat image mismatch as post-publication repairable when article text is otherwise publishable, while keeping an image-repair attachment on the story object.",
+        "detection": "Require image-topic overlap but do not remove a clean article from public view for a fixable visual mismatch."
+      },
+      {
+        "id": "prevent-repetitive-sentence-leak",
+        "appliesTo": "Publishing Editor",
+        "preventBy": "Convert this rejection into a repair instruction and resubmit through validation before abandoning the draft.",
+        "detection": "Detect repetitive-sentence-leak and route to the responsible subsystem with the full story snapshot."
+      },
+      {
+        "id": "prevent-duplicate-publication-work",
+        "appliesTo": "Story Curator",
+        "preventBy": "Merge same-event candidates before drafting and route added facts into the existing story update path.",
+        "detection": "Compare canonical event keys, primary entities, location, date, and action before a new article is created."
+      }
+    ],
+    "writerInstruction": "Before drafting, read the Story Dossier, Editorial Memory, Headline Pattern Memory, Learner Lexicon, and these prevention rules; then state the verified event, uncertainty, headline direction, and likely editorial risk internally before prose generation."
+  },
+  "learningSignal": {
+    "upstream": "Collector and Dossier Builder should prevent mixed/thin events before Writer work starts.",
+    "downstream": "Publishing Editor and Validator should repair safe issues, resubmit, and write generalized prevention rules instead of exact-string lessons.",
+    "behavioralQuestion": "What did the Writer do differently this cycle because of prior failures?",
+    "optimizationQuestion": "Which computation did not contribute to a verified-visible article, and how can the Framework avoid or compress that work next cycle?"
+  }
 }

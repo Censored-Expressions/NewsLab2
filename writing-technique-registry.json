@@ -7344,12 +7344,12 @@
   "rule": "Technique learning answers why and when a writing decision works, not just whether a draft passed.",
   "overall": 4,
   "imageIntelligence": {
-    "updatedAt": "2026-08-09T01:46:27.166Z",
+    "updatedAt": "2026-08-13T12:29:28.743Z",
     "principle": "Use licensed visual candidates as a behind-the-scenes promotion step, not as a blocker for article publication.",
     "activeRule": "Compare Pexels, Unsplash, and Pixabay first. Use NewsData/source images only when rights-review is explicitly enabled. If the article is publishable and the remaining image is a generic CE fallback, use the built-in CE-generated image asset path immediately; otherwise queue generated-image briefs from Story Dossier facts for follow-up. Promote only images with provenance, credit, relevance, duplicate checks, and generated-asset review.",
     "lastPass": {
-      "reviewed": 6,
-      "upgraded": 6,
+      "reviewed": 5,
+      "upgraded": 5,
       "held": 0,
       "unchanged": 0
     },
