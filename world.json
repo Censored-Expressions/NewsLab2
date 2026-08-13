@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-13T00:07:15.259Z",
+  "generatedAt": "2026-08-13T01:49:10.618Z",
   "category": "world",
   "reason": "runtime-smoke-test:collector-world",
-  "pid": 26864,
-  "buildMs": 755,
+  "pid": 27004,
+  "buildMs": 689,
   "sourceCount": 10,
   "storyCount": 25,
   "stories": [
@@ -17,24 +17,9 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Live updates: Total solar eclipse sweeps across Europe CNN See the 2026 European Solar Eclipse, in Photos and Videos nytimes.com Europe sees total solar eclipse: \"A very ...",
+      "summary": "Live updates: Total solar eclipse sweeps across Europe CNN See the 2026 European Solar Eclipse, in Photos and Videos The New York Times Photos: See the best photos from t...",
       "published": "Wed, 12 Aug 2026 22:06:00 GMT",
-      "engagementScore": 44,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Major Russian grain export terminals hit in Ukraine Black Sea port attack - BBC",
-      "source": "BBC",
-      "market": "",
-      "category": "local",
-      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9yMkhxMGxURF9FNDF6a1QtU1hsU01vdWN5bjBZYTFZd1k1SlU4Y2pqdkRMSGtxVF81Nm1naW01WnNlUWJ1WUJfbWgzVnRBZzdoQmN1V3RnNzdsZw?oc=5",
-      "sourceHomepage": "https://www.bbc.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Major Russian grain export terminals hit in Ukraine Black Sea port attack BBC Russia-Ukraine War Is Squeezing Another Global Chokepoint: The Black Sea WSJ An overnight Uk...",
-      "published": "Wed, 12 Aug 2026 17:47:01 GMT",
-      "engagementScore": 39,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -47,9 +32,39 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Colombia declares three days of mourning after deadly earthquake Al Jazeera A big earthquake reveals two very different Colombias The Economist King Charles 'dreadfully s...",
+      "summary": "Colombia declares three days of mourning after deadly earthquake Al Jazeera A big earthquake reveals two very different Colombias The Economist Colombia limits foreign re...",
       "published": "Wed, 12 Aug 2026 15:42:35 GMT",
-      "engagementScore": 37,
+      "engagementScore": 36,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Major Russian grain export terminals hit in Ukraine Black Sea port attack - BBC",
+      "source": "BBC",
+      "market": "",
+      "category": "local",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9yMkhxMGxURF9FNDF6a1QtU1hsU01vdWN5bjBZYTFZd1k1SlU4Y2pqdkRMSGtxVF81Nm1naW01WnNlUWJ1WUJfbWgzVnRBZzdoQmN1V3RnNzdsZw?oc=5",
+      "sourceHomepage": "https://www.bbc.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Major Russian grain export terminals hit in Ukraine Black Sea port attack BBC An overnight Ukrainian blitz damages Russia's Black Sea naval stronghold, Zelenskyy says Dal...",
+      "published": "Wed, 12 Aug 2026 17:47:01 GMT",
+      "engagementScore": 38,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Iran vows to close Hormuz Strait until US lifts sanctions as Trump rejects Tehran's demands - Fox News",
+      "source": "Fox News",
+      "market": "",
+      "category": "politics",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNQ2RUVjFBUmhnNTNCNjZSdEpzMmZ1NndMU20zX3IyRUdWUExvSmt5WUxFdnNKQzR5MGktWGJIQXN6YVJSZjhkcjgtRU1VSGZxX29TZzd6M2huelREQ0hYNDdnbng1aEdMNjBuajgyelNHT3hCcU1QY2JtbWtGbF9oUG14OA?oc=5",
+      "sourceHomepage": "https://www.foxnews.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Iran vows to close Hormuz Strait until US lifts sanctions as Trump rejects Tehran's demands Fox News Houthi attack kills six in Red Sea; Trump slams Iran as hopes for Hor...",
+      "published": "Wed, 12 Aug 2026 23:38:42 GMT",
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
@@ -64,12 +79,12 @@
       "isDiscovery": true,
       "summary": "Ravi Agrawal on covering the world beyond Washington. Columbia Journalism Review",
       "published": "Wed, 12 Aug 2026 10:00:29 GMT",
-      "engagementScore": 30,
+      "engagementScore": 29,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Two UW Adjunct Faculty Members to Present International Research in Centennial Aug. 19 - uwyo.edu",
-      "source": "uwyo.edu",
+      "title": "Two UW Adjunct Faculty Members to Present International Research in Centennial Aug. 19 - University of Wyoming",
+      "source": "University of Wyoming",
       "market": "",
       "category": "top",
       "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNZzBrUGhDaDA0dkl5SnRFN2pWQld3aWdhWTNFYXRsd1dyVW5EMzVGbmZZUjVTQUc1Rlo5SGNwejA3OGJCZzZsMjRxdXBfOGJEMTRvNm8tWDZITlE4MFg1cjN5VHBTdEFFNnNJRzVNNlF5RjIxeGl4TkhhQkVIWG5jY3JLcFRKdkNyTV8yajltMmFSdzl3QXZYYTNJNTRPaGd4YmNIWXJIb3BrMlFqbXZOd3ZuLXpKNFl4dGZTaFlnb0FKUQ?oc=5",
@@ -77,9 +92,9 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Two UW Adjunct Faculty Members to Present International Research in Centennial Aug. 19 uwyo.edu",
+      "summary": "Two UW Adjunct Faculty Members to Present International Research in Centennial Aug. 19 University of Wyoming",
       "published": "Wed, 12 Aug 2026 16:07:40 GMT",
-      "engagementScore": 36,
+      "engagementScore": 35,
       "engagementLabel": "Developing"
     },
     {
@@ -94,7 +109,7 @@
       "isDiscovery": true,
       "summary": "Russia-Ukraine War Escalates With Black Sea Strikes, North Korean Missiles Foreign Policy",
       "published": "Wed, 12 Aug 2026 19:33:21 GMT",
-      "engagementScore": 39,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
@@ -109,8 +124,8 @@
       "isDiscovery": true,
       "summary": "Gen Z Isn’t Concerned About China Chicago Council on Global Affairs",
       "published": "Wed, 12 Aug 2026 05:00:00 GMT",
-      "engagementScore": 25,
-      "engagementLabel": "Developing"
+      "engagementScore": 23,
+      "engagementLabel": "Monitor"
     },
     {
       "title": "Ready to represent - 501 LIFE Magazine",
@@ -124,6 +139,21 @@
       "isDiscovery": true,
       "summary": "Ready to represent 501 LIFE Magazine",
       "published": "Wed, 12 Aug 2026 22:50:02 GMT",
+      "engagementScore": 41,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Can The Gulf States Achieve Sustainable Peace And Regional Stability? Strategic Assessment Of The Emerging Gulf Security Architecture - Analysis - Eurasia Review",
+      "source": "Eurasia Review",
+      "market": "",
+      "category": "top",
+      "url": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOa29SbWl6TXZCcnF1MkxncWptZzlQRWNmMGdfNnVMZ3M3Uk9vN3Z6WVFHdGI1TFFhQTFPa3Q3Qi1NYjNrWnFTcUpXZi1kVTdiMTJ5d0hpT0hLR29iR3FwNUdYVlUyMFhUcmp6Mk12SmZ4cHBpVDdkNHhaYUt5bzlmRHlqQmxxdDlrQ3RWQjVWYXhTc1hxVWloQTB5bXVrVUZNT01RWkJNNmE4NGRjMUpqY2liM0I1S0hCZmROcG4tUWh6MUl1U3lrMU9fU1ZzTFJqQmN2aF8yTzBzVGpmS1pESURhaUxxWW04QUxYQl9jeHVXck1CdGppYjhGRnhEVHR5bkZ2bk8zbXdqUktxU3c?oc=5",
+      "sourceHomepage": "https://www.eurasiareview.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Can The Gulf States Achieve Sustainable Peace And Regional Stability? Strategic Assessment Of The Emerging Gulf Security Architecture - Analysis Eurasia Review",
+      "published": "Thu, 13 Aug 2026 00:45:18 GMT",
       "engagementScore": 42,
       "engagementLabel": "Developing"
     },
@@ -139,7 +169,7 @@
       "isDiscovery": true,
       "summary": "America’s Peace Deals Need an Economic Doctrine Modern Diplomacy",
       "published": "Wed, 12 Aug 2026 13:43:53 GMT",
-      "engagementScore": 33,
+      "engagementScore": 31,
       "engagementLabel": "Developing"
     },
     {
@@ -154,7 +184,7 @@
       "isDiscovery": true,
       "summary": "Netanyahu’s Rejection of Trump’s Gaza Roadmap Deepens Gaza’s Diplomatic and Humanitarian Crisis impactpolicies.org",
       "published": "Wed, 12 Aug 2026 17:13:47 GMT",
-      "engagementScore": 36,
+      "engagementScore": 34,
       "engagementLabel": "Developing"
     },
     {
@@ -169,22 +199,7 @@
       "isDiscovery": true,
       "summary": "King Abdullah II Calls for Comprehensive De-escalation in Region Global Arab Network",
       "published": "Wed, 12 Aug 2026 20:26:15 GMT",
-      "engagementScore": 39,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Assessing KMT Leader Cheng Li-Wun’s Political Narrative - The Diplomat – Asia-Pacific Current Affairs Magazine",
-      "source": "The Diplomat – Asia-Pacific Current Affairs Magazine",
-      "market": "",
-      "category": "top",
-      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPanlhR2dyQmtISExFMVF1aXVFOG81dmtYakI1RWdESi0yT05wQUFGSktVNlhydEZNYnJFaDdTdnJ5VTFVUXhiTmxubnFnUENDajhKc09Lak1pdk52cW43LUxoLVVxamlBZkphQUlfbGRyX3RZSkNhUHFIc0ZNdkQxNjNZc0RKOXBRTTE0STNHY1M?oc=5",
-      "sourceHomepage": "https://thediplomat.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Assessing KMT Leader Cheng Li-Wun’s Political Narrative The Diplomat – Asia-Pacific Current Affairs Magazine",
-      "published": "Wed, 12 Aug 2026 13:21:29 GMT",
-      "engagementScore": 32,
+      "engagementScore": 37,
       "engagementLabel": "Developing"
     },
     {
@@ -199,7 +214,7 @@
       "isDiscovery": true,
       "summary": "South Sudan and China’s Evolving Overseas Security Strategy horn review",
       "published": "Wed, 12 Aug 2026 09:27:48 GMT",
-      "engagementScore": 28,
+      "engagementScore": 26,
       "engagementLabel": "Developing"
     },
     {
@@ -214,22 +229,22 @@
       "isDiscovery": false,
       "summary": "Grain exports from both Russia and Ukraine are falling as both countries attack each other's shipping facilities and ports.",
       "published": "Wed, 12 Aug 2026 17:47:01 GMT",
-      "engagementScore": 40,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Vultures are disappearing in Nigeria - but the 'Vulture King' is fighting to reverse the trend",
+      "title": "Ebola outbreak on track to be deadliest ever, WHO chief says",
       "source": "BBC World",
       "market": "",
       "category": "world",
-      "url": "https://www.bbc.co.uk/news/articles/cx256pp33l3o?at_medium=RSS&at_campaign=rss",
+      "url": "https://www.bbc.co.uk/news/articles/cgk4pex4mn8o?at_medium=RSS&at_campaign=rss",
       "sourceHomepage": "https://www.bbc.com/news/world",
-      "image": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/2cb5/live/5b6616a0-9577-11f1-870d-5d08c49babb2.jpg",
+      "image": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/45e0/live/2fd6c2d0-96a5-11f1-b2ab-0dd01740f9f6.jpg",
       "hasFeedImage": true,
       "isDiscovery": false,
-      "summary": "Some see them as sinister or hunt them for ritual use but these birds play a vital role in nature's cycle.",
-      "published": "Wed, 12 Aug 2026 23:19:28 GMT",
-      "engagementScore": 45,
+      "summary": "The outbreak, declared on 15 May, has caused more than 2,000 deaths, with thousands more reported cases.",
+      "published": "Thu, 13 Aug 2026 01:31:21 GMT",
+      "engagementScore": 46,
       "engagementLabel": "High Signal"
     },
     {
@@ -244,7 +259,7 @@
       "isDiscovery": false,
       "summary": "As Japan swelters through extreme summer heat, BBC Tokyo correspondent Kurumi Mori tries out a new way to cool down.",
       "published": "Wed, 12 Aug 2026 22:07:47 GMT",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -259,7 +274,22 @@
       "isDiscovery": false,
       "summary": "Following a 10-hour rescue operation, emergency workers pulled the 32-year-old from beneath slabs of concrete.",
       "published": "Wed, 12 Aug 2026 22:41:46 GMT",
-      "engagementScore": 44,
+      "engagementScore": 42,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Photos: See the best photos from the solar eclipse",
+      "source": "NPR World",
+      "market": "",
+      "category": "world",
+      "url": "https://www.npr.org/sections/the-picture-show/2026/08/12/nx-s1-5929788/photos-best-photos-from-solar-eclipse",
+      "sourceHomepage": "https://www.npr.org/sections/world/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "Millions of people in Europe stepped outside this evening to watch a spectacular sunset with a solar eclipse. The path of totality passed through portions of Greenland, I...",
+      "published": "Wed, 12 Aug 2026 21:38:01 -0400",
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -274,7 +304,7 @@
       "isDiscovery": false,
       "summary": "Beijing may be benefiting from the war in Iran and Trump's tariffs and has an edge in the competition for tech supremacy. The New Yorker 's Evan Osnos discusses his story...",
       "published": "Wed, 12 Aug 2026 14:24:48 -0400",
-      "engagementScore": 35,
+      "engagementScore": 34,
       "engagementLabel": "Developing"
     },
     {
@@ -289,7 +319,7 @@
       "isDiscovery": false,
       "summary": "Zhu was renowned for reforms that sought to transition China from the post-Maoist years to a more global market-oriented financial system, without ceding party control ov...",
       "published": "Wed, 12 Aug 2026 08:36:30 -0400",
-      "engagementScore": 29,
+      "engagementScore": 27,
       "engagementLabel": "Developing"
     },
     {
@@ -304,22 +334,7 @@
       "isDiscovery": false,
       "summary": "Yesterday's primaries provided more insight into what voters in both parties want from their new leaders. And, Trump secretly switched planes in Turkey last month amid a ...",
       "published": "Wed, 12 Aug 2026 07:25:11 -0400",
-      "engagementScore": 28,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "How a road could change West Africa's urban future",
-      "source": "NPR World",
-      "market": "",
-      "category": "world",
-      "url": "https://www.npr.org/2026/08/12/nx-s1-5901327/west-africa-trade-growth-economy-nigeria-ghana-lagos",
-      "sourceHomepage": "https://www.npr.org/sections/world/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "A 600-mile journey along the shores of Nigeria, Togo, Ghana and Ivory Coast reveals one of the world's most consequential transformations.",
-      "published": "Wed, 12 Aug 2026 05:00:00 -0400",
-      "engagementScore": 25,
+      "engagementScore": 26,
       "engagementLabel": "Developing"
     },
     {
@@ -333,7 +348,7 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "News, Analysis and Service from Germany and Europe - in 30 Languages",
-      "published": "2026-08-13T00:07:14.852Z",
+      "published": "2026-08-13T01:49:10.255Z",
       "engagementScore": 40,
       "engagementLabel": "Developing"
     },
@@ -348,7 +363,7 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "Because of the blockage of the Strait of Hormuz, Iraq cannot export enough oil to fund the country's huge public sector. Protests have already started. Will the Iran war ...",
-      "published": "2026-08-13T00:07:14.852Z",
+      "published": "2026-08-13T01:49:10.256Z",
       "engagementScore": 40,
       "engagementLabel": "Developing"
     },
@@ -363,28 +378,13 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "Sicily's Catania airport has suspended flights again as Mount Etna continues to spew lava and volcanic ash. The eruption has disrupted travel during the peak summer holid...",
-      "published": "2026-08-13T00:07:14.852Z",
+      "published": "2026-08-13T01:49:10.256Z",
       "engagementScore": 39,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Hegseth cautions that ICC may investigate US boat strikes in Latin America",
-      "source": "Al Jazeera World",
-      "market": "",
-      "category": "politics",
-      "url": "https://www.aljazeera.com/news/2026/8/12/hegseth-cautions-that-icc-may-investigate-us-boat-strikes-in-latin-america?traffic_source=rss",
-      "sourceHomepage": "https://www.aljazeera.com/news/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "US defence chief vows to continue campaign against drug cartels, says Colombia has joined regional military coalition.",
-      "published": "Wed, 12 Aug 2026 21:52:18 +0000",
-      "engagementScore": 36,
       "engagementLabel": "Developing"
     }
   ],
   "feedFailureAttribution": {
-    "generatedAt": "2026-08-13T00:07:15.260Z",
+    "generatedAt": "2026-08-13T01:49:10.619Z",
     "sourceCount": 10,
     "failedSourceCount": 0,
     "slowSourceCount": 0,
@@ -405,7 +405,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 299
+        "lastDurationMs": 226
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=world%20news%20foreign%20policy%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -423,7 +423,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 168
+        "lastDurationMs": 124
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=international%20conflict%20diplomacy%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -441,7 +441,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 169
+        "lastDurationMs": 127
       },
       {
         "key": "bbc world::feeds.bbci.co.uk::https://feeds.bbci.co.uk/news/world/rss.xml",
@@ -459,7 +459,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 194
+        "lastDurationMs": 167
       },
       {
         "key": "npr world::feeds.npr.org::https://feeds.npr.org/1004/rss.xml",
@@ -477,7 +477,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 345
+        "lastDurationMs": 163
       },
       {
         "key": "dw world::rss.dw.com::https://rss.dw.com/rdf/rss-en-world",
@@ -495,7 +495,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 271
+        "lastDurationMs": 247
       },
       {
         "key": "al jazeera world::aljazeera.com::https://www.aljazeera.com/xml/rss/all.xml",
@@ -513,7 +513,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 214
+        "lastDurationMs": 170
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=global%20breaking%20news%20when%3a1d&hl=en-us&gl=us&ceid=us:en",
@@ -531,7 +531,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 256
+        "lastDurationMs": 543
       }
     ],
     "worstDomains": [

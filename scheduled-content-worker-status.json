@@ -1,9 +1,9 @@
 {
   "version": "20260729-scheduled-content-autonomy-v1",
-  "generatedAt": "2026-08-10T01:48:29.897Z",
+  "generatedAt": "2026-08-13T01:48:09.499Z",
   "active": true,
-  "lastStatus": "running",
-  "pid": 21640,
+  "lastStatus": "web-scheduled-content-fallback-heartbeat",
+  "pid": 27232,
   "roles": [
     "maintenance",
     "creator-desk",
@@ -11,15 +11,15 @@
     "market-snapshot"
   ],
   "creatorDesk": {
-    "status": "in-progress",
+    "status": "needs-retry",
     "stale": true,
-    "dayId": "2026-08-09",
+    "dayId": "2026-08-12",
     "currentDayPresent": false,
     "latestDayId": "2026-07-29",
     "latestGeneratedAt": "2026-07-29T12:24:30.237Z",
     "shouldRunNow": true,
     "staleHours": 26,
-    "lastAttemptAt": "2026-08-10T01:48:29.889Z",
+    "lastAttemptAt": "2026-08-13T01:47:28.052Z",
     "reason": "stale-catchup",
     "beforeCount": 30,
     "afterCount": 30,
@@ -27,7 +27,7 @@
     "error": ""
   },
   "newsletter": {
-    "status": "attempting",
+    "status": "needs-retry",
     "stale": true,
     "weekId": "2026-08-01",
     "currentWeekPresent": false,
@@ -37,15 +37,44 @@
     "shouldRunNow": false,
     "shouldCatchUpNow": true,
     "skipped": true,
-    "lastAttemptAt": "2026-08-10T01:48:29.897Z",
-    "reason": "weekly-catchup"
+    "lastAttemptAt": "2026-08-13T01:47:28.218Z",
+    "reason": "weekly-catchup",
+    "beforeCount": 6,
+    "afterCount": 6,
+    "lastSuccessAt": "",
+    "error": "searchInterestDigest is not defined"
   },
   "learning": {
     "rule": "Creator Desk and Newsletter are primary product lanes. If they miss a schedule window, the scheduled-content worker must catch up, record why, and sync the generated files."
   },
-  "startedAt": "2026-08-10T01:48:29.882Z",
+  "startedAt": "2026-08-13T01:47:27.956Z",
   "lastReason": "web-fallback-startup-catchup",
-  "heartbeatAt": "2026-07-29T12:24:27.470Z",
-  "finishedAt": "2026-07-29T12:23:31.319Z",
-  "rule": "The public web process runs only the lightweight scheduled content fallback so Creator Desk and Newsletter posts are not missed if the separate worker is unavailable or not syncing."
+  "heartbeatAt": "2026-08-13T01:48:09.497Z",
+  "finishedAt": "2026-08-13T01:48:08.335Z",
+  "rule": "The public web process runs only the lightweight scheduled content fallback so Creator Desk and Newsletter posts are not missed if the separate worker is unavailable or not syncing.",
+  "stale": false,
+  "heartbeatFreshness": {
+    "heartbeatAt": "2026-08-13T01:48:09.497Z",
+    "expectedMs": 60000,
+    "maxAgeMs": 120000,
+    "ageMs": 2,
+    "fresh": true,
+    "stale": false,
+    "rule": "Scheduled content active state is derived from heartbeat freshness, not from a persisted Boolean."
+  },
+  "contentLaneDurability": {
+    "creatorDesk": {
+      "localCount": 30,
+      "backupCount": 30,
+      "publicCount": 30
+    },
+    "newsletter": {
+      "localCount": 6,
+      "backupCount": 6,
+      "publicCount": 6
+    },
+    "syncStatus": "json-plus-last-known-good-backup",
+    "rule": "Creator Desk and Newsletter track local, backup, and public counts separately so missing deployment files cannot masquerade as healthy content lanes."
+  },
+  "supervisorAction": "scheduled-content-worker-heartbeat-current"
 }

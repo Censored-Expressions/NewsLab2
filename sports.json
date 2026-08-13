@@ -1,41 +1,41 @@
 {
-  "generatedAt": "2026-08-13T00:07:22.958Z",
+  "generatedAt": "2026-08-13T01:49:18.472Z",
   "category": "sports",
   "reason": "runtime-smoke-test:collector-sports",
-  "pid": 4276,
-  "buildMs": 631,
+  "pid": 19128,
+  "buildMs": 726,
   "sourceCount": 10,
   "storyCount": 25,
   "stories": [
     {
-      "title": "Russell Westbrook announces NBA retirement after 18 seasons - ESPN",
-      "source": "ESPN",
+      "title": "Russell Westbrook, former NBA MVP and 9-time All-Star, announces retirement after 18 seasons - NBA.com",
+      "source": "NBA.com",
       "market": "",
       "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPR01YeHpMTlA5ZkFYbk1mcDd0b2ZiQ21xbjZ1dVBKejBNaGJEem1hRDZsUmdyUTcwYlUyVF85VGVGWGlOeEJxaFdBZVZaa3pPUFRFdUxuck5Fd2xOV3h4U2p0RThUNTI0REJ4TDdKcElqWWJmU0FIVzhaUmxpTEdTU2xtaFVaSk42ZFd0S0RZYWxiZlBFbDJ3bDZSRXBjSGM?oc=5",
-      "sourceHomepage": "https://www.espn.com",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBaZ3NlZmtVQUZLWnE5dnQyMGw2Z3J4cVA4WVA0VmtmVGFJcDl1Q0UzSzZaNjZId2x2ZDVvSmtqSE5ucUQ1U0FhMVYzRHZkWG54T0t5ekRJUWk1d0RhUFBpNi1ITGNyY1NyU2ZPOFNKTGFHc21YR2ZRWjFxYw?oc=5",
+      "sourceHomepage": "https://www.nba.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Russell Westbrook announces NBA retirement after 18 seasons ESPN Russell Westbrook retires: His NBA legacy after 18 electric seasons ESPN Sam Presti Issues Statement on R...",
-      "published": "Wed, 12 Aug 2026 18:50:00 GMT",
-      "engagementScore": 41,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Lakers to be sold to Bob Iger, Joshua Kushner 1 year after Mark Walter bought team - The Athletic - nytimes.com",
-      "source": "nytimes.com",
-      "market": "",
-      "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQNjN2Z3liQllvVWdLR1BCV1lXUTNFX21DUFAwOHZkYXdpZ2YxNnlVVlhwTzQ0N3RuSEhVRW54RWV6WGJMLS1OWUtmWl9NX3V5YXV1dVJqd2RPbk9JLWhQaks1dndRalRzYnk2bmlVdm1nTjR4OU5WX1FqTVdFS2s2Sld2R2RKT3oxODVMV3AyZFRPMDA2TEw4anAtdkxyalNGTzFqeEhEV3BPckxuRnFJYUFB?oc=5",
-      "sourceHomepage": "https://www.nytimes.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Lakers to be sold to Bob Iger, Joshua Kushner 1 year after Mark Walter bought team - The Athletic nytimes.com Sources: Josh Kushner, Bob Iger to buy Lakers for $12.5B ESP...",
-      "published": "Wed, 12 Aug 2026 23:46:46 GMT",
+      "summary": "Russell Westbrook, former NBA MVP and 9-time All-Star, announces retirement after 18 seasons NBA.com Russell Westbrook announces NBA retirement after 18 seasons ESPN “The...",
+      "published": "Thu, 13 Aug 2026 00:29:27 GMT",
       "engagementScore": 45,
       "engagementLabel": "High Signal"
+    },
+    {
+      "title": "Lakers sold for record-breaking $12.5 billion: Everything to know about Josh Kushner, Bob Iger's purchase - CBS Sports",
+      "source": "CBS Sports",
+      "market": "",
+      "category": "sports",
+      "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE5zblpveHJoMF9qRWNkZlZvNzNBYXM4R3I5ZnZKQmxNSmdicS1sbkdtVXVVVG5CNTVtYkdwbmF0ODJKY05nMjlncl94WFE0V3BacjRkZlBRaEpxLVdfajFNVWVGRUIyWm9aU3MwOWk4TzY3alVWcUtWRQ?oc=5",
+      "sourceHomepage": "https://www.cbssports.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Lakers sold for record-breaking $12.5 billion: Everything to know about Josh Kushner, Bob Iger's purchase CBS Sports Exclusive | Bob Iger reveals timing, intimate details...",
+      "published": "Wed, 12 Aug 2026 19:44:00 GMT",
+      "engagementScore": 40,
+      "engagementLabel": "Developing"
     },
     {
       "title": "J.J. McCarthy wants to stay with Vikings after losing QB job - ESPN",
@@ -47,54 +47,54 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "J.J. McCarthy wants to stay with Vikings after losing QB job ESPN J.J. McCarthy ‘disappointed’ by Vikings QB decision; first depth chart released Star Tribune Top Landing...",
+      "summary": "J.J. McCarthy wants to stay with Vikings after losing QB job ESPN Vikings Release 1st Unofficial Depth Chart of 2026 Season Minnesota Vikings J.J. McCarthy ‘disappointed’...",
       "published": "Wed, 12 Aug 2026 22:54:00 GMT",
-      "engagementScore": 44,
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Todd Monken says starting QB will play first half vs. Bears, but doesn’t announce who it is - NBC Sports",
-      "source": "NBC Sports",
+      "title": "Merab Dvalishvili responds to Umar Nurmagomedov jab: ‘You guys are little people’ - MMA Fighting",
+      "source": "MMA Fighting",
       "market": "",
       "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxQTnBvR3kzNzR3SVh6T2ZTMTdHRWF4SFB4NkJKcEVMVXB1YWYtWnpaNThJV1lRREFGd0hVRmV3TElnVHQ5QTVyQVZTT01tcWpVLVpqdU5DV3hHekxiTTEzaU80ZjlxMUJKaWRYVG1rRFctT1lGaVYwWmtlS0dZSlU4RUZfbTB0dW96VGJtaURyelJiemRJeGtJZV9FRHV2aC1iVDA3T0xNLV8yNkljbWF3MnU5QkVKcUZtemc1Sko1d3IzUm04RlpIR1BYNzlMa0N1ZVJSem41dXRlTlhCWFRaQVo2Ui0?oc=5",
-      "sourceHomepage": "https://www.nbcsports.com",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNUDVmMGJiMWFaOHVUR3F0cU56V2dYMVlTRng2T3k5Xzdxc2NJVVlTZk14VTZpRy1VYWNJaXl3QTVOdEc1MUVycl9va1hiWkd0N3p5dEpreHpSdDQ0YU5FdGcwUzFxUl9lNUNCN3Iwck05VTg3YWRSQ1BITEhlOFVObVBBZ3AwczJuallhcUM2VjVsSFljNlFGV3gtN0RONHVqX3doTEsxZnBzZElDRHIwZ2pnVnJIc1hY?oc=5",
+      "sourceHomepage": "https://www.mmafighting.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Todd Monken says starting QB will play first half vs. Bears, but doesn’t announce who it is NBC Sports Browns name Watson starting QB for preseason opener ESPN Watson to ...",
-      "published": "Wed, 12 Aug 2026 18:44:28 GMT",
-      "engagementScore": 40,
+      "summary": "Merab Dvalishvili responds to Umar Nurmagomedov jab: ‘You guys are little people’ MMA Fighting See more headlines & perspectives on Google News",
+      "published": "Wed, 12 Aug 2026 17:00:00 GMT",
+      "engagementScore": 37,
       "engagementLabel": "Developing"
     },
     {
-      "title": "White Sox 'Pope Hat' Night Features Sign Of Peace — And Some Notable Chicago Catholics - Block Club Chicago",
-      "source": "Block Club Chicago",
+      "title": "Deshaun Watson will start vs. the Bears in the preseason opener Saturday - Cleveland.com",
+      "source": "Cleveland.com",
       "market": "",
       "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxONUoxb05zbU9qMHdhQTVpZGRVNTMycFFrLWdzUzNZMzU1dXVjSktoVG9uak9mb1hHbnFnRXBtSEk5bDk2TEhvLWN3YTMzTWRXSVhOSmJOTWVlajQ3T3VBSnR2bXBlSEFpWDRlRjE4VmlOa2gxX0RPN3R4SXE1Q19fSDVBbG5oYnV4MFNZa2wyWU4tLW9ZXzZES2pRRk8zS1hvOVRNVHVKbm82RC1nSV9MbDlaSkROX3FHWGo0MUI4QTk?oc=5",
-      "sourceHomepage": "https://blockclubchicago.org",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNTHdNRXVGRE1HbVhKaHhnbnRiTEMzYUxyVXZ2QTFxamlBYVBSNXFlcm1RcFBzVlpmQVRCWnA5ZFFpVVdNVHBYQ0ZzckNNeERhcXN2V2VsTTNWR2xTbVpyQVZvaHlkZjVFWk0yLUJhbkZvQlJXU3NTdFdobFRVUlFfdGJxSWRPdkpMYnNRRGVYd3hrMDBVbzJ1MXBBeHNCQzJ1dkNNTF9tdUIyRnUtZVVtNDAydTZKV0kx0gHMAUFVX3lxTE5aREVrYmszamV5dF94RGtIWU1NVkdwRHRGeVJJOG90Sk5nd1kxT2Z1blhuamg4TUEwOVp0MFZfamoweExadGFiWlFjdVpQS1o4UDdiNUJNUFdhQVZOWk5sbnJUMXM5MzQ1VURYbkx1SjYzd0dNNU5iR0VlTzB0UGpPYUZ3bDVqNlNlVk51Sm12TDNNMVZQT3QzeWx6eV9jYzFiR0JKQ01IbFZ4X1FERzlmeFdKWXdHTFBmUjAzNTJfZDUtcURDdkR6LW5LSA?oc=5",
+      "sourceHomepage": "https://www.cleveland.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "White Sox 'Pope Hat' Night Features Sign Of Peace — And Some Notable Chicago Catholics Block Club Chicago O holy night! White Sox give Pope Hats to sellout crowd, celebra...",
-      "published": "Wed, 12 Aug 2026 19:00:43 GMT",
-      "engagementScore": 40,
+      "summary": "Deshaun Watson will start vs. the Bears in the preseason opener Saturday Cleveland.com Browns name Watson starting QB for preseason opener ESPN Deshaun Watson, Shedeur Sa...",
+      "published": "Wed, 12 Aug 2026 21:55:00 GMT",
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Saints observations: It's too early to worry, but the starting offense still looks clunky - NOLA.com",
-      "source": "NOLA.com",
+      "title": "Albert Breer Empties His Browns Notebook From Training Camp - Sports Illustrated",
+      "source": "Sports Illustrated",
       "market": "",
       "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxNaUhySzROc3hpU0l5dGxyWUFETmVNckJfb0g5dHViSjY0Vm5zT2JFSHh3cUZ4dEJlUTZpRm5aMU9falVLb2dFMW44N0lnVDNLZy15NXI0VXlpaVlxRk5ldnNrSURPaXZBeG8tMWJZSmxyeVBDR1NiMjc5OU5LNElwOGVRMTFLa2xyRGJqUU90ckJxWGhCamhkV1JxTmxYWmNUYTdkdGtYQzRFajZOUnczR0NPaDgzQ2t0WVNXY2RJQkJRSVk4M2ZQcW9OdURIN0dfUGZBNnR3?oc=5",
-      "sourceHomepage": "https://www.nola.com",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNRmlKSGU3cFVCVC1nSjk1RktNc0dxMnN6NDVIWC03SjJ2elFzMFZvRnJwUkltTTJLdjdZaGFUWUY0aFQtcmlQOS1CVG9yNFNaZXVyancwbUFRd0VSZVlPZVZOQUpqbGlnOVRCTlpucTNERU1tTGF6VzYzdTMzanVKQWE1bC0?oc=5",
+      "sourceHomepage": "https://www.si.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Saints observations: It's too early to worry, but the starting offense still looks clunky NOLA.com Saints training camp Day 11: Bryce Lance continues standout camp NewOrl...",
-      "published": "Wed, 12 Aug 2026 17:37:00 GMT",
-      "engagementScore": 38,
+      "summary": "Albert Breer Empties His Browns Notebook From Training Camp Sports Illustrated Denzel Boston posts standout performance on Day 12 | Training Camp Observations Cleveland B...",
+      "published": "Wed, 12 Aug 2026 21:22:55 GMT",
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -108,7 +108,22 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "The Browns will start Deshaun Watson at quarterback in their preseason opener Saturday in Chicago, and Shedeur Sanders will start the second preseason game at home agains...",
-      "published": "Wed, 12 Aug 2026 19:16:33 EST",
+      "published": "Wed, 12 Aug 2026 20:48:05 EST",
+      "engagementScore": 45,
+      "engagementLabel": "High Signal"
+    },
+    {
+      "title": "Source: Panthers add to TE room with Waller deal",
+      "source": "ESPN",
+      "market": "",
+      "category": "sports",
+      "url": "https://www.espn.com/nfl/story/_/id/49594812/source-panthers-add-te-room-darren-waller-deal",
+      "sourceHomepage": "https://www.espn.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "Former Pro Bowl tight end Darren Waller and the Panthers reached agreement Wednesday on a one-year deal.",
+      "published": "Wed, 12 Aug 2026 20:48:05 EST",
       "engagementScore": 45,
       "engagementLabel": "High Signal"
     },
@@ -123,9 +138,9 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "Russell Westbrook, who played 18 NBA seasons with seven teams, announced his retirement Wednesday.",
-      "published": "Wed, 12 Aug 2026 19:16:33 EST",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "published": "Wed, 12 Aug 2026 20:48:05 EST",
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Sources: Kushner, Iger to buy Lakers for $12.5B",
@@ -138,7 +153,22 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "The Lakers are being sold to businessmen Josh Kushner and Bob Iger for $12.5 billion, a record-breaking price, multiple sources told ESPN.",
-      "published": "Wed, 12 Aug 2026 19:16:33 EST",
+      "published": "Wed, 12 Aug 2026 20:48:05 EST",
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Source: Roberts back with Steelers on 1-year deal",
+      "source": "ESPN",
+      "market": "",
+      "category": "sports",
+      "url": "https://www.espn.com/nfl/story/_/id/49594879/steelers-bring-back-lb-roberts-one-year-deal",
+      "sourceHomepage": "https://www.espn.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "Linebacker Elandon Roberts, who played for the Steelers in 2023 and 2024, is returning to Pittsburgh after the sides reached a one-year deal.",
+      "published": "Wed, 12 Aug 2026 20:48:05 EST",
       "engagementScore": 44,
       "engagementLabel": "Developing"
     },
@@ -153,53 +183,8 @@
       "hasFeedImage": false,
       "isDiscovery": false,
       "summary": "The decision to name Kyler Murray the winner of the Vikings' quarterback competition this week was \"out of my control,\" former starter J.J. McCarthy said Wednesday.",
-      "published": "Wed, 12 Aug 2026 19:16:33 EST",
+      "published": "Wed, 12 Aug 2026 20:48:05 EST",
       "engagementScore": 44,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Messi back on Miami bench after father's death",
-      "source": "ESPN",
-      "market": "",
-      "category": "sports",
-      "url": "https://www.espn.com/soccer/story/_/id/49594061/lionel-messi-back-inter-miami-bench-father-death",
-      "sourceHomepage": "https://www.espn.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "Lionel Messi rejoined Inter Miami CF on Wednesday following the passing of his father, Jorge Messi, for their Leagues Cup game against Club Leon on the bench at Nu Stadiu...",
-      "published": "Wed, 12 Aug 2026 19:16:33 EST",
-      "engagementScore": 44,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Rory sure he'll keep PGA Tour status with 14 starts",
-      "source": "ESPN",
-      "market": "",
-      "category": "sports",
-      "url": "https://www.espn.com/golf/story/_/id/49591796/rory-mcilroy-sure-keep-pga-tour-status-14-starts",
-      "sourceHomepage": "https://www.espn.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "Rory McIlroy said he's confident he'll reach a compromise with the PGA Tour to fulfill his minimum qualification of 15 events to maintain his dual membership.",
-      "published": "Wed, 12 Aug 2026 19:16:33 EST",
-      "engagementScore": 44,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Damien Woody latest on-air talent cut in ESPN’s summer shake-up - The Athletic - nytimes.com",
-      "source": "nytimes.com",
-      "market": "",
-      "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQS1pWOGp4Q0VjU2dLTUZQVG1zZVFSaFRPTVhaclluV2U1QjZrTGVjbXRkbXQ5TUFjdzdBeTM4SUROWDBvTWpXUllUUWI3VVBmU0JIUUZoSGRNc3hqeUNZeVNBazg5b1VMb0RIcWpuVW5OZ016VHZSSEhONk5Ed3BJYU8yakFVempu?oc=5",
-      "sourceHomepage": "https://www.nytimes.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Damien Woody latest on-air talent cut in ESPN’s summer shake-up - The Athletic nytimes.com",
-      "published": "Wed, 12 Aug 2026 14:42:37 GMT",
-      "engagementScore": 34,
       "engagementLabel": "Developing"
     },
     {
@@ -214,7 +199,22 @@
       "isDiscovery": true,
       "summary": "Sources: Josh Kushner, Bob Iger to buy Lakers for $12.5B ESPN",
       "published": "Wed, 12 Aug 2026 13:58:00 GMT",
-      "engagementScore": 33,
+      "engagementScore": 32,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Damien Woody latest on-air talent cut in ESPN’s summer shake-up - The Athletic - The New York Times",
+      "source": "The New York Times",
+      "market": "",
+      "category": "sports",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQS1pWOGp4Q0VjU2dLTUZQVG1zZVFSaFRPTVhaclluV2U1QjZrTGVjbXRkbXQ5TUFjdzdBeTM4SUROWDBvTWpXUllUUWI3VVBmU0JIUUZoSGRNc3hqeUNZeVNBazg5b1VMb0RIcWpuVW5OZ016VHZSSEhONk5Ed3BJYU8yakFVempu?oc=5",
+      "sourceHomepage": "https://www.nytimes.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Damien Woody latest on-air talent cut in ESPN’s summer shake-up - The Athletic The New York Times",
+      "published": "Wed, 12 Aug 2026 14:42:37 GMT",
+      "engagementScore": 32,
       "engagementLabel": "Developing"
     },
     {
@@ -229,22 +229,7 @@
       "isDiscovery": true,
       "summary": "ESPN Boosting Coverage of PGA Tour Playoffs Yahoo Sports",
       "published": "Wed, 12 Aug 2026 22:38:56 GMT",
-      "engagementScore": 42,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "ACC Network unveils expansive 2026 fall sports live programming slate - ESPN Press Room",
-      "source": "ESPN Press Room",
-      "market": "",
-      "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQYkZxYUUxbHFBeG9aSXdlUG5GRkEyUDhuaUJKcHJBT1JPb3FqeXdwU1lWQlZIVXBJMDZwUTBtdi1hb0RSeWw2ejFsTm1LeHlxZlR2SkVPdkljZkN0NnR4UnVWVXFVTkRMUHY4Y3BINGlHcUJQdDM3bDcxU0d1SllqWk5jRVppWXpva0t1MDNvcXFGSnptX1EwM2JacTNsa05lODRidWM2UWJGLW9ZT1BN?oc=5",
-      "sourceHomepage": "https://espnpressroom.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "ACC Network unveils expansive 2026 fall sports live programming slate ESPN Press Room",
-      "published": "Wed, 12 Aug 2026 16:50:00 GMT",
-      "engagementScore": 36,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -259,23 +244,53 @@
       "isDiscovery": true,
       "summary": "Damien Woody out at ESPN in NFL stunner following massive cuts New York Post",
       "published": "Wed, 12 Aug 2026 18:13:43 GMT",
-      "engagementScore": 37,
+      "engagementScore": 35,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Damien Woody breaks silence on being let go by ESPN - Yahoo Sports",
+      "title": "ESPN football analyst Matt Miller charged after Missouri crash - Yahoo Sports",
       "source": "Yahoo Sports",
       "market": "",
       "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOUWJLZUFtS2FQSjE1NW04NnlCX0VrMzFoU2RTVW5hZ0pKRXVwZEVsU0ZOM2pxdHJuc0ZYVjhxbHhwQk9acS1PSG9HMk8ycktRMnVHWnpKMXVzeExmV1YwbWNieTN0WFc0Y2R1SVRuTzlZR2tUUDFGRkRrNUlkc2w5YjFxajFOd3dJclE?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPVG03dE9Wb05kS1NjYWpwZFRwa1JGVTB1MmtSclg4aFZrVXFqbUlIS3B0emFSSlNVQXhnZnB5SG9KYVhNMDlrV0N3Sk43VDAyODJaX25fZ2pPdUVYY2RaWmwzckp5SXNPQ21UUGxXNWgwMlY3cHR4eHFYTDBMb1U2d3hOM295OWc2aWc?oc=5",
       "sourceHomepage": "https://sports.yahoo.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Damien Woody breaks silence on being let go by ESPN Yahoo Sports",
-      "published": "Wed, 12 Aug 2026 20:00:55 GMT",
-      "engagementScore": 38,
+      "summary": "ESPN football analyst Matt Miller charged after Missouri crash Yahoo Sports",
+      "published": "Thu, 13 Aug 2026 00:56:05 GMT",
+      "engagementScore": 42,
       "engagementLabel": "Developing"
+    },
+    {
+      "title": "Rays 8-4 Athletics (Aug 12, 2026) Game Recap - ESPN",
+      "source": "ESPN",
+      "market": "",
+      "category": "sports",
+      "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBmMkc1LUthZzZiNFEwclZqQWczOGZPZ3g1RVNCTVpqV2NocHJ4ZXhXcFpOUFBqQTdrUnhsRmgyWW1HU0dXbTVIMjE0d2pnaHI1RS1Sa0R6UVlEVjNzSkE?oc=5",
+      "sourceHomepage": "https://www.espn.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Rays 8-4 Athletics (Aug 12, 2026) Game Recap ESPN",
+      "published": "Wed, 12 Aug 2026 22:13:12 GMT",
+      "engagementScore": 39,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Polymarket promo code CBSSPORTS: Scheffler, McIlroy among favorites to win 2026 FedExCup Playoffs",
+      "source": "CBS Sports",
+      "market": "",
+      "category": "sports",
+      "url": "https://www.cbssports.com/prediction/news/polymarket-promo-code-cbssports-scheffler-mcilroy-among-favorites-to-win-2026-fedexcup-playoffs/",
+      "sourceHomepage": "https://www.cbssports.com/",
+      "image": "https://sportshub.cbsistatic.com/i/2026/05/12/07cb4a32-b4c3-48cb-83e2-ef583d109ffb/rory.jpg",
+      "hasFeedImage": true,
+      "isDiscovery": false,
+      "summary": "New Polymarket users can get a $20 bonus this weekend when they deposit $10 and trade on golf",
+      "published": "Thu, 13 Aug 2026 01:18:44 +0000",
+      "engagementScore": 46,
+      "engagementLabel": "High Signal"
     },
     {
       "title": "Phillies vs. Twins prediction, odds, time: 2026 MLB Field of Dreams Game picks for Thursday from proven model",
@@ -289,8 +304,8 @@
       "isDiscovery": false,
       "summary": "SportsLine's model simulated Philadelphia Phillies vs. Minnesota Twins 10,000 times and revealed its MLB at Field of Dreams Game picks for Thursday's matchup",
       "published": "Wed, 12 Aug 2026 23:10:00 +0000",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
     },
     {
       "title": "2026 Fantasy football draft prep: NFL experts reveal rankings, top 150, optimal rookie picks",
@@ -304,7 +319,7 @@
       "isDiscovery": false,
       "summary": "SportsLine's 2026 Fantasy football draft guide includes Fantasy football auction values, keeper advice, top rookies, mock drafts and more",
       "published": "Wed, 12 Aug 2026 22:17:13 +0000",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -319,7 +334,7 @@
       "isDiscovery": false,
       "summary": "Westbrook is 14th on the NBA's all-time scoring list (27,176 points) and fifth in all-time in assists (10,351)",
       "published": "Wed, 12 Aug 2026 22:14:34 +0000",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -334,7 +349,7 @@
       "isDiscovery": false,
       "summary": "The Lakers were sold this week for the second time in 14 months as Bob Iger and Josh Kushner bought the team from Mark Walter",
       "published": "Wed, 12 Aug 2026 21:53:15 +0000",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -349,27 +364,12 @@
       "isDiscovery": false,
       "summary": "Tyler Mahle's first start with Atlanta went well, and he returns to the mound tonight vs. the Mets",
       "published": "Wed, 12 Aug 2026 21:15:57 +0000",
-      "engagementScore": 43,
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
-      "title": "2026 FedEx Cup Playoffs picks, predictions, sleepers as PGA Tour postseason opens at St. Jude Championship",
-      "source": "CBS Sports",
-      "market": "",
-      "category": "sports",
-      "url": "https://www.cbssports.com/golf/news/fedex-cup-playoffs-2026-picks-predictions-sleepers-pga-tour/",
-      "sourceHomepage": "https://www.cbssports.com/",
-      "image": "https://sportshub.cbsistatic.com/i/2026/08/12/07ce77bd-9263-48ac-bd37-59b70ebc59d0/fedex-cup-playoffs-black-sign-scottish-g.png",
-      "hasFeedImage": true,
-      "isDiscovery": false,
-      "summary": "An early look at who will thrive (and struggle) across the three-week FedEx Cup Playoffs",
-      "published": "Wed, 12 Aug 2026 21:08:17 +0000",
-      "engagementScore": 42,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Report: Nate Wiggins avoided structural damage in Tuesday’s injury - NBC Sports",
-      "source": "NBC Sports",
+      "title": "Report: Nate Wiggins avoided structural damage in Tuesday’s injury - nbcsports.com",
+      "source": "nbcsports.com",
       "market": "",
       "category": "sports",
       "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNY3E0dU8xUnB0aUdXeU9CelhFd2hURlNmMTdtRDRsWkpES2loOFJ2TzBQclNZRlplZ0E1V1pXZWdBWThQelhwcEZMNXk0MkZhS3JYYUJxeVptN1RtRVVfMmNuZTlVZ1lLZ1JxdWFaOFYzVDJyVlRDRFFtQnVTeU4wSGxmU3JJN1FlRmpCd0pZN29vcWFzeUpZZ2hsVUthWkNKZzc3MlFoUHVZMW5QRnR0cWRFVG1jUjhyOTZNcExFUll2RTk1?oc=5",
@@ -377,14 +377,14 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Report: Nate Wiggins avoided structural damage in Tuesday’s injury NBC Sports",
+      "summary": "Report: Nate Wiggins avoided structural damage in Tuesday’s injury nbcsports.com",
       "published": "Wed, 12 Aug 2026 12:39:30 GMT",
-      "engagementScore": 30,
+      "engagementScore": 28,
       "engagementLabel": "Developing"
     }
   ],
   "feedFailureAttribution": {
-    "generatedAt": "2026-08-13T00:07:22.958Z",
+    "generatedAt": "2026-08-13T01:49:18.472Z",
     "sourceCount": 10,
     "failedSourceCount": 3,
     "slowSourceCount": 0,
@@ -404,8 +404,8 @@
         "skippedCount": 0,
         "lastErrorType": "feed-error",
         "lastErrorCode": "HTTP_404",
-        "lastFailedAt": "2026-08-13T00:07:22.551Z",
-        "lastDurationMs": 151
+        "lastFailedAt": "2026-08-13T01:49:17.973Z",
+        "lastDurationMs": 143
       },
       {
         "key": "nfl::nfl.com::https://www.nfl.com/feeds/rss/news",
@@ -422,8 +422,8 @@
         "skippedCount": 0,
         "lastErrorType": "feed-error",
         "lastErrorCode": "HTTP_404",
-        "lastFailedAt": "2026-08-13T00:07:22.925Z",
-        "lastDurationMs": 525
+        "lastFailedAt": "2026-08-13T01:49:18.352Z",
+        "lastDurationMs": 523
       },
       {
         "key": "nba::nba.com::https://www.nba.com/rss/nba_rss.xml",
@@ -440,8 +440,8 @@
         "skippedCount": 0,
         "lastErrorType": "feed-error",
         "lastErrorCode": "HTTP_404",
-        "lastFailedAt": "2026-08-13T00:07:22.632Z",
-        "lastDurationMs": 231
+        "lastFailedAt": "2026-08-13T01:49:18.246Z",
+        "lastDurationMs": 416
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/sports?hl=en-us&gl=us&ceid=us:en",
@@ -459,7 +459,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 369
+        "lastDurationMs": 387
       },
       {
         "key": "espn::espn.com::https://www.espn.com/espn/rss/news",
@@ -477,7 +477,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 126
+        "lastDurationMs": 139
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=espn%20sports%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -495,7 +495,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 561
+        "lastDurationMs": 563
       },
       {
         "key": "cbs::cbssports.com::https://www.cbssports.com/rss/headlines/",
@@ -513,7 +513,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 157
+        "lastDurationMs": 154
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=site:nbcsports.com%20sports%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -531,7 +531,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 184
+        "lastDurationMs": 644
       }
     ],
     "worstDomains": [

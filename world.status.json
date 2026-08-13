@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T00:07:15.267Z",
+  "generatedAt": "2026-08-13T01:49:10.627Z",
   "category": "world",
-  "pid": 26864,
+  "pid": 27004,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-world",
-  "lastFinishedAt": "2026-08-13T00:07:15.259Z",
+  "lastFinishedAt": "2026-08-13T01:49:10.618Z",
   "lastMetrics": {
-    "buildMs": 755,
+    "buildMs": 689,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T00:07:15.260Z",
+      "generatedAt": "2026-08-13T01:49:10.619Z",
       "sourceCount": 10,
       "failedSourceCount": 0,
       "slowSourceCount": 0,
@@ -35,7 +35,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 299
+          "lastDurationMs": 226
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=world%20news%20foreign%20policy%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -53,7 +53,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 168
+          "lastDurationMs": 124
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=international%20conflict%20diplomacy%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -71,7 +71,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 169
+          "lastDurationMs": 127
         },
         {
           "key": "bbc world::feeds.bbci.co.uk::https://feeds.bbci.co.uk/news/world/rss.xml",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 194
+          "lastDurationMs": 167
         },
         {
           "key": "npr world::feeds.npr.org::https://feeds.npr.org/1004/rss.xml",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 345
+          "lastDurationMs": 163
         },
         {
           "key": "dw world::rss.dw.com::https://rss.dw.com/rdf/rss-en-world",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 271
+          "lastDurationMs": 247
         },
         {
           "key": "al jazeera world::aljazeera.com::https://www.aljazeera.com/xml/rss/all.xml",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 214
+          "lastDurationMs": 170
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=global%20breaking%20news%20when%3a1d&hl=en-us&gl=us&ceid=us:en",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 256
+          "lastDurationMs": 543
         }
       ],
       "worstDomains": [

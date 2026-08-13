@@ -1,12 +1,27 @@
 {
-  "generatedAt": "2026-08-13T00:07:24.593Z",
+  "generatedAt": "2026-08-13T01:49:20.403Z",
   "category": "entertainment",
   "reason": "runtime-smoke-test:collector-entertainment",
-  "pid": 26544,
-  "buildMs": 597,
+  "pid": 24928,
+  "buildMs": 697,
   "sourceCount": 10,
   "storyCount": 25,
   "stories": [
+    {
+      "title": "DGA and IATSE Push Rob Bonta to Allow Paramount-Warner Bros. Merger With Conditions",
+      "source": "Variety",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://variety.com/2026/film/news/dga-iatse-rob-bonta-paramount-settle-warner-bros-merger-1236833456/",
+      "sourceHomepage": "https://variety.com/",
+      "image": "https://variety.com/wp-content/uploads/2026/02/Paramount-Warner-Bros-Water-Towers.jpg",
+      "hasFeedImage": true,
+      "isDiscovery": false,
+      "summary": "The Directors Guild of America and IATSE are urging California Attorney General Rob Bonta to settle his antitrust lawsuit with Paramount, arguing that prolonged uncertain...",
+      "published": "Thu, 13 Aug 2026 00:14:14 +0000",
+      "engagementScore": 48,
+      "engagementLabel": "High Signal"
+    },
     {
       "title": "‘Reacher’ Season 4 Cast Guide: Who’s Who in the Prime Video Action Series",
       "source": "Variety",
@@ -19,7 +34,7 @@
       "isDiscovery": false,
       "summary": "Get ready for more action and more Alan Ritchson in “Reacher” Season 4, which premieres Wednesday, Aug. 12 on Prime Video. Our hunky, ex-military hero (Ritchson) is once ...",
       "published": "Wed, 12 Aug 2026 23:00:00 +0000",
-      "engagementScore": 49,
+      "engagementScore": 47,
       "engagementLabel": "High Signal"
     },
     {
@@ -34,7 +49,7 @@
       "isDiscovery": false,
       "summary": "In the Season 5 opener of “Hacks,” Jean Smart’s beleaguered character Deborah Vance is eager to reclaim her legacy — and comes up with the perfect way to do it. She wants...",
       "published": "Wed, 12 Aug 2026 23:00:00 +0000",
-      "engagementScore": 49,
+      "engagementScore": 47,
       "engagementLabel": "High Signal"
     },
     {
@@ -49,7 +64,7 @@
       "isDiscovery": false,
       "summary": "Legendary actress, director and producer Phylicia Rashad was the guest speaker at the C-Suite Luncheon during the 24th annual Martha’s Vineyard African American Film Fest...",
       "published": "Wed, 12 Aug 2026 22:13:00 +0000",
-      "engagementScore": 48,
+      "engagementScore": 46,
       "engagementLabel": "High Signal"
     },
     {
@@ -64,7 +79,7 @@
       "isDiscovery": false,
       "summary": "Amazon Game Studios will return Western territory publishing responsibilities for “Throne and Liberty” and “Lost Ark” to game developers NC and Smilegate, respectively, a...",
       "published": "Wed, 12 Aug 2026 21:58:36 +0000",
-      "engagementScore": 47,
+      "engagementScore": 45,
       "engagementLabel": "High Signal"
     },
     {
@@ -79,23 +94,68 @@
       "isDiscovery": false,
       "summary": "Ewan McGregor is putting the pressure on Disney when it comes to playing Obi-Wan Kenobi again. The actor told E! News on the press tour for his latest movie, “The End of ...",
       "published": "Wed, 12 Aug 2026 21:45:48 +0000",
-      "engagementScore": 47,
+      "engagementScore": 45,
       "engagementLabel": "High Signal"
     },
     {
-      "title": "Bob Chapek, Who Was Ousted as Disney’s CEO, Pens Memoir in Which He Wonders if He Became ‘the Scapegoat’",
-      "source": "Variety",
+      "title": "Where to Watch 2026 FedEx St. Jude Championship Online",
+      "source": "Hollywood Reporter",
       "market": "",
       "category": "entertainment",
-      "url": "https://variety.com/2026/film/news/bob-chapek-ousted-disney-ceo-memoir-behind-the-castle-walls-1236833366/",
-      "sourceHomepage": "https://variety.com/",
-      "image": "https://variety.com/wp-content/uploads/2026/08/Bob-Chapek-Behind-the-Castle-Walls.jpg",
-      "hasFeedImage": true,
+      "url": "https://www.hollywoodreporter.com/tv/tv-news/watch-fedex-st-jude-championship-2026-golf-live-stream-free-1236672494/",
+      "sourceHomepage": "https://www.hollywoodreporter.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
       "isDiscovery": false,
-      "summary": "Bob Chapek is ready to tell his side of the story of his rocky ride as Disney’s chief executive. Chapek has written a 272-page memoir, “Behind the Castle Walls: My Thirty...",
-      "published": "Wed, 12 Aug 2026 21:29:21 +0000",
-      "engagementScore": 46,
-      "engagementLabel": "High Signal"
+      "summary": "Held at TPC Southwind in Memphis, Tennessee, the annual tournament marks the first of three events in the PGA Tour FedEx Cup Playoffs.",
+      "published": "Thu, 13 Aug 2026 00:52:11 +0000",
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "‘The Traitors: New Blood’ Season 1 Cast: Meet the 22 Civilian Contestants",
+      "source": "Hollywood Reporter",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://www.hollywoodreporter.com/lists/the-traitors-new-blood-season-1-full-cast/",
+      "sourceHomepage": "https://www.hollywoodreporter.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "The NBC reality competition series, hosted by Alan Cumming, premieres Sept. 17.",
+      "published": "Thu, 13 Aug 2026 00:45:50 +0000",
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "‘End of Oak Street’ Box Office Aims to Take Bite Out of ‘Spider-Man: Brand New Day’",
+      "source": "Hollywood Reporter",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://www.hollywoodreporter.com/movies/movie-news/end-of-oak-street-box-office-spider-man-brand-new-day-paw-1236672604/",
+      "sourceHomepage": "https://www.hollywoodreporter.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "'PAW Patrol: The Dino Movie' is among the new offerings for the weekend as Tom Holland's web-slinger looks to continue a historic run.",
+      "published": "Thu, 13 Aug 2026 00:41:16 +0000",
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "California Pressured By Two Hollywood Unions to Settle Paramount-Warner Bros. Lawsuit",
+      "source": "Hollywood Reporter",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://www.hollywoodreporter.com/business/business-news/hollywood-unions-settlement-paramount-wbd-antitrust-fight-1236672718/",
+      "sourceHomepage": "https://www.hollywoodreporter.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "Crew union IATSE and the Directors Guild wrote a detailed letter to attorney general Rob Bonta to reach an agreement with David Ellison rather than drag out a fight to a ...",
+      "published": "Thu, 13 Aug 2026 00:36:38 +0000",
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
     },
     {
       "title": "StubHub Is Spending Millions Trying to Stop a Bill That Would Cap Concert Ticket Resale Prices",
@@ -109,8 +169,8 @@
       "isDiscovery": false,
       "summary": "It's shelling out more money than Chevron, Verizon, AT&T and OpenAI this quarter to beat California legislation that would limit mark ups to no more than 10 percent more ...",
       "published": "Wed, 12 Aug 2026 23:57:48 +0000",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "engagementScore": 42,
+      "engagementLabel": "Developing"
     },
     {
       "title": "‘Wizards of Waverly Place’ Actress Jennifer Stone, Who Now Works as a Nurse, Says She Auditioned for ‘The Pitt’",
@@ -124,66 +184,6 @@
       "isDiscovery": false,
       "summary": "Stone said on a podcast that 'The Pitt' was so similar to her own work as a nurse that she nearly had a \"panic attack\" reading lines before an audition.",
       "published": "Wed, 12 Aug 2026 23:25:51 +0000",
-      "engagementScore": 44,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "A Movie Theater Didn’t Get Sent ‘Spider-Man’ Posters, So an Employee Drew His Own",
-      "source": "Hollywood Reporter",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://www.hollywoodreporter.com/movies/movie-news/viral-hand-drawn-spider-man-brand-new-day-poster-artist-speaks-1236672446/",
-      "sourceHomepage": "https://www.hollywoodreporter.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "Artist Drake Landon speaks out after his drawings went viral: \"It's crazy that my art has gone that far for something so simple.\"",
-      "published": "Wed, 12 Aug 2026 22:54:29 +0000",
-      "engagementScore": 43,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "From ‘Summer House’ to ‘Love Island’: Bravo, Peacock’s Frances Berwick Says Unscripted Is Finally Getting Some Respect",
-      "source": "Hollywood Reporter",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://www.hollywoodreporter.com/tv/tv-features/from-summer-house-to-love-island-bravo-1236672432/",
-      "sourceHomepage": "https://www.hollywoodreporter.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "“For a long while it was considered either substandard, or that you couldn't be premium and unscripted,” says Berwick of the genre.",
-      "published": "Wed, 12 Aug 2026 22:49:43 +0000",
-      "engagementScore": 43,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Jeremy Strong Says He Reached Out to Mark Zuckerberg After Being Cast as Him in ‘The Social Reckoning’ — and He Responded",
-      "source": "Hollywood Reporter",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://www.hollywoodreporter.com/movies/movie-news/jeremy-strong-social-reckoning-mark-zuckerberg-responded-1236672313/",
-      "sourceHomepage": "https://www.hollywoodreporter.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "\"I know that he is a reviled person and not a popular person in our culture, but I do not think you should have an actor playing him who wants to set out to condemn him,\"...",
-      "published": "Wed, 12 Aug 2026 21:48:10 +0000",
-      "engagementScore": 42,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Melissa Stone Named Senior VP of Publicity for Walt Disney Studios",
-      "source": "Hollywood Reporter",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://www.hollywoodreporter.com/movies/movie-news/melissa-stone-named-senior-vp-of-publicity-for-walt-disney-1236672424/",
-      "sourceHomepage": "https://www.hollywoodreporter.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "The exec has worked on campaign for 'Lilo & Stitch,' 'Ford v Ferrari,' and 'Andor.'",
-      "published": "Wed, 12 Aug 2026 21:00:00 +0000",
       "engagementScore": 41,
       "engagementLabel": "Developing"
     },
@@ -199,7 +199,7 @@
       "isDiscovery": false,
       "summary": "The Trump-affiliated account attempted to use \"I Bet You Think About Me\" in latest antagonistic post",
       "published": "Thu, 13 Aug 2026 00:05:58 +0000",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -214,7 +214,7 @@
       "isDiscovery": false,
       "summary": "Combs accused the music producer of selling his personal documentary footage to Netflix and making defamatory statements in the 50-Cent produced docuseries",
       "published": "Wed, 12 Aug 2026 22:38:03 +0000",
-      "engagementScore": 42,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -229,7 +229,7 @@
       "isDiscovery": false,
       "summary": "A judge ruled the women can proceed with their lawsuit claiming Ray J \"maliciously\" defamed them with the suggestion they were — or should be — the targets of a racketeer...",
       "published": "Wed, 12 Aug 2026 20:54:24 +0000",
-      "engagementScore": 40,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
@@ -244,7 +244,7 @@
       "isDiscovery": false,
       "summary": "“I believe it’s fair to correct a false narrative, especially after asking to not be misrepresented,” Neil Perry tells Rolling Stone , after a series of Instagram posts a...",
       "published": "Wed, 12 Aug 2026 19:17:18 +0000",
-      "engagementScore": 38,
+      "engagementScore": 36,
       "engagementLabel": "Developing"
     },
     {
@@ -259,7 +259,7 @@
       "isDiscovery": false,
       "summary": "The NFL star spoke about his big day for the first time during the Kansas City Chiefs' training camp",
       "published": "Wed, 12 Aug 2026 18:48:30 +0000",
-      "engagementScore": 37,
+      "engagementScore": 36,
       "engagementLabel": "Developing"
     },
     {
@@ -274,7 +274,52 @@
       "isDiscovery": false,
       "summary": "Ashley Walters alleges Manson sexually assaulted her in 2010, then later whipped her and threw her against a wall",
       "published": "Wed, 12 Aug 2026 18:23:26 +0000",
-      "engagementScore": 37,
+      "engagementScore": 35,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "The Neighbourhood’s ‘Sweater Weather’ Cozies Its Way Into YouTube’s Billion Views Club",
+      "source": "Billboard",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://www.billboard.com/music/rock/the-neighbourhood-sweater-weather-billion-views-youtube-1236315500/",
+      "sourceHomepage": "https://www.billboard.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "The Jesse Rutherford-fronted band released “Sweater Weather” as the lead single from their 2013 debut studio album, I Love You .",
+      "published": "Thu, 13 Aug 2026 01:09:14 +0000",
+      "engagementScore": 42,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Jenna Ortega Recalls the ‘Espresso’-Inspired Name for the Chainsaw in Sabrina Carpenter’s ‘Taste’ Video",
+      "source": "Billboard",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://www.billboard.com/music/pop/jenna-ortega-sabrina-carpenter-taste-music-video-chainsaw-1236315473/",
+      "sourceHomepage": "https://www.billboard.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "The actress also reveals that nothing was choreographed in the horror-inspired music video.",
+      "published": "Thu, 13 Aug 2026 01:04:28 +0000",
+      "engagementScore": 41,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Vanessa Williams Says Two Music Legends Passed on ‘Save the Best for Last’ Before It Came Her Way: ‘I Was Third One Up’",
+      "source": "Billboard",
+      "market": "",
+      "category": "entertainment",
+      "url": "https://www.billboard.com/music/pop/vanessa-williams-save-the-best-for-last-barbra-bette-passed-1236315438/",
+      "sourceHomepage": "https://www.billboard.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "The ballad became a career-defining hit for Williams, spending five weeks at No. 1 on the Hot 100.",
+      "published": "Thu, 13 Aug 2026 00:50:37 +0000",
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -289,7 +334,7 @@
       "isDiscovery": false,
       "summary": "A federal judge says the allegations, while “horrific,” belong in confidential arbitration.",
       "published": "Wed, 12 Aug 2026 23:58:00 +0000",
-      "engagementScore": 42,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -304,7 +349,7 @@
       "isDiscovery": false,
       "summary": "Gemini users can ask the AI platform to help find event tickets through Ticketmaster's connected app.",
       "published": "Wed, 12 Aug 2026 23:47:30 +0000",
-      "engagementScore": 42,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -319,72 +364,27 @@
       "isDiscovery": false,
       "summary": "These chart runners-up have all become enduring classics, and now it's time to pick your favorite.",
       "published": "Wed, 12 Aug 2026 22:50:00 +0000",
-      "engagementScore": 41,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Watch Role Model’s Self-Proclaimed ‘Botched’ Cover of Olivia Rodrigo’s ‘Maggots for Brains’",
-      "source": "Billboard",
+      "title": "Bella Thorne Reveals She's Writing And Directing ‘Spring Breakers’ Sequel - Yahoo",
+      "source": "Yahoo",
       "market": "",
       "category": "entertainment",
-      "url": "https://www.billboard.com/music/pop/role-model-olivia-rodrigo-maggots-for-brains-cover-botched-1236315162/",
-      "sourceHomepage": "https://www.billboard.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "\"Not botched actually,\" one fan assured the singer in the YouTube comments.",
-      "published": "Wed, 12 Aug 2026 22:34:58 +0000",
-      "engagementScore": 40,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Chris Brown Contests $13M Dog Attack Verdict Over ‘Inflammatory’ Rihanna Assault Mention",
-      "source": "Billboard",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://www.billboard.com/pro/chris-brown-contests-dog-attack-verdict-rihanna-assault/",
-      "sourceHomepage": "https://www.billboard.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "The R&B star is seeking a new trial, arguing that jurors shouldn't have heard about his criminal record.",
-      "published": "Wed, 12 Aug 2026 22:28:24 +0000",
-      "engagementScore": 40,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Neil Perry Opens Up About The Band Perry’s Shifting Lineup, Says He Was ‘Terminated’ From Family Band",
-      "source": "Billboard",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://www.billboard.com/music/country/neil-perry-band-perry-fired-kimberly-perry-1236315102/",
-      "sourceHomepage": "https://www.billboard.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "\"I explicitly asked my sister not to misrepresent my support for the current version of the band,\" Neil writes of Kimberly Perry moving forward with her husband.",
-      "published": "Wed, 12 Aug 2026 22:19:54 +0000",
-      "engagementScore": 40,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "‘The End of Oak Street’ Florishes Being a Fun, Tense 1980s Summer Throwback - Substream Magazine",
-      "source": "Substream Magazine",
-      "market": "",
-      "category": "entertainment",
-      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOMk10eDZaNFg2TEZBVFR2dGRJMEdZNURyUElNQ3h1UzZET2JGN3JpYXRocFo4aWdlYmh5bjEteUNLLWFkVHFOa2JLTmVvSVQyQy1RdFZhVXNLZ09naUhnZTlYN0VleUNrcjc2dk9oWUk4S0VPTzc4c1Y5ZkNFZk94ZlFRUnlicWpvb3pnVmhJdVYxOXRhM2dYV0dRNjVjeF8yQ2VqVllNNnVla2VOdjZhcg?oc=5",
-      "sourceHomepage": "https://substreammagazine.com",
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxORS1SUkM0SnVYOWtvMHJCTmQtempwSU9heFRqUF9KeFlWZzJoOW9iaUpNYjlubjNlLTl3cE1JNnZiNmN2YURfLWo0RWlnRWRCc0FOazhuTW0xQ0RObUFwMG0tT3VJWDd4WEVBS0xEZzNjMkNUTGRvbWUtT1FOUWlLbXFzNHRiM3ZTZEFYWXo0WTZKNlVGOTRtRHNRemtmc0pqelE?oc=5",
+      "sourceHomepage": "https://www.yahoo.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "‘The End of Oak Street’ Florishes Being a Fun, Tense 1980s Summer Throwback Substream Magazine",
-      "published": "Wed, 12 Aug 2026 16:02:43 GMT",
-      "engagementScore": 33,
+      "summary": "Bella Thorne Reveals She's Writing And Directing ‘Spring Breakers’ Sequel Yahoo",
+      "published": "Thu, 13 Aug 2026 00:16:00 GMT",
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     }
   ],
   "feedFailureAttribution": {
-    "generatedAt": "2026-08-13T00:07:24.594Z",
+    "generatedAt": "2026-08-13T01:49:20.403Z",
     "sourceCount": 10,
     "failedSourceCount": 2,
     "slowSourceCount": 0,
@@ -404,8 +404,8 @@
         "skippedCount": 0,
         "lastErrorType": "feed-error",
         "lastErrorCode": "HTTP_403",
-        "lastFailedAt": "2026-08-13T00:07:24.305Z",
-        "lastDurationMs": 212
+        "lastFailedAt": "2026-08-13T01:49:20.021Z",
+        "lastDurationMs": 219
       },
       {
         "key": "entertainment weekly::ew.com::https://ew.com/feed/",
@@ -422,8 +422,8 @@
         "skippedCount": 0,
         "lastErrorType": "feed-error",
         "lastErrorCode": "HTTP_403",
-        "lastFailedAt": "2026-08-13T00:07:24.282Z",
-        "lastDurationMs": 185
+        "lastFailedAt": "2026-08-13T01:49:20.036Z",
+        "lastDurationMs": 234
       },
       {
         "key": "variety::variety.com::https://variety.com/feed/",
@@ -441,7 +441,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 208
+        "lastDurationMs": 191
       },
       {
         "key": "hollywood reporter::hollywoodreporter.com::https://www.hollywoodreporter.com/feed/",
@@ -459,7 +459,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 166
+        "lastDurationMs": 151
       },
       {
         "key": "rolling stone::rollingstone.com::https://www.rollingstone.com/music/music-news/feed/",
@@ -477,7 +477,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 123
+        "lastDurationMs": 151
       },
       {
         "key": "billboard::billboard.com::https://www.billboard.com/feed/",
@@ -495,7 +495,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 227
+        "lastDurationMs": 175
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=pop%20culture%20music%20movies%20entertainment%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -513,7 +513,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 194
+        "lastDurationMs": 598
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=film%20tv%20streaming%20entertainment%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -531,7 +531,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 212
+        "lastDurationMs": 529
       }
     ],
     "worstDomains": [

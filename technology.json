@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-13T00:07:21.251Z",
+  "generatedAt": "2026-08-13T01:49:16.699Z",
   "category": "technology",
   "reason": "runtime-smoke-test:collector-technology",
-  "pid": 11220,
-  "buildMs": 590,
+  "pid": 12248,
+  "buildMs": 689,
   "sourceCount": 10,
   "storyCount": 25,
   "stories": [
@@ -19,7 +19,7 @@
       "isDiscovery": false,
       "summary": "Is Anthropic's new watermarking system a travesty? Some have taken to social media to complain that it is.",
       "published": "Wed, 12 Aug 2026 22:26:37 +0000",
-      "engagementScore": 44,
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
@@ -34,7 +34,7 @@
       "isDiscovery": false,
       "summary": "The Mission Robotic Vehicle is making the first attempt to attach a new thruster to an aging satellite.",
       "published": "Wed, 12 Aug 2026 20:53:41 +0000",
-      "engagementScore": 42,
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -49,7 +49,7 @@
       "isDiscovery": false,
       "summary": "\"If this was opt-in, nobody would opt in,\" Twitch CPO Mike Minton said on a livestream responding to user feedback. \"That's honestly the answer.\"",
       "published": "Wed, 12 Aug 2026 20:10:40 +0000",
-      "engagementScore": 41,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -64,7 +64,7 @@
       "isDiscovery": false,
       "summary": "Checks are being mailed from Grubhub's $23.8 million fine from the FTC after it settled allegations over its business practices.",
       "published": "Wed, 12 Aug 2026 18:34:21 +0000",
-      "engagementScore": 40,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
@@ -79,7 +79,7 @@
       "isDiscovery": false,
       "summary": "Cognition may be looking to raise another mega round just a few months after raising $1 billion at a $26 billion valuation.",
       "published": "Wed, 12 Aug 2026 18:19:12 +0000",
-      "engagementScore": 39,
+      "engagementScore": 37,
       "engagementLabel": "Developing"
     },
     {
@@ -94,7 +94,7 @@
       "isDiscovery": false,
       "summary": "It’s been a century since the Iberian Peninsula has been in the full shadow of the moon. Here’s what it looked like in the path of totality.",
       "published": "Wed, 12 Aug 2026 22:47:30 +0000",
-      "engagementScore": 47,
+      "engagementScore": 46,
       "engagementLabel": "High Signal"
     },
     {
@@ -109,8 +109,8 @@
       "isDiscovery": false,
       "summary": "Lettuce Grow, one of my favorite indoor gardens, lets you cultivate your own salad greens safely, right in your living room. And it’s 20 percent off right now.",
       "published": "Wed, 12 Aug 2026 20:14:30 +0000",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Rogue AI Agents Aren’t Evil. They’re Just Eager to Please",
@@ -124,7 +124,7 @@
       "isDiscovery": false,
       "summary": "AI agents that break free and hack into other systems are only trying to make us happy.",
       "published": "Wed, 12 Aug 2026 18:45:00 +0000",
-      "engagementScore": 43,
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -139,7 +139,7 @@
       "isDiscovery": false,
       "summary": "The company is also adding blood pressure and insulin resistance trends as proactive monitoring tools in the Google Health app.",
       "published": "Wed, 12 Aug 2026 14:07:59 +0000",
-      "engagementScore": 38,
+      "engagementScore": 36,
       "engagementLabel": "Developing"
     },
     {
@@ -154,8 +154,8 @@
       "isDiscovery": false,
       "summary": "“ShieldFont” aims to poison AI training data without making pages unreadable for people.",
       "published": "Wed, 12 Aug 2026 22:02:25 +0000",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Terabytes of credentials leaked in massive supply-chain attack",
@@ -169,8 +169,8 @@
       "isDiscovery": false,
       "summary": "The data was scraped and exfiltrated from 2,500 users of a compromised AI package.",
       "published": "Wed, 12 Aug 2026 21:43:21 +0000",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Have physicists finally discovered glueballs? New evidence points to yes.",
@@ -184,7 +184,7 @@
       "isDiscovery": false,
       "summary": "“It’s the strongest evidence yet that particles dominated by a glueball component can exist in nature.”",
       "published": "Wed, 12 Aug 2026 21:13:39 +0000",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -199,8 +199,8 @@
       "isDiscovery": false,
       "summary": "The sparkly cabinet is part of a huge retro tech auction focused on Steve Jobs and the computer revolution.",
       "published": "Wed, 12 Aug 2026 23:34:18 +0000",
-      "engagementScore": 46,
-      "engagementLabel": "High Signal"
+      "engagementScore": 44,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Claude Cowork can now run in a Chrome sidebar",
@@ -214,7 +214,7 @@
       "isDiscovery": false,
       "summary": "Take your conversations with the chatbot into the Anthropic browser extension.",
       "published": "Wed, 12 Aug 2026 22:19:29 +0000",
-      "engagementScore": 44,
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
@@ -229,7 +229,7 @@
       "isDiscovery": false,
       "summary": "Worrying about Google Glassholes almost feels quaint in comparison.",
       "published": "Wed, 12 Aug 2026 20:43:06 +0000",
-      "engagementScore": 42,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -242,39 +242,24 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Google’s Pixel 11 phone preorders come with up to $350 in gift cards The Verge The Pixel 11 series: Your most personal Pixel yet blog.google Google’s new Pixel 11 puts Ge...",
+      "summary": "Google’s Pixel 11 phone preorders come with up to $350 in gift cards The Verge Google’s most sophisticated foldable: Pixel 11 Pro Fold blog.google My Favorite Things from...",
       "published": "Wed, 12 Aug 2026 17:47:54 GMT",
-      "engagementScore": 35,
+      "engagementScore": 33,
       "engagementLabel": "Developing"
     },
     {
-      "title": "iPhone 18 Pro set to become Apple’s new default model - 9to5Mac",
-      "source": "9to5Mac",
-      "market": "",
-      "category": "world",
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQ1pzLThzSTQ0X0JYZlRMaXZLRW8ta19JYVpfMGtPY0NpLU9mMWV6Wk84SmlmaVdJR0hBTWpEMVhlUHhVNXhaRXNaSkNkS2d2Nm1aQ2phWGQ2d3pqTS1BSEd0aDlGX0tBSmtRMTVCdW9nUU0zRmJrZi1nOGRkUHdkSjBFY1BJWWJ0b0ZnWg?oc=5",
-      "sourceHomepage": "https://9to5mac.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "iPhone 18 Pro set to become Apple’s new default model 9to5Mac iPhone 18 Pro Release Date: Demand Drives September Launch Forbes Apple Cutting Back 2026 Hardware Shipments...",
-      "published": "Wed, 12 Aug 2026 17:50:00 GMT",
-      "engagementScore": 35,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Honor Launches Its Long-Awaited Robot Phone And Yes It Can Wiggle At You - Engadget",
-      "source": "Engadget",
+      "title": "Helldivers 2: Devoid of Liberty – Meet the SEAF Squad Assembled to Take on The Illuminate - XBOX Wire",
+      "source": "XBOX Wire",
       "market": "",
       "category": "technology",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPdWdxa0xhTGt6aVRLMVhsRGZrOHp1NnlwT01XaDkxZzZ5UVlwWFFvQ1BHelZQOEhDNzRYLXVEX0ZsUVQ4OWlvVG5reWMtaURkTnNOcXNHRDA5RG1qd19YS3NUd3VLOEF3eFpEMEViWTNrV0V2cGRaQk1KZlR5TExBQUE0YWlpb3NsT2xyMDl4eXd5Qk5meEE3SWJBcWY2ZGYza1gzNTV5OTFRUQ?oc=5",
-      "sourceHomepage": "https://www.engadget.com",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPblROQk8xSjVub04wd3lOeE5wOHR3djMzblQ3b1pZQV9PVW9vUVhQSHlRaUh1U0JySTl4eXdJdk82eFRpeDB3M21paF9Pd2d3bkdiOVNFSjZKZ1liOFVNamdab0hOdy1EY0tQZG9hUjFrVEVoNnZ2QV9MTEt4TWowOC1FblhjSFRSRmfSAY8BQVVfeXFMT3dYc0QtRXFIM3BxNENwTkZDa2hrb0lvWm5GWVNWa1NTOW5BM0VqOXVSM3FUM3NKS3l1ZmdhYXQzWWlqN1hqQjNlNDNsZ3BSUnJFRnVKNWc1RGNzX0I1QzRPSk5zTy1sekltRGlzejJud2Y3UmRDRkNFTEZ1WmpZVldPaHFIRjVVQ3Q5TmdrU3c?oc=5",
+      "sourceHomepage": "https://news.xbox.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Honor Launches Its Long-Awaited Robot Phone And Yes It Can Wiggle At You Engadget Honor Has Radically Reinvented the Phone for the Robot Age. I Played With It, and It’s W...",
-      "published": "Wed, 12 Aug 2026 17:42:53 GMT",
-      "engagementScore": 34,
+      "summary": "Helldivers 2: Devoid of Liberty – Meet the SEAF Squad Assembled to Take on The Illuminate XBOX Wire PlayStation Plus Game Catalog for August: Helldivers 2, Kingdom Come D...",
+      "published": "Wed, 12 Aug 2026 12:02:04 GMT",
+      "engagementScore": 27,
       "engagementLabel": "Developing"
     },
     {
@@ -289,22 +274,7 @@
       "isDiscovery": true,
       "summary": "Google unveils the Pixel Watch 5 with a smarter Gemini and advanced health monitoring TechCrunch Pixel Watch 5: Proactive assistance and advanced health tracking on your ...",
       "published": "Wed, 12 Aug 2026 14:00:00 GMT",
-      "engagementScore": 30,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Google Pixel Tag is official with UWB support and one-year battery life - GSMArena.com news - GSMArena.com",
-      "source": "GSMArena.com",
-      "market": "",
-      "category": "technology",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPMVNOUGh6OHZuM1pmTi1IRHN3b3N1WXNTUl9WV3pXbDBMVXV1ZndobTYtWmhJM1dSeFg4QUhvVDJzM0VUNEhoc2diSENZOExDTWZ2ZktzaEc1YzcwcnFFMjZZWG9sa3puNW52WVVtaG02T2paclRKOHR2dFJhOERSWk9COHVZUWFlMG0yYlQ1cUhYbkJHcmJITnJqdXFxX3dPVWNRdVdUc2pJd3RKZHNv0gGrAUFVX3lxTFBOdkJXbDRXdmlwQWstVEJCTUZEdkdBVmpMU0FpY3hNR09RdHJCWmdCVzNVZlVzQUR6YktmamU1ckRVM0dabWR2dlpnNUpEdkdETzBxZzdrckhIMzk4OTMxdjR5MFU5ODhfVktFU3FFczlsM3dzQ2F1Tzc3bUFVb2NJV2txbUZjYTc5Nnp1bHFYdHlhYzcyZXdBZkNjQnB0a2JUTWc4LXpfV1ZVQQ?oc=5",
-      "sourceHomepage": "https://www.gsmarena.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Google Pixel Tag is official with UWB support and one-year battery life - GSMArena.com news GSMArena.com Keep tabs on your valuables with Google Pixel Tag blog.google The...",
-      "published": "Wed, 12 Aug 2026 16:01:03 GMT",
-      "engagementScore": 32,
+      "engagementScore": 29,
       "engagementLabel": "Developing"
     },
     {
@@ -317,10 +287,40 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Ultrarare Nintendo Mario game cartridges discovered in Wisconsin AP News Ultra rare Nintendo Mario game cartridges discovered in Wisconsin Japan Today Rare Nintendo cartr...",
+      "summary": "Ultrarare Nintendo Mario game cartridges discovered in Wisconsin AP News Nearly 100 never-before-seen Nintendo cartridges found in Wisconsin game shop abcnews.com Rare Ni...",
       "published": "Tue, 11 Aug 2026 22:53:00 GMT",
-      "engagementScore": 15,
+      "engagementScore": 14,
       "engagementLabel": "Monitor"
+    },
+    {
+      "title": "Google's Pixel Tag Is An AirTag For Android Phones - Engadget",
+      "source": "Engadget",
+      "market": "",
+      "category": "technology",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE85cXoxeEM4M3NOUFNFN0hBZnBrSjI5d194c0s1ZWpaRTBOeWhKVjRmbElOOWFVX0pMYU14dG9KelhYejhCdk1nYTFGdVViM0hZNjY3MlRnOE9jMVZTb2xJSkcyNE8yZzdmWHVENUdGZFMyYkow?oc=5",
+      "sourceHomepage": "https://www.engadget.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Google's Pixel Tag Is An AirTag For Android Phones Engadget Keep tabs on your valuables with Google Pixel Tag blog.google The Pixel Tag is Google’s answer to the AirTag T...",
+      "published": "Wed, 12 Aug 2026 14:00:00 GMT",
+      "engagementScore": 28,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Cybersecurity Researchers: AI Has Crossed into the Live Attack Chain - Campus Technology",
+      "source": "Campus Technology",
+      "market": "",
+      "category": "technology",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNQmQ5MHFld0Fyb1FLU3hWZWdqNzZnM1V4VnNBaGNKNlhhaW1IdTQtZFpjcUVvVkQ3bDVOLXBjOWQxNFIyWGRTRjJObGxlRzU3cHpJbTFib1lVcl84WXdWNC1jclRPUWV4Tm1jWl84R19FMXloM1VlOWJNTDZjZjd1RVJxT0JSdmwxWGtvTlhtbl9KWDhoaE1RYkJZZHBaMXdIT0R1dGhWc3JaQmdMMHFKXzNvY3FZRnFsVmsya2F3?oc=5",
+      "sourceHomepage": "https://campustechnology.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Cybersecurity Researchers: AI Has Crossed into the Live Attack Chain Campus Technology",
+      "published": "Wed, 12 Aug 2026 21:28:26 GMT",
+      "engagementScore": 36,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Coalition for Health AI (CHAI) Convenes New Health AI Cybersecurity Work Group - PR Newswire",
@@ -334,7 +334,7 @@
       "isDiscovery": true,
       "summary": "Coalition for Health AI (CHAI) Convenes New Health AI Cybersecurity Work Group PR Newswire",
       "published": "Wed, 12 Aug 2026 12:00:00 GMT",
-      "engagementScore": 28,
+      "engagementScore": 26,
       "engagementLabel": "Developing"
     },
     {
@@ -349,6 +349,21 @@
       "isDiscovery": true,
       "summary": "Can AI fight AI? Where the security gap still exists in cybersecurity, and how MSPs can help. IT Pro",
       "published": "Wed, 12 Aug 2026 17:16:29 GMT",
+      "engagementScore": 31,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Israeli venture firm Team8 raises $365m. to invest in AI-native start-ups - The Jerusalem Post",
+      "source": "The Jerusalem Post",
+      "market": "",
+      "category": "sports",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1zZjRwdF9CWGFwT0dxYS15QnQyQlQwTFZ6aHgyd0hhN0J5MmhVbW5yMkVWWjZfbTRIY2RCUzdkekktanNaeEw4REpBMm1DRWROZjdFb0QxVms0N0VPQUdpckZFRWpCUGRCWnlHZw?oc=5",
+      "sourceHomepage": "https://www.jpost.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Israeli venture firm Team8 raises $365m. to invest in AI-native start-ups The Jerusalem Post",
+      "published": "Wed, 12 Aug 2026 19:15:51 GMT",
       "engagementScore": 33,
       "engagementLabel": "Developing"
     },
@@ -364,27 +379,12 @@
       "isDiscovery": true,
       "summary": "AI agents' 'alarming' hacking skills creates rush to spend on cybersecurity CNBC",
       "published": "Wed, 12 Aug 2026 02:58:00 GMT",
-      "engagementScore": 18,
+      "engagementScore": 16,
       "engagementLabel": "Monitor"
-    },
-    {
-      "title": "PERSPECTIVE: The Infrastructure Challenge Behind Government AI - Homeland Security Today",
-      "source": "Homeland Security Today",
-      "market": "",
-      "category": "technology",
-      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNWlJjODN3V2xXMUNCSUZES1E4NE8wc09mMEZya2pFVFgwNTVKUHdjaV85YkFLUVpDRVZnRlZRRl9IS3hXNW82cENhY0tFSnlkRWF6dXdENjItNExvcXJoRnBhYzVVUnRUaGhoeDF3LUNHcTJMQ0pWc043a0NRNEF4ZkJXX3doOHduOV9FbV9OOC1ZdUx6LUp2Z1FoSmdoQjZaa1RoVVpKUVJyYW1qYmpQeXA3ZnBxdGNacERqR0lvR0ZieWhXcVE?oc=5",
-      "sourceHomepage": "https://www.hstoday.us",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "PERSPECTIVE: The Infrastructure Challenge Behind Government AI Homeland Security Today",
-      "published": "Wed, 12 Aug 2026 15:37:14 GMT",
-      "engagementScore": 31,
-      "engagementLabel": "Developing"
     }
   ],
   "feedFailureAttribution": {
-    "generatedAt": "2026-08-13T00:07:21.252Z",
+    "generatedAt": "2026-08-13T01:49:16.700Z",
     "sourceCount": 10,
     "failedSourceCount": 0,
     "slowSourceCount": 0,
@@ -405,7 +405,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 165
+        "lastDurationMs": 175
       },
       {
         "key": "wired::wired.com::https://www.wired.com/feed/rss",
@@ -423,7 +423,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 129
+        "lastDurationMs": 140
       },
       {
         "key": "the verge::theverge.com::https://www.theverge.com/rss/index.xml",
@@ -441,7 +441,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 139
+        "lastDurationMs": 137
       },
       {
         "key": "ars technica::feeds.arstechnica.com::https://feeds.arstechnica.com/arstechnica/index",
@@ -459,7 +459,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 212
+        "lastDurationMs": 168
       },
       {
         "key": "engadget::engadget.com::https://www.engadget.com/rss.xml",
@@ -477,7 +477,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 258
+        "lastDurationMs": 192
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/technology?hl=en-us&gl=us&ceid=us:en",
@@ -495,7 +495,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 315
+        "lastDurationMs": 293
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=technology%20ai%20cybersecurity%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -513,7 +513,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 160
+        "lastDurationMs": 486
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=ai%20big%20tech%20software%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -531,7 +531,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 175
+        "lastDurationMs": 610
       }
     ],
     "worstDomains": [

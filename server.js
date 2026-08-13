@@ -3970,6 +3970,42 @@ function defaultNewsLabHeadlineRepairQueue() {
   return defaultNewsLabRepairQueue("headline-repair");
 }
 
+function newsLabHeadlineRepairQueueSummary(queue = null) {
+  const source = queue || readJsonFile(newsLabHeadlineRepairQueueFile, defaultNewsLabHeadlineRepairQueue()) || defaultNewsLabHeadlineRepairQueue();
+  const active = Array.isArray(source.active) ? source.active : [];
+  const resolved = Array.isArray(source.resolved) ? source.resolved : [];
+  const records = Array.isArray(source.records) ? source.records : [];
+  const reasons = new Map();
+  [...active, ...records].forEach(item => {
+    const reason = String(item.reason || item.issue || item.failure || item.rootCause || "unknown");
+    const current = reasons.get(reason) || { reason, count: 0, examples: [] };
+    current.count += 1;
+    if (current.examples.length < 3) current.examples.push(item.title || item.storyId || item.id || "headline repair item");
+    reasons.set(reason, current);
+  });
+  const approved = resolved.filter(item => /approved|published|fixed|resolved/i.test(`${item.status || ""} ${item.outcome || ""}`)).length;
+  const rejected = resolved.filter(item => /reject|blocked|failed|denied/i.test(`${item.status || ""} ${item.outcome || ""}`)).length;
+  return {
+    available: true,
+    generatedAt: new Date().toISOString(),
+    active,
+    resolved,
+    totals: {
+      active: active.length,
+      resolved: resolved.length,
+      records: records.length,
+      approved,
+      rejected
+    },
+    reasonRanking: [...reasons.values()].sort((a, b) => b.count - a.count).slice(0, 12),
+    stageRanking: Array.isArray(source.stageRanking) ? source.stageRanking : [],
+    recoveryRates: {
+      approvalRate: resolved.length ? Number(((approved / resolved.length) * 100).toFixed(1)) : 0,
+      rejectionRate: resolved.length ? Number(((rejected / resolved.length) * 100).toFixed(1)) : 0
+    },
+    rule: "Headline repair observability must degrade to an empty summary instead of crashing Owner Desk or production observability."
+  };
+}
 function defaultNewsLabApprovalRecoveryQueue() {
   return defaultNewsLabRepairQueue("approval-recovery");
 }
@@ -4090,7 +4126,55 @@ async function handleNewsLabWorkerSync(request, response) {
         };
       }
     }
-    const fileStarted = apiProfilerNow();
+    if (key === "news-lab-api-response-cache") {
+      const incomingAllStories = Array.isArray(file.payload?.responses?.all?.ownedStories)
+        ? file.payload.responses.all.ownedStories
+        : Array.isArray(file.payload?.categories?.all?.ownedStories)
+          ? file.payload.categories.all.ownedStories
+          : [];
+      const existingPrepared = readJsonFile(newsLabApiResponseCacheFile, null);
+      const existingPreparedStories = Array.isArray(existingPrepared?.responses?.all?.ownedStories)
+        ? existingPrepared.responses.all.ownedStories
+        : Array.isArray(existingPrepared?.categories?.all?.ownedStories)
+          ? existingPrepared.categories.all.ownedStories
+          : [];
+      const durablePayload = readJsonFile(newsLabPublishedPayloadFile, null);
+      const durableStories = Array.isArray(durablePayload?.ownedStories) ? durablePayload.ownedStories : [];
+      const incomingRevision = Number(file.payload?.publicRevision || 0);
+      const existingRevision = Number(existingPrepared?.publicRevision || 0);
+      const authoritativeFloor = Math.max(durableStories.length, existingPreparedStories.length);
+      const incomingCount = incomingAllStories.length;
+      const collapseRatio = authoritativeFloor > 0 ? 1 - (incomingCount / Math.max(1, authoritativeFloor)) : 0;
+      const expirationAccountingValid = Boolean(file.payload?.expirationAccountingValid || file.payload?.publicRemovalAccounting?.valid || file.payload?.boardDatePolicy?.expirationAccountingValid);
+      const olderThanExisting = existingRevision > 0 && incomingRevision > 0 && incomingRevision < existingRevision;
+      if (olderThanExisting || (authoritativeFloor > 0 && (incomingCount === 0 || (collapseRatio > 0.5 && !expirationAccountingValid)))) {
+        rejected.push({
+          key,
+          reason: olderThanExisting ? "incoming-api-cache-revision-older-than-current" : incomingCount === 0 ? "incoming-api-cache-empty-conflicts-with-authoritative-shelf" : "incoming-api-cache-unexplained-collapse",
+          incomingRevision,
+          existingRevision,
+          incomingCount,
+          durableCount: durableStories.length,
+          existingPreparedCount: existingPreparedStories.length,
+          authoritativeFloor,
+          collapseRatio: Number(collapseRatio.toFixed(2)),
+          rule: "Worker sync may not let a derived API response cache redefine public inventory independently from the authoritative published payload or last known good prepared cache."
+        });
+        continue;
+      }
+      file.payload = {
+        ...file.payload,
+        workerSyncAcceptedAsDerivedCache: {
+          acceptedAt: new Date().toISOString(),
+          incomingCount,
+          durableCount: durableStories.length,
+          existingPreparedCount: existingPreparedStories.length,
+          incomingRevision,
+          existingRevision,
+          rule: "Derived API cache sync is accepted only when it is non-collapsing and not older than the current prepared revision. Durable public payload remains authoritative."
+        }
+      };
+    }    const fileStarted = apiProfilerNow();
     writeJsonFile(targetPath, file.payload);
     const writeMs = Math.max(0, apiProfilerNow() - fileStarted);
     const bytes = Number(file.bytes || 0) || Buffer.byteLength(JSON.stringify(file.payload), "utf8");
@@ -28052,6 +28136,129 @@ function newsLabPreparedTickerItems(ownedStories = []) {
     .slice(0, 14);
 }
 
+function newsLabPublicPayloadStoryCount(payload = {}, category = "") {
+  const requested = String(category || "all").toLowerCase().trim() || "all";
+  const stories = Array.isArray(payload?.ownedStories) ? payload.ownedStories : [];
+  if (requested === "all") return stories.length;
+  if (requested === "top") return Math.min(newsLabTopNewsLimit, newsLabSortTopNews(stories).length);
+  return stories.filter(story => String(story.category || "").toLowerCase() === requested).length;
+}
+
+function newsLabPublicRevisionForPayload(payload = {}) {
+  const stories = Array.isArray(payload?.ownedStories) ? payload.ownedStories : [];
+  const basis = [
+    payload.publicRevision || payload.revision || payload.generatedAt || payload.savedAt || "",
+    stories.length,
+    ...stories.slice(0, 80).map(story => `${story.id || story.storyId || story.eventId || story.topicKey || ""}:${story.lastUpdatedAt || story.updatedAt || story.publishedAt || story.generatedAt || ""}`)
+  ].join("|");
+  try {
+    return crypto.createHash("sha256").update(basis).digest("hex").slice(0, 16);
+  } catch {
+    return String(Date.now());
+  }
+}
+
+function newsLabPublicStateHeaders(payload = {}, category = "", source = "unknown") {
+  const publicState = payload.publicStateAuthority || payload.apiResponseWorker?.publicStateAuthority || {};
+  return {
+    "x-ce-pid": String(process.pid),
+    "x-ce-instance": process.env.RENDER_INSTANCE_ID || process.env.HOSTNAME || "local",
+    "x-ce-public-revision": String(publicState.publicRevision || payload.publicRevision || newsLabPublicRevisionForPayload(payload)),
+    "x-ce-cache-revision": String(publicState.cacheRevision || payload.cacheRevision || payload.apiResponseWorker?.cacheRevision || "unknown"),
+    "x-ce-story-count": String(newsLabPublicPayloadStoryCount(payload, category)),
+    "x-ce-cache-source": String(source || publicState.source || payload.apiResponseWorker?.mode || "unknown")
+  };
+}
+
+function newsLabStablePublicPayload(candidate = {}, category = "", source = "candidate") {
+  const requested = String(category || "all").toLowerCase().trim() || "all";
+  const durableRaw = readJsonFile(newsLabPublishedPayloadFile, null);
+  const durablePayload = durableRaw && Array.isArray(durableRaw.ownedStories) && durableRaw.ownedStories.length
+    ? newsLabFastPublishedApiPayload({
+      ...durableRaw,
+      apiResponseWorker: {
+        active: true,
+        mode: "durable-authoritative-anti-collapse",
+        publicReadOnly: true,
+        rule: "Durable published shelf is authoritative when prepared or memory cache unexpectedly collapses."
+      }
+    }, requested)
+    : null;
+  const candidateCount = newsLabPublicPayloadStoryCount(candidate, requested);
+  const durableCount = newsLabPublicPayloadStoryCount(durablePayload, requested);
+  const candidateStories = Array.isArray(candidate?.ownedStories) ? candidate.ownedStories : [];
+  const candidateTiny = candidateCount === 0 || JSON.stringify(candidate || {}).length < 5000;
+  const collapse = durableCount > 0 ? 1 - (candidateCount / Math.max(1, durableCount)) : 0;
+  const expirationAccountingValid = Boolean(candidate?.publicRemovalAccounting?.valid || candidate?.expirationAccountingValid || candidate?.boardDatePolicy?.expirationAccountingValid);
+  const rejectCandidate = Boolean(
+    durableCount > 0
+    && (
+      (candidateCount === 0 && candidateTiny)
+      || (collapse > 0.5 && !expirationAccountingValid)
+    )
+  );
+  if (rejectCandidate && durablePayload) {
+    return {
+      ...durablePayload,
+      publicStateAuthority: {
+        active: true,
+        source: "durable-published-shelf-anti-collapse",
+        rejectedSource: source,
+        rejectionReason: candidateCount === 0 ? "unexpected-empty-cache" : "unexplained-public-shelf-collapse",
+        requestedCategory: requested,
+        candidateStories: candidateCount,
+        durableStories: durableCount,
+        collapse: Number(collapse.toFixed(2)),
+        publicRevision: newsLabPublicRevisionForPayload(durableRaw),
+        cacheRevision: candidate?.publicStateAuthority?.cacheRevision || candidate?.cacheRevision || "rejected",
+        rule: "A cache may accelerate authoritative state, but it may never redefine the public shelf or replace valid public stories with an unexplained empty/tiny response."
+      }
+    };
+  }
+  if (!candidateStories.length && durablePayload) {
+    return {
+      ...durablePayload,
+      publicStateAuthority: {
+        active: true,
+        source: "durable-published-shelf-empty-candidate-fallback",
+        rejectedSource: source,
+        requestedCategory: requested,
+        candidateStories: candidateCount,
+        durableStories: durableCount,
+        publicRevision: newsLabPublicRevisionForPayload(durableRaw),
+        rule: "Public state remains stable by serving the durable shelf when a candidate response has no stories."
+      }
+    };
+  }
+  return {
+    ...candidate,
+    publicStateAuthority: {
+      ...(candidate.publicStateAuthority || {}),
+      active: true,
+      source,
+      requestedCategory: requested,
+      apiReturnedStories: candidateCount,
+      authoritativeActiveStories: durableCount || candidateCount,
+      publicRevision: candidate.publicStateAuthority?.publicRevision || newsLabPublicRevisionForPayload(durableRaw || candidate),
+      cacheRevision: candidate.publicStateAuthority?.cacheRevision || candidate.cacheRevision || newsLabPublicRevisionForPayload(candidate),
+      rule: "Public API payload passed anti-collapse validation against the durable authoritative shelf."
+    }
+  };
+}
+
+function sendNewsLabPublicJson(response, statusCode, payload = {}, category = "", source = "candidate") {
+  const stablePayload = newsLabStablePublicPayload(payload, category, source);
+  const serializeStarted = apiProfilerNow();
+  const body = JSON.stringify(stablePayload);
+  const serializeMs = apiProfilerNow() - serializeStarted;
+  apiProfilerRecordResponse(statusCode, body, serializeMs);
+  response.writeHead(statusCode, securityHeaders({
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+    ...newsLabPublicStateHeaders(stablePayload, category, source)
+  }));
+  response.end(body);
+}
 function newsLabPreparedApiCacheFresh(maxAgeMs = searchNewsLabCacheMs) {
   try {
     if (!fs.existsSync(newsLabApiResponseCacheFile)) return false;
@@ -28830,7 +29037,10 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
   });
   const previousActiveCount = Number(previousPrepared?.responses?.all?.ownedStories?.length || previousPrepared?.categories?.all?.ownedStories?.length || 0);
   const authoritativeActiveCount = Math.max(Number(durableActiveCount || 0), Number(currentActiveCount || 0));
-  if (!allCount && previousActiveCount > 0 && authoritativeActiveCount > 0) {
+  const baselineActiveCount = Math.max(previousActiveCount, authoritativeActiveCount);
+  const collapseRatio = baselineActiveCount > 0 ? 1 - (allCount / Math.max(1, baselineActiveCount)) : 0;
+  const expirationAccountingValid = Boolean(record.expirationAccountingValid || record.publicRemovalAccounting?.valid || record.boardDatePolicy?.expirationAccountingValid);
+  if (baselineActiveCount > 0 && ((!allCount && authoritativeActiveCount > 0) || (collapseRatio > 0.5 && !expirationAccountingValid))) {
     const preserved = {
       ...previousPrepared,
       generatedAt: previousPrepared.generatedAt || record.generatedAt,
@@ -28841,7 +29051,12 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
         sourcePublicStoryCount: record.sourcePublicStoryCount,
         durableActiveCount,
         currentActiveCount,
-        rule: "Rejected a zero-story prepared cache candidate because a previous cache and authoritative durable shelf still had eligible active inventory."
+        previousActiveCount,
+        authoritativeActiveCount,
+        baselineActiveCount,
+        collapseRatio: Number(collapseRatio.toFixed(2)),
+        rejectionReason: !allCount ? "unexpected-empty-cache" : "unexplained-public-shelf-collapse",
+        rule: "Rejected an underfilled prepared cache candidate because a previous cache or authoritative durable shelf still had eligible active inventory and no explicit expiration/removal accounting justified the collapse."
       }
     };
     writeJsonFile(newsLabApiResponseCacheFile, preserved);
@@ -28852,7 +29067,7 @@ function buildPreparedNewsLabApiResponses(reason = "api-response-worker") {
         subsystem: "News Lab API Cache",
         status: "protected",
         reason,
-        summary: "Rejected a zero-story prepared API cache candidate to prevent public article collapse.",
+        summary: "Rejected an empty or underfilled prepared API cache candidate to prevent public article collapse.",
         impact: "Keeps the public page from going empty when cache rebuilding fails while valid active inventory still exists.",
         details: preserved.lastRejectedCandidate
       });
@@ -31789,7 +32004,7 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
 </svg>
 `;
   fs.writeFileSync(assetPath, svg, "utf8");
-  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generating" }, "PROVIDER_REQUEST_SENT", { reason, status: "generating", slaMinute: 3 });
+  newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generating" }, "LOCAL_CE_FALLBACK_GENERATION_STARTED", { reason, status: "generating", slaMinute: 3, providerRequestSent: false, rule: "Local CE SVG fallback generation is not an external AI image provider request." });
   newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generated-pending-validation" }, "PROVIDER_RESPONSE_RECEIVED", { reason, status: "generated-pending-validation", assetUrl });
   newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "asset-saved" }, "ASSET_SAVED", { reason, status: "asset-saved", assetUrl });
   const image = newsLabImageWithRevision({
@@ -31801,22 +32016,22 @@ function newsLabWriteGeneratedImageAsset(brief = {}, story = {}, reason = "gener
     type: IMAGE_STATUS.GENERATED_APPROVED,
     alt: `${title} - original CE Media editorial visual`,
     credit: "Original visual by CE Media",
-    source: "CE generated editorial image",
-    license: "CE-generated",
+    source: "CE local fallback graphic",
+    license: "CE-local-fallback",
     photographer: "CE Media",
     originalQuery: brief.title || title,
     query: brief.title || title,
     generatedAt: new Date().toISOString(),
     generatedBy: "news-lab-image-worker",
     provenance: newsLabImageProvenance({
-      source: "CE generated editorial image",
+      source: "CE local fallback graphic",
       photographer: "CE Media",
-      license: "CE-generated",
+      license: "CE-local-fallback",
       imageStatus: IMAGE_STATUS.GENERATED_APPROVED,
       sourceUrl: assetUrl,
       retrievedAt: new Date().toISOString(),
       originalQuery: brief.title || title,
-      auditNote: `Generated from Story Dossier image brief during ${reason}; no publisher image was copied.`
+      auditNote: `Local CE fallback graphic generated from Story Dossier image brief during ${reason}; no publisher image was copied and no external AI image provider request was sent.`
     })
   }, story.image || {}, IMAGE_STATUS.GENERATED_APPROVED);
   newsLabImageDeliveryStage({ storyId, jobId: brief.jobId || "", assetUrl, status: "generated-approved" }, "ASSET_VALIDATED", { reason, status: "generated-approved", assetUrl, verifiedVisible: publicAssetExists(assetUrl), slaMinute: 5 });
@@ -41483,6 +41698,79 @@ function newsLabQualityPublicationOutputLane(story = {}) {
   return "hold-for-dossier-enrichment";
 }
 
+function newsLabPublicStateStabilityGate() {
+  const durable = readJsonFile(newsLabPublishedPayloadFile, { ownedStories: [] }) || { ownedStories: [] };
+  const prepared = readJsonFile(newsLabApiResponseCacheFile, null);
+  const lastKnownGood = readJsonFile(newsLabApiResponseLastKnownGoodFile, null);
+  const durableCount = Array.isArray(durable.ownedStories) ? durable.ownedStories.length : 0;
+  const preparedCount = Number(prepared?.responses?.all?.ownedStories?.length || prepared?.categories?.all?.ownedStories?.length || 0);
+  const lkgCount = Number(lastKnownGood?.responses?.all?.ownedStories?.length || lastKnownGood?.categories?.all?.ownedStories?.length || 0);
+  const memoryAll = newsLabPublicMemoryCache.get("news-lab:public:v4:all");
+  let memoryCacheStories = 0;
+  try {
+    const memoryPayload = memoryAll?.payload || (memoryAll?.body ? JSON.parse(memoryAll.body) : null);
+    memoryCacheStories = Number(memoryPayload?.ownedStories?.length || 0);
+  } catch {
+    memoryCacheStories = 0;
+  }
+  const workerStatus = readJsonFile(newsLabWorkerStatusFile, {}) || {};
+  const workerBatchStories = Number(workerStatus.lastMetrics?.publicStoryCount || workerStatus.lastMetrics?.ownedStoryCount || workerStatus.lastMetrics?.finalOwnedStories || 0);
+  const boardPolicy = newsLabApplyCurrentBoardPolicy({ ownedStories: Array.isArray(durable.ownedStories) ? durable.ownedStories : [] });
+  const visibleTileStories = Number((boardPolicy.ownedStories || []).length || 0);
+  const removalAccounting = prepared?.publicRemovalAccounting || prepared?.removalAccounting || boardPolicy.removalAccounting || {};
+  const rejection = prepared?.lastRejectedCandidate || null;
+  const cacheCollapse = Boolean(
+    rejection
+    || (durableCount > 0 && prepared && preparedCount === 0)
+    || (durableCount > 0 && preparedCount > 0 && preparedCount < Math.ceil(durableCount * 0.5))
+  );
+  const passed = Boolean(durableCount === 0 || (!cacheCollapse && (preparedCount > 0 || lkgCount > 0)));
+  return {
+    name: "Part 0 - Public State Stability",
+    passed,
+    metrics: {
+      authoritativeActiveStories: durableCount,
+      preparedCacheStories: preparedCount,
+      memoryCacheStories,
+      apiReturnedStories: Math.max(preparedCount, memoryCacheStories, visibleTileStories),
+      visibleTileStories,
+      workerBatchStories,
+      lastKnownGoodStories: lkgCount,
+      publicRevision: prepared?.publicRevision || 0,
+      preparedCacheRevision: prepared?.publicRevision || prepared?.cacheRevision || 0,
+      memoryCacheRevision: memoryAll?.payload?.publicStateAuthority?.cacheRevision || memoryAll?.payload?.cacheRevision || "",
+      lastKnownGoodRevision: lastKnownGood?.publicRevision || 0,
+      addedStories: Number(removalAccounting.addedStories || removalAccounting.added || prepared?.addedStories || 0),
+      expiredStories: Number(removalAccounting.expiredStories || removalAccounting.expired || prepared?.expiredByBoardPolicyCount || 0),
+      supersededStories: Number(removalAccounting.supersededStories || removalAccounting.superseded || 0),
+      withdrawnStories: Number(removalAccounting.withdrawnStories || removalAccounting.withdrawn || 0),
+      lastRejectedCandidate: rejection ? {
+        at: prepared.lastRejectedCandidateAt || "",
+        reason: rejection.rejectionReason || "cache-candidate-rejected",
+        publicStoryCount: rejection.publicStoryCount,
+        durableActiveCount: rejection.durableActiveCount,
+        collapseRatio: rejection.collapseRatio
+      } : null
+    },
+    gate: {
+      browserGetReadOnly: true,
+      antiCollapseRequired: true,
+      lastKnownGoodRequired: durableCount > 0,
+      passed
+    },
+    currentProductionDisruption: passed ? null : {
+      phase: "phase0",
+      severity: "critical",
+      disruption: "public-state-cache-oscillation",
+      rootCause: "Prepared API cache, memory cache, or worker synchronization is trying to serve or promote a public response that conflicts with the durable published shelf.",
+      evidence: { durableCount, preparedCount, memoryCacheStories, visibleTileStories, workerBatchStories, lkgCount, rejection },
+      fix: "Serve only authoritative/last-known-good public snapshots on browser GET, reject empty or underfilled candidate caches, and require atomic candidate validation before cache promotion.",
+      responsibleSubsystem: "Publisher + Public API Cache + Worker Sync",
+      verification: "One approved article remains visible through 20 repeated GET /api/news-lab calls, cache refresh, worker sync, collector rotation, and restart; every response carries matching PID/revision/count headers."
+    },
+    rule: "Before quality improvements matter, public articles must survive normal runtime operations. A cache may accelerate public state but may never redefine or erase it."
+  };
+}
 function newsLabFourPhaseProductionDisruptions(records = [], publicStories = [], imageLedger = {}) {
   const list = Array.isArray(records) ? records : [];
   const publicList = Array.isArray(publicStories) ? publicStories : [];
@@ -41546,6 +41834,13 @@ function newsLabFourPhaseProductionDisruptions(records = [], publicStories = [],
   const imageRequired = list.filter(record => record.imagePending || /IMAGE_PENDING|temporary|fallback/i.test(`${record.presentationStatus || ""} ${(record.issues || []).join(" ")}`));
   const unclaimedJobs = jobs.filter(job => !(job.stages || []).some(stage => stage.stage === "JOB_CLAIMED")).length;
   const providerNotSent = jobs.filter(job => !(job.stages || []).some(stage => stage.stage === "PROVIDER_REQUEST_SENT")).length;
+  const localFallbackStarted = jobs.filter(job => (job.stages || []).some(stage => stage.stage === "LOCAL_CE_FALLBACK_GENERATION_STARTED")).length;
+  const falseProviderTelemetry = jobs.filter(job => {
+    const stages = job.stages || [];
+    return stages.some(stage => stage.stage === "PROVIDER_REQUEST_SENT")
+      && stages.some(stage => stage.stage === "LOCAL_CE_FALLBACK_GENERATION_STARTED");
+  }).length;
+  const imageProviderStatus = newsLabImageGenerationProviderStatus();
   const generatedNotAttached = jobs.filter(job => (job.stages || []).some(stage => stage.stage === "ASSET_SAVED") && !(job.stages || []).some(stage => stage.stage === "ARTICLE_UPDATED")).length;
   if (imageRequired.length || unclaimedJobs || providerNotSent || generatedNotAttached) {
     add("phase3", {
@@ -41555,7 +41850,7 @@ function newsLabFourPhaseProductionDisruptions(records = [], publicStories = [],
       evidence: { imageRequired: imageRequired.length, imageJobCount: jobs.length, unclaimedJobs, providerNotSent, generatedNotAttached, verifiedVisibleGeneratedImages: Number(imageLedger.summary?.verifiedVisibleGeneratedImages || 0) },
       fix: "Keep image work parallel to article publication, but require every fallback article to keep a story-attached image job until a licensed or generated asset is saved, validated, credited, attached to the article, and visible in the browser.",
       responsibleSubsystem: "Image Intelligence + Image Worker + Publisher",
-      verification: "Image ledger shows JOB_CLAIMED, PROVIDER_REQUEST_SENT, ASSET_SAVED, ARTICLE_UPDATED, and browser-visible verification for generated/selected images; CE fallback count declines without blocking clean text publication.",
+      verification: "Image ledger shows local CE fallback and external provider lanes separately. Local fallback never logs PROVIDER_REQUEST_SENT; provider jobs show PROVIDER_REQUEST_SENT, ASSET_SAVED, ARTICLE_UPDATED, and browser-visible verification when a provider is configured.",
       preventionRule: "Local CE fallback is temporary and must never be logged as provider-generated. Provider telemetry begins only when an external image provider request is actually sent."
     });
   }
@@ -41589,6 +41884,19 @@ function newsLabFourPhaseProductionDisruptions(records = [], publicStories = [],
     rule: "The four parts are not passive tracking. Each failed gate must identify the production disruption, assign root cause, choose a bounded fix, verify the measured result, and teach the upstream/downstream subsystems before the next cycle."
   };
 }
+function newsLabImageGenerationProviderStatus() {
+  const provider = String(process.env.CE_NEWS_LAB_IMAGE_PROVIDER || "").trim();
+  const openAiReady = Boolean(process.env.OPENAI_API_KEY || process.env.OPENAI_IMAGE_API_KEY);
+  return {
+    adapterContract: "ImageGenerationProvider",
+    activeProvider: provider || "none-configured",
+    openAiProviderReady: Boolean(/openai/i.test(provider) && openAiReady),
+    providerConfigured: Boolean(provider && (/openai/i.test(provider) ? openAiReady : true)),
+    localFallbackFunction: "newsLabWriteGeneratedImageAsset",
+    futureProviderFunction: "generateAiEditorialImage",
+    rule: "Local CE fallback graphics and true external AI-generated editorial images are separate lanes. Local SVG generation never records PROVIDER_REQUEST_SENT."
+  };
+}
 function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
   const total = records.length || 1;
   const imageLedger = newsLabImageDeliveryLedger();
@@ -41603,13 +41911,15 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
       dossierRevisionRate: Number((records.filter(record => record.dossierRevisionId).length / total).toFixed(2)),
       storyUnderstandingRate: Number((publicStoryList.filter(story => Boolean(story.storyUnderstanding || story.storyDossier?.storyUnderstanding || story.canonicalDossierIntelligence?.storyUnderstanding)).length / Math.max(1, publicStoryList.length)).toFixed(2)),
       explicitOutputLaneRate: Number((records.filter(record => record.outputLane).length / total).toFixed(2)),
+      immutableDossierLockRate: lineageContracts.length ? Number((lineageContracts.filter(contract => contract.compliance?.passed).length / lineageContracts.length).toFixed(2)) : 0,
+      downstreamRevisionMismatchCount: lineageContracts.reduce((sum, contract) => sum + Number((contract.compliance?.blockers || []).filter(blocker => /revision-mismatch/i.test(blocker)).length), 0),
       mixedEventContaminationRate: Number((records.filter(record => (record.issues || []).some(issue => /mixed-event|topic-contamination|topic-drift|paragraph-topic/i.test(issue))).length / total).toFixed(2)),
       legacyIdentityLogicCount: records.filter(record => record.legacyPathUsed).length
     },
     gate: {
       canonicalEventIdentityConsistencyTarget: 0.95,
       mixedEventContaminationMax: 0.02,
-      requiredRates: { eventId: 1, dossierRevision: 1, storyUnderstanding: 1, outputLane: 1 },
+      requiredRates: { eventId: 1, dossierRevision: 1, storyUnderstanding: 1, outputLane: 1, immutableDossierLock: 0.95 },
       passed: false
     },
     rule: "Once canonical event identity and dossier revision are locked, downstream systems cannot redefine what the story is. Thin coherent stories become developing briefs instead of padded standard articles."
@@ -41618,6 +41928,8 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
     && phase1.metrics.dossierRevisionRate >= 1
     && phase1.metrics.storyUnderstandingRate >= 1
     && phase1.metrics.explicitOutputLaneRate >= 1
+    && phase1.metrics.immutableDossierLockRate >= 0.95
+    && phase1.metrics.downstreamRevisionMismatchCount === 0
     && phase1.metrics.mixedEventContaminationRate <= 0.02
     && phase1.metrics.legacyIdentityLogicCount === 0;
 
@@ -41630,6 +41942,8 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
       headlineWordSaladRate: Number((records.filter(record => (record.issues || []).some(issue => /word-salad|scrambled/i.test(issue))).length / total).toFixed(2)),
       headlineLeadMismatchRate: Number((records.filter(record => (record.issues || []).some(issue => /headline-lead|lead-topic/i.test(issue))).length / total).toFixed(2)),
       headlineSourceMismatchRate: Number((records.filter(record => (record.issues || []).some(issue => /headline-source|semantic-title-source|source-evidence/i.test(issue))).length / total).toFixed(2)),
+      headlineInputFailureRate: Number((records.filter(record => (record.issues || []).some(issue => /headline-input-failure|HEADLINE_INPUT_FAILURE/i.test(issue))).length / total).toFixed(2)),
+      headlineRenderingFailureRate: Number((records.filter(record => (record.issues || []).some(issue => /headline-rendering-failure|HEADLINE_RENDERING_FAILURE/i.test(issue))).length / total).toFixed(2)),
       unsupportedSentenceRate: Number((records.filter(record => (record.issues || []).some(issue => /unsupported|fact-contract|paragraph-fact/i.test(issue))).length / total).toFixed(2)),
       averageRepairLoops: Number((records.reduce((sum, record) => sum + Number(record.repairCount || 0), 0) / total).toFixed(2))
     },
@@ -41643,7 +41957,7 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
       editorStandardsMayBeLowered: false,
       passed: false
     },
-    rule: "Writer and headline systems execute the locked dossier contract. Headline repair uses Canonical Headline Service only and does not redefine the story."
+    rule: "Writer and headline systems execute the locked dossier contract. HEADLINE_INPUT_FAILURE returns to Story Understanding/Writer Reasoning; HEADLINE_RENDERING_FAILURE uses headline-only regeneration through the Canonical Headline Service. Headline repair does not redefine the story."
   };
   phase2.gate.passed = phase2.metrics.firstPassApprovalRate >= 0.5
     && phase2.metrics.headlineWordSaladRate < 0.05
@@ -41662,9 +41976,13 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
       jobsCreatedRate: Number((requiredImageRecords.filter(record => imageJobs.some(job => job.storyId === record.eventId || job.storyId === record.storyId || job.storyId === record.eventId)).length / requiredImageCount).toFixed(2)),
       jobsClaimedRate: Number((imageJobs.filter(job => (job.stages || []).some(stage => stage.stage === "JOB_CLAIMED")).length / Math.max(1, imageJobs.length)).toFixed(2)),
       providerRequestAttemptRate: Number((imageJobs.filter(job => (job.stages || []).some(stage => stage.stage === "PROVIDER_REQUEST_SENT")).length / Math.max(1, imageJobs.length)).toFixed(2)),
+      localCeFallbackGenerationCount: localFallbackStarted,
+      falseProviderTelemetryCount: falseProviderTelemetry,
+      providerConfigured: imageProviderStatus.providerConfigured,
       generatedAssetAttachRate: Number((imageJobs.filter(job => (job.stages || []).some(stage => stage.stage === "ARTICLE_UPDATED")).length / Math.max(1, imageJobs.filter(job => (job.stages || []).some(stage => stage.stage === "ASSET_SAVED")).length)).toFixed(2)),
       verifiedVisibleGeneratedImages: Number(imageLedger.summary?.verifiedVisibleGeneratedImages || 0),
-      falseAiGeneratedTelemetryAllowed: false
+      falseAiGeneratedTelemetryAllowed: false,
+      imageGenerationProvider: imageProviderStatus
     },
     gate: {
       targetJobsCreatedRate: 1,
@@ -41680,7 +41998,8 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
   phase3.gate.passed = requiredImageRecords.length === 0 || (
     phase3.metrics.jobsCreatedRate >= 1
     && phase3.metrics.jobsClaimedRate >= 0.95
-    && phase3.metrics.providerRequestAttemptRate >= 0.9
+    && (!imageProviderStatus.providerConfigured || phase3.metrics.providerRequestAttemptRate >= 0.9)
+    && phase3.metrics.falseProviderTelemetryCount === 0
     && phase3.metrics.generatedAssetAttachRate >= 0.95
   );
 
@@ -41718,16 +42037,17 @@ function newsLabQualityPublicationPhaseGates(records = [], publicStories = []) {
   phase2.recommendedFixes = phase2.productionDisruptions.map(item => ({ disruption: item.disruption, fix: item.fix, verification: item.verification, subsystem: item.responsibleSubsystem }));
   phase3.recommendedFixes = phase3.productionDisruptions.map(item => ({ disruption: item.disruption, fix: item.fix, verification: item.verification, subsystem: item.responsibleSubsystem }));
   phase4.recommendedFixes = phase4.productionDisruptions.map(item => ({ disruption: item.disruption, fix: item.fix, verification: item.verification, subsystem: item.responsibleSubsystem }));
-  const currentRecommendedPhase = !phase1.gate.passed ? "Part 1" : !phase2.gate.passed ? "Part 2" : !phase3.gate.passed ? "Part 3" : "Part 4";
-  const currentPhaseKey = currentRecommendedPhase === "Part 1" ? "phase1" : currentRecommendedPhase === "Part 2" ? "phase2" : currentRecommendedPhase === "Part 3" ? "phase3" : "phase4";
+  const currentRecommendedPhase = !publicStateStability.gate.passed ? "Part 0" : !phase1.gate.passed ? "Part 1" : !phase2.gate.passed ? "Part 2" : !phase3.gate.passed ? "Part 3" : "Part 4";
+  const currentPhaseKey = currentRecommendedPhase === "Part 0" ? "phase0" : currentRecommendedPhase === "Part 1" ? "phase1" : currentRecommendedPhase === "Part 2" ? "phase2" : currentRecommendedPhase === "Part 3" ? "phase3" : "phase4";
   return {
     version: "20260812-four-phase-natural-production-flow-v2-root-cause-repair",
     generatedAt: new Date().toISOString(),
     currentRecommendedPhase,
-    currentProductionDisruption: productionDisruptions.byPhase[currentPhaseKey]?.[0] || productionDisruptions.highestPriority,
+    currentProductionDisruption: currentRecommendedPhase === "Part 0" ? publicStateStability.currentProductionDisruption : productionDisruptions.byPhase[currentPhaseKey]?.[0] || productionDisruptions.highestPriority,
+    publicStateStability,
     productionDisruptionRootCauseMap: productionDisruptions,
-    phases: [phase1, phase2, phase3, phase4],
-    autonomousFixRule: "The Brain should use the four parts to find the cause of production disruption, apply or request the smallest bounded fix in the responsible subsystem, verify the measured effect, then store the lesson before continuing to the next phase.",
+    phases: [publicStateStability, phase1, phase2, phase3, phase4],
+    autonomousFixRule: "The Brain should first stabilize public state, then use Parts 1-4 to find the cause of production disruption, apply or request the smallest bounded fix in the responsible subsystem, verify the measured effect, then store the lesson before continuing to the next phase.",
     cutoverRule: "Measure Parts 1-3 separately. Only Part 4 may remove legacy competing paths and restore one natural production flow."
   };
 }
@@ -49358,6 +49678,49 @@ const server = http.createServer(async (request, response) => {
       const forceManualRebuild = url.searchParams.has("refresh");
       const category = url.searchParams.get("category");
       if (!forceDeep && !forceManualRebuild) {
+        const requestedCategory = String(category || "all").toLowerCase().trim() || "all";
+        const sendStablePublic = (payload, source) => {
+          sendNewsLabPublicJson(response, 200, payload, requestedCategory, source);
+          suppressNewsLabPublicReadCacheRefresh("public-news-lab-authoritative-read-only", {
+            branch: source,
+            requestedCategory,
+            rule: "Browser GET /api/news-lab is read-only and serves the strongest stable public snapshot; it cannot rebuild or promote cache state."
+          });
+        };
+        const memoryCached = getNewsLabPublicMemoryCache(requestedCategory);
+        if (memoryCached?.body) {
+          try {
+            const memoryPayload = JSON.parse(memoryCached.body);
+            sendStablePublic(memoryPayload, `memory-cache-${memoryCached.state || "hit"}`);
+            return;
+          } catch {
+            // Fall through to prepared/durable state.
+          }
+        }
+        const preparedPayload = readPreparedNewsLabApiPayload(requestedCategory);
+        if (preparedPayload) {
+          sendStablePublic(preparedPayload, "prepared-api-cache-authoritative-read");
+          return;
+        }
+        const durableRawPayload = readJsonFile(newsLabPublishedPayloadFile, null);
+        if (durableRawPayload && Array.isArray(durableRawPayload.ownedStories) && durableRawPayload.ownedStories.length) {
+          sendStablePublic(newsLabFastPublishedApiPayload({
+            ...durableRawPayload,
+            apiResponseWorker: {
+              active: true,
+              mode: "durable-published-authoritative-read",
+              publicReadOnly: true,
+              rule: "Durable published shelf is the authority for browser reads when prepared or memory cache is unavailable."
+            }
+          }, requestedCategory), "durable-published-authoritative-read");
+          return;
+        }
+        const lastKnownGoodPayload = readNewsLabLastKnownGoodApiPayload(requestedCategory);
+        if (lastKnownGoodPayload) {
+          sendStablePublic(lastKnownGoodPayload, "last-known-good-authoritative-read");
+          return;
+        }
+      }      if (!forceDeep && !forceManualRebuild) {
         const memoryCached = getNewsLabPublicMemoryCache(category);
         if (memoryCached?.body) {
           sendCachedJsonBody(response, 200, memoryCached.body, newsLabPublicCacheHeaders(memoryCached.state));
@@ -49555,7 +49918,7 @@ const server = http.createServer(async (request, response) => {
           reason: forceDeep ? "manual-deep-news-lab-request" : "public-news-lab-request"
         });
       }
-      sendNoStoreJson(response, 200, filterNewsLabPayloadForCategory(newsLabPayload, category));
+      sendNewsLabPublicJson(response, 200, filterNewsLabPayloadForCategory(newsLabPayload, category), category, forceManualRebuild ? "manual-refresh-approved-shelf" : forceDeep ? "deep-read-approved-shelf" : "route-payload-approved-shelf");
     } catch (error) {
       runtimeState.consecutiveRefreshFailures += 1;
       runtimeState.lastError = error.message || "News Lab refresh failed.";
@@ -49563,7 +49926,7 @@ const server = http.createServer(async (request, response) => {
         ...buildInstantNewsLabFallbackPayload("fallback"),
         error: "Feeds are temporarily unavailable; News Lab is showing fast fallback coverage."
       };
-      sendNoStoreJson(response, 200, filterNewsLabPayloadForCategory(newsLabPayload, url.searchParams.get("category")));
+      sendNewsLabPublicJson(response, 200, filterNewsLabPayloadForCategory(newsLabPayload, url.searchParams.get("category")), url.searchParams.get("category"), "error-fallback-stable-public-wrapper");
     }
     return;
   }

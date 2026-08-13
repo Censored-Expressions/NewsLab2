@@ -1,27 +1,12 @@
 {
-  "generatedAt": "2026-08-13T00:07:19.623Z",
+  "generatedAt": "2026-08-13T01:49:14.975Z",
   "category": "business",
   "reason": "runtime-smoke-test:collector-business",
-  "pid": 6952,
-  "buildMs": 653,
+  "pid": 26036,
+  "buildMs": 651,
   "sourceCount": 10,
   "storyCount": 25,
   "stories": [
-    {
-      "title": "Cerebras stock plunges 14% after second earnings report following IPO",
-      "source": "CNBC",
-      "market": "",
-      "category": "business",
-      "url": "https://www.cnbc.com/2026/08/12/cerebras-cbrs-q2-earnings-report-2026.html",
-      "sourceHomepage": "https://www.cnbc.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "Cerebras Systems reported better-than-expected second-quarter revenue and raised its full-year guidance.",
-      "published": "Wed, 12 Aug 2026 23:49:23 GMT",
-      "engagementScore": 46,
-      "engagementLabel": "High Signal"
-    },
     {
       "title": "U.S. budget deficit surged in July to highest level since March 2021",
       "source": "CNBC",
@@ -34,7 +19,22 @@
       "isDiscovery": false,
       "summary": "Beyond the big single-month jump, the collective red ink over the 10 months of the fiscal year rose to nearly $1.8 trillion, surpassing the same period in 2025.",
       "published": "Wed, 12 Aug 2026 18:56:15 GMT",
-      "engagementScore": 41,
+      "engagementScore": 39,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Cerebras stock plunges 14% after second earnings report following IPO",
+      "source": "CNBC",
+      "market": "",
+      "category": "business",
+      "url": "https://www.cnbc.com/2026/08/12/cerebras-cbrs-q2-earnings-report-2026.html",
+      "sourceHomepage": "https://www.cnbc.com/",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": false,
+      "summary": "Cerebras Systems reported better-than-expected second-quarter revenue and raised its full-year guidance.",
+      "published": "Wed, 12 Aug 2026 23:49:23 GMT",
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
@@ -49,53 +49,38 @@
       "isDiscovery": false,
       "summary": "Lettuce prices posted their sharpest month-over-month decline on record as diners reconsider the vegetable amid the cyclospora outbreak.",
       "published": "Wed, 12 Aug 2026 19:50:29 GMT",
-      "engagementScore": 41,
+      "engagementScore": 39,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Ford says it's increasing Lincoln production in the U.S. in 2030",
-      "source": "CNBC",
+      "title": "My wife can claim $900 at 62. Should she take it now — or wait for her spousal benefit?",
+      "source": "MarketWatch",
       "market": "",
       "category": "business",
-      "url": "https://www.cnbc.com/2026/08/12/ford-lincoln-us-china.html",
-      "sourceHomepage": "https://www.cnbc.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
+      "url": "https://www.marketwatch.com/story/i-want-her-to-choose-the-best-strategy-my-wifes-social-security-is-just-900-should-she-claim-spousal-benefit-at-62-e3ef621d?mod=mw_rss_topstories",
+      "sourceHomepage": "https://www.marketwatch.com/",
+      "image": "https://images.mktw.net/im-70214433",
+      "hasFeedImage": true,
       "isDiscovery": false,
-      "summary": "Ford said on Wednesday that it will be increasing production of its Lincoln cars in the U.S. beginning in 2030.",
-      "published": "Wed, 12 Aug 2026 22:36:44 GMT",
-      "engagementScore": 44,
-      "engagementLabel": "Developing"
+      "summary": "“She was a teacher at a school district, so didn’t put much into Social Security.”",
+      "published": "Thu, 13 Aug 2026 01:00:00 GMT",
+      "engagementScore": 48,
+      "engagementLabel": "High Signal"
     },
     {
-      "title": "Here are five key takeaways from the July CPI inflation report",
-      "source": "CNBC",
-      "market": "",
-      "category": "sports",
-      "url": "https://www.cnbc.com/2026/08/12/here-are-five-key-takeaways-from-the-july-cpi-inflation-report.html",
-      "sourceHomepage": "https://www.cnbc.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": false,
-      "summary": "Readings for July on the prices consumers pay for goods and services came in pretty much on target.",
-      "published": "Wed, 12 Aug 2026 17:14:09 GMT",
-      "engagementScore": 38,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Consumer prices rose 0.1% in July, as expected, putting the annual rate at 3.4%",
-      "source": "CNBC",
+      "title": "I found a $100 bill in the communal washer at my Airbnb. What should I do?",
+      "source": "MarketWatch",
       "market": "",
       "category": "business",
-      "url": "https://www.cnbc.com/2026/08/12/cpi-inflation-report-july-2026.html",
-      "sourceHomepage": "https://www.cnbc.com/",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
+      "url": "https://www.marketwatch.com/story/im-dreaming-of-cocktails-at-chateau-marmont-i-found-100-in-my-airbnbs-communal-washer-what-should-i-do-9694ecca?mod=mw_rss_topstories",
+      "sourceHomepage": "https://www.marketwatch.com/",
+      "image": "https://images.mktw.net/im-43313761",
+      "hasFeedImage": true,
       "isDiscovery": false,
-      "summary": "The consumer price index was expected to increase 0.1% in July, with an annual rate of 3.4%.",
-      "published": "Wed, 12 Aug 2026 14:27:35 GMT",
-      "engagementScore": 35,
-      "engagementLabel": "Developing"
+      "summary": "“The landlord has not been here in months, so I assume it was a previous tenant.”",
+      "published": "Thu, 13 Aug 2026 00:45:00 GMT",
+      "engagementScore": 47,
+      "engagementLabel": "High Signal"
     },
     {
       "title": "Is $1 million enough for a household to retire? The answer keeps changing.",
@@ -109,52 +94,22 @@
       "isDiscovery": false,
       "summary": "“Some readers — and couples — would be grateful to retire on half that amount.”",
       "published": "Thu, 13 Aug 2026 00:00:00 GMT",
-      "engagementScore": 49,
-      "engagementLabel": "High Signal"
-    },
-    {
-      "title": "Nebius adds to the excitement around neocloud stocks with upbeat earnings of its own",
-      "source": "MarketWatch",
-      "market": "",
-      "category": "business",
-      "url": "https://www.marketwatch.com/story/nebius-adds-to-the-excitement-around-neocloud-stocks-with-upbeat-earnings-of-its-own-cd2aa36e?mod=mw_rss_topstories",
-      "sourceHomepage": "https://www.marketwatch.com/",
-      "image": "https://images.mktw.net/im-00631666",
-      "hasFeedImage": true,
-      "isDiscovery": false,
-      "summary": "Investors are reacting positively to earnings results and demand signals from neocloud companies CoreWeave and Nebius.",
-      "published": "Wed, 12 Aug 2026 22:34:00 GMT",
-      "engagementScore": 47,
-      "engagementLabel": "High Signal"
-    },
-    {
-      "title": "Can I claim 50% of my husband’s Social Security now — and switch to my higher benefit at 70?",
-      "source": "MarketWatch",
-      "market": "",
-      "category": "business",
-      "url": "https://www.marketwatch.com/story/can-i-claim-50-of-my-husbands-social-security-now-and-switch-to-my-higher-benefit-at-70-5518700b?mod=mw_rss_topstories",
-      "sourceHomepage": "https://www.marketwatch.com/",
-      "image": "https://images.mktw.net/im-23020538",
-      "hasFeedImage": true,
-      "isDiscovery": false,
-      "summary": "“I would like to offer a piece of advice for women who are or have been married.”",
-      "published": "Wed, 12 Aug 2026 22:00:00 GMT",
       "engagementScore": 46,
       "engagementLabel": "High Signal"
     },
     {
-      "title": "US consumer inflation mild in July, economy still not out of the woods - Reuters",
-      "source": "Reuters",
+      "title": "Stock Market Today: Nasdaq Charges Higher On Inflation Report; Nvidia Partner CoreWeave Soars (Live Coverage) - Investor's Business Daily",
+      "source": "Investor's Business Daily",
       "market": "",
       "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxONVo4RlREbjZCeDFybnNPaTFlMDl0SnhGblQ3ZjE4NzA2WlVKU0diWDJqN1lPWXFvVk13eDY5TVhKYXROYXVJb2tLRzM0YVFaNXEzRWxLNWI0blFUSHZqbVN6aVRrMWFPR3Foa0hJd1FLZTluRVAtWlp0d3k1U1doeUhRVlRoRFltSzRneHcyYw?oc=5",
-      "sourceHomepage": "https://www.reuters.com",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOSHJrS1FvLUE3dGtNRWJUbXhnT0pnTU5INGkzUFZMQ2dfdXJqZTh4eEVSY0VGajRSUW9naENPdmUwZ2Q0Ykhndi1PYVg5dzllSGF0Y0xLRVJWTnBtbDRGRmd4Ql9aWmlJYlcwNHdhRWtlQVRJMGdsSkw1YnhrSDJpMXJHTE9MVzUyaXJhcWt0TmNfU2htODVNU3Fsd3pCVFZUUVJ0NXBKRHlzaHBmajBqYlNkSWlVZEdRb05vY2pTZEM2LUE?oc=5",
+      "sourceHomepage": "https://www.investors.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "US consumer inflation mild in July, economy still not out of the woods Reuters Consumer prices rose 0.1% in July, as expected, putting the annual rate at 3.4% CNBC Stock ...",
-      "published": "Wed, 12 Aug 2026 22:27:21 GMT",
-      "engagementScore": 42,
+      "summary": "Stock Market Today: Nasdaq Charges Higher On Inflation Report; Nvidia Partner CoreWeave Soars (Live Coverage) Investor's Business Daily Consumer prices rose 0.1% in July,...",
+      "published": "Wed, 12 Aug 2026 20:22:00 GMT",
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
@@ -169,22 +124,7 @@
       "isDiscovery": true,
       "summary": "Cisco Networking Sales Surge on AI Demand. Why the Stock Is Down. Barron's Cisco's stock drops despite earnings, revenue beat CNBC Cisco Beats on Sales Outlook, Citing ‘B...",
       "published": "Wed, 12 Aug 2026 20:47:00 GMT",
-      "engagementScore": 40,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Nebius Reports 514% Jump in AI Cloud Sales as Demand Booms - Bloomberg.com",
-      "source": "Bloomberg.com",
-      "market": "",
-      "category": "business",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQc0o4U3ZaaU8wQW9LcUllTnNPdENMdTJ5YmRQWjRFcWh0ZnpkbTRYRnRvVVI1d1VsbExqNUZoakhqRDNienRYSlB2TmJPaDU5NXF2NDRpdGFKMnN1ZkxKcUY1WVZrbEhFMDk5NHJKSXUxM1NaVkR3QVdncXc5NDhEYWYteXBYN2Ewc3J4c2Fsb1RFRW1pdHBCZ2liX24xd1h4cEY3Y2ZsTEFMVnJW?oc=5",
-      "sourceHomepage": "https://www.bloomberg.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Nebius Reports 514% Jump in AI Cloud Sales as Demand Booms Bloomberg.com Nebius Is Rising While Oracle Falls: NVIDIA’s Massive $500 Billion Funding Plan Pushes the Stocks...",
-      "published": "Wed, 12 Aug 2026 13:56:22 GMT",
-      "engagementScore": 33,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
@@ -199,21 +139,36 @@
       "isDiscovery": true,
       "summary": "CoreWeave and Nebius Group Deliver Earnings Shocker. Here's What It Signals About the Future of AI. finance.yahoo.com CoreWeave gains 19%, Nebius surges 34% in post-earni...",
       "published": "Wed, 12 Aug 2026 17:45:05 GMT",
-      "engagementScore": 36,
+      "engagementScore": 35,
       "engagementLabel": "Developing"
     },
     {
-      "title": "New Social Security COLA estimates released after fresh inflation data - Fox Business",
-      "source": "Fox Business",
+      "title": "Why Japanese firms are being so slow to use AI - BBC",
+      "source": "BBC",
       "market": "",
-      "category": "sports",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQbkRsV3prM3N2dUpiUV9qQ0N2aDBHdGZfa3dkbHNwcnpjVFJYZGpZaVpOWG1yUERYVFBTNGlPVFNmdDBZb3VDaW5HaHMtM2ZIRFJoQjZZTGQ3enJldVVzalY1YzN2MGctZ2FSNzFIcnlydzdBWV9OQzZBZzRUc0p6MlZNYVROYURFYlVDeXdrR1Q5T0Q0dEVPMHplU0NIa0ZES0JKTnFFTklKQdIBrwFBVV95cUxQVTRvajZTbFNGQTZiTTgyNTZiV016ZHVWMFY2ZTdBYUVpSlBFWHVrR3dyXzBGUTZDNFQtZHdMZjhwUmRMQVJ2MnVVc1JRUE5CamxnS2M2OEl0dmlxY0lOM0dhR1MzQVJ5YnZqaUlfcUNvNTI0eVhuM05kV2daeUVCM3U0T2JXUXVMaTRsYlJvdi1CM1BGUWJ6LWdyMEtXbGVaZmZJQ3A0MTJwYkNlaS1Z?oc=5",
-      "sourceHomepage": "https://www.foxbusiness.com",
+      "category": "business",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1uX242OGh2amdJQ0Y3THpURy0wZTV6N0RCc1hkV1VVNzMwVVh2eTRsLWdzY2FZY21yUjd4LU9CV2NQUWpFdjVRZm8tUU84czQyQkxOTi1xcVd6UQ?oc=5",
+      "sourceHomepage": "https://www.bbc.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "New Social Security COLA estimates released after fresh inflation data Fox Business Projected 2027 Social Security COLA adjusted slightly after new inflation report The H...",
-      "published": "Wed, 12 Aug 2026 20:09:00 GMT",
+      "summary": "Why Japanese firms are being so slow to use AI BBC Strong majority of Japanese firms have yet to fully embrace AI: Reuters poll Reuters Bloodbath looms for Japan’s office...",
+      "published": "Wed, 12 Aug 2026 23:00:47 GMT",
+      "engagementScore": 40,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Exclusive | Apple in Talks to Pay Publishers to Improve AI-Powered Siri - WSJ",
+      "source": "WSJ",
+      "market": "",
+      "category": "business",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPZXRadlhiaWpJNTMwVmxUWkhLM3NXTC03VkpqMzFCWHozTUpIRDBTQ2pmUFBibmZFRFQxbkJIV09kZmpiMUxqazU5NmxMSkJoVmR0X3JlRE9XNnA1Zi1KX2x6d3o2elV5WlkyM0phNzhLNC1rQTdxVndFcGpYOWdCSzljZHBqQjhFcHp5UzVPeUI4bDhvSkxCLWw3a0tJMHpzMkdiQnpR?oc=5",
+      "sourceHomepage": "https://www.wsj.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Exclusive | Apple in Talks to Pay Publishers to Improve AI-Powered Siri WSJ Report: Apple seeks publisher deals to give Siri AI better access to current events 9to5Mac IP...",
+      "published": "Wed, 12 Aug 2026 22:30:00 GMT",
       "engagementScore": 39,
       "engagementLabel": "Developing"
     },
@@ -229,7 +184,7 @@
       "isDiscovery": true,
       "summary": "Wall Street flirts with a record after AI stocks rise and worries about inflation ease a bit The Pilot News",
       "published": "Wed, 12 Aug 2026 17:30:00 GMT",
-      "engagementScore": 36,
+      "engagementScore": 34,
       "engagementLabel": "Developing"
     },
     {
@@ -244,7 +199,7 @@
       "isDiscovery": true,
       "summary": "Economic Key Facts Germany kpmg.com",
       "published": "Wed, 12 Aug 2026 19:39:40 GMT",
-      "engagementScore": 38,
+      "engagementScore": 36,
       "engagementLabel": "Developing"
     },
     {
@@ -259,7 +214,7 @@
       "isDiscovery": true,
       "summary": "Food Fraud Costs UK Economy Up To £2 Billion A Year Eurasia Review",
       "published": "Wed, 12 Aug 2026 21:37:12 GMT",
-      "engagementScore": 39,
+      "engagementScore": 38,
       "engagementLabel": "Developing"
     },
     {
@@ -274,7 +229,7 @@
       "isDiscovery": true,
       "summary": "Study: Business services sector contributes EUR 35.5 billion to Romania’s economy Romania Insider",
       "published": "Wed, 12 Aug 2026 08:51:24 GMT",
-      "engagementScore": 27,
+      "engagementScore": 25,
       "engagementLabel": "Developing"
     },
     {
@@ -289,22 +244,37 @@
       "isDiscovery": true,
       "summary": "Study:Business services sector contributed 35.5 billion euros to Romania's economy in 2025 actmedia.eu",
       "published": "Wed, 12 Aug 2026 07:13:27 GMT",
-      "engagementScore": 25,
-      "engagementLabel": "Developing"
+      "engagementScore": 23,
+      "engagementLabel": "Monitor"
     },
     {
-      "title": "Call for Strengthening Women’s Economic Empowerment and Enterprise Development in Sierra Leone - fundsforNGOs",
-      "source": "fundsforNGOs",
+      "title": "United States reclaims spot as Kenya’s leading export market - Business Daily",
+      "source": "Business Daily",
       "market": "",
       "category": "business",
-      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQeVhLNlc2N0JFem9jNTBLcHhnM0lQem5VaWhlVEE5RFpkenFaaGRGQ1Q1d2hKSlBrWkcza0RqaTY5Y1NoQVlET0NYSVVya2o1T0xTRnh1WnBfSjcwUTNSRmdGR2xON1RJY2xoZHZwY0xUMGlmaklYVXFnN1BDWmxOUW10T1lBbFptT3lPdU8yb0JoUGNlYnROUmhLWU5Hb1R5RFhZU1FXdi0zU3c2VGNxSnZ4eVJtUkxnV1JqaUdKNFVGcmtpZDZ1bnlUeVEwVzE3WHYxQmpHY3Z5eG1WUWpta3pEMDFZOXfSAecBQVVfeXFMUHlYSzZXNjdCRXpvYzUwS3B4ZzNJUHpuVWloZVRBOURaZHpxWmhkRkNUNXdoSkpQa1pHM2tEamk2OWNTaEFZRE9DWElVcmtqNU9MU0Z4dVpwX0o3MFEzUkZnRkdsTjdUSWNsaGR2cGNMVDBpZmpJWFVxZzdQQ1psTlFtdE9ZQWxabU95T3VPMm9CaFBjZWJ0TlJoS1lOR29UeURYWVNRV3YtM1N3NlRjcUp2eHlSbVJMZ1dSamlHSjRVRnJraWQ2dW55VHlRMFcxN1h2MUJqR2N2eXhtVlFqbWt6RDAxWTl3?oc=5",
-      "sourceHomepage": "https://www2.fundsforngos.org",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPYkdOLWRrMDdOdXhFb3VpWFNadG9zd3psRDR1N0hNWTZmYUJKQ2ZDUG9tVXY4TmlVVUtHU200ajBVQjcxWHMyQ3BLS1ltczR0Q1ROUG9nSTZjbUtSTnZReDRkRmplMHV4U1pPTTJHVmRpOW4zZnZOU3ViSGVTZkZCQlZuMXJ5ZDRtR1hGZ1NoU2pxSFFxb0RkT013MDlobERnbmRGOTd4cEN2SF9FSkkyaEd0UnRkZw?oc=5",
+      "sourceHomepage": "https://www.businessdailyafrica.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Call for Strengthening Women’s Economic Empowerment and Enterprise Development in Sierra Leone fundsforNGOs",
-      "published": "Wed, 12 Aug 2026 11:12:16 GMT",
-      "engagementScore": 28,
+      "summary": "United States reclaims spot as Kenya’s leading export market Business Daily",
+      "published": "Wed, 12 Aug 2026 15:45:00 GMT",
+      "engagementScore": 31,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Bessent said the K-shaped economy ‘is over.’ Here’s what financial experts say - PBS",
+      "source": "PBS",
+      "market": "",
+      "category": "business",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxONzZQQ2k1Y01iTGRReExtdElEOXRNMzhKS2dwWlpvS0RpYjhfVHhnMUJOcDZqOFRwZVdyc3hoQlJEZTBIX3dGbFlIRjZ1Z3JvZlJwc0pYa0g0aUN2XzZ1STVuWkp4bW8zcWJTWVJzRWlfYkp0Q25oWjlTN2dUMnNpV3NBNUc5bFhhU2gtMmdneTFKcVVjVWxFdFd0RVdZaEtzcHlHaGpTMHh2a0FwR0U2Rw?oc=5",
+      "sourceHomepage": "https://www.pbs.org",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Bessent said the K-shaped economy ‘is over.’ Here’s what financial experts say PBS",
+      "published": "Wed, 12 Aug 2026 22:06:13 GMT",
+      "engagementScore": 37,
       "engagementLabel": "Developing"
     },
     {
@@ -319,7 +289,7 @@
       "isDiscovery": true,
       "summary": "Weak Wage Growth Is Squeezing Americans’ Spending Power Investopedia",
       "published": "Wed, 12 Aug 2026 19:40:07 GMT",
-      "engagementScore": 37,
+      "engagementScore": 35,
       "engagementLabel": "Developing"
     },
     {
@@ -334,7 +304,7 @@
       "isDiscovery": true,
       "summary": "Why is consumer confidence falling while the stock market keeps rising? The Sumter Item",
       "published": "Wed, 12 Aug 2026 10:00:00 GMT",
-      "engagementScore": 27,
+      "engagementScore": 25,
       "engagementLabel": "Developing"
     },
     {
@@ -348,8 +318,23 @@
       "hasFeedImage": false,
       "isDiscovery": true,
       "summary": "Wages haven't kept up with inflation for four straight months Business Insider",
-      "published": "Wed, 12 Aug 2026 13:13:23 GMT",
-      "engagementScore": 30,
+      "published": "Wed, 12 Aug 2026 09:00:00 GMT",
+      "engagementScore": 24,
+      "engagementLabel": "Monitor"
+    },
+    {
+      "title": "S&P 500 Edges Higher at 7,748.50 as Cooling July Inflation Data and Strong AI Earnings Lift Wall Street - BBN Times",
+      "source": "BBN Times",
+      "market": "",
+      "category": "sports",
+      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxPOGNqamZWYmNyWHB4bUZ5empsZnp4RFBWNUN2MVBhUTA4UXZSWU5LZ1JmWUZIZVUzTTUzMERFUVdxcTluYktUNlQzeGZpZWRJaFlQdnFhclpCUWI0bmZYQVJScExkVnRDdFlzQ0dkdnN6MXBraVFMeDBHdVVuUE1YUUIyQko0dVlJaVYxSWtHVFhsX3hQYUJDVW80VUtqTGhlRjhQNmJ3WGg1b2djNWgxVmd6aWZqRFo5WTdfT29NX2g5RVBOejFGbEgxMU1VX0RNUUNwc0k5NE5YZjg?oc=5",
+      "sourceHomepage": "https://www.bbntimes.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "S&P 500 Edges Higher at 7,748.50 as Cooling July Inflation Data and Strong AI Earnings Lift Wall Street BBN Times",
+      "published": "Wed, 12 Aug 2026 21:57:53 GMT",
+      "engagementScore": 37,
       "engagementLabel": "Developing"
     },
     {
@@ -364,8 +349,8 @@
       "isDiscovery": true,
       "summary": "Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print—CoreWeave, Nebius, Super Micro, Lumentum in Focus TradingView",
       "published": "Wed, 12 Aug 2026 09:58:23 GMT",
-      "engagementScore": 26,
-      "engagementLabel": "Developing"
+      "engagementScore": 24,
+      "engagementLabel": "Monitor"
     },
     {
       "title": "Worry about jobs, spending power hurts consumer confidence - The Jakarta Post",
@@ -381,10 +366,25 @@
       "published": "Tue, 11 Aug 2026 10:01:09 GMT",
       "engagementScore": 12,
       "engagementLabel": "Monitor"
+    },
+    {
+      "title": "'Disasters hanging on people's walls': The consumer fallout from the solar battery boom - ABC News & Headlines – Australian Broadcasting Corporation",
+      "source": "ABC News & Headlines – Australian Broadcasting Corporation",
+      "market": "",
+      "category": "business",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQVG9zZ3AyU0FVSlc3dE5oVHZidkd1dXpDSG9ac3JyTXpMd2FrLThvS1dwcTlKVzlHY0ZQNTlESnhPRDFXaUtTdHJBNzdseFkza3VZOVJhc0dtRTJ4cWJnVnBCSm43OENzeXNyZ19JbUI1T2NYaUFRVDhGZzdsZDhST0d6c0dHWVBhQ19BVFRyZkNXNzBuNm0xZ3BQWmZGYlRrQ25mdHRMNUFZZzVEaGc?oc=5",
+      "sourceHomepage": "https://www.abc.net.au",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "'Disasters hanging on people's walls': The consumer fallout from the solar battery boom ABC News & Headlines – Australian Broadcasting Corporation",
+      "published": "Wed, 12 Aug 2026 18:46:56 GMT",
+      "engagementScore": 33,
+      "engagementLabel": "Developing"
     }
   ],
   "feedFailureAttribution": {
-    "generatedAt": "2026-08-13T00:07:19.624Z",
+    "generatedAt": "2026-08-13T01:49:14.975Z",
     "sourceCount": 10,
     "failedSourceCount": 0,
     "slowSourceCount": 0,
@@ -405,7 +405,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 210
+        "lastDurationMs": 209
       },
       {
         "key": "marketwatch::feeds.content.dowjones.io::https://feeds.content.dowjones.io/public/rss/mw_topstories",
@@ -423,7 +423,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 270
+        "lastDurationMs": 266
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/business?hl=en-us&gl=us&ceid=us:en",
@@ -441,7 +441,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 271
+        "lastDurationMs": 371
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=business%20markets%20economy%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -459,7 +459,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 576
+        "lastDurationMs": 574
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=markets%20economy%20earnings%20inflation%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -477,7 +477,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 180
+        "lastDurationMs": 571
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=consumer%20business%20retail%20housing%20jobs%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -495,7 +495,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 510
+        "lastDurationMs": 525
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=corporate%20earnings%20stocks%20companies%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -513,7 +513,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 169
+        "lastDurationMs": 504
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=federal%20reserve%20treasury%20economy%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -531,7 +531,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 503
+        "lastDurationMs": 501
       }
     ],
     "worstDomains": [

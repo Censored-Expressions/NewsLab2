@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T00:07:22.963Z",
+  "generatedAt": "2026-08-13T01:49:18.476Z",
   "category": "sports",
-  "pid": 4276,
+  "pid": 19128,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-sports",
-  "lastFinishedAt": "2026-08-13T00:07:22.958Z",
+  "lastFinishedAt": "2026-08-13T01:49:18.472Z",
   "lastMetrics": {
-    "buildMs": 631,
+    "buildMs": 726,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T00:07:22.958Z",
+      "generatedAt": "2026-08-13T01:49:18.472Z",
       "sourceCount": 10,
       "failedSourceCount": 3,
       "slowSourceCount": 0,
@@ -34,8 +34,8 @@
           "skippedCount": 0,
           "lastErrorType": "feed-error",
           "lastErrorCode": "HTTP_404",
-          "lastFailedAt": "2026-08-13T00:07:22.551Z",
-          "lastDurationMs": 151
+          "lastFailedAt": "2026-08-13T01:49:17.973Z",
+          "lastDurationMs": 143
         },
         {
           "key": "nfl::nfl.com::https://www.nfl.com/feeds/rss/news",
@@ -52,8 +52,8 @@
           "skippedCount": 0,
           "lastErrorType": "feed-error",
           "lastErrorCode": "HTTP_404",
-          "lastFailedAt": "2026-08-13T00:07:22.925Z",
-          "lastDurationMs": 525
+          "lastFailedAt": "2026-08-13T01:49:18.352Z",
+          "lastDurationMs": 523
         },
         {
           "key": "nba::nba.com::https://www.nba.com/rss/nba_rss.xml",
@@ -70,8 +70,8 @@
           "skippedCount": 0,
           "lastErrorType": "feed-error",
           "lastErrorCode": "HTTP_404",
-          "lastFailedAt": "2026-08-13T00:07:22.632Z",
-          "lastDurationMs": 231
+          "lastFailedAt": "2026-08-13T01:49:18.246Z",
+          "lastDurationMs": 416
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/sports?hl=en-us&gl=us&ceid=us:en",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 369
+          "lastDurationMs": 387
         },
         {
           "key": "espn::espn.com::https://www.espn.com/espn/rss/news",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 126
+          "lastDurationMs": 139
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=espn%20sports%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 561
+          "lastDurationMs": 563
         },
         {
           "key": "cbs::cbssports.com::https://www.cbssports.com/rss/headlines/",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 157
+          "lastDurationMs": 154
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=site:nbcsports.com%20sports%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 184
+          "lastDurationMs": 644
         }
       ],
       "worstDomains": [

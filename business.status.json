@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T00:07:19.628Z",
+  "generatedAt": "2026-08-13T01:49:14.980Z",
   "category": "business",
-  "pid": 6952,
+  "pid": 26036,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-business",
-  "lastFinishedAt": "2026-08-13T00:07:19.623Z",
+  "lastFinishedAt": "2026-08-13T01:49:14.975Z",
   "lastMetrics": {
-    "buildMs": 653,
+    "buildMs": 651,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T00:07:19.624Z",
+      "generatedAt": "2026-08-13T01:49:14.975Z",
       "sourceCount": 10,
       "failedSourceCount": 0,
       "slowSourceCount": 0,
@@ -35,7 +35,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 210
+          "lastDurationMs": 209
         },
         {
           "key": "marketwatch::feeds.content.dowjones.io::https://feeds.content.dowjones.io/public/rss/mw_topstories",
@@ -53,7 +53,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 270
+          "lastDurationMs": 266
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/business?hl=en-us&gl=us&ceid=us:en",
@@ -71,7 +71,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 271
+          "lastDurationMs": 371
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=business%20markets%20economy%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 576
+          "lastDurationMs": 574
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=markets%20economy%20earnings%20inflation%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 180
+          "lastDurationMs": 571
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=consumer%20business%20retail%20housing%20jobs%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 510
+          "lastDurationMs": 525
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=corporate%20earnings%20stocks%20companies%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 169
+          "lastDurationMs": 504
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=federal%20reserve%20treasury%20economy%20when:2d&hl=en-us&gl=us&ceid=us:en",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 503
+          "lastDurationMs": 501
         }
       ],
       "worstDomains": [

@@ -1,55 +1,55 @@
 {
-  "generatedAt": "2026-08-13T00:07:17.900Z",
+  "generatedAt": "2026-08-13T01:49:13.288Z",
   "category": "politics",
   "reason": "runtime-smoke-test:collector-politics",
-  "pid": 23440,
-  "buildMs": 1589,
+  "pid": 15776,
+  "buildMs": 1609,
   "sourceCount": 10,
   "storyCount": 25,
   "stories": [
     {
-      "title": "White House press secretary Karoline Leavitt to leave administration - The Washington Post",
-      "source": "The Washington Post",
+      "title": "Karoline Leavitt, Trump’s White House Press Secretary, Is Leaving the Role - The New York Times",
+      "source": "The New York Times",
       "market": "",
       "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNX3dndThiNTdBSjRBTHlCeDJyajIyOFVrZE05bldNVVZRSURqWWdJcEpPRWFTenEtVEZQRjByYU1ESFVLQzdDSXI4NVBiVWYyd1gtWW41ajJEUkt0U0xpdGFpQkNadnBIZjUtV2hyV0Y1UzRjQ19vZTRIb0s0RGh2ZlVsNW1rNHduOGx0OXcxeGpkYjdmbTZmS3AyQllYRUQxN3pTS2gyZmFzU0dVcWp5dl9KMEdoSHRO?oc=5",
-      "sourceHomepage": "https://www.washingtonpost.com",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOWHlUYk96N0ozMUFJOXVNWXdwZVk3SHhzaGh5anZlTHg3UTRXNklnQjZaUlZqdDN4UFhZcXRLa3JhUkRmSGxJRnRfcXpfenBxWklvZnNPbktwMTNLeFJEZ09hYm5ianVFZ2FjZnVWampBaXJ5dGE3d2V3TDR4Qmc3UEhQcWlOVk9Ra0dVbUtvUkdBajZw?oc=5",
+      "sourceHomepage": "https://www.nytimes.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "White House press secretary Karoline Leavitt to leave administration The Washington Post White House press secretary Karoline Leavitt is leaving the Trump administration ...",
-      "published": "Wed, 12 Aug 2026 23:06:54 GMT",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "summary": "Karoline Leavitt, Trump’s White House Press Secretary, Is Leaving the Role The New York Times White House press secretary Karoline Leavitt is leaving the Trump administra...",
+      "published": "Wed, 12 Aug 2026 22:28:48 GMT",
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
     },
     {
-      "title": "David Crowley pulls off stunning comeback victory over Francesca Hong - Milwaukee Journal Sentinel",
-      "source": "Milwaukee Journal Sentinel",
+      "title": "David Crowley's razor-thin primary win sets up Wisconsin governor's race against Trump's pick - AP News",
+      "source": "AP News",
       "market": "",
-      "category": "top",
-      "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxNemFLbWMtb3kyUHN3c2NkRXNFbVA2VmxTaDFDeU1QRWFXckRKVFF3SlJ0M05qVFZDaUVEYzVEN2EwZ1YtRmk2eWNjajUySW1hSW9Gc24wNE5ZbDBJdzFZRmhEQ29aYThQWnBDMm5LdFh6UGtFX0x0SGxiMTlqenJrMlNkMW9zU1VocUFyMWp4YzN3MWhIcEE2VGhvSzNJMjR0S2NEVk9YZm5TbEt2alduT18td0pILVJ1Zkl6bmxKWXJ0eEkydzZBUkg2NVNrSnlfSHlQUWNBVnUxNlQ0VUZfQldB?oc=5",
-      "sourceHomepage": "https://www.jsonline.com",
+      "category": "politics",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVUtYRlN0bXF1Zi1TYTJMNGJOaXRDWGhabnU5aVlmSUZOb3J3Y09XXzZiSUtuSTBsYW1OVFNjT0RhTk9VenVpdDQ3SEhySnBXZ2c3M3h2YVpOakt0ZVc2bi04Q3l3VDFMNERaT3B1ZlFiXzU5UDg0WDdaVEN2eUM3ZWhHcW8tVWJnckgyaUctUUdUbDBRaDZkRUNXLVlUT1hjUDRVRnNBUXJGZlJITi1tQw?oc=5",
+      "sourceHomepage": "https://apnews.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "David Crowley pulls off stunning comeback victory over Francesca Hong Milwaukee Journal Sentinel How the Polls Got It So Wrong in Wisconsin nytimes.com 3 takeaways from D...",
-      "published": "Wed, 12 Aug 2026 18:34:00 GMT",
+      "summary": "David Crowley's razor-thin primary win sets up Wisconsin governor's race against Trump's pick AP News Wisconsin Governor Primary Election 2026 Live Results: Hong, Tiffany...",
+      "published": "Wed, 12 Aug 2026 20:30:00 GMT",
       "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
-      "title": "MyPillow Founder Mike Lindell Won’t Concede Losing Minnesota Republican Gubernatorial Primary - Forbes",
-      "source": "Forbes",
+      "title": "Clancy trial highlights postpartum psychosis and barriers to care for mothers - WBUR",
+      "source": "WBUR",
       "market": "",
-      "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNTzdYVXhIQXVoTmRtdlFSNV9aSGNtdjU3N19najBhX192NW94YllaZURHd09GOUEwMlVua1dyQkdHSU9iMm5PU21nM2hUUEZIX2h5TUpRUUJBNVB6bkZ1RkhhYUtYbm80RVVFd3BaREQyOG9qZE10Z25KejFBeEZGS01kYmtxQ0lfelFiSkJ2NURLYmJINF9IakVPTG5aNWxWMXRrTGZicDd3amVyNGVRVV9lMXBnUUplTGhsSkluX09zcDY4V0tVWHQ1ME1oM3BTd25qaldSZU9tUQ?oc=5",
-      "sourceHomepage": "https://www.forbes.com",
+      "category": "top",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOWVczQlhMY1c0bURGYkd1ZWUyQS1XUmZaRmJsdmdGc3VPQjR1S19XbjVWQUZ5Y1dUTnVoT21MMjNiLU4teFFGOEN6eE5obHAtQkJ4VWkyVlFBUzhJX294XzFBaEF6dENpSFBDcG45WGZLMENkX1Vnb0F1MFZFajQzSWx4UXdPMmN0dEZ3bS0tRmg5cHJROGR1QWk1S2lRVUo1a1NpbDRTSVM?oc=5",
+      "sourceHomepage": "https://www.wbur.org",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "MyPillow Founder Mike Lindell Won’t Concede Losing Minnesota Republican Gubernatorial Primary Forbes Mike Lindell refuses to concede in Minnesota primary despite getting ...",
-      "published": "Wed, 12 Aug 2026 17:00:00 GMT",
-      "engagementScore": 38,
+      "summary": "Clancy trial highlights postpartum psychosis and barriers to care for mothers WBUR Lindsay Clancy trial recap: Prosecution theory discussed, emotional autopsy testimony N...",
+      "published": "Wed, 12 Aug 2026 20:07:27 GMT",
+      "engagementScore": 39,
       "engagementLabel": "Developing"
     },
     {
@@ -64,22 +64,37 @@
       "isDiscovery": true,
       "summary": "Trump administration set to spend at least $900 million on White House construction The Washington Post",
       "published": "Wed, 12 Aug 2026 17:00:01 GMT",
-      "engagementScore": 38,
+      "engagementScore": 36,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Trump announces White House press secretary Karoline Leavitt leaving role - ABC7 Bay Area",
-      "source": "ABC7 Bay Area",
+      "title": "Trump announces White House press secretary Karoline Leavitt leaving role - ABC11 News",
+      "source": "ABC11 News",
       "market": "",
       "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNY0FGZU5pbkVkdDBRZzBPdDVBanRaQzBHNk5FaHdNZVBuOWlYSjFpZmtZX1c1bmFVU1FkR1lFMzU2TWd2MGV5YnR4ZnBnbDZ2N1QxUEpQRmpBQ09DTWo4d1pRZ2ZGZWRFWnYxNlZlcDFPU1J2UEdvRnBVTDh3Z09ILVozUHlDRlpLcGsyOHpHYnhUNzhCcExwdkFTcHJDdXhzSjFVUDZoMWVFLVRjdlE?oc=5",
-      "sourceHomepage": "https://abc7news.com",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPNHhncnBkTEUzWGdKVEgtV0hBQWNxWnk2U1VySWhJQk9INlZ6QU5wT0VzMXlHY1IyT3dwZ1F2TGdfV3cxNHR1T194M3NMSklSd3B6a3YxajlwTlFhTFIzTThpUWdZd094T3VRYnZUYlNmcnlKcUVaaVZEalhEc0RjdWdWOTJjcGF3WkpvTFNVNndSZjRBc1JvcUpiZjRpSUlQX0VJZ05SbE9TUQ?oc=5",
+      "sourceHomepage": "https://abc11.com",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Trump announces White House press secretary Karoline Leavitt leaving role ABC7 Bay Area",
-      "published": "Wed, 12 Aug 2026 23:04:35 GMT",
-      "engagementScore": 44,
+      "summary": "Trump announces White House press secretary Karoline Leavitt leaving role ABC11 News",
+      "published": "Wed, 12 Aug 2026 23:46:42 GMT",
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Karoline Leavitt is leaving her role as Trump's White House press secretary - PBS",
+      "source": "PBS",
+      "market": "",
+      "category": "politics",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPdlpEU1ZPQ1hES0c0eGtPM0VnVi1jRGJYQ3NZdnduLXNZNjdDZ0NuWXV3OTFJMXM3YUg1Mk1PaUtqa05wSXB1Um1wN2ZjdTNjUmFadmowMzdDU1JBQmdtNDQwWHh0XzBvTzlnek9EdWFJd2pId25jX1A1QVJyVk1QUVpqWTN3RzZIMEhuMlpqR1NyR2xzM1hNUE02eUlBUkVuTHI3SFd4dTBUUDJ4LUFncGpR?oc=5",
+      "sourceHomepage": "https://www.pbs.org",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Karoline Leavitt is leaving her role as Trump's White House press secretary PBS",
+      "published": "Thu, 13 Aug 2026 00:32:39 GMT",
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
@@ -94,7 +109,7 @@
       "isDiscovery": true,
       "summary": "The USIP in waiting Politico",
       "published": "Wed, 12 Aug 2026 20:32:51 GMT",
-      "engagementScore": 41,
+      "engagementScore": 39,
       "engagementLabel": "Developing"
     },
     {
@@ -109,12 +124,12 @@
       "isDiscovery": true,
       "summary": "Trump remarks on diminishing impact of pro-Israel groups in Congress Al Jazeera",
       "published": "Wed, 12 Aug 2026 16:31:57 GMT",
-      "engagementScore": 37,
+      "engagementScore": 35,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Trump endorsement doesn’t follow Miguez into Louisiana’s 6th District race - WAFB",
-      "source": "WAFB",
+      "title": "Trump endorsement doesn’t follow Miguez into Louisiana’s 6th District race - wafb.com",
+      "source": "wafb.com",
       "market": "",
       "category": "politics",
       "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPU3hPYWtyYXJYSVUyWG5KbEU4ZjFoWTF0VGFXaWJaZ1hpRldwd2VUSEJJU1JLN3dJVG1ibEgyWWRXZVdINEJGQTBkRl9CV1AxVGozNExCSXVZajJlVVZoSzk3R1NNYUFhakxwdkltT0kxWkZHdzRKTEhlQXY3REJRUldWQ1ZJZHhLWVJhUkkxQUpZZFc1S2V4R0ZKazhSZ043TVhSQUV6RnRYeTBmcURZQQ?oc=5",
@@ -122,39 +137,9 @@
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Trump endorsement doesn’t follow Miguez into Louisiana’s 6th District race WAFB",
+      "summary": "Trump endorsement doesn’t follow Miguez into Louisiana’s 6th District race wafb.com",
       "published": "Wed, 12 Aug 2026 22:04:00 GMT",
-      "engagementScore": 42,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Trump Is Spending Nearly $1 Billion in Taxpayer Money on Gaudy White House Renovations: Report - Rolling Stone",
-      "source": "Rolling Stone",
-      "market": "",
-      "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQOHoyTUZmUjlRUzB6VXpZNUVqTkU2WGkzNERJTW5BcktuWGExeWZwQjhjMkJ4QTRsVG5GcnB6dFIwOV9ZbjVKOFdBSWNnWnUyTDZWaEc1S01BRHJzY1pJMFVNZWszcm0zcF9YQ2dlMVJ5ZzV3MG1Mbmpfdk1FdXRCVlFTSHJ2YTJlUW40ZGpSQWVvYlhWeXNNcUNfX2Y1MjZqN1g2VmV6WFhlSTBBSUow?oc=5",
-      "sourceHomepage": "https://www.rollingstone.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Trump Is Spending Nearly $1 Billion in Taxpayer Money on Gaudy White House Renovations: Report Rolling Stone",
-      "published": "Wed, 12 Aug 2026 18:37:51 GMT",
-      "engagementScore": 38,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Your 2026 Election Readiness Checklist - Bloomberg Government",
-      "source": "Bloomberg Government",
-      "market": "",
-      "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRzJ1djBpUUFrMnFRVm10NkFCVmxNcWFxUllFaEpISlVCQ0R1X3pDeDAyeFlaZWVXSXZfWkVTOFlOaTN0MEI5UW9VVUFOUHhsV3Q4elZMZDN2UHFpR1p5UEJRY2JEaEJhckVqRkVjd2NjUGVCaVB2SmpKV3RSNjZiNmwxV1YyNkdC?oc=5",
-      "sourceHomepage": "https://about.bgov.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "Your 2026 Election Readiness Checklist Bloomberg Government",
-      "published": "Wed, 12 Aug 2026 19:30:26 GMT",
-      "engagementScore": 39,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -169,7 +154,22 @@
       "isDiscovery": true,
       "summary": "The Trump Administration Is Interfering in the 2026 Midterm Elections To Entrench the Imperial Presidency Center for American Progress",
       "published": "Wed, 12 Aug 2026 13:03:35 GMT",
-      "engagementScore": 32,
+      "engagementScore": 31,
+      "engagementLabel": "Developing"
+    },
+    {
+      "title": "Your 2026 Election Readiness Checklist - about.bgov.com",
+      "source": "about.bgov.com",
+      "market": "",
+      "category": "politics",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRzJ1djBpUUFrMnFRVm10NkFCVmxNcWFxUllFaEpISlVCQ0R1X3pDeDAyeFlaZWVXSXZfWkVTOFlOaTN0MEI5UW9VVUFOUHhsV3Q4elZMZDN2UHFpR1p5UEJRY2JEaEJhckVqRkVjd2NjUGVCaVB2SmpKV3RSNjZiNmwxV1YyNkdC?oc=5",
+      "sourceHomepage": "https://about.bgov.com",
+      "image": "./assets/logo.png",
+      "hasFeedImage": false,
+      "isDiscovery": true,
+      "summary": "Your 2026 Election Readiness Checklist about.bgov.com",
+      "published": "Wed, 12 Aug 2026 19:33:01 GMT",
+      "engagementScore": 37,
       "engagementLabel": "Developing"
     },
     {
@@ -184,7 +184,7 @@
       "isDiscovery": true,
       "summary": "GOP’s fight to retake Alabama Congressional seat could be ‘the most watched’ race of 2026 election AL.com",
       "published": "Wed, 12 Aug 2026 11:00:00 GMT",
-      "engagementScore": 30,
+      "engagementScore": 28,
       "engagementLabel": "Developing"
     },
     {
@@ -199,7 +199,7 @@
       "isDiscovery": true,
       "summary": "Bronin knocks off incumbent Larson, wins Dem nomination for Congress in CT's 1st District CT Insider",
       "published": "Wed, 12 Aug 2026 04:00:19 GMT",
-      "engagementScore": 23,
+      "engagementScore": 21,
       "engagementLabel": "Monitor"
     },
     {
@@ -214,23 +214,53 @@
       "isDiscovery": true,
       "summary": "Trump leaves open emergency option for new voting rules as SAVE America Act stalls WXLV",
       "published": "Wed, 12 Aug 2026 16:35:10 GMT",
-      "engagementScore": 35,
+      "engagementScore": 34,
       "engagementLabel": "Developing"
     },
     {
-      "title": "Rep. John Larson ouster makes 2026 a record year for Democratic primary losses - Axios",
-      "source": "Axios",
+      "title": "Ilhan Omar wins Minnesota Democratic primary for House seat - eciks.org",
+      "source": "eciks.org",
       "market": "",
       "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQRU51ZUhXODd6VVJiOTctYlh5Vm1hRzRMb2h2Zm5kbXpSUV9JRVpXOVlrdTIxRVIzQmF0T2J5ZWdfVS1xREhxcmplWnJ5X3IwSFM3a0RjX3hYci05ZzJQUFBvZi02VnR5NTJNdjdFQlEwMS0zdkZhUlZuNG40c3pVT0N3?oc=5",
-      "sourceHomepage": "https://www.axios.com",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1oSlI0TGVLWkRlZ2xaOFBmdjFPTWNVRDJ4bFhSWEpuS25jUVgwbmVWUTUzOEZCWVZWMlgydWNVQVY4TjZEbmxhdGVMYXNVaktER25Ua3QtckZuVFo2NG5BbVBncDQ3X1k?oc=5",
+      "sourceHomepage": "https://eciks.org",
       "image": "./assets/logo.png",
       "hasFeedImage": false,
       "isDiscovery": true,
-      "summary": "Rep. John Larson ouster makes 2026 a record year for Democratic primary losses Axios",
-      "published": "Wed, 12 Aug 2026 02:07:09 GMT",
-      "engagementScore": 21,
+      "summary": "Ilhan Omar wins Minnesota Democratic primary for House seat eciks.org",
+      "published": "Wed, 12 Aug 2026 05:17:37 GMT",
+      "engagementScore": 22,
       "engagementLabel": "Monitor"
+    },
+    {
+      "title": "Hong’s Defeat in Wisconsin Sparks New Disagreements Within Democratic Party",
+      "source": "NYT Politics",
+      "market": "",
+      "category": "politics",
+      "url": "https://www.nytimes.com/2026/08/12/us/politics/democratic-socialists-future-hong.html",
+      "sourceHomepage": "https://www.nytimes.com/section/politics",
+      "image": "https://static01.nyt.com/images/2026/08/12/multimedia/12pol-democratic-socialists-regroup-wjft/12pol-democratic-socialists-regroup-wjft-mediumSquareAt3X.jpg",
+      "hasFeedImage": true,
+      "isDiscovery": false,
+      "summary": "Some Democrats said the outcome showed that the moderate wing of the party carried more electoral weight, while Ms. Hong’s strong showing gave some progressives hope.",
+      "published": "Thu, 13 Aug 2026 00:48:12 +0000",
+      "engagementScore": 45,
+      "engagementLabel": "High Signal"
+    },
+    {
+      "title": "ICE Agent Who Pushed Activist to the Ground Near Chicago Pleads Guilty",
+      "source": "NYT Politics",
+      "market": "",
+      "category": "local",
+      "url": "https://www.nytimes.com/2026/08/12/us/politics/ice-chicago-agent-guilty.html",
+      "sourceHomepage": "https://www.nytimes.com/section/politics",
+      "image": "https://static01.nyt.com/images/2026/08/12/multimedia/12trump-news-ice-agent-wtcz/12trump-news-ice-agent-wtcz-mediumSquareAt3X.jpg",
+      "hasFeedImage": true,
+      "isDiscovery": false,
+      "summary": "The agent, Adam Saracco, was charged with misdemeanor after the altercation at a gas station near Chicago last year during the Trump administration’s crackdown there.",
+      "published": "Thu, 13 Aug 2026 00:16:55 +0000",
+      "engagementScore": 45,
+      "engagementLabel": "High Signal"
     },
     {
       "title": "South Carolina Senate Runoff Kicks Off With Chick-fil-A and Trump Calls",
@@ -244,7 +274,7 @@
       "isDiscovery": false,
       "summary": "Darline Graham and Ralph Norman emerged from a special election sprint on Tuesday to succeed Lindsey Graham. She will sell her closeness to President Trump. He will tout ...",
       "published": "Wed, 12 Aug 2026 21:20:05 +0000",
-      "engagementScore": 44,
+      "engagementScore": 42,
       "engagementLabel": "Developing"
     },
     {
@@ -259,7 +289,7 @@
       "isDiscovery": false,
       "summary": "The charges signaled an escalation of the Justice Department’s prosecution of the Southern Poverty Law Center, which is best known for investigating white supremacist gro...",
       "published": "Wed, 12 Aug 2026 20:53:48 +0000",
-      "engagementScore": 43,
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -274,8 +304,8 @@
       "isDiscovery": false,
       "summary": "The Trump administration will not enforce reporting requirements of the 2021 Corporate Transparency Act, which was intended to crack down on money laundering.",
       "published": "Wed, 12 Aug 2026 22:51:40 +0000",
-      "engagementScore": 45,
-      "engagementLabel": "High Signal"
+      "engagementScore": 43,
+      "engagementLabel": "Developing"
     },
     {
       "title": "Trump Is Sued Over Plan to Sell Early Access to His Truth Social Posts",
@@ -289,37 +319,7 @@
       "isDiscovery": false,
       "summary": "The lawsuit filed in federal court said President Trump “stands to gain financially by giving ‘market-moving’ government information to those who are willing and able to ...",
       "published": "Wed, 12 Aug 2026 20:37:45 +0000",
-      "engagementScore": 42,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Karoline Leavitt, Trump’s White House Press Secretary, Is Leaving the Role",
-      "source": "NYT Politics",
-      "market": "",
-      "category": "politics",
-      "url": "https://www.nytimes.com/2026/08/12/us/politics/karoline-leavitt-trump-press-secretary.html",
-      "sourceHomepage": "https://www.nytimes.com/section/politics",
-      "image": "https://static01.nyt.com/images/2026/08/12/multimedia/12dc-leavitt-fqgt/12dc-leavitt-fqgt-mediumSquareAt3X.jpg",
-      "hasFeedImage": true,
-      "isDiscovery": false,
-      "summary": "President Trump said that Ms. Leavitt, who recently gave birth to her second child, would be leaving to spend time with her family.",
-      "published": "Wed, 12 Aug 2026 22:28:48 +0000",
-      "engagementScore": 44,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "Which Trump Officials Joined Him on His Secret Flight Out of Turkey?",
-      "source": "NYT Politics",
-      "market": "",
-      "category": "politics",
-      "url": "https://www.nytimes.com/2026/08/12/us/politics/trump-air-force-one-secret-flight-passengers.html",
-      "sourceHomepage": "https://www.nytimes.com/section/politics",
-      "image": "https://static01.nyt.com/images/2026/08/12/multimedia/12dc-trump-plane-tcbp/12dc-trump-plane-tcbp-mediumSquareAt3X.jpg",
-      "hasFeedImage": true,
-      "isDiscovery": false,
-      "summary": "The White House aides Natalie Harp and Dan Scavino were among those traveling with the president on a military jet.",
-      "published": "Wed, 12 Aug 2026 19:49:59 +0000",
-      "engagementScore": 41,
+      "engagementScore": 40,
       "engagementLabel": "Developing"
     },
     {
@@ -333,8 +333,23 @@
       "hasFeedImage": true,
       "isDiscovery": false,
       "summary": "Donald Trump says Leavitt is leaving to spend more time with her family and would become one of his ‘top outside advisors’ Karoline Leavitt will step down as White House ...",
-      "published": "Wed, 12 Aug 2026 23:11:53 GMT",
-      "engagementScore": 44,
+      "published": "Thu, 13 Aug 2026 01:30:25 GMT",
+      "engagementScore": 45,
+      "engagementLabel": "High Signal"
+    },
+    {
+      "title": "Wisconsin Democrats chose a middle path – will it lead to victory in November?",
+      "source": "Guardian US",
+      "market": "",
+      "category": "politics",
+      "url": "https://www.theguardian.com/us-news/2026/aug/12/wisconsin-primary-democrats-david-crowley",
+      "sourceHomepage": "https://www.theguardian.com/us-news",
+      "image": "https://i.guim.co.uk/img/media/43a83d9290bfd2185fa988dc7be0dabced247142/693_0_6904_5527/master/6904.jpg?width=140&quality=85&auto=format&fit=max&s=8f5441f2b9304cd0e2c40e878edc89d0",
+      "hasFeedImage": true,
+      "isDiscovery": false,
+      "summary": "Democratic socialist Francesca Hong fell just short as David Crowley strives for unity for the general election Francesca Hong, a democratic socialist, was on course to w...",
+      "published": "Thu, 13 Aug 2026 00:16:25 GMT",
+      "engagementScore": 43,
       "engagementLabel": "Developing"
     },
     {
@@ -349,7 +364,7 @@
       "isDiscovery": false,
       "summary": "Trump’s most prominent spokesperson won regular plaudits from her boss for her unflinching defense of his agenda Donald Trump’s most prominent spokesperson, Karoline Leav...",
       "published": "Wed, 12 Aug 2026 22:19:00 GMT",
-      "engagementScore": 43,
+      "engagementScore": 41,
       "engagementLabel": "Developing"
     },
     {
@@ -364,27 +379,12 @@
       "isDiscovery": true,
       "summary": "The White House Is Going to Expand Its AI Policy WIRED",
       "published": "Wed, 12 Aug 2026 21:00:00 GMT",
-      "engagementScore": 37,
-      "engagementLabel": "Developing"
-    },
-    {
-      "title": "White House Press Secretary Karoline Leavitt to Step Down - WSJ",
-      "source": "WSJ",
-      "market": "",
-      "category": "politics",
-      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPNVFuQ3FqNzJHZFpWMjBIcnR0SExsTGhVZ2l0V252UG1WVk5kOTVGMGtXUVhJVHNvVHMxT01veXlRck90bDJPLXFPSTllVTJpMG9CSml5UDB4c3ozbDZ6U016eDBVTzhCSVdZZWVYVUNmMU1tVWhCWXN6UUFtMXZCSUtfcDl4TTdPOHlhbk9KVHpZOXQwOU4yRFplZVVTUjlFYUszeA?oc=5",
-      "sourceHomepage": "https://www.wsj.com",
-      "image": "./assets/logo.png",
-      "hasFeedImage": false,
-      "isDiscovery": true,
-      "summary": "White House Press Secretary Karoline Leavitt to Step Down WSJ",
-      "published": "Wed, 12 Aug 2026 22:02:00 GMT",
-      "engagementScore": 38,
+      "engagementScore": 35,
       "engagementLabel": "Developing"
     }
   ],
   "feedFailureAttribution": {
-    "generatedAt": "2026-08-13T00:07:17.901Z",
+    "generatedAt": "2026-08-13T01:49:13.289Z",
     "sourceCount": 10,
     "failedSourceCount": 1,
     "slowSourceCount": 0,
@@ -404,8 +404,8 @@
         "skippedCount": 0,
         "lastErrorType": "timeout",
         "lastErrorCode": 20,
-        "lastFailedAt": "2026-08-13T00:07:17.896Z",
-        "lastDurationMs": 1514
+        "lastFailedAt": "2026-08-13T01:49:13.280Z",
+        "lastDurationMs": 1524
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/nation?hl=en-us&gl=us&ceid=us:en",
@@ -423,7 +423,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 302
+        "lastDurationMs": 366
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=congress%20white%20house%20politics%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -441,7 +441,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 166
+        "lastDurationMs": 456
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=policy%20election%20congress%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -459,7 +459,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 161
+        "lastDurationMs": 381
       },
       {
         "key": "nyt politics::rss.nytimes.com::https://rss.nytimes.com/services/xml/rss/nyt/politics.xml",
@@ -477,7 +477,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 165
+        "lastDurationMs": 134
       },
       {
         "key": "guardian us::theguardian.com::https://www.theguardian.com/us-news/rss",
@@ -495,7 +495,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 307
+        "lastDurationMs": 183
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=white%20house%20policy%20when%3a1d&hl=en-us&gl=us&ceid=us:en",
@@ -513,7 +513,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 208
+        "lastDurationMs": 485
       },
       {
         "key": "google news::news.google.com::https://news.google.com/rss/search?q=congress%20vote%20when%3a1d&hl=en-us&gl=us&ceid=us:en",
@@ -531,7 +531,7 @@
         "lastErrorType": "",
         "lastErrorCode": "",
         "lastFailedAt": "",
-        "lastDurationMs": 210
+        "lastDurationMs": 533
       }
     ],
     "worstDomains": [

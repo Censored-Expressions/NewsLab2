@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-13T00:07:21.257Z",
+  "generatedAt": "2026-08-13T01:49:16.706Z",
   "category": "technology",
-  "pid": 11220,
+  "pid": 12248,
   "active": false,
   "cycleMs": 30000,
   "sourceLimit": 10,
   "storyLimit": 25,
   "lastStatus": "completed",
   "lastReason": "runtime-smoke-test:collector-technology",
-  "lastFinishedAt": "2026-08-13T00:07:21.251Z",
+  "lastFinishedAt": "2026-08-13T01:49:16.699Z",
   "lastMetrics": {
-    "buildMs": 590,
+    "buildMs": 689,
     "sourceCount": 10,
     "storyCount": 25,
     "feedFailureAttribution": {
-      "generatedAt": "2026-08-13T00:07:21.252Z",
+      "generatedAt": "2026-08-13T01:49:16.700Z",
       "sourceCount": 10,
       "failedSourceCount": 0,
       "slowSourceCount": 0,
@@ -35,7 +35,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 165
+          "lastDurationMs": 175
         },
         {
           "key": "wired::wired.com::https://www.wired.com/feed/rss",
@@ -53,7 +53,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 129
+          "lastDurationMs": 140
         },
         {
           "key": "the verge::theverge.com::https://www.theverge.com/rss/index.xml",
@@ -71,7 +71,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 139
+          "lastDurationMs": 137
         },
         {
           "key": "ars technica::feeds.arstechnica.com::https://feeds.arstechnica.com/arstechnica/index",
@@ -89,7 +89,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 212
+          "lastDurationMs": 168
         },
         {
           "key": "engadget::engadget.com::https://www.engadget.com/rss.xml",
@@ -107,7 +107,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 258
+          "lastDurationMs": 192
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/headlines/section/topic/technology?hl=en-us&gl=us&ceid=us:en",
@@ -125,7 +125,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 315
+          "lastDurationMs": 293
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=technology%20ai%20cybersecurity%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -143,7 +143,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 160
+          "lastDurationMs": 486
         },
         {
           "key": "google news::news.google.com::https://news.google.com/rss/search?q=ai%20big%20tech%20software%20when:1d&hl=en-us&gl=us&ceid=us:en",
@@ -161,7 +161,7 @@
           "lastErrorType": "",
           "lastErrorCode": "",
           "lastFailedAt": "",
-          "lastDurationMs": 175
+          "lastDurationMs": 610
         }
       ],
       "worstDomains": [
