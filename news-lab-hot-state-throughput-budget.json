@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-08-13T23:21:06.557Z",
+  "context": {
+    "mode": "worker-finish-mode",
+    "stage": "article-lifecycle-trace"
+  },
+  "activeLimit": 75,
+  "archiveLimit": 300,
+  "sizeLimitMb": 20,
+  "report": {
+    "generatedAt": "2026-08-13T23:21:06.553Z",
+    "approval": {
+      "generatedAt": "2026-08-13T23:21:05.488Z",
+      "label": "approval-recovery",
+      "beforeActive": 75,
+      "beforePending": 0,
+      "afterActive": 75,
+      "archivedForLearning": 0,
+      "discardedDuplicateCount": 0,
+      "uniqueGroups": 75,
+      "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+    },
+    "headline": {
+      "generatedAt": "2026-08-13T23:21:06.181Z",
+      "label": "headline-repair",
+      "beforeActive": 75,
+      "beforePending": 0,
+      "afterActive": 75,
+      "archivedForLearning": 0,
+      "discardedDuplicateCount": 0,
+      "uniqueGroups": 75,
+      "rule": "Before stuck rescue, duplicate candidate variants are combined. Only the best repair-ready representative stays active; duplicates are retained only when they add learning value."
+    },
+    "rule": "The Brain must reduce stuck payload size before repair: combine duplicates, keep only repair-ready representatives active, and discard duplicate records with no learning purpose."
+  },
+  "rule": "Publication-critical work must not wait behind large historical repair queues. Active queues keep only current repairable records; historical learning moves to archive summaries."
+}
